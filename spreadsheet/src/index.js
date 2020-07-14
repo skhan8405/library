@@ -28,9 +28,6 @@ const {
 const { DropDownEditor } = Editors;
 
 const defaultParsePaste = (str) => str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
-
-// let newFilters = {};
-
 const selectors = Data.Selectors;
 let swapList = [];
 const { AutoCompleteFilter, NumericFilter } = Filters;
@@ -360,12 +357,12 @@ class spreadsheet extends Component {
     swapList = reordered;
   }
   updateTableAsPerRowChooser = (inComingColumnsHeaderList, pinnedColumnsList) => {
-    var existingColumnsHeaderList = this.props.columns;
+    let existingColumnsHeaderList = this.props.columns;
     existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
       return inComingColumnsHeaderList.includes(item.name);
     });
-    var rePositionedArray = existingColumnsHeaderList;
-    var singleHeaderOneList;
+    let rePositionedArray = existingColumnsHeaderList;
+    let singleHeaderOneList;
     if (pinnedColumnsList.length > 0) {
       pinnedColumnsList
         .slice(0)
@@ -412,6 +409,7 @@ class spreadsheet extends Component {
     });
 
     this.closeColumnReOrdering();
+    swapList=[];
   };
 
 	/**
