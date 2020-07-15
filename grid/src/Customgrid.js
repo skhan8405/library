@@ -15,6 +15,7 @@ import InfiniteLoader from "react-window-infinite-loader";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
+import RowOptions from "./Functions/RowOptions";
 import ColumnReordering from "./Overlays/managecolumns";
 
 const listRef = createRef(null);
@@ -132,7 +133,31 @@ const Customgrid = memo((props) => {
                     Header: ({ getToggleAllRowsSelectedProps }) => <RowSelector {...getToggleAllRowsSelectedProps()} />,
                     Cell: ({ row }) => <RowSelector {...row.getToggleRowSelectedProps()} />
                 },
-                ...columns
+                ...columns,
+                {
+                    id: "custom",
+                    columnId: "column_custom_1",
+                    disableResizing: true,
+                    disableFilters: true,
+                    disableSortBy: true,
+                    minWidth: 35,
+                    width: 35,
+                    maxWidth: 35,
+                    Cell: ({ row }) => {
+                        return (
+                            <div className="action">
+                                <RowOptions row={row} />
+                                <span className="expander" {...row.getToggleRowExpandedProps()}>
+                                    {row.isExpanded ? (
+                                        <i className="fa fa-angle-up" aria-hidden="true"></i>
+                                    ) : (
+                                        <i className="fa fa-angle-down" aria-hidden="true"></i>
+                                    )}
+                                </span>
+                            </div>
+                        );
+                    }
+                }
             ]);
         }
     );

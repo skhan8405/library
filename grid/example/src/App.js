@@ -442,32 +442,6 @@ const App = () => {
                     return sr.toLowerCase().includes(filterText) || volume.toLowerCase().includes(filterText);
                 });
             }
-        },
-        {
-            id: "custom",
-            disableResizing: true,
-            disableFilters: true,
-            disableSortBy: true,
-            width: 50,
-            Cell: ({ row }) => {
-                return (
-                    <div className="action">
-                        <RowOptions
-                            deleteRowFromGrid={deleteRowFromGrid}
-                            updateCellData={updateCellData}
-                            row={row}
-                            airportCodeList={airportCodeList}
-                        />
-                        <span className="expander" {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? (
-                                <i className="fa fa-angle-up" aria-hidden="true"></i>
-                            ) : (
-                                <i className="fa fa-angle-down" aria-hidden="true"></i>
-                            )}
-                        </span>
-                    </div>
-                );
-            }
         }
     ];
 
