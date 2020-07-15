@@ -541,15 +541,12 @@ class spreadsheet extends Component {
     tableSortList.map((item, index) => {
       var nameOfItem = "";
       Object.keys(this.state.rows[0]).map(rowItem => {
-        if (item.sortBy === "Flight #" && rowItem === "flightno") {
-          nameOfItem = "flightno";
-        }
-        else if (rowItem.toLowerCase() === this.toCamelCase(item.sortBy).toLowerCase()) {
+       if (rowItem.toLowerCase() === this.toCamelCase(item.sortBy).toLowerCase()) {
           nameOfItem = rowItem;
         }
       })
       var typeOfItem = this.state.rows[0][
-        item.sortBy === "Flight #" ? "flightno" : nameOfItem
+        item.sortBy === nameOfItem
       ];
       if (typeof typeOfItem === "number") {
         sortingOrderNameList.push({

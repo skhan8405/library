@@ -47,7 +47,7 @@ class App extends React.Component {
     rowList.push(true);
     var existingSortingOrderList = this.state.sortingOrderList;
     existingSortingOrderList.push({
-      sortBy: "Flight #",
+      sortBy: this.props.columnFieldValue[0],
       order: "Ascending",
       sortOn: "Value",
     });
