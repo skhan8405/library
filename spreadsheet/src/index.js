@@ -28,9 +28,6 @@ const {
 const { DropDownEditor } = Editors;
 
 const defaultParsePaste = (str) => str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
-
-// let newFilters = {};
-
 const selectors = Data.Selectors;
 let swapList = [];
 const { AutoCompleteFilter, NumericFilter } = Filters;
@@ -360,12 +357,13 @@ class spreadsheet extends Component {
     swapList = reordered;
   }
   updateTableAsPerRowChooser = (inComingColumnsHeaderList, pinnedColumnsList) => {
-    var existingColumnsHeaderList = this.props.columns;
+    let pinnedReorder = false;
+    let existingColumnsHeaderList = this.props.columns;
     existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
       return inComingColumnsHeaderList.includes(item.name);
     });
-    var rePositionedArray = existingColumnsHeaderList;
-    var singleHeaderOneList;
+    let rePositionedArray = existingColumnsHeaderList;
+    let singleHeaderOneList;
     if (pinnedColumnsList.length > 0) {
       pinnedColumnsList
         .slice(0)
@@ -381,8 +379,11 @@ class spreadsheet extends Component {
     }
     if (swapList.length > 0) {
       swapList
+        .slice(0)
         .map((item, index) => {
-          singleHeaderOneList = existingColumnsHeaderList.filter((subItem) => item === subItem.name);
+          singleHeaderOneList = existingColumnsHeaderList.filter((subItem) => {
+            return item === subItem.name
+          });
           rePositionedArray = this.array_move(
             existingColumnsHeaderList,
             existingColumnsHeaderList.indexOf(singleHeaderOneList[0]),
@@ -405,11 +406,26 @@ class spreadsheet extends Component {
       }
     });
 
+    const toTop = (key, value) => (a, b) => (b[key] === value) - (a[key] === value);
+    existingColumnsHeaderList.sort(toTop('frozen', true));
+
     this.setState({
       columns: existingColumnsHeaderList,
     });
+    let tempList = [];
+    existingColumnsHeaderList.forEach((item) => {
+      tempList.push(item.name);
+    })
 
+    if (swapList.length > 0) {
+      for (let i = 0; i < tempList.length; i++) {
+        if (tempList[i] === swapList[i])
+          pinnedReorder = true;
+      }
+    }
     this.closeColumnReOrdering();
+    swapList = [];
+    pinnedReorder = false;
   };
 
 	/**
@@ -474,9 +490,9 @@ class spreadsheet extends Component {
     let columnField = [];
     this.state.columns.map((item) => columnField.push(item.name));
     this.setState({
-      sortingPanelComponent: <Sorting setTableAsPerSortingParams={(args) =>this.setTableAsPerSortingParams(args)}
-      columnFieldValue={columnField} 
-      closeSorting={this.closeSorting} />,
+      sortingPanelComponent: <Sorting setTableAsPerSortingParams={(args) => this.setTableAsPerSortingParams(args)}
+        columnFieldValue={columnField}
+        closeSorting={this.closeSorting} />,
     });
   };
 
@@ -502,26 +518,25 @@ class spreadsheet extends Component {
   };
 
   setTableAsPerSortingParams = (tableSortList) => {
-   
+
     var existingRows = this.state.rows;
     var sortingOrderNameList = [];
     tableSortList.map((item, index) => {
       var nameOfItem = "";
-      Object.keys(this.state.rows[0]).map(rowItem=>{
-        if(item.sortBy === "Flight #" && rowItem === "flightno"){
+      Object.keys(this.state.rows[0]).map(rowItem => {
+        if (item.sortBy === "Flight #" && rowItem === "flightno") {
           nameOfItem = "flightno";
         }
-        else if(rowItem.toLowerCase() === this.toCamelCase(item.sortBy).toLowerCase()){
-          nameOfItem= rowItem;
+        else if (rowItem.toLowerCase() === this.toCamelCase(item.sortBy).toLowerCase()) {
+          nameOfItem = rowItem;
         }
       })
-      
       var typeOfItem = this.state.rows[0][
         item.sortBy === "Flight #" ? "flightno" : nameOfItem
       ];
       if (typeof typeOfItem === "number") {
         sortingOrderNameList.push({
-          name:nameOfItem,
+          name: nameOfItem,
           primer: parseInt,
           reverse: item.order === "Ascending" ? false : true,
         });
@@ -646,9 +661,9 @@ var sort_by;
 (function () {
   // utility functions
   var default_cmp = function (a, b) {
-      if (a == b) return 0;
-      return a < b ? -1 : 1;
-    },
+    if (a == b) return 0;
+    return a < b ? -1 : 1;
+  },
     getCmpFunc = function (primer, reverse) {
       var cmp = default_cmp;
       if (primer) {
