@@ -405,8 +405,6 @@ class spreadsheet extends Component {
       }
     });
 
-    console.log("existingColumnsHeaderList ", existingColumnsHeaderList);
-
     this.setState({
       columns: existingColumnsHeaderList,
     });
@@ -517,7 +515,7 @@ class spreadsheet extends Component {
           nameOfItem= rowItem;
         }
       })
-      console.log(nameOfItem)
+      
       var typeOfItem = this.state.rows[0][
         item.sortBy === "Flight #" ? "flightno" : nameOfItem
       ];

@@ -29,7 +29,6 @@ const ColumnsList = (props) => {
 		temp.forEach((item) => {
 			values.push(item.id)
 		})
-		//console.log(values)
 		props.handleReorderList(values);
 	};
 

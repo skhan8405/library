@@ -224,8 +224,7 @@ class App extends React.Component {
       : this.setState({
           errorMessage: false,
         });
-    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
-    this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
+        !showError ? this.props.setTableAsPerSortingParams(this.state.sortingOrderList) : ''
   };
 
   render() {
@@ -265,7 +264,7 @@ class App extends React.Component {
                     style={{ display: this.state.clickTag }}
                     className="alert alert-danger"
                   >
-                    Sort types opted are same, Please choose different one.
+                    Sort by opted are same, Please choose different one.
                   </span>
                 ) : (
                   ""
