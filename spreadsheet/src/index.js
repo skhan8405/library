@@ -30,6 +30,7 @@ const { DropDownEditor } = Editors;
 const defaultParsePaste = (str) => str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
 const selectors = Data.Selectors;
 let swapList = [];
+let swapSortList=[]
 const { AutoCompleteFilter, NumericFilter } = Filters;
 class spreadsheet extends Component {
   constructor(props) {
@@ -55,6 +56,8 @@ class spreadsheet extends Component {
       tempRows: this.props.rows,
       sortingPanelComponent: null,
       count: this.props.rows.length,
+      sortingOrderSwapList:[],
+      sortingParamsObjectList:[],
       columns: this.props.columns.map((item) => {
         if (item.editor === "DatePicker") {
           item.editor = DatePicker;
@@ -356,6 +359,9 @@ class spreadsheet extends Component {
   handleheaderNameList = (reordered) => {
     swapList = reordered;
   }
+  handleTableSortSwap=(reorderedSwap)=>{
+    swapSortList = reorderedSwap;
+  }
   updateTableAsPerRowChooser = (inComingColumnsHeaderList, pinnedColumnsList) => {
     let pinnedReorder = false;
     let existingColumnsHeaderList = this.props.columns;
@@ -491,6 +497,9 @@ class spreadsheet extends Component {
     this.state.columns.map((item) => columnField.push(item.name));
     this.setState({
       sortingPanelComponent: <Sorting setTableAsPerSortingParams={(args) => this.setTableAsPerSortingParams(args)}
+      sortingParamsObjectList={this.state.sortingParamsObjectList}
+        handleTableSortSwap={this.handleTableSortSwap}
+        clearAllSortingParams={this.clearAllSortingParams}  
         columnFieldValue={columnField}
         closeSorting={this.closeSorting} />,
     });
@@ -499,8 +508,16 @@ class spreadsheet extends Component {
   closeSorting = () => {
     this.setState({
       sortingPanelComponent: null,
+      sortingOrderSwapList:[],
     });
+    swapSortList=[];
   };
+
+  clearAllSortingParams=()=>{
+    this.setState({
+      rows: this.props.rows,
+    })
+  }
 
   //Export Data Logic
   exportColumnData = () => {
@@ -547,9 +564,26 @@ class spreadsheet extends Component {
         });
       }
     });
+
+    if(swapSortList.length>0){
+      var existingSortingOrderSwapList = this.state.sortingOrderSwapList;
+      swapSortList.map((item, index)=>{
+        var stringOfItemIndex = item+""+index;
+        if(item!==index && !existingSortingOrderSwapList.includes(stringOfItemIndex.split('').reverse().join(''))){
+          existingSortingOrderSwapList.push(stringOfItemIndex)
+          sortingOrderNameList = this.array_move(sortingOrderNameList, item, index)
+          tableSortList = this.array_move(tableSortList, item, index)
+        }
+        this.setState({
+          sortingOrderSwapList: existingSortingOrderSwapList
+        })
+      })
+    }
+
     existingRows.sort(sort_by(...sortingOrderNameList));
     this.setState({
       rows: existingRows,
+      sortingParamsObjectList: tableSortList
     });
 
     this.closeSorting();
