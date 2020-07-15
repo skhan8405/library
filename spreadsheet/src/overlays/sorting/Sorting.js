@@ -12,18 +12,12 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import SortingList from "./SortingList";
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       rowList: [true],
       rows: [],
-      sortingOrderList: [
-        {
-          sortBy: "Flight #",
-          order: "Ascending",
-          sortOn: "Value",
-        },
-      ],
+      sortingOrderList: this.props.sortingParamsObjectList === undefined ? [] : this.props.sortingParamsObjectList,
       errorMessage: false,
     };
     this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -53,7 +47,7 @@ class App extends React.Component {
     rowList.push(true);
     var existingSortingOrderList = this.state.sortingOrderList;
     existingSortingOrderList.push({
-      sortBy: "Flight #",
+      sortBy: this.props.columnFieldValue[0],
       order: "Ascending",
       sortOn: "Value",
     });
@@ -71,6 +65,7 @@ class App extends React.Component {
 
   clearAll = () => {
     this.setState({ sortingOrderList: [] });
+    this.props.clearAllSortingParams();
   };
 
   remove = (i) => {
@@ -224,9 +219,16 @@ class App extends React.Component {
       : this.setState({
           errorMessage: false,
         });
-    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
-    this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
+        !showError ? this.props.setTableAsPerSortingParams(this.state.sortingOrderList) : ''
   };
+
+  /**
+ * 
+ * @param {*} reOrderedSortingList 
+ */
+handleReorderListOfSort=(reOrderedIndexList)=>{
+  this.props.handleTableSortSwap(reOrderedIndexList);
+}
 
   render() {
     let { rowList } = this.state.rowList;
@@ -254,6 +256,7 @@ class App extends React.Component {
                 options={{ enableMouseEvents: true }}
               >
                 <SortingList
+                  handleReorderListOfSort={this.handleReorderListOfSort}
                   sortsArray={this.createColumnsArrayFromProps(
                     this.state.sortingOrderList
                   )}
@@ -265,7 +268,7 @@ class App extends React.Component {
                     style={{ display: this.state.clickTag }}
                     className="alert alert-danger"
                   >
-                    Sort types opted are same, Please choose different one.
+                    Sort by opted are same, Please choose different one.
                   </span>
                 ) : (
                   ""
