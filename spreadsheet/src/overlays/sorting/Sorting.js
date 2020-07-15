@@ -19,9 +19,9 @@ class App extends React.Component {
       rows: [],
       sortingOrderList: [
         {
-          sortBy: "",
-          order: "",
-          sortOn: "",
+          sortBy: "Flight #",
+          order: "Ascending",
+          sortOn: "Value",
         },
       ],
       errorMessage: false,
@@ -53,9 +53,9 @@ class App extends React.Component {
     rowList.push(true);
     var existingSortingOrderList = this.state.sortingOrderList;
     existingSortingOrderList.push({
-      sortBy: "",
-      order: "",
-      sortOn: "",
+      sortBy: "Flight #",
+      order: "Ascending",
+      sortOn: "Value",
     });
     this.setState({
       rowList,
@@ -224,6 +224,8 @@ class App extends React.Component {
       : this.setState({
           errorMessage: false,
         });
+    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
+    this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
   };
 
   render() {
@@ -257,13 +259,13 @@ class App extends React.Component {
                   )}
                 />
               </DndProvider>
-              <div>
+              <div className="sort-warning">
                 {this.state.errorMessage ? (
                   <span
                     style={{ display: this.state.clickTag }}
                     className="alert alert-danger"
                   >
-                    Please Add New Sort
+                    Sort types opted are same, Please choose different one.
                   </span>
                 ) : (
                   ""
