@@ -213,7 +213,6 @@ class App extends React.Component {
   };
 
   updateTableAsPerSortCondition = () => {
-    debugger
     const unique = new Set();
     const showError = this.state.sortingOrderList.some(
       (element) => unique.size === unique.add(element.sortBy).size
@@ -265,7 +264,7 @@ class App extends React.Component {
                     style={{ display: this.state.clickTag }}
                     className="alert alert-danger"
                   >
-                    Sort types opted are same, Please choose different one.
+                    Sort by opted are same, Please choose different one.
                   </span>
                 ) : (
                   ""
