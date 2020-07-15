@@ -405,8 +405,10 @@ class spreadsheet extends Component {
         existingColumnsHeaderList[index]["frozen"] = true;
       }
     });
+
     const toTop = (key, value) => (a, b) => (b[key] === value) - (a[key] === value);
     existingColumnsHeaderList.sort(toTop('frozen', true));
+
     this.setState({
       columns: existingColumnsHeaderList,
     });
