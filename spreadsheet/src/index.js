@@ -393,7 +393,6 @@ class spreadsheet extends Component {
     }
 
     existingColumnsHeaderList = rePositionedArray;
-    console.log(rePositionedArray)
 		/**
        making all the frozen attribute as false for all the columns and then 
        setting items of pinnedColumnsList as frozen = true
@@ -421,8 +420,6 @@ class spreadsheet extends Component {
         if (tempList[i] === swapList[i])
           pinnedReorder = true;
       }
-      console.log(tempList);
-      console.log(swapList)
     }
     this.closeColumnReOrdering();
     swapList = [];
@@ -532,7 +529,6 @@ class spreadsheet extends Component {
           nameOfItem = rowItem;
         }
       })
-      console.log(nameOfItem)
       var typeOfItem = this.state.rows[0][
         item.sortBy === "Flight #" ? "flightno" : nameOfItem
       ];

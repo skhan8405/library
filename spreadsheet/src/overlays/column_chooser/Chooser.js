@@ -216,7 +216,6 @@ class ColumnReordering extends React.Component {
     this.props.handleheaderNameList(reordered);
   };
   render(props) {
-    console.log(this.props.pinnedReorder)
     return (
       <div className="columns--grid" ref={this.setWrapperRef}>
         <div className="column__grid">
