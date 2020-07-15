@@ -213,6 +213,7 @@ class App extends React.Component {
   };
 
   updateTableAsPerSortCondition = () => {
+    debugger
     const unique = new Set();
     const showError = this.state.sortingOrderList.some(
       (element) => unique.size === unique.add(element.sortBy).size
@@ -224,8 +225,7 @@ class App extends React.Component {
       : this.setState({
           errorMessage: false,
         });
-    console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
-    this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
+        !showError ? this.props.setTableAsPerSortingParams(this.state.sortingOrderList) : ''
   };
 
   render() {
