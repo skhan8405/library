@@ -66,6 +66,12 @@ const Customgrid = memo((props) => {
         setManageColumnOpen(!isManageColumnOpen);
     };
 
+    //Callback method from column manage overlay to update the column structure of the grid
+    const updateColumnStructure = (newColumnStructure) => {
+        setColumns(newColumnStructure);
+        toggleManageColumns();
+    };
+
     //Column filter added for all columns by default
     const defaultColumn = useMemo(
         () => ({
@@ -193,6 +199,7 @@ const Customgrid = memo((props) => {
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
                         originalColumns={originalColumns}
+                        updateColumnStructure={updateColumnStructure}
                     />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>

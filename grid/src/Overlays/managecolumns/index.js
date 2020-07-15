@@ -51,11 +51,27 @@ const ColumnReordering = memo((props) => {
         const { currentTarget } = event;
         const { checked, value } = currentTarget;
 
+        //If column checkbox is checked
         if (checked) {
-            const columnToAdd = originalColumns.filter((column) => {
+            //Find the index of selected column from original column array and also find the user selected column
+            let indexOfColumnToAdd = originalColumns.findIndex((column) => {
                 return column.Header == value;
             });
-            setManagedColumns(managedColumns.concat(columnToAdd));
+            const itemToAdd = originalColumns[indexOfColumnToAdd];
+
+            //Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
+            //Find index of that previous column and push the new column to add in that position
+            let prevItemIndex = -1;
+            while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+                prevItemIndex = managedColumns.findIndex((column) => {
+                    return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+                });
+                indexOfColumnToAdd = indexOfColumnToAdd - 1;
+            }
+
+            const newColumnsList = managedColumns.slice(0); //Copying state value
+            newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
+            setManagedColumns(newColumnsList);
         } else {
             setManagedColumns(
                 managedColumns.filter((column) => {
@@ -63,6 +79,15 @@ const ColumnReordering = memo((props) => {
                 })
             );
         }
+    };
+
+    const doColumnUpdate = () => {
+        props.updateColumnStructure(managedColumns);
+    };
+
+    const resetColumnUpdate = () => {
+        setManagedColumns(originalColumns);
+        props.updateColumnStructure(originalColumns);
     };
 
     if (isManageColumnOpen) {
@@ -123,11 +148,15 @@ const ColumnReordering = memo((props) => {
                         </div>
                         <div className="column__footer">
                             <div className="column__btns">
-                                <button className="btns">Reset</button>
+                                <button className="btns" onClick={resetColumnUpdate}>
+                                    Reset
+                                </button>
                                 <button className="btns" onClick={toggleManageColumns}>
                                     Cancel
                                 </button>
-                                <button className="btns btns__save">Save</button>
+                                <button className="btns btns__save" onClick={doColumnUpdate}>
+                                    Save
+                                </button>
                             </div>
                         </div>
                     </div>
