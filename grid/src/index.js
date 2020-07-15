@@ -30,7 +30,8 @@ const Grid = memo((props) => {
             title={title}
             gridHeight={gridHeight}
             gridWidth={gridWidth}
-            columns={gridColumns}
+            managableColumns={gridColumns}
+            originalColumns={gridColumns}
             data={data}
             globalSearchLogic={globalSearchLogic}
             updateCellData={updateCellData}

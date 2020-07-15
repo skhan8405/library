@@ -24,7 +24,8 @@ const Customgrid = memo((props) => {
         title,
         gridHeight,
         gridWidth,
-        columns,
+        managableColumns,
+        originalColumns,
         data,
         globalSearchLogic,
         updateCellData,
@@ -35,6 +36,9 @@ const Customgrid = memo((props) => {
         isNextPageLoading,
         loadNextPage
     } = props;
+
+    //Local state value for holding columns configuration
+    const [columns, setColumns] = useState(managableColumns);
 
     //Display error message if data or columns configuration is missing.
     if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
@@ -188,7 +192,7 @@ const Customgrid = memo((props) => {
                     <ColumnReordering
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
-                        columnsToManage={columns}
+                        originalColumns={originalColumns}
                     />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>
