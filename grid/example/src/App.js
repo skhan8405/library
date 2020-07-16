@@ -596,6 +596,7 @@ const App = () => {
 
     //Gets called when row bulk edit is done
     const selectBulkData = (selectedRows) => {
+        console.log("Rows selected: ");
         console.log(selectedRows);
     };
 
