@@ -635,7 +635,7 @@ const App = () => {
                     gridWidth={gridWidth}
                     columns={columns}
                     data={items}
-                    DeletePopUpOverLay={DeletePopUpOverLay}
+                    deletePopUpOverLay={DeletePopUpOverLay}
                     globalSearchLogic={globalSearchLogic}
                     updateCellData={updateCellData}
                     selectBulkData={selectBulkData}
