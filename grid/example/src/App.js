@@ -615,7 +615,6 @@ const App = () => {
             deletePopUpOverLay={DeletePopUpOverLay}
             deleteRowData={deleteRowData}
             globalSearchLogic={globalSearchLogic}
-            updateCellData={updateCellData}
             selectBulkData={selectBulkData}
             calculateRowHeight={calculateRowHeight}
             renderExpandedContent={renderExpandedContent}
