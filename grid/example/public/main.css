@@ -425,7 +425,7 @@ select:-webkit-autofill:focus {
     margin-bottom: 2px;
 }
 .table-outer .table .row-options-edit-wrap .row-options-edit {
-    display: none;
+    display: block;
     position: absolute;
     background: #fff;
     border-radius: 4px;
@@ -436,9 +436,6 @@ select:-webkit-autofill:focus {
     padding: 15px 10px;
     margin-bottom: 40px;
     z-index: 9;
-}
-.table-outer .table .row-options-edit-wrap .row-options-edit.open {
-    display: block;
 }
 .table-outer .table .row-options-edit-wrap .row-options-edit li {
     margin-bottom: 13px;

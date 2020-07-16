@@ -39,37 +39,39 @@ const RowOptions = memo((props) => {
                 <i></i>
             </span>
             {isRowOptionsOpen ? (
-                <div className={`row-options-edit ${isRowOptionsOpen ? "open" : "close"}`}>
-                    <ul>
-                        <li>
-                            <span>
-                                <i>
-                                    <img src={RowEdit} alt="cargo" />
-                                </i>
-                                <span>Edit</span>
-                            </span>
-                        </li>
-                        <li>
-                            <span>
-                                <i>
-                                    <img src={RowPin} alt="cargo" width="15" height="15" />
-                                </i>
-                                <span>Pin This row</span>
-                            </span>
-                        </li>
-                        <li>
-                            <span onClick={openDeleteOverlay}>
-                                <i>
-                                    <img src={RowDelete} alt="cargo" />
-                                </i>
-                                <span>Delete</span>
-                            </span>
-                        </li>
-                    </ul>
-                    <span className="close" onClick={closeRowOptionsOverlay}>
-                        <i className="fa fa-close"></i>
-                    </span>
-                </div>
+                <ClickAwayListener onClickAway={closeRowOptionsOverlay}>
+                    <div className="row-options-edit">
+                        <ul>
+                            <li>
+                                <span>
+                                    <i>
+                                        <img src={RowEdit} alt="cargo" />
+                                    </i>
+                                    <span>Edit</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <i>
+                                        <img src={RowPin} alt="cargo" width="15" height="15" />
+                                    </i>
+                                    <span>Pin This row</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span onClick={openDeleteOverlay}>
+                                    <i>
+                                        <img src={RowDelete} alt="cargo" />
+                                    </i>
+                                    <span>Delete</span>
+                                </span>
+                            </li>
+                        </ul>
+                        <span className="close" onClick={closeRowOptionsOverlay}>
+                            <i className="fa fa-close"></i>
+                        </span>
+                    </div>
+                </ClickAwayListener>
             ) : null}
             {isDeleteOverlayOpen ? <DeletePopUpOverLay closeDeleteOverlay={closeDeleteOverlay} deleteRow={deleteRow} /> : null}
         </div>
