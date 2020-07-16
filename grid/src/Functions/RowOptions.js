@@ -32,7 +32,7 @@ const RowOptions = memo((props) => {
     };
 
     return (
-        <div className="row-options-edit-wrap">
+        <div className="row-options-wrap">
             <span className="icon-row-options" onClick={openRowOptionsOverlay}>
                 <i></i>
                 <i></i>
@@ -40,7 +40,7 @@ const RowOptions = memo((props) => {
             </span>
             {isRowOptionsOpen ? (
                 <ClickAwayListener onClickAway={closeRowOptionsOverlay}>
-                    <div className="row-options-edit">
+                    <div className="row-options-overlay">
                         <ul>
                             <li>
                                 <span>
