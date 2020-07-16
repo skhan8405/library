@@ -27,7 +27,7 @@ const RowOptions = memo((props) => {
         setDeleteOverlayOpen(false);
     };
 
-    const deleteRow = (row) => {
+    const deleteRow = () => {
         deleteRowFromGrid(row);
     };
 
@@ -71,9 +71,7 @@ const RowOptions = memo((props) => {
                     </span>
                 </div>
             ) : null}
-            {isDeleteOverlayOpen ? (
-                <DeletePopUpOverLay row={row} closeDeleteOverlay={closeDeleteOverlay} deleteRow={deleteRow} />
-            ) : null}
+            {isDeleteOverlayOpen ? <DeletePopUpOverLay closeDeleteOverlay={closeDeleteOverlay} deleteRow={deleteRow} /> : null}
         </div>
     );
 });
