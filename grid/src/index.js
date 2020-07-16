@@ -8,6 +8,9 @@ const Grid = memo((props) => {
         gridWidth,
         columns,
         fetchData,
+        rowEditOverlay,
+        rowEditData,
+        updateRowData,
         deletePopUpOverLay,
         deleteRowData,
         globalSearchLogic,
@@ -31,16 +34,27 @@ const Grid = memo((props) => {
     });
     const gridColumns = useMemo(() => processedColumns, []);
 
+    //Gets triggered when one row item is updated
+    const updateRowInGrid = (rowIndex, updatedRow) => {
+        setItems((old) =>
+            old.map((row, index) => {
+                if (index === rowIndex) {
+                    row = updatedRow;
+                }
+                return row;
+            })
+        );
+        updateRowData(updatedRow);
+    };
+
     //Gets triggered when one row item is deleted
-    const deleteRowFromGrid = (row) => {
-        const { index, original } = row;
-        const rowIndexToBeDeleted = index;
+    const deleteRowFromGrid = (rowIndexToBeDeleted, deletedRow) => {
         setItems((old) =>
             old.filter((row, index) => {
                 return index !== rowIndexToBeDeleted;
             })
         );
-        deleteRowData(original);
+        deleteRowData(deletedRow);
     };
 
     //Gets called when page scroll reaches the bottom of the grid.
@@ -75,6 +89,9 @@ const Grid = memo((props) => {
                     managableColumns={gridColumns}
                     originalColumns={gridColumns}
                     data={items}
+                    rowEditOverlay={rowEditOverlay}
+                    rowEditData={rowEditData}
+                    updateRowInGrid={updateRowInGrid}
                     deletePopUpOverLay={deletePopUpOverLay}
                     deleteRowFromGrid={deleteRowFromGrid}
                     globalSearchLogic={globalSearchLogic}

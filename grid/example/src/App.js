@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "grid";
 import { fetchData } from "./getData";
 import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
+import RowEditOverlay from "./cells/RowEditOverlay";
 import SREdit from "./cells/SREdit";
 import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
@@ -582,6 +583,12 @@ const App = () => {
         );*/
     };
 
+    //Gets called when there is a row edit
+    const updateRowData = (row) => {
+        console.log("Row updated: ");
+        console.log(row);
+    };
+
     const deleteRowData = (row) => {
         console.log("Row deleted: ");
         console.log(row);
@@ -599,6 +606,11 @@ const App = () => {
             gridWidth={gridWidth}
             columns={columns}
             fetchData={fetchData}
+            rowEditOverlay={RowEditOverlay}
+            rowEditData={{
+                airportCodeList: airportCodeList
+            }}
+            updateRowData={updateRowData}
             deletePopUpOverLay={DeletePopUpOverLay}
             deleteRowData={deleteRowData}
             globalSearchLogic={globalSearchLogic}
