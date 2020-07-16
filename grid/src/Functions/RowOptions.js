@@ -5,7 +5,7 @@ import RowEdit from "../Images/RowEdit.svg";
 import RowPin from "../Images/RowPin.png";
 
 const RowOptions = memo((props) => {
-    const { row, DeletePopUpOverLay } = props;
+    const { row, DeletePopUpOverLay, deleteRowFromGrid } = props;
 
     const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
     const [isDeleteOverlayOpen, setDeleteOverlayOpen] = useState(false);
@@ -25,6 +25,10 @@ const RowOptions = memo((props) => {
 
     const closeDeleteOverlay = () => {
         setDeleteOverlayOpen(false);
+    };
+
+    const deleteRow = (row) => {
+        deleteRowFromGrid(row);
     };
 
     return (
@@ -67,7 +71,9 @@ const RowOptions = memo((props) => {
                     </span>
                 </div>
             ) : null}
-            {isDeleteOverlayOpen ? <DeletePopUpOverLay row={row} closeDeleteOverlay={closeDeleteOverlay} /> : null}
+            {isDeleteOverlayOpen ? (
+                <DeletePopUpOverLay row={row} closeDeleteOverlay={closeDeleteOverlay} deleteRow={deleteRow} />
+            ) : null}
         </div>
     );
 });

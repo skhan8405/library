@@ -9,6 +9,7 @@ const Grid = memo((props) => {
         columns,
         fetchData,
         deletePopUpOverLay,
+        deleteRowData,
         globalSearchLogic,
         updateCellData,
         selectBulkData,
@@ -29,6 +30,18 @@ const Grid = memo((props) => {
         processedColumns.push(column);
     });
     const gridColumns = useMemo(() => processedColumns, []);
+
+    //Gets triggered when one row item is deleted
+    const deleteRowFromGrid = (row) => {
+        const { index, original } = row;
+        const rowIndexToBeDeleted = index;
+        setItems((old) =>
+            old.filter((row, index) => {
+                return index !== rowIndexToBeDeleted;
+            })
+        );
+        deleteRowData(original);
+    };
 
     //Gets called when page scroll reaches the bottom of the grid.
     //Fetch the next set of data and append it to the variable holding grid data and update the state value.
@@ -63,6 +76,7 @@ const Grid = memo((props) => {
                     originalColumns={gridColumns}
                     data={items}
                     deletePopUpOverLay={deletePopUpOverLay}
+                    deleteRowFromGrid={deleteRowFromGrid}
                     globalSearchLogic={globalSearchLogic}
                     updateCellData={updateCellData}
                     selectBulkData={selectBulkData}

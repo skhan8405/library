@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Grid from "grid";
 import { fetchData } from "./getData";
 import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
@@ -582,14 +582,9 @@ const App = () => {
         );*/
     };
 
-    //Gets triggered when one row item is deleted
-    const deleteRowFromGrid = (rowIndexToBeDeleted) => {
-        console.log("Deleting row with index: " + rowIndexToBeDeleted);
-        /*setItems((old) =>
-            old.filter((row, index) => {
-                return index !== rowIndexToBeDeleted;
-            })
-        );*/
+    const deleteRowData = (row) => {
+        console.log("Row deleted: ");
+        console.log(row);
     };
 
     //Gets called when row bulk edit is done
@@ -605,6 +600,7 @@ const App = () => {
             columns={columns}
             fetchData={fetchData}
             deletePopUpOverLay={DeletePopUpOverLay}
+            deleteRowData={deleteRowData}
             globalSearchLogic={globalSearchLogic}
             updateCellData={updateCellData}
             selectBulkData={selectBulkData}
