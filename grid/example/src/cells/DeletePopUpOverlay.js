@@ -7,9 +7,7 @@ const divStyle = {
     marginLeft: "-850px"
 };
 
-const DeletePopUpOverLay = memo((props) => {
-    const { deleteRow, closeDeleteOverlay } = props;
-
+const DeletePopUpOverLay = memo(({ deleteRow, closeDeleteOverlay }) => {
     return (
         <div className="main-div-delete-overlay" style={divStyle}>
             <div className="cancel-save-buttons-delete">
