@@ -28,6 +28,7 @@ const Customgrid = memo((props) => {
         managableColumns,
         originalColumns,
         data,
+        DeletePopUpOverLay,
         globalSearchLogic,
         updateCellData,
         selectBulkData,
@@ -146,7 +147,7 @@ const Customgrid = memo((props) => {
                     Cell: ({ row }) => {
                         return (
                             <div className="action">
-                                <RowOptions row={row} />
+                                <RowOptions row={row} DeletePopUpOverLay={DeletePopUpOverLay} />
                                 <span className="expander" {...row.getToggleRowExpandedProps()}>
                                     {row.isExpanded ? (
                                         <i className="fa fa-angle-up" aria-hidden="true"></i>

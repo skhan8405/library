@@ -8,6 +8,7 @@ const Grid = memo((props) => {
         gridWidth,
         columns,
         data,
+        DeletePopUpOverLay,
         globalSearchLogic,
         updateCellData,
         selectBulkData,
@@ -33,6 +34,7 @@ const Grid = memo((props) => {
             managableColumns={gridColumns}
             originalColumns={gridColumns}
             data={data}
+            DeletePopUpOverLay={DeletePopUpOverLay}
             globalSearchLogic={globalSearchLogic}
             updateCellData={updateCellData}
             selectBulkData={selectBulkData}

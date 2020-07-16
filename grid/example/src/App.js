@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Grid from "grid";
 import { fetchData } from "./getData";
-import RowOptions from "./cells/RowOptions";
+import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
 import SREdit from "./cells/SREdit";
 import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
@@ -635,6 +635,7 @@ const App = () => {
                     gridWidth={gridWidth}
                     columns={columns}
                     data={items}
+                    DeletePopUpOverLay={DeletePopUpOverLay}
                     globalSearchLogic={globalSearchLogic}
                     updateCellData={updateCellData}
                     selectBulkData={selectBulkData}

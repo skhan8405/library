@@ -5,25 +5,37 @@ import RowEdit from "../Images/RowEdit.svg";
 import RowPin from "../Images/RowPin.png";
 
 const RowOptions = memo((props) => {
-    const [isOpen, setOpen] = useState(false);
+    const { row, DeletePopUpOverLay } = props;
 
-    const openOverlay = () => {
-        setOpen(true);
+    const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
+    const [isDeleteOverlayOpen, setDeleteOverlayOpen] = useState(false);
+
+    const openRowOptionsOverlay = () => {
+        setRowOptionsOpen(true);
     };
 
-    const closeOverlay = () => {
-        setOpen(false);
+    const closeRowOptionsOverlay = () => {
+        setRowOptionsOpen(false);
+    };
+
+    const openDeleteOverlay = () => {
+        setRowOptionsOpen(false);
+        setDeleteOverlayOpen(true);
+    };
+
+    const closeDeleteOverlay = () => {
+        setDeleteOverlayOpen(false);
     };
 
     return (
-        <ClickAwayListener onClickAway={closeOverlay}>
-            <div className="row-options-edit-wrap">
-                <span className="icon-edit" onClick={openOverlay}>
-                    <i></i>
-                    <i></i>
-                    <i></i>
-                </span>
-                <div className={`row-options-edit ${isOpen ? "open" : "close"}`}>
+        <div className="row-options-edit-wrap">
+            <span className="icon-row-options" onClick={openRowOptionsOverlay}>
+                <i></i>
+                <i></i>
+                <i></i>
+            </span>
+            {isRowOptionsOpen ? (
+                <div className={`row-options-edit ${isRowOptionsOpen ? "open" : "close"}`}>
                     <ul>
                         <li>
                             <span>
@@ -42,7 +54,7 @@ const RowOptions = memo((props) => {
                             </span>
                         </li>
                         <li>
-                            <span>
+                            <span onClick={openDeleteOverlay}>
                                 <i>
                                     <img src={RowDelete} alt="cargo" />
                                 </i>
@@ -50,12 +62,13 @@ const RowOptions = memo((props) => {
                             </span>
                         </li>
                     </ul>
-                    <span className="close" onClick={closeOverlay}>
+                    <span className="close" onClick={closeRowOptionsOverlay}>
                         <i className="fa fa-close"></i>
                     </span>
                 </div>
-            </div>
-        </ClickAwayListener>
+            ) : null}
+            {isDeleteOverlayOpen ? <DeletePopUpOverLay row={row} closeDeleteOverlay={closeDeleteOverlay} /> : null}
+        </div>
     );
 });
 
