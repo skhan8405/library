@@ -34,7 +34,6 @@ const Customgrid = memo((props) => {
         deletePopUpOverLay,
         deleteRowFromGrid,
         globalSearchLogic,
-        updateCellData,
         selectBulkData,
         calculateRowHeight,
         renderExpandedContent,
@@ -101,7 +100,6 @@ const Customgrid = memo((props) => {
             columns,
             data,
             defaultColumn,
-            updateCellData,
             globalFilter: (rows, columns, filterValue) => {
                 //Call global search function defined in application, if it is present
                 if (globalSearchLogic && typeof globalSearchLogic === "function") {
