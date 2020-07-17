@@ -139,15 +139,15 @@ const App = () => {
             innerCells: [
                 {
                     Header: "Flight Model",
-                    accessor: "frflightModelom"
+                    accessor: "flightModel"
                 },
                 {
                     Header: "Body Type",
                     accessor: "bodyType"
                 },
                 {
-                    Header: "type",
-                    accessor: "Type"
+                    Header: "Type",
+                    accessor: "type"
                 },
                 {
                     Header: "Start Time",
