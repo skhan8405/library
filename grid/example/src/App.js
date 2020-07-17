@@ -98,17 +98,7 @@ const App = () => {
                 }
             ],
             Cell: FlightEdit,
-            sortType: (rowA, rowB) => {
-                return rowA.original.flight.flightno > rowB.original.flight.flightno ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { flightno, date } = rowValue;
-                    return flightno.toLowerCase().includes(filterText) || date.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "flightno"
         },
         {
             Header: "Segment",
@@ -140,14 +130,6 @@ const App = () => {
                         updateCellData={updateCellData}
                     />
                 );
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { from, to } = rowValue;
-                    return from.toLowerCase().includes(filterText) || to.toLowerCase().includes(filterText);
-                });
             }
         },
         {
@@ -222,23 +204,6 @@ const App = () => {
                         </ul>
                     </div>
                 );
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { flightModel, bodyType, type, startTime, endTime, status, additionalStatus, timeStatus } = rowValue;
-                    return (
-                        String(flightModel).toLowerCase().includes(filterText) ||
-                        bodyType.toLowerCase().includes(filterText) ||
-                        type.toLowerCase().includes(filterText) ||
-                        startTime.toLowerCase().includes(filterText) ||
-                        endTime.toLowerCase().includes(filterText) ||
-                        status.toLowerCase().includes(filterText) ||
-                        additionalStatus.toLowerCase().includes(filterText) ||
-                        timeStatus.toLowerCase().includes(filterText)
-                    );
-                });
             }
         },
         {
@@ -267,17 +232,7 @@ const App = () => {
                     </div>
                 );
             },
-            sortType: (rowA, rowB) => {
-                return rowA.original.weight.percentage > rowB.original.weight.percentage ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { percentage, value } = rowValue;
-                    return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "percentage"
         },
         {
             Header: "Volume",
@@ -305,17 +260,7 @@ const App = () => {
                     </div>
                 );
             },
-            sortType: (rowA, rowB) => {
-                return rowA.original.volume.percentage > rowB.original.volume.percentage ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { percentage, value } = rowValue;
-                    return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "percentage"
         },
         {
             Header: "ULD Positions",
@@ -345,18 +290,7 @@ const App = () => {
                         })}
                     </ul>
                 </div>
-            ),
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    return (
-                        rowValue.findIndex((item) => {
-                            return (item.position + " " + item.value).toLowerCase().includes(filterText);
-                        }) >= 0
-                    );
-                });
-            }
+            )
         },
         {
             Header: "Revenue/Yield",
@@ -381,17 +315,7 @@ const App = () => {
                     </div>
                 );
             },
-            sortType: (rowA, rowB) => {
-                return rowA.original.revenue.revenue > rowB.original.revenue.revenue ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { revenue, yeild } = rowValue;
-                    return revenue.toLowerCase().includes(filterText) || yeild.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "revenue"
         },
         {
             Header: "SR",
@@ -427,14 +351,6 @@ const App = () => {
                         </span>
                     </div>
                 );
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { sr, volume } = rowValue;
-                    return sr.toLowerCase().includes(filterText) || volume.toLowerCase().includes(filterText);
-                });
             }
         }
     ];

@@ -28,7 +28,47 @@ const Grid = memo((props) => {
 
     let processedColumns = [];
     columns.forEach((column, index) => {
+        //Add column Id
         column.columnId = `column_${index}`;
+
+        //Add logic to sort column if sort is not disabled
+        if (!column.disableSortBy) {
+            if (column.innerCells && column.innerCells.length > 0) {
+                //If there are inner cells and a sort value specified, do sort on that value
+                if (column.sortValue) {
+                    column.sortType = (rowA, rowB) => {
+                        return rowA.original[column.accessor][column.sortValue] > rowB.original[column.accessor][column.sortValue]
+                            ? -1
+                            : 1;
+                    };
+                } else {
+                    column.disableSortBy = true;
+                }
+            } else if (!column.innerCells) {
+                //If no inner cells are there, just do sort on column value
+                column.sortType = (rowA, rowB) => {
+                    return rowA.original[column.accessor] > rowB.original[column.accessor] ? -1 : 1;
+                };
+            }
+        }
+
+        //Add logic to filter column if column filter is not disabled
+        if (!column.disableFilters) {
+            if (column.innerCells && column.innerCells.length > 0) {
+                column.filter = (rows, id, filterValue) => {
+                    const filterText = filterValue ? filterValue.toLowerCase() : "";
+                    return rows.filter((row) => {
+                        const rowValue = row.values[id];
+                        const filterCols = column.innerCells.filter((cell) => {
+                            const cellValue = rowValue[cell.accessor] ? rowValue[cell.accessor].toString().toLowerCase() : "";
+                            return cellValue.includes(filterText);
+                        });
+                        return filterCols && filterCols.length > 0;
+                    });
+                };
+            }
+        }
+
         processedColumns.push(column);
     });
     const gridColumns = useMemo(() => processedColumns, []);
