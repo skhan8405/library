@@ -20,6 +20,7 @@ class ExtDataGrid extends ReactDataGrid {
     window.removeEventListener("resize", this.metricsUpdated);
     this.dataGridComponent.removeEventListener("mouseup", this.onWindowMouseUp);
   }
+  
 }
 
 export default ExtDataGrid;
