@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Grid from "grid";
 import { fetchData } from "./getData";
 import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
@@ -16,6 +16,9 @@ const App = () => {
 
     //Get grid width value
     const gridWidth = "100%";
+
+    //For connecting to child using ref
+    const childRef = useRef();
 
     //Create an array of airports
     const airportCodeList = [
@@ -116,17 +119,17 @@ const App = () => {
             ],
             disableSortBy: true,
             Cell: (row) => {
-                const otherColumn = "weight";
-                const { value, column } = row;
+                const segmentColumn = "segment";
+                const weightColumn = "weight";
                 const { index, original } = row.row;
                 return (
                     <SegmentEdit
                         airportCodeList={airportCodeList}
                         index={index}
-                        segmentId={column.id}
-                        segmentValue={value}
-                        weightId={otherColumn}
-                        weightValue={original[otherColumn]}
+                        segmentId={segmentColumn}
+                        segmentValue={original[segmentColumn]}
+                        weightId={weightColumn}
+                        weightValue={original[weightColumn]}
                         updateCellData={updateCellData}
                     />
                 );
@@ -486,17 +489,7 @@ const App = () => {
     //Gets called when there is a cell edit
     const updateCellData = (rowIndex, columnId, value) => {
         console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
-        /*setItems((old) =>
-            old.map((row, index) => {
-                if (index === rowIndex) {
-                    return {
-                        ...old[rowIndex],
-                        [columnId]: value
-                    };
-                }
-                return row;
-            })
-        );*/
+        childRef.current.updateCellInGrid(rowIndex, columnId, value);
     };
 
     //Gets called when there is a row edit
@@ -518,6 +511,7 @@ const App = () => {
 
     return (
         <Grid
+            ref={childRef}
             title="AWBs"
             gridHeight={gridHeight}
             gridWidth={gridWidth}
