@@ -15,6 +15,7 @@ import InfiniteLoader from "react-window-infinite-loader";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
+import RowOptions from "./Functions/RowOptions";
 import ColumnReordering from "./Overlays/managecolumns";
 
 const listRef = createRef(null);
@@ -24,10 +25,15 @@ const Customgrid = memo((props) => {
         title,
         gridHeight,
         gridWidth,
-        columns,
+        managableColumns,
+        originalColumns,
         data,
+        rowEditOverlay,
+        rowEditData,
+        updateRowInGrid,
+        deletePopUpOverLay,
+        deleteRowFromGrid,
         globalSearchLogic,
-        updateCellData,
         selectBulkData,
         calculateRowHeight,
         renderExpandedContent,
@@ -35,6 +41,9 @@ const Customgrid = memo((props) => {
         isNextPageLoading,
         loadNextPage
     } = props;
+
+    //Local state value for holding columns configuration
+    const [columns, setColumns] = useState(managableColumns);
 
     //Display error message if data or columns configuration is missing.
     if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
@@ -62,6 +71,12 @@ const Customgrid = memo((props) => {
         setManageColumnOpen(!isManageColumnOpen);
     };
 
+    //Callback method from column manage overlay to update the column structure of the grid
+    const updateColumnStructure = (newColumnStructure) => {
+        setColumns(newColumnStructure);
+        toggleManageColumns();
+    };
+
     //Column filter added for all columns by default
     const defaultColumn = useMemo(
         () => ({
@@ -85,7 +100,6 @@ const Customgrid = memo((props) => {
             columns,
             data,
             defaultColumn,
-            updateCellData,
             globalFilter: (rows, columns, filterValue) => {
                 //Call global search function defined in application, if it is present
                 if (globalSearchLogic && typeof globalSearchLogic === "function") {
@@ -122,7 +136,38 @@ const Customgrid = memo((props) => {
                     Header: ({ getToggleAllRowsSelectedProps }) => <RowSelector {...getToggleAllRowsSelectedProps()} />,
                     Cell: ({ row }) => <RowSelector {...row.getToggleRowSelectedProps()} />
                 },
-                ...columns
+                ...columns,
+                {
+                    id: "custom",
+                    columnId: "column_custom_1",
+                    disableResizing: true,
+                    disableFilters: true,
+                    disableSortBy: true,
+                    minWidth: 35,
+                    width: 35,
+                    maxWidth: 35,
+                    Cell: ({ row }) => {
+                        return (
+                            <div className="action">
+                                <RowOptions
+                                    row={row}
+                                    DeletePopUpOverLay={deletePopUpOverLay}
+                                    deleteRowFromGrid={deleteRowFromGrid}
+                                    RowEditOverlay={rowEditOverlay}
+                                    rowEditData={rowEditData}
+                                    updateRowInGrid={updateRowInGrid}
+                                />
+                                <span className="expander" {...row.getToggleRowExpandedProps()}>
+                                    {row.isExpanded ? (
+                                        <i className="fa fa-angle-up" aria-hidden="true"></i>
+                                    ) : (
+                                        <i className="fa fa-angle-down" aria-hidden="true"></i>
+                                    )}
+                                </span>
+                            </div>
+                        );
+                    }
+                }
             ]);
         }
     );
@@ -188,7 +233,8 @@ const Customgrid = memo((props) => {
                     <ColumnReordering
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
-                        columnsToManage={columns}
+                        originalColumns={originalColumns}
+                        updateColumnStructure={updateColumnStructure}
                     />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>

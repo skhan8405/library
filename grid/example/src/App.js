@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Grid from "grid";
 import { fetchData } from "./getData";
-import RowOptions from "./cells/RowOptions";
+import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
+import RowEditOverlay from "./cells/RowEditOverlay";
 import SREdit from "./cells/SREdit";
 import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = () => {
-    //Set state value for variable to check if there is anext page available
-    const [hasNextPage, setHasNextPage] = useState(true);
-    //Set state value for variable to check if the loading process is going on
-    const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-    //Set state value for variable to hold grid data
-    const [items, setItems] = useState([]);
-
     //Check if device is desktop
     const isDesktop = window.innerWidth > 1024;
 
@@ -104,17 +98,7 @@ const App = () => {
                 }
             ],
             Cell: FlightEdit,
-            sortType: (rowA, rowB) => {
-                return rowA.original.flight.flightno > rowB.original.flight.flightno ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { flightno, date } = rowValue;
-                    return flightno.toLowerCase().includes(filterText) || date.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "flightno"
         },
         {
             Header: "Segment",
@@ -146,14 +130,6 @@ const App = () => {
                         updateCellData={updateCellData}
                     />
                 );
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { from, to } = rowValue;
-                    return from.toLowerCase().includes(filterText) || to.toLowerCase().includes(filterText);
-                });
             }
         },
         {
@@ -163,15 +139,15 @@ const App = () => {
             innerCells: [
                 {
                     Header: "Flight Model",
-                    accessor: "frflightModelom"
+                    accessor: "flightModel"
                 },
                 {
                     Header: "Body Type",
                     accessor: "bodyType"
                 },
                 {
-                    Header: "type",
-                    accessor: "Type"
+                    Header: "Type",
+                    accessor: "type"
                 },
                 {
                     Header: "Start Time",
@@ -228,23 +204,6 @@ const App = () => {
                         </ul>
                     </div>
                 );
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { flightModel, bodyType, type, startTime, endTime, status, additionalStatus, timeStatus } = rowValue;
-                    return (
-                        String(flightModel).toLowerCase().includes(filterText) ||
-                        bodyType.toLowerCase().includes(filterText) ||
-                        type.toLowerCase().includes(filterText) ||
-                        startTime.toLowerCase().includes(filterText) ||
-                        endTime.toLowerCase().includes(filterText) ||
-                        status.toLowerCase().includes(filterText) ||
-                        additionalStatus.toLowerCase().includes(filterText) ||
-                        timeStatus.toLowerCase().includes(filterText)
-                    );
-                });
             }
         },
         {
@@ -273,17 +232,7 @@ const App = () => {
                     </div>
                 );
             },
-            sortType: (rowA, rowB) => {
-                return rowA.original.weight.percentage > rowB.original.weight.percentage ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { percentage, value } = rowValue;
-                    return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "percentage"
         },
         {
             Header: "Volume",
@@ -311,17 +260,7 @@ const App = () => {
                     </div>
                 );
             },
-            sortType: (rowA, rowB) => {
-                return rowA.original.volume.percentage > rowB.original.volume.percentage ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { percentage, value } = rowValue;
-                    return percentage.toLowerCase().includes(filterText) || value.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "percentage"
         },
         {
             Header: "ULD Positions",
@@ -351,18 +290,7 @@ const App = () => {
                         })}
                     </ul>
                 </div>
-            ),
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    return (
-                        rowValue.findIndex((item) => {
-                            return (item.position + " " + item.value).toLowerCase().includes(filterText);
-                        }) >= 0
-                    );
-                });
-            }
+            )
         },
         {
             Header: "Revenue/Yield",
@@ -387,17 +315,7 @@ const App = () => {
                     </div>
                 );
             },
-            sortType: (rowA, rowB) => {
-                return rowA.original.revenue.revenue > rowB.original.revenue.revenue ? -1 : 1;
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { revenue, yeild } = rowValue;
-                    return revenue.toLowerCase().includes(filterText) || yeild.toLowerCase().includes(filterText);
-                });
-            }
+            sortValue: "revenue"
         },
         {
             Header: "SR",
@@ -430,40 +348,6 @@ const App = () => {
                         </span>
                         <span>
                             <strong></strong> {volume}
-                        </span>
-                    </div>
-                );
-            },
-            filter: (rows, id, filterValue) => {
-                const filterText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    const rowValue = row.values[id];
-                    const { sr, volume } = rowValue;
-                    return sr.toLowerCase().includes(filterText) || volume.toLowerCase().includes(filterText);
-                });
-            }
-        },
-        {
-            id: "custom",
-            disableResizing: true,
-            disableFilters: true,
-            disableSortBy: true,
-            width: 50,
-            Cell: ({ row }) => {
-                return (
-                    <div className="action">
-                        <RowOptions
-                            deleteRowFromGrid={deleteRowFromGrid}
-                            updateCellData={updateCellData}
-                            row={row}
-                            airportCodeList={airportCodeList}
-                        />
-                        <span className="expander" {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? (
-                                <i className="fa fa-angle-up" aria-hidden="true"></i>
-                            ) : (
-                                <i className="fa fa-angle-down" aria-hidden="true"></i>
-                            )}
                         </span>
                     </div>
                 );
@@ -602,7 +486,7 @@ const App = () => {
     //Gets called when there is a cell edit
     const updateCellData = (rowIndex, columnId, value) => {
         console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
-        setItems((old) =>
+        /*setItems((old) =>
             old.map((row, index) => {
                 if (index === rowIndex) {
                     return {
@@ -612,70 +496,46 @@ const App = () => {
                 }
                 return row;
             })
-        );
+        );*/
     };
 
-    //Gets triggered when one row item is deleted
-    const deleteRowFromGrid = (rowIndexToBeDeleted) => {
-        console.log("Deleting row with index: " + rowIndexToBeDeleted);
-        setItems((old) =>
-            old.filter((row, index) => {
-                return index !== rowIndexToBeDeleted;
-            })
-        );
+    //Gets called when there is a row edit
+    const updateRowData = (row) => {
+        console.log("Row updated: ");
+        console.log(row);
+    };
+
+    const deleteRowData = (row) => {
+        console.log("Row deleted: ");
+        console.log(row);
     };
 
     //Gets called when row bulk edit is done
     const selectBulkData = (selectedRows) => {
+        console.log("Rows selected: ");
         console.log(selectedRows);
     };
 
-    //Gets called when page scroll reaches the bottom of the grid.
-    //Fetch the next set of data and append it to the variable holding grid data and update the state value.
-    //Also update the hasNextPage state value to False once API response is empty, to avoid unwanted API calls.
-    const loadNextPage = (...args) => {
-        const newIndex = args && args.length > 0 ? args[0] : -1;
-        if (newIndex >= 0 && hasNextPage) {
-            setIsNextPageLoading(true);
-            fetchData(newIndex).then((data) => {
-                setHasNextPage(data && data.length > 0);
-                setIsNextPageLoading(false);
-                setItems(items.concat(data));
-            });
-        }
-    };
-
-    useEffect(() => {
-        //Make API call to fetch initial set of data.
-        fetchData(0).then((data) => {
-            setItems(data);
-        });
-    }, []);
-
-    if (items && items.length > 0) {
-        return (
-            <div>
-                <Grid
-                    title="AWBs"
-                    gridHeight={gridHeight}
-                    gridWidth={gridWidth}
-                    columns={columns}
-                    data={items}
-                    globalSearchLogic={globalSearchLogic}
-                    updateCellData={updateCellData}
-                    selectBulkData={selectBulkData}
-                    calculateRowHeight={calculateRowHeight}
-                    renderExpandedContent={renderExpandedContent}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                />
-                {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
-            </div>
-        );
-    } else {
-        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
-    }
+    return (
+        <Grid
+            title="AWBs"
+            gridHeight={gridHeight}
+            gridWidth={gridWidth}
+            columns={columns}
+            fetchData={fetchData}
+            rowEditOverlay={RowEditOverlay}
+            rowEditData={{
+                airportCodeList: airportCodeList
+            }}
+            updateRowData={updateRowData}
+            deletePopUpOverLay={DeletePopUpOverLay}
+            deleteRowData={deleteRowData}
+            globalSearchLogic={globalSearchLogic}
+            selectBulkData={selectBulkData}
+            calculateRowHeight={calculateRowHeight}
+            renderExpandedContent={renderExpandedContent}
+        />
+    );
 };
 
 export default App;

@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import ClickAwayListener from "react-click-away-listener";
 
 const divStyle = {
     backgroundColor: "#ccc",
@@ -7,29 +8,21 @@ const divStyle = {
     marginLeft: "-850px"
 };
 
-const DeletePopUpOverLay = memo((props) => {
-    const { closePopUp, deleteRowFromGrid, row } = props;
-
-    const handleDeleteRow = (indexToBeDeleted) => {
-        deleteRowFromGrid(indexToBeDeleted);
-    };
-
-    const handleClosePopUp = () => {
-        closePopUp();
-    };
-
+const DeletePopUpOverLay = memo(({ deleteRow, closeDeleteOverlay }) => {
     return (
-        <div className="main-div-delete-overlay" style={divStyle}>
-            <div className="cancel-save-buttons-delete">
-                <button className="delete-Button" onClick={() => handleDeleteRow(row.index)}>
-                    Delete
-                </button>
-                &nbsp;&nbsp;&nbsp;
-                <button className="cancel-Button" onClick={handleClosePopUp}>
-                    Cancel
-                </button>
+        <ClickAwayListener onClickAway={closeDeleteOverlay}>
+            <div className="main-div-delete-overlay" style={divStyle}>
+                <div className="cancel-save-buttons-delete">
+                    <button className="delete-Button" onClick={deleteRow}>
+                        Delete
+                    </button>
+                    &nbsp;&nbsp;&nbsp;
+                    <button className="cancel-Button" onClick={closeDeleteOverlay}>
+                        Cancel
+                    </button>
+                </div>
             </div>
-        </div>
+        </ClickAwayListener>
     );
 });
 

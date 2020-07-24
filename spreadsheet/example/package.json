@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node ../node_modules/react-scripts/bin/react-scripts.js start",
     "build": "node ../node_modules/react-scripts/bin/react-scripts.js build",
-    "test": "node ../node_modules/react-scripts/bin/react-scripts.js test",
-    "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
+    "test": "jest --config ./jest.config.json",
+    "test:watch": "npm run test -- --watch",
+    "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject",
+    "lint": "eslint src/*.js"
   },
   "dependencies": {
     "react": "file:../node_modules/react",
@@ -17,7 +19,10 @@
     "axios": "^0.19.2"
   },
   "devDependencies": {
-    "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
+    "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
+    "eslint": "^7.5.0",
+    "eslint-plugin-react": "^7.20.3",
+    "jest": "^26.1.0"
   },
   "eslintConfig": {
     "extends": "react-app"
