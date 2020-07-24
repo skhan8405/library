@@ -324,7 +324,19 @@ const App = () => {
             Header: "SR",
             accessor: "sr",
             width: 90,
-            Cell: SREdit
+            Cell: (row) => {
+                const columnId = "sr";
+                const { index, original } = row.row;
+                return (
+                    <SREdit
+                        airportCodeList={airportCodeList}
+                        index={index}
+                        columnId={columnId}
+                        columnValue={original[columnId]}
+                        updateCellData={updateCellData}
+                    />
+                );
+            }
         },
         {
             Header: "Queued Booking",
