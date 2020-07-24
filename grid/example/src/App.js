@@ -100,7 +100,18 @@ const App = () => {
                     accessor: "date"
                 }
             ],
-            Cell: FlightEdit,
+            Cell: (row) => {
+                const columnId = "flight";
+                const { index, original } = row.row;
+                return (
+                    <FlightEdit
+                        index={index}
+                        columnId={columnId}
+                        columnValue={original[columnId]}
+                        updateCellData={updateCellData}
+                    />
+                );
+            },
             sortValue: "flightno"
         },
         {
@@ -328,13 +339,7 @@ const App = () => {
                 const columnId = "sr";
                 const { index, original } = row.row;
                 return (
-                    <SREdit
-                        airportCodeList={airportCodeList}
-                        index={index}
-                        columnId={columnId}
-                        columnValue={original[columnId]}
-                        updateCellData={updateCellData}
-                    />
+                    <SREdit index={index} columnId={columnId} columnValue={original[columnId]} updateCellData={updateCellData} />
                 );
             }
         },
