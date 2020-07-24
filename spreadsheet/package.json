@@ -60,7 +60,7 @@
     "@wdio/selenium-standalone-service": "^6.1.14",
     "@wdio/spec-reporter": "^6.1.23",
     "@wdio/sync": "^6.2.0",
-    "babel-eslint": "^10.0.3",
+    "babel-eslint": "^10.1.0",
     "bootstrap": "^4.5.0",
     "chai": "4.2.0",
     "chai-string": "^1.5.0",
@@ -102,6 +102,7 @@
     "dist"
   ],
   "dependencies": {
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "prop-types": "^15.7.2"
   }
 }

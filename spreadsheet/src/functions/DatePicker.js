@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default class DatePicker extends React.Component {
   constructor(props) {
@@ -58,3 +59,7 @@ export default class DatePicker extends React.Component {
     );
   }
 }
+
+DatePicker.propTypes = {
+  column: PropTypes.string,
+};
