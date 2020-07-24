@@ -47,7 +47,7 @@ class spreadsheet extends Component {
       searchIconDisplay: "",
       searchValue: "",
       filter: {},
-      rows: this.props.rows,
+      rows: JSON.parse(JSON.stringify(this.props.rows)),
       selectedIndexes: [],
       junk: {},
       topLeft: {},
@@ -328,7 +328,6 @@ class spreadsheet extends Component {
    * @param {*} sortDirection is the type of sort
    */
   sortRows = (data, sortColumn, sortDirection) => {
-    console.log(sortDirection);
     const comparer = (a, b) => {
       if (sortDirection === "ASC") {
         return a[sortColumn] > b[sortColumn] ? 1 : -1;
@@ -338,6 +337,7 @@ class spreadsheet extends Component {
     };
     this.setState({
       rows: [...data].sort(comparer),
+      selectedIndexes: [],
     });
     return sortDirection === "NONE" ? data : this.state.rows;
   };
@@ -543,9 +543,9 @@ class spreadsheet extends Component {
 
   clearAllSortingParams = () => {
     this.setState({
-      rows: this.state.filteringRows,
+      rows: JSON.parse(JSON.stringify(this.props.rows)),
+      // sortingPanelComponent: null,
     });
-    console.log(this.state.rows);
   };
 
   //Export Data Logic
@@ -568,7 +568,6 @@ class spreadsheet extends Component {
   };
 
   setTableAsPerSortingParams = (tableSortList) => {
-    debugger;
     var existingRows = this.state.rows;
     var sortingOrderNameList = [];
     tableSortList.map((item, index) => {

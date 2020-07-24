@@ -72,7 +72,6 @@ class App extends React.Component {
   };
 
   remove = (i) => {
-    debugger;
     let sortingOrderList = [...this.state.sortingOrderList];
     sortingOrderList.splice(i, 1);
     this.setState({ sortingOrderList });
