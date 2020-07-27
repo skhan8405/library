@@ -23,6 +23,8 @@ const Grid = forwardRef((props, ref) => {
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
+    //Local state value for checking if data is being loaded from API
+    const [isLoading, setIsLoading] = useState(false);
     //Set state value for variable to hold grid data
     const [items, setItems] = useState([]);
 
@@ -117,8 +119,10 @@ const Grid = forwardRef((props, ref) => {
     const loadNextPage = (...args) => {
         const newIndex = args && args.length > 0 ? args[0] : -1;
         if (newIndex >= 0 && hasNextPage) {
+            setIsLoading(true);
             setIsNextPageLoading(true);
             fetchData(newIndex).then((data) => {
+                setIsLoading(false);
                 setHasNextPage(data && data.length > 0);
                 setIsNextPageLoading(false);
                 setItems(items.concat(data));
@@ -128,39 +132,45 @@ const Grid = forwardRef((props, ref) => {
 
     useEffect(() => {
         //Make API call to fetch initial set of data.
+        setIsLoading(true);
         fetchData(0).then((data) => {
+            setIsLoading(false);
             setItems(data);
         });
     }, []);
 
-    if (items && items.length > 0) {
-        return (
-            <div>
-                <Customgrid
-                    title={title}
-                    gridHeight={gridHeight}
-                    gridWidth={gridWidth}
-                    managableColumns={gridColumns}
-                    originalColumns={gridColumns}
-                    data={items}
-                    rowEditOverlay={rowEditOverlay}
-                    rowEditData={rowEditData}
-                    updateRowInGrid={updateRowInGrid}
-                    deletePopUpOverLay={deletePopUpOverLay}
-                    deleteRowFromGrid={deleteRowFromGrid}
-                    globalSearchLogic={globalSearchLogic}
-                    selectBulkData={selectBulkData}
-                    calculateRowHeight={calculateRowHeight}
-                    renderExpandedContent={renderExpandedContent}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                />
-                {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
-            </div>
-        );
-    } else {
+    if (isLoading) {
         return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
+    } else {
+        if (items && items.length > 0 && gridColumns && gridColumns.length > 0) {
+            return (
+                <div>
+                    <Customgrid
+                        title={title}
+                        gridHeight={gridHeight}
+                        gridWidth={gridWidth}
+                        managableColumns={gridColumns}
+                        originalColumns={gridColumns}
+                        data={items}
+                        rowEditOverlay={rowEditOverlay}
+                        rowEditData={rowEditData}
+                        updateRowInGrid={updateRowInGrid}
+                        deletePopUpOverLay={deletePopUpOverLay}
+                        deleteRowFromGrid={deleteRowFromGrid}
+                        globalSearchLogic={globalSearchLogic}
+                        selectBulkData={selectBulkData}
+                        calculateRowHeight={calculateRowHeight}
+                        renderExpandedContent={renderExpandedContent}
+                        hasNextPage={hasNextPage}
+                        isNextPageLoading={isNextPageLoading}
+                        loadNextPage={loadNextPage}
+                    />
+                    {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
+                </div>
+            );
+        } else {
+            return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Invalid Data or Columns Configurations </h2>;
+        }
     }
 });
 
