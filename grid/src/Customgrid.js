@@ -29,6 +29,7 @@ const Customgrid = memo((props) => {
         managableColumns,
         originalColumns,
         data,
+        originalData,
         rowEditOverlay,
         rowEditData,
         updateRowInGrid,
@@ -165,6 +166,7 @@ const Customgrid = memo((props) => {
                             <div className="action">
                                 <RowOptions
                                     row={row}
+                                    originalData={originalData}
                                     DeletePopUpOverLay={deletePopUpOverLay}
                                     deleteRowFromGrid={deleteRowFromGrid}
                                     RowEditOverlay={rowEditOverlay}
