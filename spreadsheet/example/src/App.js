@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Spreadsheet from "spreadsheet";
 import CargoData from "./data.json";
-import { fetchData } from "./getData";
+//import { fetchData } from "./getData";
 
 const App = () => {
   //Get spreadsheet height value, which is a required value

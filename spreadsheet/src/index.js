@@ -315,6 +315,7 @@ class spreadsheet extends Component {
    * @param {*} columnId is the specific columnId for which the row datas are being considered
    */
   getValidFilterValues(rows, columnId) {
+    this.setState({ selectedIndexes: [] });
     return rows
       .map((r) => r[columnId])
       .filter((item, i, a) => {
@@ -328,6 +329,7 @@ class spreadsheet extends Component {
    * @param {*} sortDirection is the type of sort
    */
   sortRows = (data, sortColumn, sortDirection) => {
+    this.setState({ selectedIndexes: [] });
     const comparer = (a, b) => {
       if (sortDirection === "ASC") {
         return a[sortColumn] > b[sortColumn] ? 1 : -1;
@@ -477,6 +479,7 @@ class spreadsheet extends Component {
    * Method to render the column Selector Pannel
    */
   columnReorderingPannel = () => {
+    this.setState({ selectedIndexes: [] });
     var headerNameList = [];
     var existingPinnedHeadersList = [];
     this.state.columns
@@ -515,6 +518,7 @@ class spreadsheet extends Component {
   };
 
   sortingPanel = () => {
+    this.setState({ selectedIndexes: [] });
     let columnField = [];
     this.state.columns.map((item) => columnField.push(item.name));
     this.setState({
@@ -543,13 +547,13 @@ class spreadsheet extends Component {
 
   clearAllSortingParams = () => {
     this.setState({
-      rows: JSON.parse(JSON.stringify(this.props.rows)),
-      // sortingPanelComponent: null,
+    rows: JSON.parse(JSON.stringify(this.props.rows))
     });
   };
 
   //Export Data Logic
   exportColumnData = () => {
+    this.setState({ selectedIndexes: [] });
     this.setState({
       exportComponent: (
         <ExportData
@@ -566,7 +570,15 @@ class spreadsheet extends Component {
       exportComponent: null,
     });
   };
-
+  handleColumnResize = (idx, width) => {
+    let columnArray = [...this.state.columns];
+    columnArray.forEach((item) => {
+      if (item.name === this.state.columns[idx - 1].name) {
+        item.width = width;
+      }
+    });
+    this.setState({ columns: columnArray });
+  };
   setTableAsPerSortingParams = (tableSortList) => {
     var existingRows = this.state.rows;
     var sortingOrderNameList = [];
@@ -713,9 +725,10 @@ class spreadsheet extends Component {
             onClearFilters={() => {
               this.setState({ junk: {} });
             }}
-            onColumnResize={(idx, width) =>
-              console.log(`Column ${idx} has been resized to ${width}`)
-            }
+            onColumnResize={(idx, width) => {
+              console.log(`Column ${idx} has been resized to ${width}`);
+              this.handleColumnResize(idx, width);
+            }}
             onAddFilter={(filter) => this.handleFilterChange(filter)}
             rowSelection={{
               showCheckbox: true,
