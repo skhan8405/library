@@ -19,7 +19,7 @@ const GroupSort = memo((props) => {
     ];
 
     const [sortOptions, setSortOptions] = useState([]);
-    const [isError, setIsError] = useState(false);
+    const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
     const HTML5toTouch = {
         backends: [
@@ -74,8 +74,22 @@ const GroupSort = memo((props) => {
     };
 
     const applySort = () => {
-        applyGroupSort(sortOptions);
-        toggleGroupSortOverLay();
+        let isError = false;
+        sortOptions.map((option, index) => {
+            const { sortBy, sortOn } = option;
+            const optionIndex = index;
+            const duplicateSort = sortOptions.find((opt, optIndex) => {
+                return sortBy === opt.sortBy && sortOn === opt.sortOn && optionIndex !== optIndex;
+            });
+            if (duplicateSort) {
+                isError = true;
+            }
+        });
+        if (!isError) {
+            applyGroupSort(sortOptions);
+            toggleGroupSortOverLay();
+        }
+        setIsErrorDisplayed(isError);
     };
 
     if (isGroupSortOverLayOpen) {
@@ -106,13 +120,9 @@ const GroupSort = memo((props) => {
                                     />
                                 </DndProvider>
                                 <div className="sort-warning">
-                                    {isError ? (
-                                        <span style={{ color: "red" }}>
-                                            Sort by opted are same for Some Rows, Please choose different one.
-                                        </span>
-                                    ) : (
-                                        ""
-                                    )}
+                                    {isErrorDisplayed ? (
+                                        <span style={{ color: "red" }}>Duplicate sort options found.</span>
+                                    ) : null}
                                 </div>
                             </div>
                             <div className="sort__new">
