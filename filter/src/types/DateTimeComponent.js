@@ -54,7 +54,7 @@ export default function FieldComponent(props) {
                 <div className="date-wrap">
                   <Form.Control
                     disabled={!item.enabled}
-                    type="date"
+                    type="datetime-local"
                     value={field.value}
                     className={field.name}
                     onChange={(e) => {
@@ -69,100 +69,105 @@ export default function FieldComponent(props) {
                     <button type="button"></button>
                   </span>
                 </div>
-                <div className="time-wrap">
+                {/* <div className="time-wrap">
                   <input
                     className="time"
                     type="time"
                     disabled={!item.enabled}
+                    onChange={(e) => {
+                      bindTimeToDate(e.target.value, item);
+                    }}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           );
         })}
-        <button
-          disabled={!item.enabled}
-          type="button"
-          onClick={(e) => {
-            props.addToday();
-          }}
-        >
-          Today
-        </button>
-        <button
-          disabled={!item.enabled}
-          type="button"
-          onClick={(e) => {
-            props.addTomorrow();
-          }}
-        >
-          Tomorrow
-        </button>
-        <button
-          disabled={!item.enabled}
-          type="button"
-          onClick={(e) => {
-            props.addThisWeek();
-          }}
-        >
-          This Week
-        </button>
-        <button
-          disabled={!item.enabled}
-          type="button"
-          onClick={(e) => {
-            props.addSevenDays();
-          }}
-        >
-          Next 7 days
-        </button>
-        <button
-          disabled={!item.enabled}
-          type="button"
-          onClick={(e) => {
-            props.addForteenDays();
-          }}
-        >
-          Next 14 days
-        </button>
-        <button
-          disabled={!item.enabled}
-          type="button"
-          onClick={(e) => {
-            props.addThisMonth();
-          }}
-        >
-          This Month
-        </button>
-        <button
-          disabled={!item.enabled}
-          type="button"
-          onClick={(e) => {
-            props.addThirtyDays();
-          }}
-        >
-          Next 30 days
-        </button>
-        <br />
-        Next{" "}
-        <input
-          disabled={!item.enabled}
-          type="text"
-          onChange={(e) => {
-            props.nextDayChange(e.target.value);
-          }}
-        />{" "}
-        Days
-        <br />
-        Last{" "}
-        <input
-          disabled={!item.enabled}
-          type="text"
-          onChange={(e) => {
-            props.lastDayChange(e.target.value);
-          }}
-        />{" "}
-        Days
+        <div className="days">
+          <button
+            disabled={!item.enabled}
+            type="button"
+            onClick={(e) => {
+              props.addToday();
+            }}
+          >
+            Today
+          </button>
+          <button
+            disabled={!item.enabled}
+            type="button"
+            onClick={(e) => {
+              props.addTomorrow();
+            }}
+          >
+            Tomorrow
+          </button>
+          <button
+            disabled={!item.enabled}
+            type="button"
+            onClick={(e) => {
+              props.addThisWeek();
+            }}
+          >
+            This Week
+          </button>
+          <button
+            disabled={!item.enabled}
+            type="button"
+            onClick={(e) => {
+              props.addSevenDays();
+            }}
+          >
+            Next 7 days
+          </button>
+          <button
+            disabled={!item.enabled}
+            type="button"
+            onClick={(e) => {
+              props.addForteenDays();
+            }}
+          >
+            Next 14 days
+          </button>
+          <button
+            disabled={!item.enabled}
+            type="button"
+            onClick={(e) => {
+              props.addThisMonth();
+            }}
+          >
+            This Month
+          </button>
+          <button
+            disabled={!item.enabled}
+            type="button"
+            onClick={(e) => {
+              props.addThirtyDays();
+            }}
+          >
+            Next 30 days
+          </button>
+          <br />
+          Next{" "}
+          <input
+            disabled={!item.enabled}
+            type="text"
+            onChange={(e) => {
+              props.nextDayChange(e.target.value);
+            }}
+          />{" "}
+          Days
+          <br />
+          Last{" "}
+          <input
+            disabled={!item.enabled}
+            type="text"
+            onChange={(e) => {
+              props.lastDayChange(e.target.value);
+            }}
+          />{" "}
+          Days
+        </div>
       </div>
     );
   });

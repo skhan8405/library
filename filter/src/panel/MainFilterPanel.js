@@ -3,17 +3,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
 import SavedFilters from "./SavedFilters";
 
-let chips;
+let chips, chipCount;
 const MainFilterPanel = (props) => {
   const [listFilter, setListFilter] = useState(false);
   const [chipArray, setChipArray] = useState([]);
+  const [countShow, setCountShow] = useState("none");
   useEffect(() => {
     setChipArray(props.applyFilterChip.applyFilter);
+    if (
+      props.applyFilterChip.applyFilter &&
+      props.applyFilterChip.applyFilter.length > 0
+    ) {
+      setCountShow("");
+    } else {
+      setCountShow("none");
+    }
   }, [props.applyFilterChip]);
   const handleListFilter = () => {
     setListFilter(!listFilter);
   };
   if (chipArray) {
+    chipCount = chipArray.length;
+    console.log(chipArray);
     chips = chipArray.map((item, index) => {
       if (item.type) {
         return (
@@ -21,7 +32,7 @@ const MainFilterPanel = (props) => {
             className="listContent"
             key={index}
             onClick={(e) => {
-              props.addAppliedFilters(item);
+              props.addAppliedFilters(chipArray);
             }}
           >
             <span>
@@ -38,7 +49,7 @@ const MainFilterPanel = (props) => {
             className="listContent"
             key={index}
             onClick={(e) => {
-              props.addAppliedFilters(item);
+              props.addAppliedFilters(chipArray);
             }}
           >
             <span>{item.name}</span>:{item.condition}
@@ -51,7 +62,7 @@ const MainFilterPanel = (props) => {
             className="listContent"
             key={index}
             onClick={(e) => {
-              props.addAppliedFilters(item);
+              props.addAppliedFilters(chipArray);
             }}
           >
             <span>{item.fieldValue}</span>
@@ -64,7 +75,7 @@ const MainFilterPanel = (props) => {
             className="listContent"
             key={index}
             onClick={(e) => {
-              props.addAppliedFilters(item);
+              props.addAppliedFilters(chipArray);
             }}
           >
             <span>{item.name}</span>:{item.value}
@@ -92,6 +103,9 @@ const MainFilterPanel = (props) => {
       </div>
       <div className="secondList">
         <div className="displayFlex">
+          <span style={{ display: countShow }} className="listContent">
+            count:{chipCount}
+          </span>
           {chips}
           <div
             onClick={(e) => {
