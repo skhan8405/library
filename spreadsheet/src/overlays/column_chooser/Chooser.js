@@ -4,6 +4,7 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faAlignJustify } from "@fortawesome/free-solid-svg-icons";
 import ColumnsList from "./columnsList";
+import PropTypes from "prop-types";
 
 class ColumnReordering extends React.Component {
   constructor(props) {
@@ -53,6 +54,7 @@ class ColumnReordering extends React.Component {
   selectAllToColumnReOrderList = () => {
     this.resetColumnReorderList();
     var existingColumnReorderEntityList = this.state.columnReorderEntityList;
+    console.log(existingColumnReorderEntityList);
     var isExistingAllSelect = this.state.isAllSelected;
     if (!isExistingAllSelect) {
       existingColumnReorderEntityList = this.props.columns.map(
@@ -167,7 +169,7 @@ class ColumnReordering extends React.Component {
                   disabled={
                     this.state.maxLeftPinnedColumn -
                       this.state.leftPinnedColumList.length <=
-                      0
+                    0
                       ? this.state.leftPinnedColumList.includes(item)
                         ? false
                         : true
@@ -212,10 +214,12 @@ class ColumnReordering extends React.Component {
       columnReorderEntityList: existingColumnReorderEntityList,
     });
   };
+
   handleReorderList = (reordered) => {
     this.props.handleheaderNameList(reordered);
   };
-  render(props) {
+
+  render() {
     return (
       <div className="columns--grid" ref={this.setWrapperRef}>
         <div className="column__grid">
@@ -288,17 +292,17 @@ class ColumnReordering extends React.Component {
               <div className="column__headerTxt">
                 {this.state.maxLeftPinnedColumn -
                   this.state.leftPinnedColumList.length >
-                  0 ? (
-                    <strong>
-                      &nbsp; &nbsp; Left Pinned Column Count Remaining :{" "}
-                      {this.state.maxLeftPinnedColumn -
-                        this.state.leftPinnedColumList.length}
-                    </strong>
-                  ) : (
-                    <strong style={{ color: "red" }}>
-                      &nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED
-                    </strong>
-                  )}
+                0 ? (
+                  <strong>
+                    &nbsp; &nbsp; Left Pinned Column Count Remaining :{" "}
+                    {this.state.maxLeftPinnedColumn -
+                      this.state.leftPinnedColumList.length}
+                  </strong>
+                ) : (
+                  <strong style={{ color: "red" }}>
+                    &nbsp; &nbsp; Maximum Count Of Left Pin Columns REACHED
+                  </strong>
+                )}
               </div>
             </div>
             <div className="column__body">
@@ -347,5 +351,15 @@ class ColumnReordering extends React.Component {
     );
   }
 }
+
+ColumnReordering.propTypes = {
+  headerKeys: PropTypes.any,
+  columns: PropTypes.any,
+  existingPinnedHeadersList: PropTypes.any,
+  maxLeftPinnedColumn: PropTypes.any,
+  closeColumnReOrdering: PropTypes.any,
+  handleheaderNameList: PropTypes.any,
+  updateTableAsPerRowChooser: PropTypes.any,
+};
 
 export default ColumnReordering;

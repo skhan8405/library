@@ -11,6 +11,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+import PropTypes from "prop-types";
 
 let downLaodFileType = [];
 class ExportData extends React.Component {
@@ -18,8 +19,8 @@ class ExportData extends React.Component {
     super(props);
     this.state = {
       columnValueList: this.props.columnsList,
-      columnEntityList: [],
-      isAllSelected: false,
+      columnEntityList: this.props.columnsList,
+      isAllSelected: true,
       downLaodFileType: [],
       filteredRow: [],
       warning: "",
@@ -240,7 +241,7 @@ class ExportData extends React.Component {
                 <div className="export__txt">Select All</div>
               </div>
               {this.state.columnValueList.length > 0
-                ? this.state.columnValueList.map((column, index) => {
+                ? this.state.columnValueList.map((column) => {
                     return (
                       <div className="export__wrap" key={column.key}>
                         <div className="export__checkbox">
@@ -325,7 +326,7 @@ class ExportData extends React.Component {
                   style={{ display: this.state.clickTag }}
                   className="alert alert-danger"
                 >
-                  You haven't selected <strong>{this.state.warning}</strong>
+                  You have not selected <strong>{this.state.warning}</strong>
                 </span>
               </div>
             </div>
@@ -339,7 +340,7 @@ class ExportData extends React.Component {
                 </button>
                 <button
                   className="btns btns__save"
-                  onClick={(e) => {
+                  onClick={() => {
                     this.exportValidation();
                   }}
                 >
@@ -353,4 +354,11 @@ class ExportData extends React.Component {
     );
   }
 }
+
+ExportData.propTypes = {
+  columnsList: PropTypes.any,
+  closeExport: PropTypes.any,
+  rows: PropTypes.any,
+};
+
 export default ExportData;

@@ -17,6 +17,7 @@ import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import RowOptions from "./Functions/RowOptions";
 import ColumnReordering from "./Overlays/managecolumns";
+import GroupSort from "./Overlays/groupsort";
 
 const listRef = createRef(null);
 
@@ -39,7 +40,8 @@ const Customgrid = memo((props) => {
         renderExpandedContent,
         hasNextPage,
         isNextPageLoading,
-        loadNextPage
+        loadNextPage,
+        doGroupSort
     } = props;
 
     //Local state value for holding columns configuration
@@ -61,6 +63,18 @@ const Customgrid = memo((props) => {
     //Toggle column filter state value based on UI clicks
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
+    };
+
+    //Local state value for checking if group Sort Overlay is open/closed.
+    const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
+
+    //Toggle group Sort state value based on UI clicks
+    const toggleGroupSortOverLay = () => {
+        setGroupSortOverLay(!isGroupSortOverLayOpen);
+    };
+
+    const applyGroupSort = (sortOptions) => {
+        doGroupSort(sortOptions);
     };
 
     //Local state value for hiding/unhiding column management overlay
@@ -237,12 +251,23 @@ const Customgrid = memo((props) => {
                         updateColumnStructure={updateColumnStructure}
                     />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
+                    <GroupSort
+                        isGroupSortOverLayOpen={isGroupSortOverLayOpen}
+                        toggleGroupSortOverLay={toggleGroupSortOverLay}
+                        originalColumns={originalColumns}
+                        applyGroupSort={applyGroupSort}
+                    />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>
                         <i className="fa fa-filter" aria-hidden="true"></i>
                     </div>
                     <div className="filter-icon bulk-select" onClick={bulkSelector}>
                         <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
+
+                    <div className="filter-icon bulk-select" onClick={toggleGroupSortOverLay}>
+                        <i className="fa fa-sort-amount-desc" aria-hidden="true"></i>
+                    </div>
+
                     <div className="filter-icon manage-columns" onClick={toggleManageColumns}>
                         <i className="fa fa-columns" aria-hidden="true"></i>
                     </div>

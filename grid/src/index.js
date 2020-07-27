@@ -129,6 +129,31 @@ const Grid = forwardRef((props, ref) => {
         }
     };
 
+    const compareAscValues = function (v1, v2) {
+        return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
+    };
+    const compareDescValues = function (v1, v2) {
+        return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
+    };
+
+    const doGroupSort = (sortOptions) => {
+        let copy = [...items];
+        const sortedRows = copy.sort(function (x, y) {
+            let compareResult = 0;
+            sortOptions.forEach((option) => {
+                const { sortBy, sortOn, order } = option;
+                const newSortFunction = order === "Ascending" ? compareAscValues : compareDescValues;
+                const newResult =
+                    sortOn === "value"
+                        ? newSortFunction(x[sortBy], y[sortBy])
+                        : newSortFunction(x[sortBy][sortOn], y[sortBy][sortOn]);
+                compareResult = compareResult || newResult;
+            });
+            return compareResult;
+        });
+        setItems(sortedRows);
+    };
+
     useEffect(() => {
         //Make API call to fetch initial set of data.
         fetchData(0).then((data) => {
@@ -158,6 +183,7 @@ const Grid = forwardRef((props, ref) => {
                     hasNextPage={hasNextPage}
                     isNextPageLoading={isNextPageLoading}
                     loadNextPage={loadNextPage}
+                    doGroupSort={doGroupSort}
                 />
                 {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
             </div>
