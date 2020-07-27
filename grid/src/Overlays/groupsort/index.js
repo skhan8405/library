@@ -3,6 +3,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
+import ClickAwayListener from "react-click-away-listener";
 import SortingList from "./sortingList";
 
 const GroupSort = memo((props) => {
@@ -79,60 +80,62 @@ const GroupSort = memo((props) => {
 
     if (isGroupSortOverLayOpen) {
         return (
-            <div className="sorts--grid">
-                <div className="sort__grid">
-                    <div className="sort__settings">
-                        <div className="sort__header">
-                            <div className="sort__headerTxt">
-                                <strong>Sort </strong>
+            <ClickAwayListener onClickAway={toggleGroupSortOverLay}>
+                <div className="sorts--grid">
+                    <div className="sort__grid">
+                        <div className="sort__settings">
+                            <div className="sort__header">
+                                <div className="sort__headerTxt">
+                                    <strong>Sort </strong>
+                                </div>
+
+                                <div className="sort__close">
+                                    <i className="fa fa-times" aria-hidden="true" onClick={toggleGroupSortOverLay}></i>
+                                </div>
                             </div>
 
-                            <div className="sort__close">
-                                <i className="fa fa-times" aria-hidden="true" onClick={toggleGroupSortOverLay}></i>
+                            <div className="sort__body">
+                                <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+                                    <SortingList
+                                        sortOptions={sortOptions}
+                                        originalColumns={originalColumns}
+                                        updateSortingOptions={updateSortingOptions}
+                                        updateSingleSortingOption={updateSingleSortingOption}
+                                        copySortOption={copySortOption}
+                                        deleteSortOption={deleteSortOption}
+                                    />
+                                </DndProvider>
+                                <div className="sort-warning">
+                                    {isError ? (
+                                        <span style={{ color: "red" }}>
+                                            Sort by opted are same for Some Rows, Please choose different one.
+                                        </span>
+                                    ) : (
+                                        ""
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                            <div className="sort__new">
+                                <div className="sort__section" type="button" onClick={addSortingOptions}>
+                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                                    <div className="sort__txt">New Sort</div>
+                                </div>
+                            </div>
+                            <div className="sort__footer">
+                                <div className="sort__btns">
+                                    <button className="btns" onClick={clearSortingOptions}>
+                                        Clear All
+                                    </button>
 
-                        <div className="sort__body">
-                            <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-                                <SortingList
-                                    sortOptions={sortOptions}
-                                    originalColumns={originalColumns}
-                                    updateSortingOptions={updateSortingOptions}
-                                    updateSingleSortingOption={updateSingleSortingOption}
-                                    copySortOption={copySortOption}
-                                    deleteSortOption={deleteSortOption}
-                                />
-                            </DndProvider>
-                            <div className="sort-warning">
-                                {isError ? (
-                                    <span style={{ color: "red" }}>
-                                        Sort by opted are same for Some Rows, Please choose different one.
-                                    </span>
-                                ) : (
-                                    ""
-                                )}
-                            </div>
-                        </div>
-                        <div className="sort__new">
-                            <div className="sort__section" type="button" onClick={addSortingOptions}>
-                                <i className="fa fa-plus" aria-hidden="true"></i>
-                                <div className="sort__txt">New Sort</div>
-                            </div>
-                        </div>
-                        <div className="sort__footer">
-                            <div className="sort__btns">
-                                <button className="btns" onClick={clearSortingOptions}>
-                                    Clear All
-                                </button>
-
-                                <button className="btns btns__save" onClick={applySort}>
-                                    Ok
-                                </button>
+                                    <button className="btns btns__save" onClick={applySort}>
+                                        Ok
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </ClickAwayListener>
         );
     }
 });

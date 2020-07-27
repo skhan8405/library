@@ -3,6 +3,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
+import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
 
 const ColumnReordering = memo((props) => {
@@ -109,81 +110,83 @@ const ColumnReordering = memo((props) => {
 
     if (isManageColumnOpen) {
         return (
-            <div className="columns--grid">
-                <div className="column__grid">
-                    <div className="column__chooser">
-                        <div className="column__header">
-                            <div className="">
-                                <strong>Column Chooser</strong>
+            <ClickAwayListener onClickAway={toggleManageColumns}>
+                <div className="columns--grid">
+                    <div className="column__grid">
+                        <div className="column__chooser">
+                            <div className="column__header">
+                                <div className="">
+                                    <strong>Column Chooser</strong>
+                                </div>
                             </div>
-                        </div>
-                        <div className="column__body">
-                            <div>
-                                <input
-                                    type="text"
-                                    placeholder="Search column"
-                                    className="custom__ctrl"
-                                    onChange={filterColumnsList}
-                                ></input>
-                            </div>
-                            <div className="column__selectAll">
-                                <div className="column__checkbox">
+                            <div className="column__body">
+                                <div>
                                     <input
-                                        type="checkbox"
-                                        value="Select All"
-                                        checked={isCheckboxSelected("Select All")}
-                                        onChange={selectAllColumns}
+                                        type="text"
+                                        placeholder="Search column"
+                                        className="custom__ctrl"
+                                        onChange={filterColumnsList}
                                     ></input>
                                 </div>
-                                <div className="column__selectTxt">Select All</div>
-                            </div>
-                            {searchedColumns.map((column, index) => {
-                                return (
-                                    <div className="column__wrap" key={index}>
-                                        <div className="column__checkbox">
-                                            <input
-                                                type="checkbox"
-                                                value={column.Header}
-                                                checked={isCheckboxSelected(column.Header)}
-                                                onChange={selectSingleColumn}
-                                            ></input>
-                                        </div>
-                                        <div className="column__txt">{column.Header}</div>
+                                <div className="column__selectAll">
+                                    <div className="column__checkbox">
+                                        <input
+                                            type="checkbox"
+                                            value="Select All"
+                                            checked={isCheckboxSelected("Select All")}
+                                            onChange={selectAllColumns}
+                                        ></input>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                    <div className="column__settings">
-                        <div className="column__header">
-                            <div className="column__headerTxt">
-                                <strong>Column Setting</strong>
+                                    <div className="column__selectTxt">Select All</div>
+                                </div>
+                                {searchedColumns.map((column, index) => {
+                                    return (
+                                        <div className="column__wrap" key={index}>
+                                            <div className="column__checkbox">
+                                                <input
+                                                    type="checkbox"
+                                                    value={column.Header}
+                                                    checked={isCheckboxSelected(column.Header)}
+                                                    onChange={selectSingleColumn}
+                                                ></input>
+                                            </div>
+                                            <div className="column__txt">{column.Header}</div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                            <div className="column__close" onClick={toggleManageColumns}>
-                                <i className="fa fa-times" aria-hidden="true"></i>
+                        </div>
+                        <div className="column__settings">
+                            <div className="column__header">
+                                <div className="column__headerTxt">
+                                    <strong>Column Setting</strong>
+                                </div>
+                                <div className="column__close" onClick={toggleManageColumns}>
+                                    <i className="fa fa-times" aria-hidden="true"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div className="column__body">
-                            <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-                                <ColumnsList columnsToManage={managedColumns} updateColumnsInState={updateColumnsInState} />
-                            </DndProvider>
-                        </div>
-                        <div className="column__footer">
-                            <div className="column__btns">
-                                <button className="btns" onClick={resetColumnUpdate}>
-                                    Reset
-                                </button>
-                                <button className="btns" onClick={toggleManageColumns}>
-                                    Cancel
-                                </button>
-                                <button className="btns btns__save" onClick={doColumnUpdate}>
-                                    Save
-                                </button>
+                            <div className="column__body">
+                                <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+                                    <ColumnsList columnsToManage={managedColumns} updateColumnsInState={updateColumnsInState} />
+                                </DndProvider>
+                            </div>
+                            <div className="column__footer">
+                                <div className="column__btns">
+                                    <button className="btns" onClick={resetColumnUpdate}>
+                                        Reset
+                                    </button>
+                                    <button className="btns" onClick={toggleManageColumns}>
+                                        Cancel
+                                    </button>
+                                    <button className="btns btns__save" onClick={doColumnUpdate}>
+                                        Save
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </ClickAwayListener>
         );
     } else {
         return <div></div>;
