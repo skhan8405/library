@@ -102,14 +102,9 @@ const App = () => {
             ],
             Cell: (row) => {
                 const columnId = "flight";
-                const { index, original } = row.row;
+                const { travelId, flight } = row.row.original;
                 return (
-                    <FlightEdit
-                        index={index}
-                        columnId={columnId}
-                        columnValue={original[columnId]}
-                        updateCellData={updateCellData}
-                    />
+                    <FlightEdit travelId={travelId} columnId={columnId} columnValue={flight} updateCellData={updateCellData} />
                 );
             },
             sortValue: "flightno"
@@ -132,15 +127,15 @@ const App = () => {
             Cell: (row) => {
                 const segmentColumn = "segment";
                 const weightColumn = "weight";
-                const { index, original } = row.row;
+                const { travelId, segment, weight } = row.row.original;
                 return (
                     <SegmentEdit
                         airportCodeList={airportCodeList}
-                        index={index}
+                        travelId={travelId}
                         segmentId={segmentColumn}
-                        segmentValue={original[segmentColumn]}
+                        segmentValue={segment}
                         weightId={weightColumn}
-                        weightValue={original[weightColumn]}
+                        weightValue={weight}
                         updateCellData={updateCellData}
                     />
                 );
@@ -337,10 +332,8 @@ const App = () => {
             width: 90,
             Cell: (row) => {
                 const columnId = "sr";
-                const { index, original } = row.row;
-                return (
-                    <SREdit index={index} columnId={columnId} columnValue={original[columnId]} updateCellData={updateCellData} />
-                );
+                const { travelId, sr } = row.row.original;
+                return <SREdit travelId={travelId} columnId={columnId} columnValue={sr} updateCellData={updateCellData} />;
             }
         },
         {
@@ -504,9 +497,9 @@ const App = () => {
     };
 
     //Gets called when there is a cell edit
-    const updateCellData = (rowIndex, columnId, value) => {
-        console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
-        childRef.current.updateCellInGrid(rowIndex, columnId, value);
+    const updateCellData = (travelId, columnId, value) => {
+        console.log(travelId + " " + columnId + " " + JSON.stringify(value));
+        childRef.current.updateCellInGrid(travelId, columnId, value);
     };
 
     //Gets called when there is a row edit

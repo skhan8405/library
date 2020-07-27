@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import FlightIcon from "../images/FlightIcon.png";
 
-const SegmentEdit = memo(({ index, segmentId, segmentValue, weightId, weightValue, airportCodeList, updateCellData }) => {
+const SegmentEdit = memo(({ travelId, segmentId, segmentValue, weightId, weightValue, airportCodeList, updateCellData }) => {
     const [cellSegmentValue, setCellSegmentValue] = useState(segmentValue);
     const [oldSegValue] = useState(segmentValue);
     const [cellWeightValue, setCellWeightValue] = useState(weightValue);
@@ -44,8 +44,8 @@ const SegmentEdit = memo(({ index, segmentId, segmentValue, weightId, weightValu
     const saveEdit = () => {
         setEdit(false);
         if (updateCellData) {
-            updateCellData(index, segmentId, cellSegmentValue);
-            updateCellData(index, weightId, cellWeightValue);
+            updateCellData(travelId, segmentId, cellSegmentValue);
+            updateCellData(travelId, weightId, cellWeightValue);
         }
     };
 

@@ -28,7 +28,6 @@ const Customgrid = memo((props) => {
         gridWidth,
         managableColumns,
         originalColumns,
-        data,
         rowEditOverlay,
         rowEditData,
         updateRowInGrid,
@@ -40,12 +39,35 @@ const Customgrid = memo((props) => {
         renderExpandedContent,
         hasNextPage,
         isNextPageLoading,
-        loadNextPage,
-        doGroupSort
+        loadNextPage
     } = props;
+    let { data } = props;
 
     //Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
+
+    //Local state for group sort options
+    const [groupSortOptions, setGroupSortOptions] = useState([]);
+
+    const compareAscValues = function (v1, v2) {
+        return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
+    };
+    const compareDescValues = function (v1, v2) {
+        return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
+    };
+    data = [...data].sort(function (x, y) {
+        let compareResult = 0;
+        groupSortOptions.forEach((option) => {
+            const { sortBy, sortOn, order } = option;
+            const newSortFunction = order === "Ascending" ? compareAscValues : compareDescValues;
+            const newResult =
+                sortOn === "value"
+                    ? newSortFunction(x[sortBy], y[sortBy])
+                    : newSortFunction(x[sortBy][sortOn], y[sortBy][sortOn]);
+            compareResult = compareResult || newResult;
+        });
+        return compareResult;
+    });
 
     //Display error message if data or columns configuration is missing.
     if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
@@ -74,7 +96,7 @@ const Customgrid = memo((props) => {
     };
 
     const applyGroupSort = (sortOptions) => {
-        doGroupSort(sortOptions);
+        setGroupSortOptions(sortOptions);
     };
 
     //Local state value for hiding/unhiding column management overlay
