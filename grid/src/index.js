@@ -139,38 +139,36 @@ const Grid = forwardRef((props, ref) => {
         });
     }, []);
 
-    if (isLoading) {
+    if (items && items.length > 0) {
+        return (
+            <div>
+                <Customgrid
+                    title={title}
+                    gridHeight={gridHeight}
+                    gridWidth={gridWidth}
+                    managableColumns={gridColumns}
+                    originalColumns={gridColumns}
+                    data={items}
+                    rowEditOverlay={rowEditOverlay}
+                    rowEditData={rowEditData}
+                    updateRowInGrid={updateRowInGrid}
+                    deletePopUpOverLay={deletePopUpOverLay}
+                    deleteRowFromGrid={deleteRowFromGrid}
+                    globalSearchLogic={globalSearchLogic}
+                    selectBulkData={selectBulkData}
+                    calculateRowHeight={calculateRowHeight}
+                    renderExpandedContent={renderExpandedContent}
+                    hasNextPage={hasNextPage}
+                    isNextPageLoading={isNextPageLoading}
+                    loadNextPage={loadNextPage}
+                />
+                {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
+            </div>
+        );
+    } else if (isLoading) {
         return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
     } else {
-        if (items && items.length > 0 && gridColumns && gridColumns.length > 0) {
-            return (
-                <div>
-                    <Customgrid
-                        title={title}
-                        gridHeight={gridHeight}
-                        gridWidth={gridWidth}
-                        managableColumns={gridColumns}
-                        originalColumns={gridColumns}
-                        data={items}
-                        rowEditOverlay={rowEditOverlay}
-                        rowEditData={rowEditData}
-                        updateRowInGrid={updateRowInGrid}
-                        deletePopUpOverLay={deletePopUpOverLay}
-                        deleteRowFromGrid={deleteRowFromGrid}
-                        globalSearchLogic={globalSearchLogic}
-                        selectBulkData={selectBulkData}
-                        calculateRowHeight={calculateRowHeight}
-                        renderExpandedContent={renderExpandedContent}
-                        hasNextPage={hasNextPage}
-                        isNextPageLoading={isNextPageLoading}
-                        loadNextPage={loadNextPage}
-                    />
-                    {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
-                </div>
-            );
-        } else {
-            return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Invalid Data or Columns Configurations </h2>;
-        }
+        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Invalid Data or Column Configurations</h2>;
     }
 });
 
