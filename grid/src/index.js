@@ -23,8 +23,12 @@ const Grid = forwardRef((props, ref) => {
     const [hasNextPage, setHasNextPage] = useState(true);
     //Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
+    //Local state value for checking if data is being loaded from API
+    const [isLoading, setIsLoading] = useState(false);
     //Set state value for variable to hold grid data
     const [items, setItems] = useState([]);
+    //Local state for group sort options
+    const [groupSortOptions, setGroupSortOptions] = useState([]);
 
     let processedColumns = [];
     columns.forEach((column, index) => {
@@ -74,20 +78,58 @@ const Grid = forwardRef((props, ref) => {
     });
     const gridColumns = useMemo(() => processedColumns, []);
 
+    //Function to return sorting logic based on the user selected order of sort
+    const compareValues = (compareOrder, v1, v2) => {
+        if (compareOrder === "Ascending") {
+            return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
+        } else {
+            return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
+        }
+    };
+    //Function to return sorted data
+    const getSortedData = (originalData) => {
+        return originalData.sort(function (x, y) {
+            let compareResult = 0;
+            groupSortOptions.forEach((option) => {
+                const { sortBy, sortOn, order } = option;
+                const newResult =
+                    sortOn === "value"
+                        ? compareValues(order, x[sortBy], y[sortBy])
+                        : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
+                compareResult = compareResult || newResult;
+            });
+            return compareResult;
+        });
+    };
+    //Function to find correct index from original data using index from sorted data
+    const getOriginalDataIndex = (sortedDataIndex) => {
+        const updatedData = getSortedData([...items]).find((item, index) => {
+            return index === sortedDataIndex;
+        });
+        let originalDataIndex = -1;
+        originalDataIndex = items.findIndex((item, index) => {
+            return item === updatedData;
+        });
+        return originalDataIndex;
+    };
+
     //Gets triggered when a cell in grid is updated
     useImperativeHandle(ref, () => ({
         updateCellInGrid(rowIndex, columnId, value) {
-            setItems((old) =>
-                old.map((row, index) => {
-                    if (index === rowIndex) {
-                        return {
-                            ...old[rowIndex],
-                            [columnId]: value
-                        };
-                    }
-                    return row;
-                })
-            );
+            const originalDataIndex = getOriginalDataIndex(rowIndex);
+            if (originalDataIndex >= 0) {
+                setItems((old) =>
+                    old.map((row, index) => {
+                        if (index === originalDataIndex) {
+                            return {
+                                ...old[originalDataIndex],
+                                [columnId]: value
+                            };
+                        }
+                        return row;
+                    })
+                );
+            }
         }
     }));
 
@@ -114,14 +156,21 @@ const Grid = forwardRef((props, ref) => {
         deleteRowData(deletedRow);
     };
 
+    //Gets called when group sort is applied or cleared
+    const doGroupSort = (sortOptions) => {
+        setGroupSortOptions(sortOptions);
+    };
+
     //Gets called when page scroll reaches the bottom of the grid.
     //Fetch the next set of data and append it to the variable holding grid data and update the state value.
     //Also update the hasNextPage state value to False once API response is empty, to avoid unwanted API calls.
     const loadNextPage = (...args) => {
         const newIndex = args && args.length > 0 ? args[0] : -1;
         if (newIndex >= 0 && hasNextPage) {
+            setIsLoading(true);
             setIsNextPageLoading(true);
             fetchData(newIndex).then((data) => {
+                setIsLoading(false);
                 setHasNextPage(data && data.length > 0);
                 setIsNextPageLoading(false);
                 setItems(items.concat(data));
@@ -131,12 +180,17 @@ const Grid = forwardRef((props, ref) => {
 
     useEffect(() => {
         //Make API call to fetch initial set of data.
+        setIsLoading(true);
         fetchData(0).then((data) => {
+            setIsLoading(false);
             setItems(data);
         });
     }, []);
 
-    if (items && items.length > 0) {
+    //Sort the data based on the user selected group sort optipons
+    const data = getSortedData([...items]);
+
+    if (data && data.length > 0) {
         return (
             <div>
                 <Customgrid
@@ -145,7 +199,7 @@ const Grid = forwardRef((props, ref) => {
                     gridWidth={gridWidth}
                     managableColumns={gridColumns}
                     originalColumns={gridColumns}
-                    data={items}
+                    data={data}
                     rowEditOverlay={rowEditOverlay}
                     rowEditData={rowEditData}
                     updateRowInGrid={updateRowInGrid}
@@ -158,12 +212,15 @@ const Grid = forwardRef((props, ref) => {
                     hasNextPage={hasNextPage}
                     isNextPageLoading={isNextPageLoading}
                     loadNextPage={loadNextPage}
+                    doGroupSort={doGroupSort}
                 />
                 {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
             </div>
         );
-    } else {
+    } else if (isLoading) {
         return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
+    } else {
+        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Invalid Data or Column Configurations</h2>;
     }
 });
 

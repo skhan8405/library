@@ -5,11 +5,12 @@ import { ItemTypes } from "./ItemTypes";
 import ColumnItem from "./columnItem";
 
 const ColumnsList = (props) => {
+    const { updateColumnsInState, columnsToManage } = props;
 
     const moveColumn = (columnId, atIndex) => {
         const { column, index } = findColumn(columnId);
-        props.updateColumnsInState(
-            update(props.columnsToManage, {
+        updateColumnsInState(
+            update(columnsToManage, {
                 $splice: [
                     [index, 1],
                     [atIndex, 0, column]
@@ -19,10 +20,10 @@ const ColumnsList = (props) => {
     };
 
     const findColumn = (columnId) => {
-        const column = props.columnsToManage.filter((c) => `${c.columnId}` === columnId)[0];
+        const column = columnsToManage.filter((c) => `${c.columnId}` === columnId)[0];
         return {
             column,
-            index: props.columnsToManage.indexOf(column)
+            index: columnsToManage.indexOf(column)
         };
     };
 
@@ -31,7 +32,7 @@ const ColumnsList = (props) => {
     return (
         <React.Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
-                {props.columnsToManage.map((column, index) => {
+                {columnsToManage.map((column, index) => {
                     return (
                         <ColumnItem
                             key={index}
