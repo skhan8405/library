@@ -12,18 +12,21 @@
     "node": ">=10"
   },
   "scripts": {
-    "clean": "rimraf lib",
-    "build": "npm run clean && npm run build:lib",
-    "build:lib": "babel src --out-dir lib --copy-files",
+    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "start": "microbundle-crl watch --no-compress --format modern,cjs",
     "flow": "flow status",
     "storybook": "start-storybook -p 9002",
     "build-storybook": "build-storybook -c .storybook -o .out",
-    "start": "microbundle-crl watch --no-compress --format modern,cjs",
+    "prepare": "run-s build",
     "test": "jest -u",
     "test:cover": "jest --coverage",
     "open:coverage": "open ./coverage/lcov-report/index.html",
-    "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject",
-    "lint": "eslint src/*.js"
+    "lint": "eslint src/**/*.js src/*.js",
+    "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
+    "test:watch": "react-scripts test --env=jsdom",
+    "predeploy": "cd example && npm install && npm run build",
+    "deploy": "gh-pages -d example/build",
+    "uitest": "./node_modules/.bin/wdio ./uitest/configs/wdio.conf.js"
   },
   "peerDependencies": {
     "react": "^16.0.0",
@@ -61,7 +64,7 @@
     "@wdio/spec-reporter": "^6.1.23",
     "@wdio/sync": "^6.2.0",
     "babel-eslint": "^10.0.3",
-    "babel-jest": "^26.1.0",
+    "babel-jest": "^24.9.0",
     "babel-preset-env": "^1.7.0",
     "bootstrap": "^4.5.0",
     "chai": "4.2.0",
