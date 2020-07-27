@@ -11,6 +11,7 @@ const ColumnReordering = memo((props) => {
 
     const [managedColumns, setManagedColumns] = useState(originalColumns);
     const [searchedColumns, setSearchedColumns] = useState(originalColumns);
+    const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
     const HTML5toTouch = {
         backends: [
@@ -98,8 +99,12 @@ const ColumnReordering = memo((props) => {
     };
 
     const doColumnUpdate = () => {
-        setSearchedColumns(originalColumns);
-        props.updateColumnStructure(managedColumns);
+        if (managedColumns && managedColumns.length > 0) {
+            setSearchedColumns(originalColumns);
+            props.updateColumnStructure(managedColumns);
+        } else {
+            setIsErrorDisplayed(true);
+        }
     };
 
     const resetColumnUpdate = () => {
@@ -160,6 +165,9 @@ const ColumnReordering = memo((props) => {
                             <div className="column__header">
                                 <div className="column__headerTxt">
                                     <strong>Column Setting</strong>
+                                    {isErrorDisplayed ? (
+                                        <strong style={{ marginLeft: "10px", color: "red" }}>Select at least one column</strong>
+                                    ) : null}
                                 </div>
                                 <div className="column__close" onClick={toggleManageColumns}>
                                     <i className="fa fa-times" aria-hidden="true"></i>
