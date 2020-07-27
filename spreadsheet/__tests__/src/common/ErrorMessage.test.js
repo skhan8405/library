@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import ErrorMessage from "../../../src/common/ErrorMessage";
 import {shallow, mount} from 'enzyme';
 
