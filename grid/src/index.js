@@ -200,6 +200,7 @@ const Grid = forwardRef((props, ref) => {
                     managableColumns={gridColumns}
                     originalColumns={gridColumns}
                     data={data}
+                    originalData={items}
                     rowEditOverlay={rowEditOverlay}
                     rowEditData={rowEditData}
                     updateRowInGrid={updateRowInGrid}
