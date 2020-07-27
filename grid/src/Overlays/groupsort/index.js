@@ -147,6 +147,8 @@ const GroupSort = memo((props) => {
                 </div>
             </ClickAwayListener>
         );
+    } else {
+        return <div></div>;
     }
 });
 
