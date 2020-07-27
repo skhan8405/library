@@ -1,0 +1,24 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/dist
+/lib
+/coverage
+/example/node_modules
+/example/dist
+/example/lib
+/example/coverage
+
+# testing
+/coverage
+/eslint-coverage
+
+# production
+/build
+
+#storybook
+/.out
+
+#vscode
+/.vscode
