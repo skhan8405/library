@@ -10,6 +10,7 @@ import {
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import SortingList from "./SortingList";
+import PropTypes from "prop-types";
 
 class App extends React.Component {
   constructor(props) {
@@ -190,10 +191,6 @@ class App extends React.Component {
   };
 
   captureSortingFeildValues = (event, index, sortingKey) => {
-    var sortingObj = {
-      //``
-    };
-
     var existingSortingOrderList = this.state.sortingOrderList;
 
     if (sortingKey === "sortBy") {
@@ -239,7 +236,6 @@ class App extends React.Component {
   };
 
   render() {
-    let { rowList } = this.state.rowList;
     return (
       <div className="sorts--grid" ref={this.setWrapperRef}>
         <div className="sort__grid">
@@ -312,5 +308,16 @@ class App extends React.Component {
     );
   }
 }
+
+App.propTypes = {
+  sortingParamsObjectList: PropTypes.any,
+  closeSorting: PropTypes.any,
+  columnFieldValue: PropTypes.any,
+  clearAllSortingParams: PropTypes.any,
+  sortingObj: PropTypes.any,
+  setTableAsPerSortingParams: PropTypes.any,
+  handleTableSortSwap: PropTypes.any,
+  rowList: PropTypes.any,
+};
 
 export default App;

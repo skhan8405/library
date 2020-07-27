@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import ExtDataGrid from "./common/extDataGrid";
 import { Toolbar, Data, Filters, Editors } from "react-data-grid-addons";
 import { range } from "lodash";
@@ -20,10 +21,7 @@ import ErrorMessage from "./common/ErrorMessage";
 import ColumnReordering from "./overlays/column_chooser/Chooser";
 import Sorting from "./overlays/sorting/Sorting";
 import ExportData from "./overlays/export_data/ExportData";
-
-const {
-  DraggableHeader: { DraggableContainer },
-} = require("react-data-grid-addons");
+import PropTypes from "prop-types";
 
 const { DropDownEditor } = Editors;
 
@@ -33,7 +31,8 @@ const selectors = Data.Selectors;
 let swapList = [];
 let swapSortList = [];
 const { AutoCompleteFilter, NumericFilter } = Filters;
-class spreadsheet extends Component {
+
+class Spreadsheet extends Component {
   constructor(props) {
     super(props);
     const airportCodes = [];
@@ -59,6 +58,7 @@ class spreadsheet extends Component {
       count: this.props.rows.length,
       sortingOrderSwapList: [],
       sortingParamsObjectList: [],
+      pinnedReorder: false,
       columns: this.props.columns.map((item) => {
         if (item.editor === "DatePicker") {
           item.editor = DatePicker;
@@ -87,7 +87,7 @@ class spreadsheet extends Component {
       return item.formulaApplicable;
     });
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     //Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
     const resizeEvent = document.createEvent("HTMLEvents");
     resizeEvent.initEvent("resize", true, false);
@@ -163,10 +163,12 @@ class spreadsheet extends Component {
   handleWarningStatus = () => {
     this.setState({ warningStatus: "invalid" });
   };
+
   closeWarningStatus = () => {
     this.setState({ warningStatus: "" });
   };
-  componentWillReceiveProps(props) {
+
+  UNSAFE_componentWillReceiveProps(props) {
     this.setState({
       rows: props.rows,
     });
@@ -380,14 +382,16 @@ class spreadsheet extends Component {
   handleheaderNameList = (reordered) => {
     swapList = reordered;
   };
+
   handleTableSortSwap = (reorderedSwap) => {
     swapSortList = reorderedSwap;
   };
+
   updateTableAsPerRowChooser = (
     inComingColumnsHeaderList,
     pinnedColumnsList
   ) => {
-    let pinnedReorder = false;
+    // let pinnedReorder = false;
     let existingColumnsHeaderList = this.props.columns;
     existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
       return inComingColumnsHeaderList.includes(item.name);
@@ -443,6 +447,7 @@ class spreadsheet extends Component {
     this.setState({
       columns: existingColumnsHeaderList,
     });
+
     let tempList = [];
     existingColumnsHeaderList.forEach((item) => {
       tempList.push(item.name);
@@ -450,12 +455,12 @@ class spreadsheet extends Component {
 
     if (swapList.length > 0) {
       for (let i = 0; i < tempList.length; i++) {
-        if (tempList[i] === swapList[i]) pinnedReorder = true;
+        if (tempList[i] === swapList[i]) this.setState({ pinnedReorder: true });
       }
     }
     this.closeColumnReOrdering();
     swapList = [];
-    pinnedReorder = false;
+    this.setState({ pinnedReorder: false });
   };
 
   /**
@@ -582,7 +587,7 @@ class spreadsheet extends Component {
   setTableAsPerSortingParams = (tableSortList) => {
     var existingRows = this.state.rows;
     var sortingOrderNameList = [];
-    tableSortList.map((item, index) => {
+    tableSortList.map((item) => {
       var nameOfItem = "";
       Object.keys(this.state.rows[0]).map((rowItem) => {
         if (
@@ -701,52 +706,46 @@ class spreadsheet extends Component {
         <ErrorMessage
           className="errorDiv"
           status={this.state.warningStatus}
-          closeWarningStatus={(e) => {
+          closeWarningStatus={() => {
             this.props.closeWarningStatus();
             this.closeWarningStatus();
           }}
           clearSearchValue={this.clearSearchValue}
         />
-        <DraggableContainer
-          className="gridDiv"
-          onHeaderDrop={this.onHeaderDrop}
-        >
-          <ExtDataGrid
-            toolbar={<Toolbar enableFilter={true} />}
-            getValidFilterValues={(columnKey) =>
-              this.getValidFilterValues(this.state.filteringRows, columnKey)
-            }
-            minHeight={this.state.height}
-            columns={this.state.columns}
-            rowGetter={(i) => this.state.rows[i]}
-            rowsCount={this.state.rows.length}
-            onGridRowsUpdated={this.onGridRowsUpdated}
-            enableCellSelect={true}
-            onClearFilters={() => {
-              this.setState({ junk: {} });
-            }}
-            onColumnResize={(idx, width) => {
-              console.log(`Column ${idx} has been resized to ${width}`);
-              this.handleColumnResize(idx, width);
-            }}
-            onAddFilter={(filter) => this.handleFilterChange(filter)}
-            rowSelection={{
-              showCheckbox: true,
-              enableShiftSelect: true,
-              onRowsSelected: this.onRowsSelected,
-              onRowsDeselected: this.onRowsDeselected,
-              selectBy: {
-                indexes: this.state.selectedIndexes,
-              },
-            }}
-            onGridSort={(sortColumn, sortDirection) =>
-              this.sortRows(this.state.filteringRows, sortColumn, sortDirection)
-            }
-            // cellRangeSelection={{
-            //   onComplete: this.setSelection,
-            // }}
-          />
-        </DraggableContainer>
+        <ExtDataGrid
+          toolbar={<Toolbar enableFilter={true} />}
+          getValidFilterValues={(columnKey) =>
+            this.getValidFilterValues(this.state.filteringRows, columnKey)
+          }
+          minHeight={this.state.height}
+          columns={this.state.columns}
+          rowGetter={(i) => this.state.rows[i]}
+          rowsCount={this.state.rows.length}
+          onGridRowsUpdated={this.onGridRowsUpdated}
+          enableCellSelect={true}
+          onClearFilters={() => {
+            this.setState({ junk: {} });
+          }}
+          onColumnResize={(idx, width) =>
+            console.log(`Column ${idx} has been resized to ${width}`)
+          }
+          onAddFilter={(filter) => this.handleFilterChange(filter)}
+          rowSelection={{
+            showCheckbox: true,
+            enableShiftSelect: true,
+            onRowsSelected: this.onRowsSelected,
+            onRowsDeselected: this.onRowsDeselected,
+            selectBy: {
+              indexes: this.state.selectedIndexes,
+            },
+          }}
+          onGridSort={(sortColumn, sortDirection) =>
+            this.sortRows(this.state.filteringRows, sortColumn, sortDirection)
+          }
+          // cellRangeSelection={{
+          //   onComplete: this.setSelection,
+          // }}
+        />
       </div>
     );
   }
@@ -783,7 +782,6 @@ var sort_by;
       n_fields = arguments.length,
       field,
       name,
-      reverse,
       cmp;
 
     // preprocess sorting options
@@ -803,7 +801,7 @@ var sort_by;
     }
 
     return function (A, B) {
-      var a, b, name, cmp, result;
+      var name, cmp, result;
       for (var i = 0, l = n_fields; i < l; i++) {
         result = 0;
         field = fields[i];
@@ -818,4 +816,19 @@ var sort_by;
   };
 })();
 
-export default spreadsheet;
+Spreadsheet.propTypes = {
+  airportCodes: PropTypes.any,
+  rows: PropTypes.any,
+  columns: PropTypes.any,
+  status: PropTypes.any,
+  textValue: PropTypes.any,
+  count: PropTypes.any,
+  updateCellData: PropTypes.any,
+  selectBulkData: PropTypes.any,
+  pinnedReorder: PropTypes.any,
+  maxLeftPinnedColumn: PropTypes.any,
+  globalSearchLogic: PropTypes.any,
+  closeWarningStatus: PropTypes.any,
+};
+
+export default Spreadsheet;
