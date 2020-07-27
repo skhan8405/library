@@ -5,10 +5,12 @@ import { ItemTypes } from "./ItemTypes";
 import SortItem from "./sortingItem";
 
 const SortingList = (props) => {
+    const { updateSortingOptions, sortOptions } = props;
+
     const moveSort = (sortId, atIndex) => {
         const { sort, index } = findSort(sortId);
-        props.updateSortingOptions(
-            update(props.sortOptions, {
+        updateSortingOptions(
+            update(sortOptions, {
                 $splice: [
                     [index, 1],
                     [atIndex, 0, sort]
@@ -18,10 +20,10 @@ const SortingList = (props) => {
     };
 
     const findSort = (sortId) => {
-        const sort = props.sortOptions.filter((c, index) => index === sortId)[0];
+        const sort = sortOptions.filter((c, index) => index === sortId)[0];
         return {
             sort,
-            index: props.sortOptions.indexOf(sort)
+            index: sortOptions.indexOf(sort)
         };
     };
 
@@ -30,7 +32,7 @@ const SortingList = (props) => {
     return (
         <React.Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
-                {props.sortOptions.map((sortOption, index) => {
+                {sortOptions.map((sortOption, index) => {
                     return (
                         <SortItem
                             id={index}

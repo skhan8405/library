@@ -49,21 +49,23 @@ const Customgrid = memo((props) => {
     //Local state for group sort options
     const [groupSortOptions, setGroupSortOptions] = useState([]);
 
-    const compareAscValues = function (v1, v2) {
-        return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
+    //Common function to return sorting logic based on the user selected order of sort
+    const compareValues = (compareOrder, v1, v2) => {
+        if (compareOrder === "Ascending") {
+            return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
+        } else {
+            return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
+        }
     };
-    const compareDescValues = function (v1, v2) {
-        return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
-    };
+    //Sort the data based on the user selected group sort optipons
     data = [...data].sort(function (x, y) {
         let compareResult = 0;
         groupSortOptions.forEach((option) => {
             const { sortBy, sortOn, order } = option;
-            const newSortFunction = order === "Ascending" ? compareAscValues : compareDescValues;
             const newResult =
                 sortOn === "value"
-                    ? newSortFunction(x[sortBy], y[sortBy])
-                    : newSortFunction(x[sortBy][sortOn], y[sortBy][sortOn]);
+                    ? compareValues(order, x[sortBy], y[sortBy])
+                    : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
             compareResult = compareResult || newResult;
         });
         return compareResult;
