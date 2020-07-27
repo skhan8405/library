@@ -27,6 +27,8 @@ const Grid = forwardRef((props, ref) => {
     const [isLoading, setIsLoading] = useState(false);
     //Set state value for variable to hold grid data
     const [items, setItems] = useState([]);
+    //Local state for group sort options
+    const [groupSortOptions, setGroupSortOptions] = useState([]);
 
     let processedColumns = [];
     columns.forEach((column, index) => {
@@ -76,17 +78,58 @@ const Grid = forwardRef((props, ref) => {
     });
     const gridColumns = useMemo(() => processedColumns, []);
 
+    //Function to return sorting logic based on the user selected order of sort
+    const compareValues = (compareOrder, v1, v2) => {
+        if (compareOrder === "Ascending") {
+            return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
+        } else {
+            return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
+        }
+    };
+    //Function to return sorted data
+    const getSortedData = (originalData) => {
+        return originalData.sort(function (x, y) {
+            let compareResult = 0;
+            groupSortOptions.forEach((option) => {
+                const { sortBy, sortOn, order } = option;
+                const newResult =
+                    sortOn === "value"
+                        ? compareValues(order, x[sortBy], y[sortBy])
+                        : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
+                compareResult = compareResult || newResult;
+            });
+            return compareResult;
+        });
+    };
+    //Function to find correct index from original data using index from sorted data
+    const getOriginalDataIndex = (sortedDataIndex) => {
+        const updatedData = getSortedData([...items]).find((item, index) => {
+            return index === sortedDataIndex;
+        });
+        let originalDataIndex = -1;
+        originalDataIndex = items.findIndex((item, index) => {
+            return item === updatedData;
+        });
+        return originalDataIndex;
+    };
+
     //Gets triggered when a cell in grid is updated
     useImperativeHandle(ref, () => ({
-        updateCellInGrid(travelId, columnId, value) {
-            setItems((old) =>
-                old.map((row) => {
-                    if (row.travelId === travelId) {
-                        row[columnId] = value;
-                    }
-                    return row;
-                })
-            );
+        updateCellInGrid(rowIndex, columnId, value) {
+            const originalDataIndex = getOriginalDataIndex(rowIndex);
+            if (originalDataIndex >= 0) {
+                setItems((old) =>
+                    old.map((row, index) => {
+                        if (index === originalDataIndex) {
+                            return {
+                                ...old[originalDataIndex],
+                                [columnId]: value
+                            };
+                        }
+                        return row;
+                    })
+                );
+            }
         }
     }));
 
@@ -111,6 +154,11 @@ const Grid = forwardRef((props, ref) => {
             })
         );
         deleteRowData(deletedRow);
+    };
+
+    //Gets called when group sort is applied or cleared
+    const doGroupSort = (sortOptions) => {
+        setGroupSortOptions(sortOptions);
     };
 
     //Gets called when page scroll reaches the bottom of the grid.
@@ -139,7 +187,10 @@ const Grid = forwardRef((props, ref) => {
         });
     }, []);
 
-    if (items && items.length > 0) {
+    //Sort the data based on the user selected group sort optipons
+    const data = getSortedData([...items]);
+
+    if (data && data.length > 0) {
         return (
             <div>
                 <Customgrid
@@ -148,7 +199,7 @@ const Grid = forwardRef((props, ref) => {
                     gridWidth={gridWidth}
                     managableColumns={gridColumns}
                     originalColumns={gridColumns}
-                    data={items}
+                    data={data}
                     rowEditOverlay={rowEditOverlay}
                     rowEditData={rowEditData}
                     updateRowInGrid={updateRowInGrid}
@@ -161,6 +212,7 @@ const Grid = forwardRef((props, ref) => {
                     hasNextPage={hasNextPage}
                     isNextPageLoading={isNextPageLoading}
                     loadNextPage={loadNextPage}
+                    doGroupSort={doGroupSort}
                 />
                 {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
             </div>
