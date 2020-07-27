@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import Spreadsheet from "spreadsheet";
 import CargoData from "./data.json";
-import { fetchData } from "./getData";
+//import { fetchData } from "./getData";
 
 const App = () => {
   //Get spreadsheet height value, which is a required value
@@ -22,410 +21,410 @@ const App = () => {
     {
       key: "flightno",
       name: "FlightNo",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "date",
       name: "Date",
-      draggable: true,
+      draggable: false,
       editor: "DatePicker",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "segmentfrom",
       name: "Segment From",
-      draggable: true,
+      draggable: false,
       editor: "DropDown",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "revenue",
       name: "Revenue",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "yeild",
       name: "Yeild",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "segmentto",
       name: "Segment To",
-      draggable: true,
+      draggable: false,
       editor: "DropDown",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "flightModel",
       name: "Flight Model",
-      draggable: true,
+      draggable: false,
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "numeric"
+      filterType: "numeric",
     },
     {
       key: "bodyType",
       name: "Body Type",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "type",
       name: "Type",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "startTime",
       name: "Start Time",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "endTime",
       name: "End Time",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "status",
       name: "Status",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "additionalStatus",
       name: "Additional Status",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "timeStatus",
       name: "Time Status",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "weightpercentage",
       name: "Weight Percentage",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "weightvalue",
       name: "Weight Value",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "volumepercentage",
       name: "Volume Percentage",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "volumevalue",
       name: "Volume Value",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldposition1",
       name: "uldposition1",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldvalue1",
       name: "uldvalue1",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldposition2",
       name: "uldposition2",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldvalue2",
       name: "uldvalue2",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldposition3",
       name: "uldposition3",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldvalue3",
       name: "uldvalue3",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldposition4",
       name: "uldposition4",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "uldvalue4",
       name: "uldvalue4",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
 
     {
       key: "sr",
       name: "SR",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "queuedBookingSR",
       name: "Queued Booking SR",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
+      filterType: "autoCompleteFilter",
     },
     {
       key: "queuedBookingvolume",
       name: "Queued Booking Volume",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
       resizable: true,
       filterable: true,
       width: 150,
-      filterType: "autoCompleteFilter"
-    }
+      filterType: "autoCompleteFilter",
+    },
   ];
 
   //Configure columns and its related functions
-  const airportCodeList =  [
-        "AAA",
-        "AAB",
-        "AAC",
-        "ABA",
-        "ABB",
-        "ABC",
-        "ACA",
-        "ACB",
-        "ACC",
-        "BAA",
-        "BAB",
-        "BAC",
-        "BBA",
-        "BBB",
-        "BBC",
-        "BCA",
-        "BCB",
-        "BCC",
-        "CAA",
-        "CAB",
-        "CAC",
-        "CBA",
-        "CBB",
-        "CBC",
-        "CCA",
-        "CCB",
-        "CCC",
-        "XXX",
-        "XXY",
-        "XXZ",
-        "XYX",
-        "XYY",
-        "XYZ",
-        "XZX",
-        "XZY",
-        "XZZ",
-        "YXX",
-        "YXY",
-        "YXZ",
-        "YYX",
-        "YYY",
-        "YYZ",
-        "YZX",
-        "YZY",
-        "YZZ",
-        "ZXX",
-        "ZXY",
-        "ZXZ",
-        "ZYX",
-        "ZYY",
-        "ZYZ",
-        "ZZX",
-        "ZZY",
-        "ZZZ"
-    ];
+  const airportCodeList = [
+    "AAA",
+    "AAB",
+    "AAC",
+    "ABA",
+    "ABB",
+    "ABC",
+    "ACA",
+    "ACB",
+    "ACC",
+    "BAA",
+    "BAB",
+    "BAC",
+    "BBA",
+    "BBB",
+    "BBC",
+    "BCA",
+    "BCB",
+    "BCC",
+    "CAA",
+    "CAB",
+    "CAC",
+    "CBA",
+    "CBB",
+    "CBC",
+    "CCA",
+    "CCB",
+    "CCC",
+    "XXX",
+    "XXY",
+    "XXZ",
+    "XYX",
+    "XYY",
+    "XYZ",
+    "XZX",
+    "XZY",
+    "XZZ",
+    "YXX",
+    "YXY",
+    "YXZ",
+    "YYX",
+    "YYY",
+    "YYZ",
+    "YZX",
+    "YZY",
+    "YZZ",
+    "ZXX",
+    "ZXY",
+    "ZXZ",
+    "ZYX",
+    "ZYY",
+    "ZYZ",
+    "ZZX",
+    "ZZY",
+    "ZZZ",
+  ];
 
   //Add logic for doing global search in the spreadsheet
   const globalSearchLogic = (e, updatedRows) => {
@@ -459,7 +458,8 @@ const App = () => {
         (item.uldvalue2 && item.uldvalue2.toLowerCase().includes(searchKey)) ||
         (item.uldposition3 &&
           item.uldposition3.toLowerCase().includes(searchKey)) ||
-          (item.weightvalue && item.weightvalue.toLowerCase().includes(searchKey)) ||
+        (item.weightvalue &&
+          item.weightvalue.toLowerCase().includes(searchKey)) ||
         (item.uldvalue3 && item.uldvalue3.toLowerCase().includes(searchKey)) ||
         (item.uldposition4 &&
           item.uldposition4.toLowerCase().includes(searchKey)) ||
@@ -474,32 +474,50 @@ const App = () => {
     });
     if (!filteredRows.length) {
       setStatus("invalid");
-      setData(rows);
+      setData([]);
+      // setRow("");
     } else {
       setData(filteredRows);
       setStatus("");
     }
   };
-const handleWarningStatus=()=>{
-  setStatus("invalid");
-}
+  const handleWarningStatus = () => {
+    setStatus("invalid");
+  };
   //Gets called when there is a cell edit
-  const updateCellData = (fromRow,toRow,value,updateType) => {
-    if(updateType==="CELL_UPDATE"){
-      console.log("row:", fromRow, "updated-Value:", value,"Updation-Type:", updateType);
+  const updateCellData = (fromRow, toRow, value, updateType) => {
+    if (updateType === "CELL_UPDATE") {
+      console.log(
+        "row:",
+        fromRow,
+        "updated-Value:",
+        value,
+        "Updation-Type:",
+        updateType
+      );
     }
-    if(updateType==="CELL_DRAG"){
-      console.log("fromRow:", fromRow,"toRow:",toRow, "updated-Value:", value,"Updation-Type:", updateType);
+    if (updateType === "CELL_DRAG") {
+      console.log(
+        "fromRow:",
+        fromRow,
+        "toRow:",
+        toRow,
+        "updated-Value:",
+        value,
+        "Updation-Type:",
+        updateType
+      );
     }
-  }
+  };
 
   //Gets called when row bulk edit is done
   const selectBulkData = (selectedRows) => {
     console.log("selectedRows:", selectedRows);
   };
   const closeWarningStatus = () => {
-    setStatus("")
-  }
+    setStatus("");
+    setData(rows);
+  };
   useEffect(() => {
     //Make API call to fetch initial set of data, uncomment below code to use API call
     // fetchData(0).then((data) => {
@@ -508,7 +526,7 @@ const handleWarningStatus=()=>{
     setData(rows);
   }, [rows]);
 
-  if (data && data.length) {
+  if (data) {
     return (
       <div>
         <Spreadsheet
@@ -528,7 +546,11 @@ const handleWarningStatus=()=>{
         />
       </div>
     );
-  } else return <h2>Loading Data</h2>;
+  } else if (data === undefined) {
+    return <h2>Loading Data</h2>;
+  } else {
+    return null;
+  }
 };
 
 export default App;

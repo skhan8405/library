@@ -111,6 +111,7 @@
     "dist"
   ],
   "dependencies": {
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "prop-types": "^15.7.2"
   }
 }

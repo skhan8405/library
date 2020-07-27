@@ -453,7 +453,7 @@ class ColumnReordering extends React.Component {
     }
   }
 
-  render() {
+  render(props) {
     return /*#__PURE__*/React.createElement("div", {
       className: "columns--grid",
       ref: this.setWrapperRef
@@ -619,6 +619,15 @@ const SortingList = props => {
     setCards(update(cards, {
       $splice: [[index, 1], [atIndex, 0, card]]
     }));
+    let values = [];
+    let temp = [];
+    temp = update(cards, {
+      $splice: [[index, 1], [atIndex, 0, card]]
+    });
+    temp.forEach(item => {
+      values.push(item.id);
+    });
+    props.handleReorderListOfSort(values);
   };
 
   const findCard = id => {
@@ -651,15 +660,15 @@ const SortingList = props => {
 };
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.add = () => {
       let rowList = [...this.state.rowList];
       rowList.push(true);
       var existingSortingOrderList = this.state.sortingOrderList;
       existingSortingOrderList.push({
-        sortBy: "Flight #",
+        sortBy: this.props.columnFieldValue[0],
         order: "Ascending",
         sortOn: "Value"
       });
@@ -681,6 +690,7 @@ class App extends React.Component {
       this.setState({
         sortingOrderList: []
       });
+      this.props.clearAllSortingParams();
     };
 
     this.remove = i => {
@@ -794,18 +804,17 @@ class App extends React.Component {
       }) : this.setState({
         errorMessage: false
       });
-      console.log("FILTER SORT LIST OF OBJECTS ", this.state.sortingOrderList);
-      this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
+      !showError ? this.props.setTableAsPerSortingParams(this.state.sortingOrderList) : '';
+    };
+
+    this.handleReorderListOfSort = reOrderedIndexList => {
+      this.props.handleTableSortSwap(reOrderedIndexList);
     };
 
     this.state = {
       rowList: [true],
       rows: [],
-      sortingOrderList: [{
-        sortBy: "Flight #",
-        order: "Ascending",
-        sortOn: "Value"
-      }],
+      sortingOrderList: this.props.sortingParamsObjectList === undefined ? [] : this.props.sortingParamsObjectList,
       errorMessage: false
     };
     this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -856,6 +865,7 @@ class App extends React.Component {
         enableMouseEvents: true
       }
     }, /*#__PURE__*/React.createElement(SortingList, {
+      handleReorderListOfSort: this.handleReorderListOfSort,
       sortsArray: this.createColumnsArrayFromProps(this.state.sortingOrderList)
     })), /*#__PURE__*/React.createElement("div", {
       className: "sort-warning"
@@ -864,7 +874,7 @@ class App extends React.Component {
         display: this.state.clickTag
       },
       className: "alert alert-danger"
-    }, "Sort types opted are same, Please choose different one.") : "")), /*#__PURE__*/React.createElement("div", {
+    }, "Sort by opted are same, Please choose different one.") : "")), /*#__PURE__*/React.createElement("div", {
       className: "sort__new"
     }, /*#__PURE__*/React.createElement("div", {
       className: "sort__section"
@@ -1262,6 +1272,7 @@ const defaultParsePaste = str => str.split(/\r\n|\n|\r/).map(row => row.split("\
 
 const selectors = Data.Selectors;
 let swapList = [];
+let swapSortList = [];
 const {
   AutoCompleteFilter,
   NumericFilter
@@ -1472,6 +1483,10 @@ class spreadsheet extends Component {
     };
 
     this.sortRows = (data, sortColumn, sortDirection) => {
+      this.setState({
+        selectedIndexes: []
+      });
+
       const comparer = (a, b) => {
         if (sortDirection === "ASC") {
           return a[sortColumn] > b[sortColumn] ? 1 : -1;
@@ -1505,6 +1520,10 @@ class spreadsheet extends Component {
       swapList = reordered;
     };
 
+    this.handleTableSortSwap = reorderedSwap => {
+      swapSortList = reorderedSwap;
+    };
+
     this.updateTableAsPerRowChooser = (inComingColumnsHeaderList, pinnedColumnsList) => {
       let existingColumnsHeaderList = this.props.columns;
       existingColumnsHeaderList = existingColumnsHeaderList.filter(item => {
@@ -1521,8 +1540,10 @@ class spreadsheet extends Component {
       }
 
       if (swapList.length > 0) {
-        swapList.map((item, index) => {
-          singleHeaderOneList = existingColumnsHeaderList.filter(subItem => item === subItem.name);
+        swapList.slice(0).map((item, index) => {
+          singleHeaderOneList = existingColumnsHeaderList.filter(subItem => {
+            return item === subItem.name;
+          });
           rePositionedArray = this.array_move(existingColumnsHeaderList, existingColumnsHeaderList.indexOf(singleHeaderOneList[0]), index);
         });
       }
@@ -1537,10 +1558,16 @@ class spreadsheet extends Component {
           existingColumnsHeaderList[index]["frozen"] = true;
         }
       });
-      console.log("existingColumnsHeaderList ", existingColumnsHeaderList);
+
+      const toTop = (key, value) => (a, b) => (b[key] === value) - (a[key] === value);
+
+      existingColumnsHeaderList.sort(toTop("frozen", true));
       this.setState({
         columns: existingColumnsHeaderList
       });
+      existingColumnsHeaderList.forEach(item => {
+      });
+
       this.closeColumnReOrdering();
       swapList = [];
     };
@@ -1559,6 +1586,9 @@ class spreadsheet extends Component {
     };
 
     this.columnReorderingPannel = () => {
+      this.setState({
+        selectedIndexes: []
+      });
       var headerNameList = [];
       var existingPinnedHeadersList = [];
       this.state.columns.filter(item => item.frozen !== undefined && item.frozen === true).map(item => existingPinnedHeadersList.push(item.name));
@@ -1597,11 +1627,17 @@ class spreadsheet extends Component {
     };
 
     this.sortingPanel = () => {
+      this.setState({
+        selectedIndexes: []
+      });
       let columnField = [];
       this.state.columns.map(item => columnField.push(item.name));
       this.setState({
         sortingPanelComponent: /*#__PURE__*/React.createElement(App, {
           setTableAsPerSortingParams: args => this.setTableAsPerSortingParams(args),
+          sortingParamsObjectList: this.state.sortingParamsObjectList,
+          handleTableSortSwap: this.handleTableSortSwap,
+          clearAllSortingParams: this.clearAllSortingParams,
           columnFieldValue: columnField,
           closeSorting: this.closeSorting
         })
@@ -1610,11 +1646,22 @@ class spreadsheet extends Component {
 
     this.closeSorting = () => {
       this.setState({
-        sortingPanelComponent: null
+        sortingPanelComponent: null,
+        sortingOrderSwapList: []
+      });
+      swapSortList = [];
+    };
+
+    this.clearAllSortingParams = () => {
+      this.setState({
+        rows: this.props.rows
       });
     };
 
     this.exportColumnData = () => {
+      this.setState({
+        selectedIndexes: []
+      });
       this.setState({
         exportComponent: /*#__PURE__*/React.createElement(ExportData, {
           rows: this.state.rows,
@@ -1630,20 +1677,29 @@ class spreadsheet extends Component {
       });
     };
 
+    this.handleColumnResize = (idx, width) => {
+      let columnArray = [...this.state.columns];
+      columnArray.forEach(item => {
+        if (item.name === this.state.columns[idx - 1].name) {
+          item.width = width;
+        }
+      });
+      this.setState({
+        columns: columnArray
+      });
+    };
+
     this.setTableAsPerSortingParams = tableSortList => {
       var existingRows = this.state.rows;
       var sortingOrderNameList = [];
       tableSortList.map((item, index) => {
         var nameOfItem = "";
         Object.keys(this.state.rows[0]).map(rowItem => {
-          if (item.sortBy === "Flight #" && rowItem === "flightno") {
-            nameOfItem = "flightno";
-          } else if (rowItem.toLowerCase() === this.toCamelCase(item.sortBy).toLowerCase()) {
+          if (rowItem.toLowerCase() === this.toCamelCase(item.sortBy).toLowerCase()) {
             nameOfItem = rowItem;
           }
         });
-        console.log(nameOfItem);
-        var typeOfItem = this.state.rows[0][item.sortBy === "Flight #" ? "flightno" : nameOfItem];
+        var typeOfItem = this.state.rows[0][item.sortBy === nameOfItem];
 
         if (typeof typeOfItem === "number") {
           sortingOrderNameList.push({
@@ -1658,9 +1714,28 @@ class spreadsheet extends Component {
           });
         }
       });
+
+      if (swapSortList.length > 0) {
+        var existingSortingOrderSwapList = this.state.sortingOrderSwapList;
+        swapSortList.map((item, index) => {
+          var stringOfItemIndex = item + "" + index;
+
+          if (item !== index && !existingSortingOrderSwapList.includes(stringOfItemIndex.split("").reverse().join(""))) {
+            existingSortingOrderSwapList.push(stringOfItemIndex);
+            sortingOrderNameList = this.array_move(sortingOrderNameList, item, index);
+            tableSortList = this.array_move(tableSortList, item, index);
+          }
+
+          this.setState({
+            sortingOrderSwapList: existingSortingOrderSwapList
+          });
+        });
+      }
+
       existingRows.sort(sort_by(...sortingOrderNameList));
       this.setState({
-        rows: existingRows
+        rows: existingRows,
+        sortingParamsObjectList: tableSortList
       });
       this.closeSorting();
     };
@@ -1697,6 +1772,8 @@ class spreadsheet extends Component {
       tempRows: this.props.rows,
       sortingPanelComponent: null,
       count: this.props.rows.length,
+      sortingOrderSwapList: [],
+      sortingParamsObjectList: [],
       columns: this.props.columns.map(item => {
         if (item.editor === "DatePicker") {
           item.editor = DatePicker;
@@ -1754,6 +1831,9 @@ class spreadsheet extends Component {
   }
 
   getValidFilterValues(rows, columnId) {
+    this.setState({
+      selectedIndexes: []
+    });
     return rows.map(r => r[columnId]).filter((item, i, a) => {
       return i === a.indexOf(item);
     });
@@ -1828,7 +1908,10 @@ class spreadsheet extends Component {
           junk: {}
         });
       },
-      onColumnResize: (idx, width) => console.log(`Column ${idx} has been resized to ${width}`),
+      onColumnResize: (idx, width) => {
+        console.log(`Column ${idx} has been resized to ${width}`);
+        this.handleColumnResize(idx, width);
+      },
       onAddFilter: filter => this.handleFilterChange(filter),
       rowSelection: {
         showCheckbox: true,
