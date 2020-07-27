@@ -18,6 +18,7 @@ import GlobalFilter from "./Functions/GlobalFilter";
 import RowOptions from "./Functions/RowOptions";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
+import ExportData from "./Overlays/exportdata";
 
 const listRef = createRef(null);
 
@@ -90,6 +91,14 @@ const Customgrid = memo((props) => {
     const updateColumnStructure = (newColumnStructure) => {
         setColumns(newColumnStructure);
         toggleManageColumns();
+    };
+
+    //Local state value for hiding/unhiding export data overlay
+    const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
+
+    //Toggle export overlay show/hide state value based on UI clicks
+    const toggleExportDataOverlay = () => {
+        setIsExportOverlayOpen(!isExportOverlayOpen);
     };
 
     //Column filter added for all columns by default
@@ -259,19 +268,26 @@ const Customgrid = memo((props) => {
                         originalColumns={originalColumns}
                         applyGroupSort={applyGroupSort}
                     />
+                    <ExportData
+                        isExportOverlayOpen={isExportOverlayOpen}
+                        toggleExportDataOverlay={toggleExportDataOverlay}
+                        rows={rows}
+                        originalColumns={originalColumns}
+                    />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>
                         <i className="fa fa-filter" aria-hidden="true"></i>
                     </div>
                     <div className="filter-icon bulk-select" onClick={bulkSelector}>
                         <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
-
                     <div className="filter-icon bulk-select" onClick={toggleGroupSortOverLay}>
                         <i className="fa fa-sort-amount-desc" aria-hidden="true"></i>
                     </div>
-
                     <div className="filter-icon manage-columns" onClick={toggleManageColumns}>
                         <i className="fa fa-columns" aria-hidden="true"></i>
+                    </div>
+                    <div className="filter-icon manage-columns" onClick={toggleExportDataOverlay}>
+                        <i className="fa fa-share-alt" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
