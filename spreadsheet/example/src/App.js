@@ -474,7 +474,8 @@ const App = () => {
     });
     if (!filteredRows.length) {
       setStatus("invalid");
-      setData(rows);
+      setData([]);
+      // setRow("");
     } else {
       setData(filteredRows);
       setStatus("");
@@ -515,6 +516,7 @@ const App = () => {
   };
   const closeWarningStatus = () => {
     setStatus("");
+    setData(rows);
   };
   useEffect(() => {
     //Make API call to fetch initial set of data, uncomment below code to use API call
@@ -524,7 +526,7 @@ const App = () => {
     setData(rows);
   }, [rows]);
 
-  if (data && data.length) {
+  if (data) {
     return (
       <div>
         <Spreadsheet
@@ -544,7 +546,11 @@ const App = () => {
         />
       </div>
     );
-  } else return <h2>Loading Data</h2>;
+  } else if (data === undefined) {
+    return <h2>Loading Data</h2>;
+  } else {
+    return null;
+  }
 };
 
 export default App;

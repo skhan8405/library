@@ -47,7 +47,7 @@ class spreadsheet extends Component {
       searchIconDisplay: "",
       searchValue: "",
       filter: {},
-      rows: this.props.rows,
+      rows: JSON.parse(JSON.stringify(this.props.rows)),
       selectedIndexes: [],
       junk: {},
       topLeft: {},
@@ -339,6 +339,7 @@ class spreadsheet extends Component {
     };
     this.setState({
       rows: [...data].sort(comparer),
+      selectedIndexes: [],
     });
     return sortDirection === "NONE" ? data : this.state.rows;
   };
@@ -546,7 +547,7 @@ class spreadsheet extends Component {
 
   clearAllSortingParams = () => {
     this.setState({
-      rows: this.props.rows,
+    rows: JSON.parse(JSON.stringify(this.props.rows))
     });
   };
 
