@@ -21,7 +21,7 @@ const App = () => {
     {
       key: "flightno",
       name: "FlightNo",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -33,7 +33,7 @@ const App = () => {
     {
       key: "date",
       name: "Date",
-      draggable: true,
+      draggable: false,
       editor: "DatePicker",
       formulaApplicable: false,
       sortable: true,
@@ -45,7 +45,7 @@ const App = () => {
     {
       key: "segmentfrom",
       name: "Segment From",
-      draggable: true,
+      draggable: false,
       editor: "DropDown",
       formulaApplicable: false,
       sortable: true,
@@ -57,7 +57,7 @@ const App = () => {
     {
       key: "revenue",
       name: "Revenue",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
@@ -69,7 +69,7 @@ const App = () => {
     {
       key: "yeild",
       name: "Yeild",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
@@ -81,7 +81,7 @@ const App = () => {
     {
       key: "segmentto",
       name: "Segment To",
-      draggable: true,
+      draggable: false,
       editor: "DropDown",
       formulaApplicable: false,
       sortable: true,
@@ -93,7 +93,7 @@ const App = () => {
     {
       key: "flightModel",
       name: "Flight Model",
-      draggable: true,
+      draggable: false,
       formulaApplicable: false,
       sortable: true,
       resizable: true,
@@ -104,7 +104,7 @@ const App = () => {
     {
       key: "bodyType",
       name: "Body Type",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -116,7 +116,7 @@ const App = () => {
     {
       key: "type",
       name: "Type",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -128,7 +128,7 @@ const App = () => {
     {
       key: "startTime",
       name: "Start Time",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -140,7 +140,7 @@ const App = () => {
     {
       key: "endTime",
       name: "End Time",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -152,7 +152,7 @@ const App = () => {
     {
       key: "status",
       name: "Status",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -164,7 +164,7 @@ const App = () => {
     {
       key: "additionalStatus",
       name: "Additional Status",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -176,7 +176,7 @@ const App = () => {
     {
       key: "timeStatus",
       name: "Time Status",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -188,7 +188,7 @@ const App = () => {
     {
       key: "weightpercentage",
       name: "Weight Percentage",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -200,7 +200,7 @@ const App = () => {
     {
       key: "weightvalue",
       name: "Weight Value",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
@@ -212,7 +212,7 @@ const App = () => {
     {
       key: "volumepercentage",
       name: "Volume Percentage",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: true,
       sortable: true,
@@ -224,7 +224,7 @@ const App = () => {
     {
       key: "volumevalue",
       name: "Volume Value",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -236,7 +236,7 @@ const App = () => {
     {
       key: "uldposition1",
       name: "uldposition1",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -248,7 +248,7 @@ const App = () => {
     {
       key: "uldvalue1",
       name: "uldvalue1",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -260,7 +260,7 @@ const App = () => {
     {
       key: "uldposition2",
       name: "uldposition2",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -272,7 +272,7 @@ const App = () => {
     {
       key: "uldvalue2",
       name: "uldvalue2",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -284,7 +284,7 @@ const App = () => {
     {
       key: "uldposition3",
       name: "uldposition3",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -296,7 +296,7 @@ const App = () => {
     {
       key: "uldvalue3",
       name: "uldvalue3",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -308,7 +308,7 @@ const App = () => {
     {
       key: "uldposition4",
       name: "uldposition4",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -320,7 +320,7 @@ const App = () => {
     {
       key: "uldvalue4",
       name: "uldvalue4",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -333,7 +333,7 @@ const App = () => {
     {
       key: "sr",
       name: "SR",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -345,7 +345,7 @@ const App = () => {
     {
       key: "queuedBookingSR",
       name: "Queued Booking SR",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,
@@ -357,7 +357,7 @@ const App = () => {
     {
       key: "queuedBookingvolume",
       name: "Queued Booking Volume",
-      draggable: true,
+      draggable: false,
       editor: "Text",
       formulaApplicable: false,
       sortable: true,

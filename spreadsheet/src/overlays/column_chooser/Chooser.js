@@ -4,6 +4,7 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faAlignJustify } from "@fortawesome/free-solid-svg-icons";
 import ColumnsList from "./columnsList";
+import PropTypes from "prop-types";
 
 class ColumnReordering extends React.Component {
   constructor(props) {
@@ -213,10 +214,12 @@ class ColumnReordering extends React.Component {
       columnReorderEntityList: existingColumnReorderEntityList,
     });
   };
+
   handleReorderList = (reordered) => {
     this.props.handleheaderNameList(reordered);
   };
-  render(props) {
+
+  render() {
     return (
       <div className="columns--grid" ref={this.setWrapperRef}>
         <div className="column__grid">
@@ -348,5 +351,15 @@ class ColumnReordering extends React.Component {
     );
   }
 }
+
+ColumnReordering.propTypes = {
+  headerKeys: PropTypes.any,
+  columns: PropTypes.any,
+  existingPinnedHeadersList: PropTypes.any,
+  maxLeftPinnedColumn: PropTypes.any,
+  closeColumnReOrdering: PropTypes.any,
+  handleheaderNameList: PropTypes.any,
+  updateTableAsPerRowChooser: PropTypes.any,
+};
 
 export default ColumnReordering;
