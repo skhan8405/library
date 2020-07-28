@@ -164,7 +164,7 @@ const ColumnReordering = memo((props) => {
                         <div className="column__settings">
                             <div className="column__header">
                                 <div className="column__headerTxt">
-                                    <strong>Column Setting</strong>
+                                    <strong>Column Settings</strong>
                                     {isErrorDisplayed ? (
                                         <strong style={{ marginLeft: "10px", color: "red" }}>Select at least one column</strong>
                                     ) : null}
