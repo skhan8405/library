@@ -193,7 +193,7 @@ const ColumnReordering = memo((props) => {
                                     <strong>Column Settings</strong>
                                     {isErrorDisplayed ? (
                                         <strong style={{ marginLeft: "10px", color: "red" }}>
-                                            Select at least one column (other than remarks)
+                                            Select at least one column (other than {remarksColumn[0].Header})
                                         </strong>
                                     ) : null}
                                 </div>
