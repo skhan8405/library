@@ -210,7 +210,7 @@ const ExportData = memo((props) => {
                                 <div>
                                     <input
                                         type="text"
-                                        placeholder="Search export"
+                                        placeholder="Search column"
                                         className="custom__ctrl"
                                         onChange={filterColumnsList}
                                     ></input>
@@ -253,7 +253,7 @@ const ExportData = memo((props) => {
                             <div className="export__as">Export As</div>
                             <div className="export__body">
                                 <div className="export__reorder">
-                                    <div className="">
+                                    <div className="check-wrap">
                                         <input type="checkbox" id="fileType[]" name="fileType[]" value="pdf"></input>
                                     </div>
                                     <div className="export__file">
@@ -263,7 +263,7 @@ const ExportData = memo((props) => {
                                     </div>
                                 </div>
                                 <div className="export__reorder">
-                                    <div className="">
+                                    <div className="check-wrap">
                                         <input type="checkbox" id="fileType[]" name="fileType[]" value="excel"></input>
                                     </div>
                                     <div className="export__file">
@@ -273,7 +273,7 @@ const ExportData = memo((props) => {
                                     </div>
                                 </div>
                                 <div className="export__reorder">
-                                    <div className="">
+                                    <div className="check-wrap">
                                         <input type="checkbox" id="fileType[]" name="fileType[]" value="csv"></input>
                                     </div>
                                     <div className="export__file">
