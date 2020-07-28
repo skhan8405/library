@@ -99,9 +99,7 @@ const GroupSort = memo((props) => {
                     <div className="sort__grid">
                         <div className="sort__settings">
                             <div className="sort__header">
-                                <div className="sort__headerTxt">
-                                    <strong>Sort </strong>
-                                </div>
+                                <div className="sort__headerTxt">Sort</div>
 
                                 <div className="sort__close">
                                     <i className="fa fa-times" aria-hidden="true" onClick={toggleGroupSortOverLay}></i>
@@ -127,7 +125,7 @@ const GroupSort = memo((props) => {
                             </div>
                             <div className="sort__new">
                                 <div className="sort__section" type="button" onClick={addSortingOptions}>
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                                    <span>+</span>
                                     <div className="sort__txt">New Sort</div>
                                 </div>
                             </div>

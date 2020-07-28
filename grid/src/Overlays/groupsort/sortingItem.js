@@ -1,6 +1,8 @@
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
+import SortCopy from "../../Images/SortCopy.svg";
+import SortDelete from "../../Images/SortDelete.svg";
 
 const SortItem = ({
     id,
@@ -139,7 +141,9 @@ const SortItem = ({
                 </div>
 
                 <div className="sort__icon" type={"button"} onClick={copySort}>
-                    <i className="fa fa-clone"></i>
+                    <i>
+                        <img src={SortCopy} alt="copy sort" />
+                    </i>
                 </div>
             </div>
             <div className="sort__reorder">
@@ -147,7 +151,9 @@ const SortItem = ({
                     <div>&nbsp;</div>
                 </div>
                 <div className="sort__icon" type={"button"} onClick={deleteSort}>
-                    <i className="fa fa-trash"></i>
+                    <i>
+                        <img src={SortDelete} alt="copy sort" />
+                    </i>
                 </div>
             </div>
         </div>
