@@ -95,7 +95,7 @@ const ExportData = memo((props) => {
 
         doc.setFontSize(15);
 
-        const title = "iCargo Report";
+        const title = "iCargo Neo Report";
         const headers = [
             managedColumns.map((column) => {
                 return column.Header;
@@ -110,7 +110,7 @@ const ExportData = memo((props) => {
 
         doc.text(title, marginLeft, 40);
         doc.autoTable(content);
-        doc.save("report.pdf");
+        doc.save("iCargo Neo Report.pdf");
 
         isDownload = false;
     };
@@ -118,7 +118,7 @@ const ExportData = memo((props) => {
     const downloadCSVFile = (filteredRowValue) => {
         const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
         const fileExtension = ".csv";
-        const fileName = "CSVDownload";
+        const fileName = "iCargo Neo Report";
         const ws = XLSX.utils.json_to_sheet(filteredRowValue);
         const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
         const excelBuffer = XLSX.write(wb, { bookType: "csv", type: "array" });
@@ -129,7 +129,7 @@ const ExportData = memo((props) => {
     const downloadXLSFile = (filteredRowValue) => {
         const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
         const fileExtension = ".xlsx";
-        const fileName = "XLSXDownload";
+        const fileName = "iCargo Neo Report";
         const ws = XLSX.utils.json_to_sheet(filteredRowValue);
         const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
         const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
