@@ -117,11 +117,9 @@ const GroupSort = memo((props) => {
                                         deleteSortOption={deleteSortOption}
                                     />
                                 </DndProvider>
-                                <div className="sort-warning">
-                                    {isErrorDisplayed ? (
-                                        <span style={{ color: "red" }}>Duplicate sort options found.</span>
-                                    ) : null}
-                                </div>
+                            </div>
+                            <div className="sort-warning">
+                                {isErrorDisplayed ? <span>Duplicate sort options found.</span> : null}
                             </div>
                             <div className="sort__new">
                                 <div className="sort__section" type="button" onClick={addSortingOptions}>

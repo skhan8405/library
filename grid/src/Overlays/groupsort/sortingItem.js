@@ -81,19 +81,12 @@ const SortItem = ({
     return (
         <div className="sort__bodyContent" style={{ opacity }}>
             <div className="sort__reorder">
-                <div className="">
-                    <div>&nbsp;</div>
-                </div>
-
                 <div ref={(node) => drag(drop(node))} style={{ cursor: "move" }} className="">
                     <i className="fa fa-navicon"></i>
                 </div>
             </div>
 
             <div className="sort__reorder">
-                <div className="">
-                    <div>Sort by</div>
-                </div>
                 <div className="sort__file">
                     <select className="custom__ctrl" onChange={changeSortByOptions} value={sortOption.sortBy}>
                         {originalColumns.map((orgItem, index) => (
@@ -105,9 +98,6 @@ const SortItem = ({
                 </div>
             </div>
             <div className="sort__reorder">
-                <div className="">
-                    <div>Sort on</div>
-                </div>
                 <div className="sort__file">
                     <select className="custom__ctrl" onChange={changeSortOnOptions} value={sortOption.sortOn}>
                         {getInncerCellsOfColumn(sortOption.sortBy) && getInncerCellsOfColumn(sortOption.sortBy).length > 0 ? (
@@ -125,9 +115,6 @@ const SortItem = ({
                 </div>
             </div>
             <div className="sort__reorder">
-                <div className="">
-                    <div>Order</div>
-                </div>
                 <div className="sort__file">
                     <select className="custom__ctrl" value={sortOption.order} onChange={changeSortOrderOptions}>
                         <option>Ascending</option>
@@ -136,10 +123,6 @@ const SortItem = ({
                 </div>
             </div>
             <div className="sort__reorder">
-                <div className="">
-                    <div>&nbsp;</div>
-                </div>
-
                 <div className="sort__icon" type={"button"} onClick={copySort}>
                     <i>
                         <img src={SortCopy} alt="copy sort" />
@@ -147,9 +130,6 @@ const SortItem = ({
                 </div>
             </div>
             <div className="sort__reorder">
-                <div className="">
-                    <div>&nbsp;</div>
-                </div>
                 <div className="sort__icon" type={"button"} onClick={deleteSort}>
                     <i>
                         <img src={SortDelete} alt="copy sort" />

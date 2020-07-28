@@ -32,6 +32,13 @@ const SortingList = (props) => {
     return (
         <React.Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
+                {sortOptions && sortOptions.length > 0 ? (
+                    <ul>
+                        <li>Sort By</li>
+                        <li>Sort On</li>
+                        <li>Order</li>
+                    </ul>
+                ) : null}
                 {sortOptions.map((sortOption, index) => {
                     return (
                         <SortItem

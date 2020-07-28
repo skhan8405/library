@@ -6,8 +6,8 @@
     font-size: 14px;
     color: #1f567e;
     line-height: 32px;
-    top: 50px;
-    right: 105px;
+    top: 56px;
+    right: 25px;
     transition: 0.5s;
     background: #fff;
     border: 1px solid #ddd;
@@ -54,10 +54,10 @@
     cursor: pointer;
 }
 .sorts--grid .sort__grid .sort__settings .sort__body {
-    padding: 10px;
+    margin: 10px;
     min-height: 50px;
     overflow-y: auto;
-    max-height: 300px;
+    max-height: 150px;
 }
 .sorts--grid .sort__grid .sort__settings .sort__body .sort__bodyContent {
     display: flex;
@@ -81,6 +81,22 @@
     font-size: 12px;
     font-weight: normal;
 }
+.sorts--grid .sort__grid .sort__settings .sort__body ul {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+.sorts--grid .sort__grid .sort__settings .sort__body ul li {
+    font-size: 12px;
+    position: relative;
+    left: -28px;
+}
+.sorts--grid .sort__grid .sort__settings .sort__body ul li:nth-child(2) {
+    left: -58px;
+}
+.sorts--grid .sort__grid .sort__settings .sort__body ul li:nth-child(3) {
+    left: -88px;
+}
 .sorts--grid .sort__grid .sort__settings .sort__body .sort__reorder {
     padding: 0px 6px;
     font-size: 12px;
@@ -90,17 +106,13 @@
     font-size: 14px;
 }
 .sorts--grid .sort__grid .sort__settings .sort__body .sort__reorder .sort__icon {
-    font-size: 15px;
-    color: #7691a5;
+    margin: 2px 0 0;
     cursor: pointer;
-}
-.sorts--grid .sort__grid .sort__settings .sort__body .sort__reorder .sort__icon .fa-trash {
-    font-size: 17px;
 }
 .sorts--grid .sort__grid .sort__settings .sort__body .sort__reorder .sort__file .custom__ctrl {
     width: 120px;
     height: 28px;
-    border-radius: 5px;
+    border-radius: 3px;
     border-color: #d7d7d7;
     color: rgba(26, 72, 105, 0.6);
 }
@@ -133,7 +145,8 @@
     font-size: 15px;
 }
 .sort-warning {
-    margin-top: 15px;
-    padding-left: 62px;
+    margin-bottom: 10px;
+    padding-left: 43px;
+    color: red;
 }
 /* Sorting CSS ends here... @author Krishna */
