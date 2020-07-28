@@ -39,14 +39,18 @@ const ColumnReordering = memo((props) => {
 
     const filterColumnsList = (event) => {
         let { value } = event ? event.target : "";
-        value = value.toLowerCase();
+        value = value ? value.toLowerCase() : "";
         if (value != "") {
             setSearchedColumns(
                 originalColumns
                     .filter((column) => {
                         return column.Header.toLowerCase().includes(value);
                     })
-                    .concat(getRemarksColumnIfAvailable())
+                    .concat(
+                        getRemarksColumnIfAvailable().filter((column) => {
+                            return column.Header.toLowerCase().includes(value);
+                        })
+                    )
             );
         } else {
             setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
