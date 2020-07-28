@@ -6,11 +6,22 @@ import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 
 const ExportData = memo((props) => {
-    const { isExportOverlayOpen, toggleExportDataOverlay, rows, originalColumns } = props;
+    const { isExportOverlayOpen, toggleExportDataOverlay, rows, originalColumns, isExpandContentAvailable } = props;
 
-    const [managedColumns, setManagedColumns] = useState(originalColumns);
-    const [searchedColumns, setSearchedColumns] = useState(originalColumns);
+    const remarksColumn = [
+        {
+            Header: "Remarks"
+        }
+    ];
+    const getRemarksColumnIfAvailable = () => {
+        return isExpandContentAvailable ? remarksColumn : [];
+    };
 
+    const updatedColumns = [...originalColumns].concat(getRemarksColumnIfAvailable());
+
+    const [managedColumns, setManagedColumns] = useState(updatedColumns);
+    const [searchedColumns, setSearchedColumns] = useState(updatedColumns);
+    const [downloadTypes, setDownloadTypes] = useState([]);
     const [warning, setWarning] = useState("");
 
     let isDownload = false;
@@ -19,16 +30,10 @@ const ExportData = memo((props) => {
         isDownload = true;
         let filteredRow = [];
         let filteredRowValues = [];
-        let downLaodFileType = [];
-        let downLaodFileTypeCount = document.getElementsByName("fileType[]").length;
-        for (let i = 0; i < downLaodFileTypeCount; i++) {
-            if (document.getElementsByName("fileType[]")[i].checked == true) {
-                downLaodFileType.push(document.getElementsByName("fileType[]")[i].value);
-            }
-        }
 
         setWarning("");
-        if (managedColumns.length > 0 && downLaodFileType.length > 0) {
+
+        if (managedColumns.length > 0 && downloadTypes.length > 0) {
             rows.forEach((rowDetails) => {
                 let row = rowDetails.original;
                 const keys = Object.getOwnPropertyNames(row);
@@ -60,18 +65,22 @@ const ExportData = memo((props) => {
                 filteredRowValues.push(rowFilteredValues);
             });
 
-            downLaodFileType.map((item) => {
-                if (item === "pdf") downloadPDF(filteredRowValues);
-                else if (item === "excel") downloadXLSFile(filteredRow);
-                else downloadCSVFile(filteredRow);
+            downloadTypes.map((item) => {
+                if (item === "pdf") {
+                    downloadPDF(filteredRowValues);
+                } else if (item === "excel") {
+                    downloadXLSFile(filteredRow);
+                } else {
+                    downloadCSVFile(filteredRow);
+                }
             });
         } else {
-            if (managedColumns.length === 0 && downLaodFileType.length === 0) {
-                setWarning("You haven't selected File Type & Column");
+            if (managedColumns.length === 0 && downloadTypes.length === 0) {
+                setWarning("Select at least one column and a file type");
             } else if (managedColumns.length === 0) {
-                setWarning("You haven't selected Column ");
-            } else if (downLaodFileType.length === 0) {
-                setWarning("You haven't selected File Type");
+                setWarning("Select at least one column");
+            } else if (downloadTypes.length === 0) {
+                setWarning("Select at least one file type");
             }
         }
     };
@@ -130,15 +139,21 @@ const ExportData = memo((props) => {
 
     const filterColumnsList = (event) => {
         let { value } = event ? event.target : "";
-        value = value.toLowerCase();
+        value = value ? value.toLowerCase() : "";
         if (value != "") {
             setSearchedColumns(
-                originalColumns.filter((column) => {
-                    return column.Header.toLowerCase().includes(value);
-                })
+                originalColumns
+                    .filter((column) => {
+                        return column.Header.toLowerCase().includes(value);
+                    })
+                    .concat(
+                        getRemarksColumnIfAvailable().filter((column) => {
+                            return column.Header.toLowerCase().includes(value);
+                        })
+                    )
             );
         } else {
-            setSearchedColumns(originalColumns);
+            setSearchedColumns(updatedColumns);
         }
     };
 
@@ -155,7 +170,7 @@ const ExportData = memo((props) => {
 
     const selectAllColumns = (event) => {
         if (event.target.checked) {
-            setManagedColumns(searchedColumns);
+            setManagedColumns(updatedColumns);
         } else {
             setManagedColumns([]);
         }
@@ -168,17 +183,17 @@ const ExportData = memo((props) => {
         //If column checkbox is checked
         if (checked) {
             //Find the index of selected column from original column array and also find the user selected column
-            let indexOfColumnToAdd = originalColumns.findIndex((column) => {
+            let indexOfColumnToAdd = updatedColumns.findIndex((column) => {
                 return column.Header == value;
             });
-            const itemToAdd = originalColumns[indexOfColumnToAdd];
+            const itemToAdd = updatedColumns[indexOfColumnToAdd];
 
             //Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
             //Find index of that previous column and push the new column to add in that position
             let prevItemIndex = -1;
             while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
                 prevItemIndex = managedColumns.findIndex((column) => {
-                    return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+                    return column.Header == updatedColumns[indexOfColumnToAdd - 1].Header;
                 });
                 indexOfColumnToAdd = indexOfColumnToAdd - 1;
             }
@@ -190,6 +205,19 @@ const ExportData = memo((props) => {
             setManagedColumns(
                 managedColumns.filter((column) => {
                     return column.Header !== value;
+                })
+            );
+        }
+    };
+
+    const changeDownloadType = (event) => {
+        const { value, checked } = event ? event.currentTarget : "";
+        if (checked) {
+            setDownloadTypes(downloadTypes.concat([value]));
+        } else {
+            setDownloadTypes(
+                downloadTypes.filter((type) => {
+                    return type !== value;
                 })
             );
         }
@@ -254,7 +282,13 @@ const ExportData = memo((props) => {
                             <div className="export__body">
                                 <div className="export__reorder">
                                     <div className="check-wrap">
-                                        <input type="checkbox" id="fileType[]" name="fileType[]" value="pdf"></input>
+                                        <input
+                                            type="checkbox"
+                                            id="chk_pdf"
+                                            value="pdf"
+                                            checked={downloadTypes.includes("pdf")}
+                                            onChange={changeDownloadType}
+                                        ></input>
                                     </div>
                                     <div className="export__file">
                                         <i className="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -264,7 +298,13 @@ const ExportData = memo((props) => {
                                 </div>
                                 <div className="export__reorder">
                                     <div className="check-wrap">
-                                        <input type="checkbox" id="fileType[]" name="fileType[]" value="excel"></input>
+                                        <input
+                                            type="checkbox"
+                                            id="chk_excel"
+                                            value="excel"
+                                            checked={downloadTypes.includes("excel")}
+                                            onChange={changeDownloadType}
+                                        ></input>
                                     </div>
                                     <div className="export__file">
                                         <i className="fa fa-file-excel-o" aria-hidden="true"></i>
@@ -274,7 +314,13 @@ const ExportData = memo((props) => {
                                 </div>
                                 <div className="export__reorder">
                                     <div className="check-wrap">
-                                        <input type="checkbox" id="fileType[]" name="fileType[]" value="csv"></input>
+                                        <input
+                                            type="checkbox"
+                                            id="chk_csv"
+                                            value="csv"
+                                            checked={downloadTypes.includes("csv")}
+                                            onChange={changeDownloadType}
+                                        ></input>
                                     </div>
                                     <div className="export__file">
                                         <i className="fa fa-file-text-o" aria-hidden="true"></i>

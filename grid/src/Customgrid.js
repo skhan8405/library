@@ -280,6 +280,7 @@ const Customgrid = memo((props) => {
                         toggleExportDataOverlay={toggleExportDataOverlay}
                         rows={rows}
                         originalColumns={originalColumns}
+                        isExpandContentAvailable={isExpandContentAvailable}
                     />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>
                         <i className="fa fa-filter" aria-hidden="true"></i>
