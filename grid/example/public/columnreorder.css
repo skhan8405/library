@@ -118,7 +118,7 @@
     font-size: 12px;
 }
 .columns--grid .column__grid .column__settings .column__body .column__reorder.full-width {
-    width: 100%;
+    width: 95%;
     max-width: none;
     height: auto;
     min-height: 80px;
