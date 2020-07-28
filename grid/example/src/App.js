@@ -381,48 +381,51 @@ const App = () => {
         });
     }
 
-    //Return data that has to be shown in the row expanded region
-    const renderExpandedContent = (row) => {
-        const { remarks, details } = row.original;
-        if (isDesktop) {
-            return remarks;
-        } else {
-            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
-            let timeStatusArray = timeStatus.split(" ");
-            const timeValue = timeStatusArray.shift();
-            const timeText = timeStatusArray.join(" ");
-            return (
-                <div className="details-wrap content">
-                    <ul>
-                        <li>{remarks}</li>
-                        <li className="divider">|</li>
-                    </ul>
-                    <ul>
-                        <li>
-                            {startTime} – {endTime}
-                        </li>
-                        <li className="divider">|</li>
-                        <li>
-                            <span>{status}</span>
-                        </li>
-                        <li className="divider">|</li>
-                        <li>{additionalStatus}</li>
-                        <li className="divider">|</li>
-                        <li>{flightModel}</li>
-                        <li className="divider">|</li>
-                        <li>{bodyType}</li>
-                        <li className="divider">|</li>
-                        <li>
-                            <span>{type}</span>
-                        </li>
-                        <li className="divider">|</li>
-                        <li>
-                            <strong>{timeValue} </strong>
-                            <span>{timeText}</span>
-                        </li>
-                    </ul>
-                </div>
-            );
+    const additionalColumn = {
+        Header: "Remarks",
+        innerCells: isDesktop ? ["remarks"] : ["remarks", "details"],
+        Cell: (row) => {
+            const { remarks, details } = row.original;
+            if (isDesktop) {
+                return remarks;
+            } else {
+                const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
+                let timeStatusArray = timeStatus.split(" ");
+                const timeValue = timeStatusArray.shift();
+                const timeText = timeStatusArray.join(" ");
+                return (
+                    <div className="details-wrap content">
+                        <ul>
+                            <li>{remarks}</li>
+                            <li className="divider">|</li>
+                        </ul>
+                        <ul>
+                            <li>
+                                {startTime} – {endTime}
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{status}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>{additionalStatus}</li>
+                            <li className="divider">|</li>
+                            <li>{flightModel}</li>
+                            <li className="divider">|</li>
+                            <li>{bodyType}</li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{type}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <strong>{timeValue} </strong>
+                                <span>{timeText}</span>
+                            </li>
+                        </ul>
+                    </div>
+                );
+            }
         }
     };
 
@@ -533,6 +536,7 @@ const App = () => {
             gridHeight={gridHeight}
             gridWidth={gridWidth}
             columns={columns}
+            additionalColumn={additionalColumn}
             fetchData={fetchData}
             rowEditOverlay={RowEditOverlay}
             rowEditData={{
@@ -544,7 +548,6 @@ const App = () => {
             globalSearchLogic={globalSearchLogic}
             selectBulkData={selectBulkData}
             calculateRowHeight={calculateRowHeight}
-            renderExpandedContent={renderExpandedContent}
         />
     );
 };

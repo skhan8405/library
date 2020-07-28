@@ -7,15 +7,11 @@ import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
 
 const ColumnReordering = memo((props) => {
-    const { isManageColumnOpen, toggleManageColumns, originalColumns, isExpandContentAvailable } = props;
+    const { isManageColumnOpen, toggleManageColumns, originalColumns, isExpandContentAvailable, additionalColumn } = props;
 
-    const remarksColumn = [
-        {
-            Header: "Remarks"
-        }
-    ];
+    const additionalColumnHeader = additionalColumn && additionalColumn.length ? additionalColumn[0].Header : "";
     const getRemarksColumnIfAvailable = () => {
-        return isExpandContentAvailable ? remarksColumn : [];
+        return isExpandContentAvailable ? additionalColumn : [];
     };
 
     const [managedColumns, setManagedColumns] = useState(originalColumns);
@@ -62,7 +58,7 @@ const ColumnReordering = memo((props) => {
     };
 
     const isCheckboxSelected = (header) => {
-        if (header === remarksColumn[0].Header) {
+        if (header === additionalColumnHeader) {
             return remarksColumnToManage.length > 0;
         } else if (header === "Select All") {
             return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
@@ -88,9 +84,9 @@ const ColumnReordering = memo((props) => {
         const { currentTarget } = event;
         const { checked, value } = currentTarget;
 
-        if (value === remarksColumn[0].Header) {
+        if (value === additionalColumnHeader) {
             if (checked) {
-                setRemarksColumnToManage(remarksColumn);
+                setRemarksColumnToManage(additionalColumn);
             } else {
                 setRemarksColumnToManage([]);
             }
@@ -197,7 +193,7 @@ const ColumnReordering = memo((props) => {
                                     <strong>Column Settings</strong>
                                     {isErrorDisplayed ? (
                                         <strong style={{ marginLeft: "10px", color: "red" }}>
-                                            Select at least one column (other than {remarksColumn[0].Header})
+                                            Select at least one column (other than {additionalColumnHeader})
                                         </strong>
                                     ) : null}
                                 </div>

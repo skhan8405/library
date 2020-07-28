@@ -29,6 +29,7 @@ const Customgrid = memo((props) => {
         gridWidth,
         managableColumns,
         originalColumns,
+        additionalColumn,
         data,
         originalData,
         rowEditOverlay,
@@ -266,6 +267,7 @@ const Customgrid = memo((props) => {
                         toggleManageColumns={toggleManageColumns}
                         originalColumns={originalColumns}
                         isExpandContentAvailable={isExpandContentAvailable}
+                        additionalColumn={[additionalColumn]}
                         updateColumnStructure={updateColumnStructure}
                     />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />
@@ -281,6 +283,7 @@ const Customgrid = memo((props) => {
                         rows={rows}
                         originalColumns={originalColumns}
                         isExpandContentAvailable={isExpandContentAvailable}
+                        additionalColumn={[additionalColumn]}
                     />
                     <div className="filter-icon keyword-search" onClick={toggleColumnFilter}>
                         <i className="fa fa-filter" aria-hidden="true"></i>

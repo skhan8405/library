@@ -6,15 +6,17 @@ import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 
 const ExportData = memo((props) => {
-    const { isExportOverlayOpen, toggleExportDataOverlay, rows, originalColumns, isExpandContentAvailable } = props;
+    const {
+        isExportOverlayOpen,
+        toggleExportDataOverlay,
+        rows,
+        originalColumns,
+        isExpandContentAvailable,
+        additionalColumn
+    } = props;
 
-    const remarksColumn = [
-        {
-            Header: "Remarks"
-        }
-    ];
     const getRemarksColumnIfAvailable = () => {
-        return isExpandContentAvailable ? remarksColumn : [];
+        return isExpandContentAvailable ? additionalColumn : [];
     };
 
     const updatedColumns = [...originalColumns].concat(getRemarksColumnIfAvailable());
@@ -41,7 +43,10 @@ const ExportData = memo((props) => {
                 let rowFilteredValues = [];
                 keys.forEach(function (key) {
                     managedColumns.forEach((columnName) => {
-                        if (columnName.accessor === key) {
+                        if (
+                            columnName.accessor === key ||
+                            (columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key))
+                        ) {
                             let columnValue = "";
                             if (typeof row[key] === "object") {
                                 if (row[key].length === undefined)
