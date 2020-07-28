@@ -359,19 +359,30 @@ var ColumnsList = function ColumnsList(props) {
 var ColumnReordering = React.memo(function (props) {
   var isManageColumnOpen = props.isManageColumnOpen,
       toggleManageColumns = props.toggleManageColumns,
-      originalColumns = props.originalColumns;
+      originalColumns = props.originalColumns,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      additionalColumn = props.additionalColumn;
+  var additionalColumnHeader = additionalColumn && additionalColumn.length ? additionalColumn[0].Header : "";
+
+  var getRemarksColumnIfAvailable = function getRemarksColumnIfAvailable() {
+    return isExpandContentAvailable ? additionalColumn : [];
+  };
 
   var _useState = React.useState(originalColumns),
       managedColumns = _useState[0],
       setManagedColumns = _useState[1];
 
-  var _useState2 = React.useState(originalColumns),
+  var _useState2 = React.useState([].concat(originalColumns).concat(getRemarksColumnIfAvailable())),
       searchedColumns = _useState2[0],
       setSearchedColumns = _useState2[1];
 
-  var _useState3 = React.useState(false),
-      isErrorDisplayed = _useState3[0],
-      setIsErrorDisplayed = _useState3[1];
+  var _useState3 = React.useState(getRemarksColumnIfAvailable),
+      remarksColumnToManage = _useState3[0],
+      setRemarksColumnToManage = _useState3[1];
+
+  var _useState4 = React.useState(false),
+      isErrorDisplayed = _useState4[0],
+      setIsErrorDisplayed = _useState4[1];
 
   var HTML5toTouch = {
     backends: [{
@@ -390,14 +401,16 @@ var ColumnReordering = React.memo(function (props) {
     var _ref = event ? event.target : "",
         value = _ref.value;
 
-    value = value.toLowerCase();
+    value = value ? value.toLowerCase() : "";
 
     if (value != "") {
       setSearchedColumns(originalColumns.filter(function (column) {
         return column.Header.toLowerCase().includes(value);
-      }));
+      }).concat(getRemarksColumnIfAvailable().filter(function (column) {
+        return column.Header.toLowerCase().includes(value);
+      })));
     } else {
-      setSearchedColumns(originalColumns);
+      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
     }
   };
 
@@ -406,8 +419,10 @@ var ColumnReordering = React.memo(function (props) {
   };
 
   var isCheckboxSelected = function isCheckboxSelected(header) {
-    if (header === "Select All") {
-      return managedColumns.length === searchedColumns.length;
+    if (header === additionalColumnHeader) {
+      return remarksColumnToManage.length > 0;
+    } else if (header === "Select All") {
+      return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
     } else {
       var selectedColumn = managedColumns.filter(function (column) {
         return column.Header === header;
@@ -418,9 +433,11 @@ var ColumnReordering = React.memo(function (props) {
 
   var selectAllColumns = function selectAllColumns(event) {
     if (event.currentTarget.checked) {
-      setManagedColumns(searchedColumns);
+      setManagedColumns(originalColumns);
+      setRemarksColumnToManage(getRemarksColumnIfAvailable());
     } else {
       setManagedColumns([]);
+      setRemarksColumnToManage([]);
     }
   };
 
@@ -429,36 +446,46 @@ var ColumnReordering = React.memo(function (props) {
     var checked = currentTarget.checked,
         value = currentTarget.value;
 
-    if (checked) {
-      (function () {
-        var indexOfColumnToAdd = originalColumns.findIndex(function (column) {
-          return column.Header == value;
-        });
-        var itemToAdd = originalColumns[indexOfColumnToAdd];
-        var prevItemIndex = -1;
-
-        while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-          prevItemIndex = managedColumns.findIndex(function (column) {
-            return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
-          });
-          indexOfColumnToAdd = indexOfColumnToAdd - 1;
-        }
-
-        var newColumnsList = managedColumns.slice(0);
-        newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
-        setManagedColumns(newColumnsList);
-      })();
+    if (value === additionalColumnHeader) {
+      if (checked) {
+        setRemarksColumnToManage(additionalColumn);
+      } else {
+        setRemarksColumnToManage([]);
+      }
     } else {
-      setManagedColumns(managedColumns.filter(function (column) {
-        return column.Header !== value;
-      }));
+      if (checked) {
+        (function () {
+          var indexOfColumnToAdd = originalColumns.findIndex(function (column) {
+            return column.Header == value;
+          });
+          var itemToAdd = originalColumns[indexOfColumnToAdd];
+          var prevItemIndex = -1;
+
+          while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+            prevItemIndex = managedColumns.findIndex(function (column) {
+              return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+            });
+            indexOfColumnToAdd = indexOfColumnToAdd - 1;
+          }
+
+          var newColumnsList = managedColumns.slice(0);
+          newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
+          setManagedColumns(newColumnsList);
+        })();
+      } else {
+        setManagedColumns(managedColumns.filter(function (column) {
+          return column.Header !== value;
+        }));
+      }
     }
   };
 
   var doColumnUpdate = function doColumnUpdate() {
+    setIsErrorDisplayed(false);
+
     if (managedColumns && managedColumns.length > 0) {
-      setSearchedColumns(originalColumns);
-      props.updateColumnStructure(managedColumns);
+      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+      props.updateColumnStructure(managedColumns, remarksColumnToManage);
     } else {
       setIsErrorDisplayed(true);
     }
@@ -466,8 +493,9 @@ var ColumnReordering = React.memo(function (props) {
 
   var resetColumnUpdate = function resetColumnUpdate() {
     setManagedColumns(originalColumns);
-    setSearchedColumns(originalColumns);
-    props.updateColumnStructure(originalColumns);
+    setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+    setRemarksColumnToManage(getRemarksColumnIfAvailable());
+    props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
   };
 
   if (isManageColumnOpen) {
@@ -521,12 +549,12 @@ var ColumnReordering = React.memo(function (props) {
       className: "column__header"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__headerTxt"
-    }, /*#__PURE__*/React__default.createElement("strong", null, "Column Setting"), isErrorDisplayed ? /*#__PURE__*/React__default.createElement("strong", {
+    }, /*#__PURE__*/React__default.createElement("strong", null, "Column Settings"), isErrorDisplayed ? /*#__PURE__*/React__default.createElement("strong", {
       style: {
         marginLeft: "10px",
         color: "red"
       }
-    }, "Select at least one column") : null), /*#__PURE__*/React__default.createElement("div", {
+    }, "Select at least one column (other than ", additionalColumnHeader, ")") : null), /*#__PURE__*/React__default.createElement("div", {
       className: "column__close",
       onClick: toggleManageColumns
     }, /*#__PURE__*/React__default.createElement("i", {
@@ -540,7 +568,11 @@ var ColumnReordering = React.memo(function (props) {
     }, /*#__PURE__*/React__default.createElement(ColumnsList, {
       columnsToManage: managedColumns,
       updateColumnsInState: updateColumnsInState
-    }))), /*#__PURE__*/React__default.createElement("div", {
+    })), remarksColumnToManage && remarksColumnToManage.length > 0 ? /*#__PURE__*/React__default.createElement("div", {
+      className: "column__reorder full-width"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: ""
+    }, remarksColumnToManage[0].Header)) : null), /*#__PURE__*/React__default.createElement("div", {
       className: "column__footer"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__btns"
@@ -562,6 +594,10 @@ var ColumnReordering = React.memo(function (props) {
 var ItemTypes$1 = {
   SORT_ITEM: "SORT_ITEM"
 };
+
+var SortCopy = require("./SortCopy~IGKyJbDR.svg");
+
+var SortDelete = require("./SortDelete~MFpZtzWS.svg");
 
 var SortItem = function SortItem(_ref) {
   var id = _ref.id,
@@ -657,8 +693,6 @@ var SortItem = function SortItem(_ref) {
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
     ref: function ref(node) {
       return drag(drop(node));
     },
@@ -671,8 +705,6 @@ var SortItem = function SortItem(_ref) {
   }))), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React__default.createElement("div", null, "Sort by")), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__file"
   }, /*#__PURE__*/React__default.createElement("select", {
     className: "custom__ctrl",
@@ -686,8 +718,6 @@ var SortItem = function SortItem(_ref) {
   })))), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React__default.createElement("div", null, "Sort on")), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__file"
   }, /*#__PURE__*/React__default.createElement("select", {
     className: "custom__ctrl",
@@ -704,8 +734,6 @@ var SortItem = function SortItem(_ref) {
   }, "Value")))), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React__default.createElement("div", null, "Order")), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__file"
   }, /*#__PURE__*/React__default.createElement("select", {
     className: "custom__ctrl",
@@ -714,24 +742,22 @@ var SortItem = function SortItem(_ref) {
   }, /*#__PURE__*/React__default.createElement("option", null, "Ascending"), /*#__PURE__*/React__default.createElement("option", null, "Descending")))), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__icon",
     type: "button",
     onClick: copySort
-  }, /*#__PURE__*/React__default.createElement("i", {
-    className: "fa fa-clone"
-  }))), /*#__PURE__*/React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
+    src: SortCopy,
+    alt: "copy sort"
+  })))), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React__default.createElement("div", null, "\xA0")), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__icon",
     type: "button",
     onClick: deleteSort
-  }, /*#__PURE__*/React__default.createElement("i", {
-    className: "fa fa-trash"
-  }))));
+  }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
+    src: SortDelete,
+    alt: "copy sort"
+  })))));
 };
 
 var SortingList = function SortingList(props) {
@@ -769,7 +795,7 @@ var SortingList = function SortingList(props) {
       display: "flex",
       flexWrap: "wrap"
     }
-  }, sortOptions.map(function (sortOption, index) {
+  }, sortOptions && sortOptions.length > 0 ? /*#__PURE__*/React__default.createElement("ul", null, /*#__PURE__*/React__default.createElement("li", null, "Sort By"), /*#__PURE__*/React__default.createElement("li", null, "Sort On"), /*#__PURE__*/React__default.createElement("li", null, "Order")) : null, sortOptions.map(function (sortOption, index) {
     return /*#__PURE__*/React__default.createElement(SortItem, {
       id: index,
       key: index,
@@ -891,7 +917,7 @@ var GroupSort = React.memo(function (props) {
       className: "sort__header"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "sort__headerTxt"
-    }, /*#__PURE__*/React__default.createElement("strong", null, "Sort ")), /*#__PURE__*/React__default.createElement("div", {
+    }, "Sort"), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__close"
     }, /*#__PURE__*/React__default.createElement("i", {
       className: "fa fa-times",
@@ -909,22 +935,15 @@ var GroupSort = React.memo(function (props) {
       updateSingleSortingOption: updateSingleSortingOption,
       copySortOption: copySortOption,
       deleteSortOption: deleteSortOption
-    })), /*#__PURE__*/React__default.createElement("div", {
+    }))), /*#__PURE__*/React__default.createElement("div", {
       className: "sort-warning"
-    }, isErrorDisplayed ? /*#__PURE__*/React__default.createElement("span", {
-      style: {
-        color: "red"
-      }
-    }, "Duplicate sort options found.") : null)), /*#__PURE__*/React__default.createElement("div", {
+    }, isErrorDisplayed ? /*#__PURE__*/React__default.createElement("span", null, "Duplicate sort options found.") : null), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__new"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "sort__section",
       type: "button",
       onClick: addSortingOptions
-    }, /*#__PURE__*/React__default.createElement("i", {
-      className: "fa fa-plus",
-      "aria-hidden": "true"
-    }), /*#__PURE__*/React__default.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("span", null, "+"), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__txt"
     }, "New Sort"))), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__footer"
@@ -946,19 +965,31 @@ var ExportData = React.memo(function (props) {
   var isExportOverlayOpen = props.isExportOverlayOpen,
       toggleExportDataOverlay = props.toggleExportDataOverlay,
       rows = props.rows,
-      originalColumns = props.originalColumns;
+      originalColumns = props.originalColumns,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      additionalColumn = props.additionalColumn;
 
-  var _useState = React.useState(originalColumns),
+  var getRemarksColumnIfAvailable = function getRemarksColumnIfAvailable() {
+    return isExpandContentAvailable ? additionalColumn : [];
+  };
+
+  var updatedColumns = [].concat(originalColumns).concat(getRemarksColumnIfAvailable());
+
+  var _useState = React.useState(updatedColumns),
       managedColumns = _useState[0],
       setManagedColumns = _useState[1];
 
-  var _useState2 = React.useState(originalColumns),
+  var _useState2 = React.useState(updatedColumns),
       searchedColumns = _useState2[0],
       setSearchedColumns = _useState2[1];
 
-  var _useState3 = React.useState(""),
-      warning = _useState3[0],
-      setWarning = _useState3[1];
+  var _useState3 = React.useState([]),
+      downloadTypes = _useState3[0],
+      setDownloadTypes = _useState3[1];
+
+  var _useState4 = React.useState(""),
+      warning = _useState4[0],
+      setWarning = _useState4[1];
 
   var isDownload = false;
 
@@ -966,18 +997,9 @@ var ExportData = React.memo(function (props) {
     isDownload = true;
     var filteredRow = [];
     var filteredRowValues = [];
-    var downLaodFileType = [];
-    var downLaodFileTypeCount = document.getElementsByName("fileType[]").length;
-
-    for (var i = 0; i < downLaodFileTypeCount; i++) {
-      if (document.getElementsByName("fileType[]")[i].checked == true) {
-        downLaodFileType.push(document.getElementsByName("fileType[]")[i].value);
-      }
-    }
-
     setWarning("");
 
-    if (managedColumns.length > 0 && downLaodFileType.length > 0) {
+    if (managedColumns.length > 0 && downloadTypes.length > 0) {
       rows.forEach(function (rowDetails) {
         var row = rowDetails.original;
         var keys = Object.getOwnPropertyNames(row);
@@ -985,7 +1007,7 @@ var ExportData = React.memo(function (props) {
         var rowFilteredValues = [];
         keys.forEach(function (key) {
           managedColumns.forEach(function (columnName) {
-            if (columnName.accessor === key) {
+            if (columnName.accessor === key || columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key)) {
               var columnValue = "";
 
               if (typeof row[key] === "object") {
@@ -1010,16 +1032,22 @@ var ExportData = React.memo(function (props) {
         filteredRow.push(filteredColumnVal);
         filteredRowValues.push(rowFilteredValues);
       });
-      downLaodFileType.map(function (item) {
-        if (item === "pdf") downloadPDF(filteredRowValues);else if (item === "excel") downloadXLSFile(filteredRow);else downloadCSVFile(filteredRow);
+      downloadTypes.map(function (item) {
+        if (item === "pdf") {
+          downloadPDF(filteredRowValues);
+        } else if (item === "excel") {
+          downloadXLSFile(filteredRow);
+        } else {
+          downloadCSVFile(filteredRow);
+        }
       });
     } else {
-      if (managedColumns.length === 0 && downLaodFileType.length === 0) {
-        setWarning("You haven't selected File Type & Column");
+      if (managedColumns.length === 0 && downloadTypes.length === 0) {
+        setWarning("Select at least one column and a file type");
       } else if (managedColumns.length === 0) {
-        setWarning("You haven't selected Column ");
-      } else if (downLaodFileType.length === 0) {
-        setWarning("You haven't selected File Type");
+        setWarning("Select at least one column");
+      } else if (downloadTypes.length === 0) {
+        setWarning("Select at least one file type");
       }
     }
   };
@@ -1031,7 +1059,7 @@ var ExportData = React.memo(function (props) {
     var marginLeft = 300;
     var doc = new jsPDF(orientation, unit, size);
     doc.setFontSize(15);
-    var title = "iCargo Report";
+    var title = "iCargo Neo Report";
     var headers = [managedColumns.map(function (column) {
       return column.Header;
     })];
@@ -1042,14 +1070,14 @@ var ExportData = React.memo(function (props) {
     };
     doc.text(title, marginLeft, 40);
     doc.autoTable(content);
-    doc.save("report.pdf");
+    doc.save("iCargo Neo Report.pdf");
     isDownload = false;
   };
 
   var downloadCSVFile = function downloadCSVFile(filteredRowValue) {
     var fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     var fileExtension = ".csv";
-    var fileName = "CSVDownload";
+    var fileName = "iCargo Neo Report";
     var ws = XLSX.utils.json_to_sheet(filteredRowValue);
     var wb = {
       Sheets: {
@@ -1070,7 +1098,7 @@ var ExportData = React.memo(function (props) {
   var downloadXLSFile = function downloadXLSFile(filteredRowValue) {
     var fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     var fileExtension = ".xlsx";
-    var fileName = "XLSXDownload";
+    var fileName = "iCargo Neo Report";
     var ws = XLSX.utils.json_to_sheet(filteredRowValue);
     var wb = {
       Sheets: {
@@ -1092,14 +1120,16 @@ var ExportData = React.memo(function (props) {
     var _ref = event ? event.target : "",
         value = _ref.value;
 
-    value = value.toLowerCase();
+    value = value ? value.toLowerCase() : "";
 
     if (value != "") {
       setSearchedColumns(originalColumns.filter(function (column) {
         return column.Header.toLowerCase().includes(value);
-      }));
+      }).concat(getRemarksColumnIfAvailable().filter(function (column) {
+        return column.Header.toLowerCase().includes(value);
+      })));
     } else {
-      setSearchedColumns(originalColumns);
+      setSearchedColumns(updatedColumns);
     }
   };
 
@@ -1116,7 +1146,7 @@ var ExportData = React.memo(function (props) {
 
   var selectAllColumns = function selectAllColumns(event) {
     if (event.target.checked) {
-      setManagedColumns(searchedColumns);
+      setManagedColumns(updatedColumns);
     } else {
       setManagedColumns([]);
     }
@@ -1129,15 +1159,15 @@ var ExportData = React.memo(function (props) {
 
     if (checked) {
       (function () {
-        var indexOfColumnToAdd = originalColumns.findIndex(function (column) {
+        var indexOfColumnToAdd = updatedColumns.findIndex(function (column) {
           return column.Header == value;
         });
-        var itemToAdd = originalColumns[indexOfColumnToAdd];
+        var itemToAdd = updatedColumns[indexOfColumnToAdd];
         var prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
           prevItemIndex = managedColumns.findIndex(function (column) {
-            return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+            return column.Header == updatedColumns[indexOfColumnToAdd - 1].Header;
           });
           indexOfColumnToAdd = indexOfColumnToAdd - 1;
         }
@@ -1153,8 +1183,24 @@ var ExportData = React.memo(function (props) {
     }
   };
 
+  var changeDownloadType = function changeDownloadType(event) {
+    var _ref2 = event ? event.currentTarget : "",
+        value = _ref2.value,
+        checked = _ref2.checked;
+
+    if (checked) {
+      setDownloadTypes(downloadTypes.concat([value]));
+    } else {
+      setDownloadTypes(downloadTypes.filter(function (type) {
+        return type !== value;
+      }));
+    }
+  };
+
   if (isExportOverlayOpen) {
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+      onClickAway: toggleExportDataOverlay
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "exports--grid"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "export__grid"
@@ -1168,7 +1214,7 @@ var ExportData = React.memo(function (props) {
       className: "export__body"
     }, /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("input", {
       type: "text",
-      placeholder: "Search export",
+      placeholder: "Search column",
       className: "custom__ctrl",
       onChange: filterColumnsList
     })), /*#__PURE__*/React__default.createElement("div", {
@@ -1215,12 +1261,13 @@ var ExportData = React.memo(function (props) {
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "export__reorder"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: ""
+      className: "check-wrap"
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
-      id: "fileType[]",
-      name: "fileType[]",
-      value: "pdf"
+      id: "chk_pdf",
+      value: "pdf",
+      checked: downloadTypes.includes("pdf"),
+      onChange: changeDownloadType
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "export__file"
     }, /*#__PURE__*/React__default.createElement("i", {
@@ -1229,12 +1276,13 @@ var ExportData = React.memo(function (props) {
     }), /*#__PURE__*/React__default.createElement("br", null), /*#__PURE__*/React__default.createElement("strong", null, "PDF"))), /*#__PURE__*/React__default.createElement("div", {
       className: "export__reorder"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: ""
+      className: "check-wrap"
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
-      id: "fileType[]",
-      name: "fileType[]",
-      value: "excel"
+      id: "chk_excel",
+      value: "excel",
+      checked: downloadTypes.includes("excel"),
+      onChange: changeDownloadType
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "export__file"
     }, /*#__PURE__*/React__default.createElement("i", {
@@ -1243,12 +1291,13 @@ var ExportData = React.memo(function (props) {
     }), /*#__PURE__*/React__default.createElement("br", null), /*#__PURE__*/React__default.createElement("strong", null, "Excel"))), /*#__PURE__*/React__default.createElement("div", {
       className: "export__reorder"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: ""
+      className: "check-wrap"
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
-      id: "fileType[]",
-      name: "fileType[]",
-      value: "csv"
+      id: "chk_csv",
+      value: "csv",
+      checked: downloadTypes.includes("csv"),
+      onChange: changeDownloadType
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "export__file"
     }, /*#__PURE__*/React__default.createElement("i", {
@@ -1272,7 +1321,7 @@ var ExportData = React.memo(function (props) {
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
       className: "btns btns__save",
       onClick: exportRowData
-    }, "Export"))))));
+    }, "Export")))))));
   } else {
     return /*#__PURE__*/React__default.createElement("div", null);
   }
@@ -1285,6 +1334,7 @@ var Customgrid = React.memo(function (props) {
       gridWidth = props.gridWidth,
       managableColumns = props.managableColumns,
       originalColumns = props.originalColumns,
+      additionalColumn = props.additionalColumn,
       data = props.data,
       originalData = props.originalData,
       rowEditOverlay = props.rowEditOverlay,
@@ -1295,6 +1345,7 @@ var Customgrid = React.memo(function (props) {
       globalSearchLogic = props.globalSearchLogic,
       selectBulkData = props.selectBulkData,
       calculateRowHeight = props.calculateRowHeight,
+      isExpandContentAvailable = props.isExpandContentAvailable,
       renderExpandedContent = props.renderExpandedContent,
       hasNextPage = props.hasNextPage,
       isNextPageLoading = props.isNextPageLoading,
@@ -1304,6 +1355,10 @@ var Customgrid = React.memo(function (props) {
   var _useState = React.useState(managableColumns),
       columns = _useState[0],
       setColumns = _useState[1];
+
+  var _useState2 = React.useState(isExpandContentAvailable),
+      isRowExpandEnabled = _useState2[0],
+      setIsRowExpandEnabled = _useState2[1];
 
   if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
     return /*#__PURE__*/React__default.createElement("h2", {
@@ -1321,17 +1376,17 @@ var Customgrid = React.memo(function (props) {
     return !hasNextPage || index < data.length;
   };
 
-  var _useState2 = React.useState(false),
-      isFilterOpen = _useState2[0],
-      setFilterOpen = _useState2[1];
+  var _useState3 = React.useState(false),
+      isFilterOpen = _useState3[0],
+      setFilterOpen = _useState3[1];
 
   var toggleColumnFilter = function toggleColumnFilter() {
     setFilterOpen(!isFilterOpen);
   };
 
-  var _useState3 = React.useState(false),
-      isGroupSortOverLayOpen = _useState3[0],
-      setGroupSortOverLay = _useState3[1];
+  var _useState4 = React.useState(false),
+      isGroupSortOverLayOpen = _useState4[0],
+      setGroupSortOverLay = _useState4[1];
 
   var toggleGroupSortOverLay = function toggleGroupSortOverLay() {
     setGroupSortOverLay(!isGroupSortOverLayOpen);
@@ -1341,22 +1396,23 @@ var Customgrid = React.memo(function (props) {
     doGroupSort(sortOptions);
   };
 
-  var _useState4 = React.useState(false),
-      isManageColumnOpen = _useState4[0],
-      setManageColumnOpen = _useState4[1];
+  var _useState5 = React.useState(false),
+      isManageColumnOpen = _useState5[0],
+      setManageColumnOpen = _useState5[1];
 
   var toggleManageColumns = function toggleManageColumns() {
     setManageColumnOpen(!isManageColumnOpen);
   };
 
-  var updateColumnStructure = function updateColumnStructure(newColumnStructure) {
-    setColumns(newColumnStructure);
+  var updateColumnStructure = function updateColumnStructure(newColumnStructure, remarksColumn) {
+    setColumns([].concat(newColumnStructure));
+    setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
     toggleManageColumns();
   };
 
-  var _useState5 = React.useState(false),
-      isExportOverlayOpen = _useState5[0],
-      setIsExportOverlayOpen = _useState5[1];
+  var _useState6 = React.useState(false),
+      isExportOverlayOpen = _useState6[0],
+      setIsExportOverlayOpen = _useState6[1];
 
   var toggleExportDataOverlay = function toggleExportDataOverlay() {
     setIsExportOverlayOpen(!isExportOverlayOpen);
@@ -1424,7 +1480,7 @@ var Customgrid = React.memo(function (props) {
             RowEditOverlay: rowEditOverlay,
             rowEditData: rowEditData,
             updateRowInGrid: updateRowInGrid
-          }), /*#__PURE__*/React__default.createElement("span", _extends({
+          }), isRowExpandEnabled ? /*#__PURE__*/React__default.createElement("span", _extends({
             className: "expander"
           }, row.getToggleRowExpandedProps()), row.isExpanded ? /*#__PURE__*/React__default.createElement("i", {
             className: "fa fa-angle-up",
@@ -1432,7 +1488,7 @@ var Customgrid = React.memo(function (props) {
           }) : /*#__PURE__*/React__default.createElement("i", {
             className: "fa fa-angle-down",
             "aria-hidden": "true"
-          })));
+          })) : null);
         }
       }]);
     });
@@ -1474,7 +1530,7 @@ var Customgrid = React.memo(function (props) {
         return /*#__PURE__*/React__default.createElement("div", _extends({}, cell.getCellProps(), {
           className: "table-cell td"
         }), cell.render("Cell"));
-      })), row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
+      })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
         className: "expand"
       }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
     }
@@ -1499,6 +1555,8 @@ var Customgrid = React.memo(function (props) {
     isManageColumnOpen: isManageColumnOpen,
     toggleManageColumns: toggleManageColumns,
     originalColumns: originalColumns,
+    isExpandContentAvailable: isExpandContentAvailable,
+    additionalColumn: [additionalColumn],
     updateColumnStructure: updateColumnStructure
   }), /*#__PURE__*/React__default.createElement(GlobalFilter, {
     globalFilter: state.globalFilter,
@@ -1512,7 +1570,9 @@ var Customgrid = React.memo(function (props) {
     isExportOverlayOpen: isExportOverlayOpen,
     toggleExportDataOverlay: toggleExportDataOverlay,
     rows: rows,
-    originalColumns: originalColumns
+    originalColumns: originalColumns,
+    isExpandContentAvailable: isExpandContentAvailable,
+    additionalColumn: [additionalColumn]
   }), /*#__PURE__*/React__default.createElement("div", {
     className: "filter-icon keyword-search",
     onClick: toggleColumnFilter
@@ -1616,6 +1676,7 @@ var Grid = React.forwardRef(function (props, ref) {
       gridHeight = props.gridHeight,
       gridWidth = props.gridWidth,
       columns = props.columns,
+      additionalColumn = props.additionalColumn,
       fetchData = props.fetchData,
       rowEditOverlay = props.rowEditOverlay,
       rowEditData = props.rowEditData,
@@ -1624,8 +1685,7 @@ var Grid = React.forwardRef(function (props, ref) {
       deleteRowData = props.deleteRowData,
       globalSearchLogic = props.globalSearchLogic,
       selectBulkData = props.selectBulkData,
-      calculateRowHeight = props.calculateRowHeight,
-      renderExpandedContent = props.renderExpandedContent;
+      calculateRowHeight = props.calculateRowHeight;
 
   var _useState = React.useState(true),
       hasNextPage = _useState[0],
@@ -1689,6 +1749,7 @@ var Grid = React.forwardRef(function (props, ref) {
 
     processedColumns.push(column);
   });
+  var renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
   var gridColumns = React.useMemo(function () {
     return processedColumns;
   }, []);
@@ -1809,6 +1870,7 @@ var Grid = React.forwardRef(function (props, ref) {
       gridWidth: gridWidth,
       managableColumns: gridColumns,
       originalColumns: gridColumns,
+      additionalColumn: additionalColumn,
       data: data,
       originalData: items,
       rowEditOverlay: rowEditOverlay,
@@ -1819,6 +1881,7 @@ var Grid = React.forwardRef(function (props, ref) {
       globalSearchLogic: globalSearchLogic,
       selectBulkData: selectBulkData,
       calculateRowHeight: calculateRowHeight,
+      isExpandContentAvailable: typeof renderExpandedContent === "function",
       renderExpandedContent: renderExpandedContent,
       hasNextPage: hasNextPage,
       isNextPageLoading: isNextPageLoading,

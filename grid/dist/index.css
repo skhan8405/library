@@ -1,13 +1,10 @@
-/*****************************************************************************
-Do not modify below styles. These are required by the table to work properly
-******************************************************************************/
-._tablestyles__table__2f0X3 ._tablestyles__thead__voDZ1 {
-    overflow-y: scroll;
-    overflow-x: hidden;
+._grid__table-outer__2qrLy ._grid__table__2nmbk ._grid__table-row__2dcQ0 ._grid__table-cell__1ALLM._grid__column-heading__1RlkF:last-child {
+    padding: 0 !important;
+    width: 53px !important;
 }
-._tablestyles__table__2f0X3 ._tablestyles__tbody__24-1T {
-    height: 100%;
-}
-._tablestyles__table__2f0X3 ._tablestyles__tbody__24-1T ._tablestyles__table-list__1WwxT {
-    overflow-x: hidden !important;
+
+/* Grid.css */
+._Grid__table-outer__3Dk8h ._Grid__table__3e9tr ._Grid__table-row__3iTCu ._Grid__table-cell__3iMlr._Grid__column-heading__2gEwF:last-child {
+    padding: 0 !important;
+    width: 53px !important;
 }
