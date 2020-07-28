@@ -99,15 +99,11 @@ const GroupSort = memo((props) => {
                     <div className="sort__grid">
                         <div className="sort__settings">
                             <div className="sort__header">
-                                <div className="sort__headerTxt">
-                                    <strong>Sort </strong>
-                                </div>
-
+                                <div className="sort__headerTxt">Sort</div>
                                 <div className="sort__close">
                                     <i className="fa fa-times" aria-hidden="true" onClick={toggleGroupSortOverLay}></i>
                                 </div>
                             </div>
-
                             <div className="sort__body">
                                 <DndProvider backend={MultiBackend} options={HTML5toTouch}>
                                     <SortingList
@@ -119,15 +115,13 @@ const GroupSort = memo((props) => {
                                         deleteSortOption={deleteSortOption}
                                     />
                                 </DndProvider>
-                                <div className="sort-warning">
-                                    {isErrorDisplayed ? (
-                                        <span style={{ color: "red" }}>Duplicate sort options found.</span>
-                                    ) : null}
-                                </div>
+                            </div>
+                            <div className="sort-warning">
+                                {isErrorDisplayed ? <span>Duplicate sort options found.</span> : null}
                             </div>
                             <div className="sort__new">
                                 <div className="sort__section" type="button" onClick={addSortingOptions}>
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                                    <span>+</span>
                                     <div className="sort__txt">New Sort</div>
                                 </div>
                             </div>
@@ -136,7 +130,6 @@ const GroupSort = memo((props) => {
                                     <button className="btns" onClick={clearSortingOptions}>
                                         Clear All
                                     </button>
-
                                     <button className="btns btns__save" onClick={applySort}>
                                         Ok
                                     </button>
