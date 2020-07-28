@@ -528,3 +528,8 @@ select:-webkit-autofill:focus {
 .table-outer .table .table-row .table-cell:hover .cell-edit {
     display: block;
 }
+/*To be moved to component*/
+.table-outer .table .table-row .table-cell.column-heading:last-child {
+    padding: 0 !important;
+    width: 53px !important;
+}
