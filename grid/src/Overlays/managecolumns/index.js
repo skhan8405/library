@@ -7,10 +7,20 @@ import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
 
 const ColumnReordering = memo((props) => {
-    const { isManageColumnOpen, toggleManageColumns, originalColumns } = props;
+    const { isManageColumnOpen, toggleManageColumns, originalColumns, isExpandContentAvailable } = props;
+
+    const remarksColumn = [
+        {
+            Header: "Remarks"
+        }
+    ];
+    const getRemarksColumnIfAvailable = () => {
+        return isExpandContentAvailable ? remarksColumn : [];
+    };
 
     const [managedColumns, setManagedColumns] = useState(originalColumns);
-    const [searchedColumns, setSearchedColumns] = useState(originalColumns);
+    const [searchedColumns, setSearchedColumns] = useState([...originalColumns].concat(getRemarksColumnIfAvailable()));
+    const [remarksColumnToManage, setRemarksColumnToManage] = useState(getRemarksColumnIfAvailable);
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
     const HTML5toTouch = {
@@ -32,12 +42,14 @@ const ColumnReordering = memo((props) => {
         value = value.toLowerCase();
         if (value != "") {
             setSearchedColumns(
-                originalColumns.filter((column) => {
-                    return column.Header.toLowerCase().includes(value);
-                })
+                originalColumns
+                    .filter((column) => {
+                        return column.Header.toLowerCase().includes(value);
+                    })
+                    .concat(getRemarksColumnIfAvailable())
             );
         } else {
-            setSearchedColumns(originalColumns);
+            setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
         }
     };
 
@@ -46,8 +58,10 @@ const ColumnReordering = memo((props) => {
     };
 
     const isCheckboxSelected = (header) => {
-        if (header === "Select All") {
-            return managedColumns.length === searchedColumns.length;
+        if (header === remarksColumn[0].Header) {
+            return remarksColumnToManage.length > 0;
+        } else if (header === "Select All") {
+            return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
         } else {
             const selectedColumn = managedColumns.filter((column) => {
                 return column.Header === header;
@@ -58,9 +72,11 @@ const ColumnReordering = memo((props) => {
 
     const selectAllColumns = (event) => {
         if (event.currentTarget.checked) {
-            setManagedColumns(searchedColumns);
+            setManagedColumns(originalColumns);
+            setRemarksColumnToManage(getRemarksColumnIfAvailable());
         } else {
             setManagedColumns([]);
+            setRemarksColumnToManage([]);
         }
     };
 
@@ -68,40 +84,49 @@ const ColumnReordering = memo((props) => {
         const { currentTarget } = event;
         const { checked, value } = currentTarget;
 
-        //If column checkbox is checked
-        if (checked) {
-            //Find the index of selected column from original column array and also find the user selected column
-            let indexOfColumnToAdd = originalColumns.findIndex((column) => {
-                return column.Header == value;
-            });
-            const itemToAdd = originalColumns[indexOfColumnToAdd];
-
-            //Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
-            //Find index of that previous column and push the new column to add in that position
-            let prevItemIndex = -1;
-            while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-                prevItemIndex = managedColumns.findIndex((column) => {
-                    return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
-                });
-                indexOfColumnToAdd = indexOfColumnToAdd - 1;
+        if (value === remarksColumn[0].Header) {
+            if (checked) {
+                setRemarksColumnToManage(remarksColumn);
+            } else {
+                setRemarksColumnToManage([]);
             }
-
-            const newColumnsList = managedColumns.slice(0); //Copying state value
-            newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
-            setManagedColumns(newColumnsList);
         } else {
-            setManagedColumns(
-                managedColumns.filter((column) => {
-                    return column.Header !== value;
-                })
-            );
+            //If column checkbox is checked
+            if (checked) {
+                //Find the index of selected column from original column array and also find the user selected column
+                let indexOfColumnToAdd = originalColumns.findIndex((column) => {
+                    return column.Header == value;
+                });
+                const itemToAdd = originalColumns[indexOfColumnToAdd];
+
+                //Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
+                //Find index of that previous column and push the new column to add in that position
+                let prevItemIndex = -1;
+                while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+                    prevItemIndex = managedColumns.findIndex((column) => {
+                        return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+                    });
+                    indexOfColumnToAdd = indexOfColumnToAdd - 1;
+                }
+
+                const newColumnsList = managedColumns.slice(0); //Copying state value
+                newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
+                setManagedColumns(newColumnsList);
+            } else {
+                setManagedColumns(
+                    managedColumns.filter((column) => {
+                        return column.Header !== value;
+                    })
+                );
+            }
         }
     };
 
     const doColumnUpdate = () => {
+        setIsErrorDisplayed(false);
         if (managedColumns && managedColumns.length > 0) {
-            setSearchedColumns(originalColumns);
-            props.updateColumnStructure(managedColumns);
+            setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+            props.updateColumnStructure(managedColumns, remarksColumnToManage);
         } else {
             setIsErrorDisplayed(true);
         }
@@ -109,8 +134,9 @@ const ColumnReordering = memo((props) => {
 
     const resetColumnUpdate = () => {
         setManagedColumns(originalColumns);
-        setSearchedColumns(originalColumns);
-        props.updateColumnStructure(originalColumns);
+        setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+        setRemarksColumnToManage(getRemarksColumnIfAvailable());
+        props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
     };
 
     if (isManageColumnOpen) {
@@ -166,7 +192,9 @@ const ColumnReordering = memo((props) => {
                                 <div className="column__headerTxt">
                                     <strong>Column Settings</strong>
                                     {isErrorDisplayed ? (
-                                        <strong style={{ marginLeft: "10px", color: "red" }}>Select at least one column</strong>
+                                        <strong style={{ marginLeft: "10px", color: "red" }}>
+                                            Select at least one column (other than remarks)
+                                        </strong>
                                     ) : null}
                                 </div>
                                 <div className="column__close" onClick={toggleManageColumns}>
@@ -177,6 +205,11 @@ const ColumnReordering = memo((props) => {
                                 <DndProvider backend={MultiBackend} options={HTML5toTouch}>
                                     <ColumnsList columnsToManage={managedColumns} updateColumnsInState={updateColumnsInState} />
                                 </DndProvider>
+                                {remarksColumnToManage && remarksColumnToManage.length > 0 ? (
+                                    <div className="column__reorder full-width">
+                                        <div className="">{remarksColumnToManage[0].Header}</div>
+                                    </div>
+                                ) : null}
                             </div>
                             <div className="column__footer">
                                 <div className="column__btns">

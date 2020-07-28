@@ -39,6 +39,7 @@ const Customgrid = memo((props) => {
         globalSearchLogic,
         selectBulkData,
         calculateRowHeight,
+        isExpandContentAvailable,
         renderExpandedContent,
         hasNextPage,
         isNextPageLoading,
@@ -48,6 +49,8 @@ const Customgrid = memo((props) => {
 
     //Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
+    //Local state value for holding the boolean value to check if row expand is available
+    const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(isExpandContentAvailable);
 
     //Display error message if data or columns configuration is missing.
     if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
@@ -88,8 +91,9 @@ const Customgrid = memo((props) => {
     };
 
     //Callback method from column manage overlay to update the column structure of the grid
-    const updateColumnStructure = (newColumnStructure) => {
-        setColumns(newColumnStructure);
+    const updateColumnStructure = (newColumnStructure, remarksColumn) => {
+        setColumns([...newColumnStructure]);
+        setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
         toggleManageColumns();
     };
 
@@ -182,13 +186,15 @@ const Customgrid = memo((props) => {
                                     rowEditData={rowEditData}
                                     updateRowInGrid={updateRowInGrid}
                                 />
-                                <span className="expander" {...row.getToggleRowExpandedProps()}>
-                                    {row.isExpanded ? (
-                                        <i className="fa fa-angle-up" aria-hidden="true"></i>
-                                    ) : (
-                                        <i className="fa fa-angle-down" aria-hidden="true"></i>
-                                    )}
-                                </span>
+                                {isRowExpandEnabled ? (
+                                    <span className="expander" {...row.getToggleRowExpandedProps()}>
+                                        {row.isExpanded ? (
+                                            <i className="fa fa-angle-up" aria-hidden="true"></i>
+                                        ) : (
+                                            <i className="fa fa-angle-down" aria-hidden="true"></i>
+                                        )}
+                                    </span>
+                                ) : null}
                             </div>
                         );
                     }
@@ -229,7 +235,7 @@ const Customgrid = memo((props) => {
                             })}
                         </div>
                         {/*Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region*/}
-                        {row.isExpanded ? (
+                        {isRowExpandEnabled && row.isExpanded ? (
                             <div className="expand">{renderExpandedContent ? renderExpandedContent(row) : null}</div>
                         ) : null}
                     </div>
@@ -259,6 +265,7 @@ const Customgrid = memo((props) => {
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
                         originalColumns={originalColumns}
+                        isExpandContentAvailable={isExpandContentAvailable}
                         updateColumnStructure={updateColumnStructure}
                     />
                     <GlobalFilter globalFilter={state.globalFilter} setGlobalFilter={setGlobalFilter} />

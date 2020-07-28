@@ -209,6 +209,7 @@ const Grid = forwardRef((props, ref) => {
                     globalSearchLogic={globalSearchLogic}
                     selectBulkData={selectBulkData}
                     calculateRowHeight={calculateRowHeight}
+                    isExpandContentAvailable={typeof renderExpandedContent === "function"}
                     renderExpandedContent={renderExpandedContent}
                     hasNextPage={hasNextPage}
                     isNextPageLoading={isNextPageLoading}
