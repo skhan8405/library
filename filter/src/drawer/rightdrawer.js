@@ -1,22 +1,27 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import AutoComplete from "../types/AutoCompleteComponent";
 import FieldComponent from "../types/DateTimeComponent";
 import Condition from "../types/ConditionalComponent";
 import TextComponents from "../types/TextComponents";
+import saveLogo from "../images/icon-save.svg";
 
 const RightDrawer = forwardRef((props, ref) => {
   const [showSavePopup, setShowSavePopup] = useState("none");
   const [saveFilterName, setSaveFilterName] = useState("");
   const [saveFilterWarning, setSaveFilterWarning] = useState("");
   const [warningLabel, setWarningLabel] = useState("");
+
+  useEffect(() => {
+    setWarningLabel(props.saveWarningClassName);
+    setSaveFilterWarning(props.saveWarningLabel);
+    setShowSavePopup(props.showSavePopUp);
+  }, [props.saveWarningClassName, props.saveWarningLabel, props.showSavePopUp]);
   /**
    * Method To pass the required name of the filter required to be saved
    * @param {*} e is event triggered when typing on the to-save filter name field
    */
   const registersaveFilterName = (e) => {
-    setSaveFilterWarning("");
-    setWarningLabel("");
     setSaveFilterName(e.target.value);
   };
   /**
@@ -25,7 +30,7 @@ const RightDrawer = forwardRef((props, ref) => {
   const showPopUp = () => {
     setShowSavePopup("");
   };
-   /**
+  /**
    * Method To close the save popup
    */
   const cancelSavePopup = () => {
@@ -82,11 +87,7 @@ const RightDrawer = forwardRef((props, ref) => {
       <div className="filter__btn">
         <div className="filter__save">
           <Button className="button-save" variant="">
-            <img
-              src="../images/icon-save.svg"
-              onClick={showPopUp}
-              alt="save icon"
-            />
+            <img src={saveLogo} onClick={showPopUp} alt="save icon" />
             <span>SAVE</span>
           </Button>
         </div>
@@ -103,9 +104,7 @@ const RightDrawer = forwardRef((props, ref) => {
               props.deleteConditionalElement({});
               props.deleteDateTimeElement({});
               props.deleteTextComponentElement({});
-              //saveApplyFilterMap("applyFilter");
               props.closeDrawer();
-              //props.textComponentClutter();
             }}
           >
             Apply Filter
@@ -133,8 +132,7 @@ const RightDrawer = forwardRef((props, ref) => {
               className="button"
               onClick={(e) => {
                 props.saveFilter(saveFilterName);
-                setSaveFilterName("");
-                setShowSavePopup("none");
+                // setSaveFilterName("");
               }}
             >
               Save

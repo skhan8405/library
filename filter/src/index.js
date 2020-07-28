@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import RightDrawer from "./drawer/RightDrawer";
 import LeftDrawer from "./drawer/LeftDrawer";
-import MainFilterPanel from './panel/MainFilterPanel'
-
-let dateFormat = require("dateformat");
+import MainFilterPanel from "./panel/MainFilterPanel";
 
 /**
  * Component handling clock outside close of Drawer
@@ -43,7 +41,7 @@ function useComponentVisible() {
 
   return { ref, showApplyFilter, setApplyFilter };
 }
-function filter(props) {
+export default function Filter(props) {
   const [autoCompletesValueArray, setAutoCompletesValueArray] = useState([]);
   const [autoCompletesArray, setAutoCompletesArray] = useState([]);
   const [dateTimesArray, setDateTimesArray] = useState([]);
@@ -55,6 +53,11 @@ function filter(props) {
   const [applyFilterChip, setApplyFilterChip] = useState({});
   const [filterCount, setFilterCount] = useState(0);
   const [filterData, setFilterData] = useState({});
+  const [showSavePopUp, setShowSavePopUp] = useState("none");
+  const [saveWarningLabel, setSaveWarningLabel] = useState("");
+  const [saveWarningClassName, setSaveWarningClassName] = useState("");
+  const [emptyFilterWarning, setEmptyFilterWarning] = useState("");
+  const [emptyFilterClassName, setEmptyFilterClassName] = useState("");
 
   useEffect(() => {
     setFilterData(props.filterData);
@@ -89,69 +92,87 @@ function filter(props) {
    * Method which creates the array which contains the elements to be shown in the applied filter chips
    */
   const applyFilter = () => {
-    let applyFilter = {
-      applyFilterArray: [],
-    };
-    let tempObj = { applyFilter: [] };
-    if (autoCompletesValueArray.length > 0) {
-      autoCompletesValueArray.forEach((item) => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        autoComplete: autoCompletesValueArray,
-      });
+    if (filterCount > 0) {
+      let applyFilter = {
+        applyFilterArray: [],
+      };
+      let tempObj = { applyFilter: [] };
+      if (autoCompletesValueArray.length > 0) {
+        autoCompletesValueArray.forEach((item) => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({
+          autoComplete: autoCompletesValueArray,
+        });
+      }
+      if (dateTimesValueArray.length > 0) {
+        dateTimesValueArray.forEach((item) => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({ dateTime: dateTimesValueArray });
+      }
+      if (conditionsValueArray.length > 0) {
+        conditionsValueArray.forEach((item) => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({
+          conditional: conditionsValueArray,
+        });
+      }
+      if (textComponentsValueArray.length > 0) {
+        textComponentsValueArray.forEach((item) => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({
+          textComponent: textComponentsValueArray,
+        });
+      }
+      console.log(applyFilter);
+      setApplyFilterChip(tempObj);
+      tempObj = {};
+    } else {
+      setEmptyFilterClassName("text-danger");
+      setEmptyFilterWarning("No Filter is being selected");
     }
-    if (dateTimesValueArray.length > 0) {
-      dateTimesValueArray.forEach((item) => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({ dateTime: dateTimesValueArray });
-    }
-    if (conditionsValueArray.length > 0) {
-      conditionsValueArray.forEach((item) => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({ conditional: conditionsValueArray });
-    }
-    if (textComponentsValueArray.length > 0) {
-      textComponentsValueArray.forEach((item) => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        textComponent: textComponentsValueArray,
-      });
-    }
-    console.log(applyFilter);
-    setApplyFilterChip(tempObj);
-    tempObj = {};
   };
   /**
    * Method To pass the values from saved filter list to the right filter drawer
    * @param {*} value is saved filter from the saved filter popup list
    */
   const saveFilter = (value) => {
-    let savedFilter = {
-      filter: [],
-    };
-    if (autoCompletesValueArray.length > 0) {
-      savedFilter.filter.push({ autoComplete: autoCompletesValueArray });
+    if (value.length > 0) {
+      setShowSavePopUp("none");
+      setSaveWarningLabel("");
+      setSaveWarningClassName("");
+      let savedFilter = {
+        filter: [],
+      };
+      if (autoCompletesValueArray.length > 0) {
+        savedFilter.filter.push({ autoComplete: autoCompletesValueArray });
+      }
+      if (dateTimesValueArray.length > 0) {
+        savedFilter.filter.push({ dateTime: dateTimesValueArray });
+      }
+      if (conditionsValueArray.length > 0) {
+        savedFilter.filter.push({ conditional: conditionsValueArray });
+      }
+      if (textComponentsValueArray.length > 0) {
+        savedFilter.filter.push({ textComponent: textComponentsValueArray });
+      }
+      savedFilter[value] = savedFilter["filter"];
+      delete savedFilter.filter;
+      let savedFilters = localStorage.getItem("savedFilters");
+      savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+      savedFilters.push(savedFilter);
+      localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
+      console.log(savedFilters);
     }
-    if (dateTimesValueArray.length > 0) {
-      savedFilter.filter.push({ dateTime: dateTimesValueArray });
+    if (value.length <= 0) {
+      console.log(value.length);
+      setShowSavePopUp("");
+      setSaveWarningClassName("text-danger");
+      setSaveWarningLabel("Enter a valid filterName");
     }
-    if (conditionsValueArray.length > 0) {
-      savedFilter.filter.push({ conditional: conditionsValueArray });
-    }
-    if (textComponentsValueArray.length > 0) {
-      savedFilter.filter.push({ textComponent: textComponentsValueArray });
-    }
-    savedFilter[value] = savedFilter["filter"];
-    delete savedFilter.filter;
-    let savedFilters = localStorage.getItem("savedFilters");
-    savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-    savedFilters.push(savedFilter);
-    localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
-    console.log(savedFilters);
   };
   /**
    * Method To create the filter arrays for each specific type based on datatype
@@ -443,6 +464,7 @@ function filter(props) {
    * @param {*} value is value of the field
    */
   const createDateTimeArray = (item, fieldName, value) => {
+    console.log(value);
     let tempObj = JSON.parse(JSON.stringify(item));
     tempObj.fieldValue = fieldName;
     tempObj.value = value;
@@ -487,11 +509,43 @@ function filter(props) {
     dateTimeArray = [];
   };
   /**
+   * Method to Convert Date to required Format as per value of type
+   * @param {String} inputDate
+   * @param {String} type
+   */
+  const getValueOfDate = (dateValue) => {
+    const date = new Date(dateValue);
+    console.log(date);
+    const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "numeric",
+      seconds: "numeric",
+    });
+    const [
+      { value: month },
+      ,
+      { value: day },
+      ,
+      { value: year },
+      ,
+      { value: hour },
+      ,
+      { value: minute },
+      ,
+      { value: seconds },
+    ] = dateTimeFormat.formatToParts(date);
+    return `${year}-${month}-${day}${"T"}${hour}:${minute}`;
+  };
+  /**
    * Method To set both from date and to date as todays date
    */
   const addToday = () => {
     let todayDate = new Date();
-    let dated = dateFormat(todayDate, "yyyy-mm-dd");
+    let dated = getValueOfDate(todayDate);
+    console.log(dated);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -527,8 +581,8 @@ function filter(props) {
     let toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 1);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -565,8 +619,8 @@ function filter(props) {
     let today = new Date();
     let fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
     let toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -604,8 +658,8 @@ function filter(props) {
     let toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 14);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -643,8 +697,8 @@ function filter(props) {
     let toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 7);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -683,8 +737,8 @@ function filter(props) {
     let to = from + 6;
     let fromDate = new Date(today.setDate(from)).toUTCString();
     let toDate = new Date(today.setDate(to)).toUTCString();
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -722,8 +776,8 @@ function filter(props) {
     let to = new Date();
     from.setDate(from.getDate() + 1);
     to.setDate(to.getDate() + 30);
-    let fromDate = dateFormat(from, "yyyy-mm-dd");
-    let toDate = dateFormat(to, "yyyy-mm-dd");
+    let fromDate = getValueOfDate(from);
+    let toDate = getValueOfDate(to);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -767,8 +821,8 @@ function filter(props) {
       fromDate.setDate(fromDate.getDate() + 1);
       toDate.setDate(toDate.getDate() + parseInt(value));
     }
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -812,8 +866,8 @@ function filter(props) {
       fromDate.setDate(fromDate.getDate() - parseInt(value));
       toDate.setDate(toDate.getDate() - 1);
     }
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
     if (dateTimeArray.length > 0) {
@@ -1017,13 +1071,24 @@ function filter(props) {
         }
       }
     });
-    if (item.dataType === "AutoComplete") {
-      let autoCompleteArray = [...autoCompletesArray];
-      if (autoCompleteArray.length > 0) {
-        let index = autoCompleteArray.findIndex(
-          (x) => x.name === item.name && item.type === x.type
-        );
-        if (index === -1) {
+    item.forEach((item) => {
+      if (item.dataType === "AutoComplete") {
+        let autoCompleteArray = [...autoCompletesArray];
+        if (autoCompleteArray.length > 0) {
+          let index = autoCompleteArray.findIndex(
+            (x) => x.name === item.name && item.type === x.type
+          );
+          if (index === -1) {
+            autoCompleteArray.push({
+              name: item.name,
+              dataType: item.dataType,
+              type: item.type,
+              enabled: item.enabled,
+              value: item.value,
+              objectArray: arr,
+            });
+          }
+        } else {
           autoCompleteArray.push({
             name: item.name,
             dataType: item.dataType,
@@ -1033,65 +1098,63 @@ function filter(props) {
             objectArray: arr,
           });
         }
+        setAutoCompletesArray(autoCompleteArray);
+      } else if (item.dataType === "DateTime") {
+        let dateTimeArray = [...dateTimesArray];
+        if (dateTimeArray.length === 0) {
+          dateTimeArray.push({
+            name: item.name,
+            dataType: item.dataType,
+            enabled: item.enabled,
+            field: [],
+          });
+          dateTimesValueArray.forEach((item) => {
+            if (item.fieldValue) {
+              dateTimeArray.forEach((dt) => {
+                dt.field.push({
+                  column: item.fieldValue,
+                  value: item.value,
+                });
+              });
+            }
+          });
+        }
+        setDateTimesArray(dateTimeArray);
+      } else if (item.dataType === "Numeric") {
+        let conditionArray = [...conditionsArray];
+        if (conditionArray.length === 0) {
+          conditionArray.push({
+            name: item.name,
+            dataType: item.dataType,
+            enabled: item.enabled,
+            condition: [],
+            amount: item.amount,
+            value: item.condition,
+          });
+          filterData.filter.forEach((data) => {
+            if (data.dataType === "Numeric") {
+              data.condition.forEach((values) => {
+                conditionArray.forEach((item) => {
+                  item.condition.push({ value: values.value });
+                });
+              });
+            }
+          });
+        }
+        setConditionsArray(conditionArray);
       } else {
-        autoCompleteArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          type: item.type,
-          enabled: item.enabled,
-          value: item.value,
-          objectArray: arr,
-        });
-      }
-      setAutoCompletesArray(autoCompleteArray);
-    } else if (item.dataType === "DateTime") {
-      let dateTimeArray = [...dateTimesArray];
-      if (dateTimeArray.length === 0) {
-        dateTimeArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          field: [],
-        });
-        dateTimesValueArray.forEach((item) => {
-          if (item.fieldValue) {
-            dateTimeArray.forEach((dt) => {
-              dt.field.push({
-                column: item.fieldValue,
-                value: item.value,
-              });
+        let textComponentArray = [...textComponentsArray];
+        if (textComponentArray.length > 0) {
+          let index = textComponentArray.findIndex((x) => x.name === item.name);
+          if (index === -1) {
+            textComponentArray.push({
+              name: item.name,
+              dataType: item.dataType,
+              enabled: item.enabled,
+              value: item.value,
             });
           }
-        });
-      }
-      setDateTimesArray(dateTimeArray);
-    } else if (item.dataType === "Numeric") {
-      let conditionArray = [...conditionsArray];
-      if (conditionArray.length === 0) {
-        conditionArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          condition: [],
-          amount: item.amount,
-          value: item.condition,
-        });
-        filterData.filter.forEach((data) => {
-          if (data.dataType === "Numeric") {
-            data.condition.forEach((values) => {
-              conditionArray.forEach((item) => {
-                item.condition.push({ value: values.value });
-              });
-            });
-          }
-        });
-      }
-      setConditionsArray(conditionArray);
-    } else {
-      let textComponentArray = [...textComponentsArray];
-      if (textComponentArray.length > 0) {
-        let index = textComponentArray.findIndex((x) => x.name === item.name);
-        if (index === -1) {
+        } else {
           textComponentArray.push({
             name: item.name,
             dataType: item.dataType,
@@ -1099,16 +1162,9 @@ function filter(props) {
             value: item.value,
           });
         }
-      } else {
-        textComponentArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          value: item.value,
-        });
+        setTextComponentsArray(textComponentArray);
       }
-      setTextComponentsArray(textComponentArray);
-    }
+    });
     setApplyFilter(true);
   };
   /**
@@ -1310,6 +1366,11 @@ function filter(props) {
                 closeDrawer={closeDrawer}
                 resetDrawer={resetDrawer}
                 filterCount={filterCount}
+                saveWarningClassName={saveWarningClassName}
+                saveWarningLabel={saveWarningLabel}
+                showSavePopUp={showSavePopUp}
+                emptyFilterClassName={emptyFilterClassName}
+                emptyFilterWarning={emptyFilterWarning}
               />
             </div>
           </div>
@@ -1325,4 +1386,3 @@ function filter(props) {
     </div>
   );
 }
-export default filter;
