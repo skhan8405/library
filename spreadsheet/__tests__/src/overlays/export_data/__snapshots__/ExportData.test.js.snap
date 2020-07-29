@@ -1,6 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ExportData /> Exportdata renders with default props 1`] = `ShallowWrapper {}`;
+exports[`<ExportData /> render correctly component 1`] = `
+<div
+  className="export__settings"
+/>
+`;
+
+exports[`<ExportData /> simulates all columncheckBox change event 1`] = `ShallowWrapper {}`;
 
 exports[`<ExportData /> simulates close of export click event 1`] = `ShallowWrapper {}`;
 

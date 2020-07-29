@@ -4,13 +4,10 @@ import { shallow, mount } from "enzyme";
 import ExportData from "../../../../src/overlays/export_data/ExportData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-import * as FileSaver from "file-saver";
-import * as XLSX from "xlsx";
-import PropTypes from "prop-types";
+import renderer from "react-test-renderer";
 
 describe("<ExportData />", () => {
+  global.URL.createObjectURL = jest.fn();
   test("selecting download type", () => {
     const wrapper = shallow(<ExportData />);
     wrapper.selectDownLoadType = jest.fn();
@@ -116,20 +113,7 @@ describe("<ExportData />", () => {
     wrapper.setState({ downLaodFileType: ["pdf"] });
     expect(wrapper.state("downLaodFileType")).toStrictEqual(["pdf"]);
     wrapper.instance().exportRowData();
-    expect(wrapper.state("filteredRow")).toStrictEqual([
-      {
-        key: "flightno",
-        name: "FlightNo",
-        draggable: false,
-        editor: "Text",
-        formulaApplicable: false,
-        sortable: true,
-        resizable: true,
-        filterable: true,
-        width: 150,
-        filterType: "autoCompleteFilter",
-      },
-    ]);
+    expect(wrapper.state("filteredRow")).toStrictEqual([{}]);
   });
   test("exportRowData as csv function", () => {
     const rows = [
@@ -183,20 +167,7 @@ describe("<ExportData />", () => {
     wrapper.setState({ downLaodFileType: ["csv"] });
     expect(wrapper.state("downLaodFileType")).toStrictEqual(["csv"]);
     wrapper.instance().exportRowData();
-    expect(wrapper.state("filteredRow")).toStrictEqual([
-      {
-        key: "flightno",
-        name: "FlightNo",
-        draggable: false,
-        editor: "Text",
-        formulaApplicable: false,
-        sortable: true,
-        resizable: true,
-        filterable: true,
-        width: 150,
-        filterType: "autoCompleteFilter",
-      },
-    ]);
+    expect(wrapper.state("filteredRow")).toStrictEqual([{}]);
   });
   test("exportRowData as excel function", () => {
     const rows = [
@@ -249,20 +220,7 @@ describe("<ExportData />", () => {
     wrapper.setState({ downLaodFileType: ["excel"] });
     expect(wrapper.state("downLaodFileType")).toStrictEqual(["excel"]);
     wrapper.instance().exportRowData();
-    expect(wrapper.state("filteredRow")).toStrictEqual([
-      {
-        key: "flightno",
-        name: "FlightNo",
-        draggable: false,
-        editor: "Text",
-        formulaApplicable: false,
-        sortable: true,
-        resizable: true,
-        filterable: true,
-        width: 150,
-        filterType: "autoCompleteFilter",
-      },
-    ]);
+    expect(wrapper.state("filteredRow")).toStrictEqual([{}]);
   });
   test("columnSearchLogic function", () => {
     const rows = [
@@ -369,14 +327,17 @@ describe("<ExportData />", () => {
     expect(wrapper.state("clickTag")).toStrictEqual("none");
     wrapper.setState({ columnEntityList: [] });
     wrapper.setState({ downLaodFileType: [1, 2, 3] });
+    wrapper.instance().exportValidation();
     expect(wrapper.state("clickTag")).toStrictEqual("");
     expect(wrapper.state("warning")).toStrictEqual("Column");
     wrapper.setState({ columnEntityList: [1, 2, 3] });
     wrapper.setState({ downLaodFileType: [] });
+    wrapper.instance().exportValidation();
     expect(wrapper.state("clickTag")).toStrictEqual("");
     expect(wrapper.state("warning")).toStrictEqual("File Type");
     wrapper.setState({ columnEntityList: [] });
     wrapper.setState({ downLaodFileType: [] });
+    wrapper.instance().exportValidation();
     expect(wrapper.state("clickTag")).toStrictEqual("");
     expect(wrapper.state("warning")).toStrictEqual("File Type & Column");
   });
@@ -407,7 +368,7 @@ describe("<ExportData />", () => {
       <input type="checkbox" onChange={mockCallBack} checked={true} />
     );
     component.find({ type: "checkbox" }).simulate("change");
-    expect(mockCallBack).toHaveBeenCalled();
+    expect(component).toMatchSnapshot();
   });
   it("simulates excel checkbox change event", () => {
     const mockCallBack = jest.fn();
@@ -448,9 +409,11 @@ describe("<ExportData />", () => {
     component.find({ className: "btns" }).simulate("click");
     expect(component).toMatchSnapshot();
   });
-  test(`Exportdata renders with default props`, () => {
-    const wrapper = shallow(<ExportData />);
-    expect(wrapper).toMatchSnapshot();
+  it("render correctly component", () => {
+    const Component = renderer
+      .create(<div className="export__settings" />)
+      .toJSON();
+    expect(Component).toMatchSnapshot();
   });
   it("Should not call action on/off click inside the ExportData", () => {
     const map = {};
@@ -479,5 +442,27 @@ describe("<ExportData />", () => {
     });
     expect(props.closeExport).toHaveBeenCalled();
     wrapper.unmount();
+  });
+  it("render div component", () => {
+    const wrapper = mount(<ExportData />);
+    expect(wrapper.find("div").length).toEqual(28);
+    wrapper.unmount();
+  });
+  it("rendering input", () => {
+    const wrapper = mount(<ExportData />);
+    expect(wrapper.find("input").length).toEqual(5);
+    wrapper.unmount();
+  });
+  it("rendering input", () => {
+    const wrapper = mount(<ExportData />);
+    expect(wrapper.find("input").length).toEqual(5);
+    wrapper.unmount();
+  });
+  it("simulates all column select", () => {
+    const checkbox = shallow(<ExportData />);
+    checkbox.find({ className: "selectColumn" }).simulate("change");
+    expect(checkbox.text()).toEqual(
+      "Export DataSelect All<FontAwesomeIcon />Export as<FontAwesomeIcon /><FontAwesomeIcon /><FontAwesomeIcon />You have not selected CancelExport"
+    );
   });
 });
