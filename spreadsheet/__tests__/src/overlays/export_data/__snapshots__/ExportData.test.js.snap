@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ExportData /> Exportdata renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`<ExportData /> simulates close of export click event 1`] = `ShallowWrapper {}`;
+
+exports[`<ExportData /> simulates csv checkbox change event 1`] = `ShallowWrapper {}`;
+
+exports[`<ExportData /> simulates excel checkbox change event 1`] = `ShallowWrapper {}`;
+
+exports[`<ExportData /> simulates search export input field 1`] = `ShallowWrapper {}`;

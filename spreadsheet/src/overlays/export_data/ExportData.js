@@ -240,7 +240,8 @@ class ExportData extends React.Component {
                 </div>
                 <div className="export__txt">Select All</div>
               </div>
-              {this.state.columnValueList.length > 0
+              {this.state.columnValueList &&
+              this.state.columnValueList.length > 0
                 ? this.state.columnValueList.map((column) => {
                     return (
                       <div className="export__wrap" key={column.key}>
