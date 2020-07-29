@@ -165,6 +165,7 @@ class ColumnReordering extends React.Component {
               <div className="column__checkbox">
                 <input
                   type="checkbox"
+                  id={"checkBoxToPinLeft_"+item}
                   checked={this.state.leftPinnedColumList.includes(item)}
                   disabled={
                     this.state.maxLeftPinnedColumn -
@@ -242,6 +243,7 @@ class ColumnReordering extends React.Component {
                 <div className="column__checkbox">
                   <input
                     type="checkbox"
+                    id="selectallcolumncheckbox"
                     onChange={() => this.selectAllToColumnReOrderList()}
                     checked={
                       this.state.columnReorderEntityList.length ===
@@ -257,6 +259,7 @@ class ColumnReordering extends React.Component {
                     <div className="column__checkbox">
                       <input
                         type="checkbox"
+                        id={"checkboxtoselectreorder_"+item}
                         checked={this.state.columnReorderEntityList.includes(
                           item
                         )}
