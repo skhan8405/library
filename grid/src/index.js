@@ -133,7 +133,7 @@ const Grid = forwardRef((props, ref) => {
                 //Loop through all column values for each row
                 processedColumns.map((column) => {
                     //Do search for each column
-                    returnValue = searchColumn(column, original, searchText);
+                    returnValue = returnValue || searchColumn(column, original, searchText);
                 });
                 return returnValue;
             });
