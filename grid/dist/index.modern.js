@@ -1570,7 +1570,6 @@ const Grid = forwardRef((props, ref) => {
     updateRowData,
     deletePopUpOverLay,
     deleteRowData,
-    globalSearchLogic,
     selectBulkData,
     calculateRowHeight
   } = props;
@@ -1606,25 +1605,79 @@ const Grid = forwardRef((props, ref) => {
     }
 
     if (!column.disableFilters) {
-      if (isInnerCellsPresent) {
-        column.filter = (rows, id, filterValue) => {
-          const filterText = filterValue ? filterValue.toLowerCase() : "";
-          return rows.filter(row => {
-            const rowValue = row.values[id];
-            const filterCols = innerCells.filter(cell => {
-              const cellValue = rowValue[cell.accessor] ? rowValue[cell.accessor].toString().toLowerCase() : "";
-              return cellValue.includes(filterText);
-            });
-            return filterCols && filterCols.length > 0;
-          });
-        };
-      }
+      column.filter = (rows, id, filterValue) => {
+        const searchText = filterValue ? filterValue.toLowerCase() : "";
+        return rows.filter(row => {
+          const {
+            original
+          } = row;
+          return searchColumn(column, original, searchText);
+        });
+      };
     }
 
     processedColumns.push(column);
   });
   const renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
   const gridColumns = useMemo(() => processedColumns, []);
+
+  const searchColumn = (column, original, searchText) => {
+    let isValuePresent = false;
+    const {
+      accessor,
+      innerCells
+    } = column;
+    const rowAccessorValue = original[accessor];
+    const isInnerCellsPresent = innerCells && innerCells.length > 0;
+
+    if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
+      if (rowAccessorValue.length > 0) {
+        rowAccessorValue.map(value => {
+          innerCells.map(cell => {
+            const dataAccessor = value[cell.accessor];
+
+            if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+              isValuePresent = true;
+            }
+          });
+        });
+      } else {
+        innerCells.map(cell => {
+          const dataAccessor = original[accessor][cell.accessor];
+
+          if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+            isValuePresent = true;
+          }
+        });
+      }
+    } else {
+      const dataAccessor = original[accessor];
+
+      if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+        isValuePresent = true;
+      }
+    }
+
+    return isValuePresent;
+  };
+
+  const globalSearchLogic = (rows, columns, filterValue) => {
+    if (filterValue && processedColumns.length > 0) {
+      const searchText = filterValue.toLowerCase();
+      return rows.filter(row => {
+        const {
+          original
+        } = row;
+        let returnValue = false;
+        processedColumns.map(column => {
+          returnValue = returnValue || searchColumn(column, original, searchText);
+        });
+        return returnValue;
+      });
+    }
+
+    return rows;
+  };
 
   const compareValues = (compareOrder, v1, v2) => {
     if (compareOrder === "Ascending") {
@@ -1750,11 +1803,12 @@ const Grid = forwardRef((props, ref) => {
       isNextPageLoading: isNextPageLoading,
       loadNextPage: loadNextPage,
       doGroupSort: doGroupSort
-    }), isNextPageLoading ? /*#__PURE__*/React.createElement("h2", {
-      style: {
-        textAlign: "center"
-      }
-    }, "Loading...") : null);
+    }), isNextPageLoading ? /*#__PURE__*/React.createElement("div", {
+      id: "loader",
+      className: "background"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "dots container"
+    }, /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null))) : null);
   } else if (isLoading) {
     return /*#__PURE__*/React.createElement("h2", {
       style: {
