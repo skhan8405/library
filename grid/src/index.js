@@ -58,19 +58,15 @@ const Grid = forwardRef((props, ref) => {
 
         //Add logic to filter column if column filter is not disabled
         if (!column.disableFilters) {
-            if (isInnerCellsPresent) {
-                column.filter = (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const filterCols = innerCells.filter((cell) => {
-                            const cellValue = rowValue[cell.accessor] ? rowValue[cell.accessor].toString().toLowerCase() : "";
-                            return cellValue.includes(filterText);
-                        });
-                        return filterCols && filterCols.length > 0;
-                    });
-                };
-            }
+            column.filter = (rows, id, filterValue) => {
+                const searchText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    //Find original data value of each row
+                    const { original } = row;
+                    //Do search for the column
+                    return searchColumn(column, original, searchText);
+                });
+            };
         }
 
         processedColumns.push(column);
@@ -79,6 +75,48 @@ const Grid = forwardRef((props, ref) => {
     const renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
 
     const gridColumns = useMemo(() => processedColumns, []);
+
+    //Logic for searching in each column
+    const searchColumn = (column, original, searchText) => {
+        //Return value
+        let isValuePresent = false;
+        //Find the accessor node and inner cells array of each column
+        const { accessor, innerCells } = column;
+        //Find accessor value of a column
+        const rowAccessorValue = original[accessor];
+        //Check if inner cells are available and save value to boolean var
+        const isInnerCellsPresent = innerCells && innerCells.length > 0;
+        //Enter if cell value is object or array
+        if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
+            //Enter if cell value is array
+            if (rowAccessorValue.length > 0) {
+                //Loop through cell array value and check if searched text is present
+                rowAccessorValue.map((value) => {
+                    innerCells.map((cell) => {
+                        const dataAccessor = value[cell.accessor];
+                        if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                            isValuePresent = true;
+                        }
+                    });
+                });
+            } else {
+                //If cell value is an object, loop through inner cells and check if searched text is present
+                innerCells.map((cell) => {
+                    const dataAccessor = original[accessor][cell.accessor];
+                    if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                        isValuePresent = true;
+                    }
+                });
+            }
+        } else {
+            //If cell value is not an object or array, convert it to text and check if searched text is present
+            const dataAccessor = original[accessor];
+            if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                isValuePresent = true;
+            }
+        }
+        return isValuePresent;
+    };
 
     //Add logic for doing global search in the grid
     const globalSearchLogic = (rows, columns, filterValue) => {
@@ -94,41 +132,8 @@ const Grid = forwardRef((props, ref) => {
                 let returnValue = false;
                 //Loop through all column values for each row
                 processedColumns.map((column) => {
-                    //Find the accessor node and inner cells array of each column
-                    const { accessor, innerCells } = column;
-                    //Find accessor value of a column
-                    const rowAccessorValue = original[accessor];
-                    //Check if inner cells are available and save value to boolean var
-                    const isInnerCellsPresent = innerCells && innerCells.length > 0;
-                    //Enter if cell value is object or array
-                    if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
-                        //Enter if cell value is array
-                        if (rowAccessorValue.length > 0) {
-                            //Loop through cell array value and check if searched text is present
-                            rowAccessorValue.map((value) => {
-                                innerCells.map((cell) => {
-                                    const dataAccessor = value[cell.accessor];
-                                    if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
-                                        returnValue = true;
-                                    }
-                                });
-                            });
-                        } else {
-                            //If cell value is an object, loop through inner cells and check if searched text is present
-                            innerCells.map((cell) => {
-                                const dataAccessor = original[accessor][cell.accessor];
-                                if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
-                                    returnValue = true;
-                                }
-                            });
-                        }
-                    } else {
-                        //If cell value is not an object or array, convert it to text and check if searched text is present
-                        const dataAccessor = original[accessor];
-                        if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
-                            returnValue = true;
-                        }
-                    }
+                    //Do search for each column
+                    returnValue = searchColumn(column, original, searchText);
                 });
                 return returnValue;
             });
