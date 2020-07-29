@@ -17,7 +17,7 @@ const App = () => {
     //Get grid width value
     const gridWidth = "100%";
 
-    //For connecting to child using ref
+    //For call back functions from component
     const childRef = useRef();
 
     //Create an array of airports
