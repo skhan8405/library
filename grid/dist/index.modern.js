@@ -305,10 +305,19 @@ const ColumnReordering = memo(props => {
   const {
     isManageColumnOpen,
     toggleManageColumns,
-    originalColumns
+    originalColumns,
+    isExpandContentAvailable,
+    additionalColumn
   } = props;
+  const additionalColumnHeader = additionalColumn && additionalColumn.length ? additionalColumn[0].Header : "";
+
+  const getRemarksColumnIfAvailable = () => {
+    return isExpandContentAvailable ? additionalColumn : [];
+  };
+
   const [managedColumns, setManagedColumns] = useState(originalColumns);
-  const [searchedColumns, setSearchedColumns] = useState(originalColumns);
+  const [searchedColumns, setSearchedColumns] = useState([...originalColumns].concat(getRemarksColumnIfAvailable()));
+  const [remarksColumnToManage, setRemarksColumnToManage] = useState(getRemarksColumnIfAvailable);
   const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
   const HTML5toTouch = {
     backends: [{
@@ -327,14 +336,16 @@ const ColumnReordering = memo(props => {
     let {
       value
     } = event ? event.target : "";
-    value = value.toLowerCase();
+    value = value ? value.toLowerCase() : "";
 
     if (value != "") {
       setSearchedColumns(originalColumns.filter(column => {
         return column.Header.toLowerCase().includes(value);
-      }));
+      }).concat(getRemarksColumnIfAvailable().filter(column => {
+        return column.Header.toLowerCase().includes(value);
+      })));
     } else {
-      setSearchedColumns(originalColumns);
+      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
     }
   };
 
@@ -343,8 +354,10 @@ const ColumnReordering = memo(props => {
   };
 
   const isCheckboxSelected = header => {
-    if (header === "Select All") {
-      return managedColumns.length === searchedColumns.length;
+    if (header === additionalColumnHeader) {
+      return remarksColumnToManage.length > 0;
+    } else if (header === "Select All") {
+      return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
     } else {
       const selectedColumn = managedColumns.filter(column => {
         return column.Header === header;
@@ -355,9 +368,11 @@ const ColumnReordering = memo(props => {
 
   const selectAllColumns = event => {
     if (event.currentTarget.checked) {
-      setManagedColumns(searchedColumns);
+      setManagedColumns(originalColumns);
+      setRemarksColumnToManage(getRemarksColumnIfAvailable());
     } else {
       setManagedColumns([]);
+      setRemarksColumnToManage([]);
     }
   };
 
@@ -370,34 +385,44 @@ const ColumnReordering = memo(props => {
       value
     } = currentTarget;
 
-    if (checked) {
-      let indexOfColumnToAdd = originalColumns.findIndex(column => {
-        return column.Header == value;
-      });
-      const itemToAdd = originalColumns[indexOfColumnToAdd];
-      let prevItemIndex = -1;
-
-      while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-        prevItemIndex = managedColumns.findIndex(column => {
-          return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
-        });
-        indexOfColumnToAdd = indexOfColumnToAdd - 1;
+    if (value === additionalColumnHeader) {
+      if (checked) {
+        setRemarksColumnToManage(additionalColumn);
+      } else {
+        setRemarksColumnToManage([]);
       }
-
-      const newColumnsList = managedColumns.slice(0);
-      newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
-      setManagedColumns(newColumnsList);
     } else {
-      setManagedColumns(managedColumns.filter(column => {
-        return column.Header !== value;
-      }));
+      if (checked) {
+        let indexOfColumnToAdd = originalColumns.findIndex(column => {
+          return column.Header == value;
+        });
+        const itemToAdd = originalColumns[indexOfColumnToAdd];
+        let prevItemIndex = -1;
+
+        while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+          prevItemIndex = managedColumns.findIndex(column => {
+            return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+          });
+          indexOfColumnToAdd = indexOfColumnToAdd - 1;
+        }
+
+        const newColumnsList = managedColumns.slice(0);
+        newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
+        setManagedColumns(newColumnsList);
+      } else {
+        setManagedColumns(managedColumns.filter(column => {
+          return column.Header !== value;
+        }));
+      }
     }
   };
 
   const doColumnUpdate = () => {
+    setIsErrorDisplayed(false);
+
     if (managedColumns && managedColumns.length > 0) {
-      setSearchedColumns(originalColumns);
-      props.updateColumnStructure(managedColumns);
+      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+      props.updateColumnStructure(managedColumns, remarksColumnToManage);
     } else {
       setIsErrorDisplayed(true);
     }
@@ -405,8 +430,9 @@ const ColumnReordering = memo(props => {
 
   const resetColumnUpdate = () => {
     setManagedColumns(originalColumns);
-    setSearchedColumns(originalColumns);
-    props.updateColumnStructure(originalColumns);
+    setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+    setRemarksColumnToManage(getRemarksColumnIfAvailable());
+    props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
   };
 
   if (isManageColumnOpen) {
@@ -460,12 +486,12 @@ const ColumnReordering = memo(props => {
       className: "column__header"
     }, /*#__PURE__*/React.createElement("div", {
       className: "column__headerTxt"
-    }, /*#__PURE__*/React.createElement("strong", null, "Column Setting"), isErrorDisplayed ? /*#__PURE__*/React.createElement("strong", {
+    }, /*#__PURE__*/React.createElement("strong", null, "Column Settings"), isErrorDisplayed ? /*#__PURE__*/React.createElement("strong", {
       style: {
         marginLeft: "10px",
         color: "red"
       }
-    }, "Select at least one column") : null), /*#__PURE__*/React.createElement("div", {
+    }, "Select at least one column (other than ", additionalColumnHeader, ")") : null), /*#__PURE__*/React.createElement("div", {
       className: "column__close",
       onClick: toggleManageColumns
     }, /*#__PURE__*/React.createElement("i", {
@@ -479,7 +505,11 @@ const ColumnReordering = memo(props => {
     }, /*#__PURE__*/React.createElement(ColumnsList, {
       columnsToManage: managedColumns,
       updateColumnsInState: updateColumnsInState
-    }))), /*#__PURE__*/React.createElement("div", {
+    })), remarksColumnToManage && remarksColumnToManage.length > 0 ? /*#__PURE__*/React.createElement("div", {
+      className: "column__reorder full-width"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: ""
+    }, remarksColumnToManage[0].Header)) : null), /*#__PURE__*/React.createElement("div", {
       className: "column__footer"
     }, /*#__PURE__*/React.createElement("div", {
       className: "column__btns"
@@ -501,6 +531,10 @@ const ColumnReordering = memo(props => {
 const ItemTypes$1 = {
   SORT_ITEM: "SORT_ITEM"
 };
+
+var SortCopy = require("./SortCopy~IGKyJbDR.svg");
+
+var SortDelete = require("./SortDelete~MFpZtzWS.svg");
 
 const SortItem = ({
   id,
@@ -592,8 +626,6 @@ const SortItem = ({
   }, /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
     ref: node => drag(drop(node)),
     style: {
       cursor: "move"
@@ -604,8 +636,6 @@ const SortItem = ({
   }))), /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React.createElement("div", null, "Sort by")), /*#__PURE__*/React.createElement("div", {
     className: "sort__file"
   }, /*#__PURE__*/React.createElement("select", {
     className: "custom__ctrl",
@@ -617,8 +647,6 @@ const SortItem = ({
   }, orgItem.Header))))), /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React.createElement("div", null, "Sort on")), /*#__PURE__*/React.createElement("div", {
     className: "sort__file"
   }, /*#__PURE__*/React.createElement("select", {
     className: "custom__ctrl",
@@ -633,8 +661,6 @@ const SortItem = ({
   }, "Value")))), /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React.createElement("div", null, "Order")), /*#__PURE__*/React.createElement("div", {
     className: "sort__file"
   }, /*#__PURE__*/React.createElement("select", {
     className: "custom__ctrl",
@@ -643,24 +669,22 @@ const SortItem = ({
   }, /*#__PURE__*/React.createElement("option", null, "Ascending"), /*#__PURE__*/React.createElement("option", null, "Descending")))), /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
     className: "sort__icon",
     type: "button",
     onClick: copySort
-  }, /*#__PURE__*/React.createElement("i", {
-    className: "fa fa-clone"
-  }))), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", null, /*#__PURE__*/React.createElement("img", {
+    src: SortCopy,
+    alt: "copy sort"
+  })))), /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    className: ""
-  }, /*#__PURE__*/React.createElement("div", null, "\xA0")), /*#__PURE__*/React.createElement("div", {
     className: "sort__icon",
     type: "button",
     onClick: deleteSort
-  }, /*#__PURE__*/React.createElement("i", {
-    className: "fa fa-trash"
-  }))));
+  }, /*#__PURE__*/React.createElement("i", null, /*#__PURE__*/React.createElement("img", {
+    src: SortDelete,
+    alt: "copy sort"
+  })))));
 };
 
 const SortingList = props => {
@@ -696,7 +720,7 @@ const SortingList = props => {
       display: "flex",
       flexWrap: "wrap"
     }
-  }, sortOptions.map((sortOption, index) => {
+  }, sortOptions && sortOptions.length > 0 ? /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, "Sort By"), /*#__PURE__*/React.createElement("li", null, "Sort On"), /*#__PURE__*/React.createElement("li", null, "Order")) : null, sortOptions.map((sortOption, index) => {
     return /*#__PURE__*/React.createElement(SortItem, {
       id: index,
       key: index,
@@ -813,7 +837,7 @@ const GroupSort = memo(props => {
       className: "sort__header"
     }, /*#__PURE__*/React.createElement("div", {
       className: "sort__headerTxt"
-    }, /*#__PURE__*/React.createElement("strong", null, "Sort ")), /*#__PURE__*/React.createElement("div", {
+    }, "Sort"), /*#__PURE__*/React.createElement("div", {
       className: "sort__close"
     }, /*#__PURE__*/React.createElement("i", {
       className: "fa fa-times",
@@ -831,22 +855,15 @@ const GroupSort = memo(props => {
       updateSingleSortingOption: updateSingleSortingOption,
       copySortOption: copySortOption,
       deleteSortOption: deleteSortOption
-    })), /*#__PURE__*/React.createElement("div", {
+    }))), /*#__PURE__*/React.createElement("div", {
       className: "sort-warning"
-    }, isErrorDisplayed ? /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "red"
-      }
-    }, "Duplicate sort options found.") : null)), /*#__PURE__*/React.createElement("div", {
+    }, isErrorDisplayed ? /*#__PURE__*/React.createElement("span", null, "Duplicate sort options found.") : null), /*#__PURE__*/React.createElement("div", {
       className: "sort__new"
     }, /*#__PURE__*/React.createElement("div", {
       className: "sort__section",
       type: "button",
       onClick: addSortingOptions
-    }, /*#__PURE__*/React.createElement("i", {
-      className: "fa fa-plus",
-      "aria-hidden": "true"
-    }), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("span", null, "+"), /*#__PURE__*/React.createElement("div", {
       className: "sort__txt"
     }, "New Sort"))), /*#__PURE__*/React.createElement("div", {
       className: "sort__footer"
@@ -869,10 +886,19 @@ const ExportData = memo(props => {
     isExportOverlayOpen,
     toggleExportDataOverlay,
     rows,
-    originalColumns
+    originalColumns,
+    isExpandContentAvailable,
+    additionalColumn
   } = props;
-  const [managedColumns, setManagedColumns] = useState(originalColumns);
-  const [searchedColumns, setSearchedColumns] = useState(originalColumns);
+
+  const getRemarksColumnIfAvailable = () => {
+    return isExpandContentAvailable ? additionalColumn : [];
+  };
+
+  const updatedColumns = [...originalColumns].concat(getRemarksColumnIfAvailable());
+  const [managedColumns, setManagedColumns] = useState(updatedColumns);
+  const [searchedColumns, setSearchedColumns] = useState(updatedColumns);
+  const [downloadTypes, setDownloadTypes] = useState([]);
   const [warning, setWarning] = useState("");
   let isDownload = false;
 
@@ -880,18 +906,9 @@ const ExportData = memo(props => {
     isDownload = true;
     let filteredRow = [];
     let filteredRowValues = [];
-    let downLaodFileType = [];
-    let downLaodFileTypeCount = document.getElementsByName("fileType[]").length;
-
-    for (let i = 0; i < downLaodFileTypeCount; i++) {
-      if (document.getElementsByName("fileType[]")[i].checked == true) {
-        downLaodFileType.push(document.getElementsByName("fileType[]")[i].value);
-      }
-    }
-
     setWarning("");
 
-    if (managedColumns.length > 0 && downLaodFileType.length > 0) {
+    if (managedColumns.length > 0 && downloadTypes.length > 0) {
       rows.forEach(rowDetails => {
         let row = rowDetails.original;
         const keys = Object.getOwnPropertyNames(row);
@@ -899,7 +916,7 @@ const ExportData = memo(props => {
         let rowFilteredValues = [];
         keys.forEach(function (key) {
           managedColumns.forEach(columnName => {
-            if (columnName.accessor === key) {
+            if (columnName.accessor === key || columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key)) {
               let columnValue = "";
 
               if (typeof row[key] === "object") {
@@ -924,16 +941,22 @@ const ExportData = memo(props => {
         filteredRow.push(filteredColumnVal);
         filteredRowValues.push(rowFilteredValues);
       });
-      downLaodFileType.map(item => {
-        if (item === "pdf") downloadPDF(filteredRowValues);else if (item === "excel") downloadXLSFile(filteredRow);else downloadCSVFile(filteredRow);
+      downloadTypes.map(item => {
+        if (item === "pdf") {
+          downloadPDF(filteredRowValues);
+        } else if (item === "excel") {
+          downloadXLSFile(filteredRow);
+        } else {
+          downloadCSVFile(filteredRow);
+        }
       });
     } else {
-      if (managedColumns.length === 0 && downLaodFileType.length === 0) {
-        setWarning("You haven't selected File Type & Column");
+      if (managedColumns.length === 0 && downloadTypes.length === 0) {
+        setWarning("Select at least one column and a file type");
       } else if (managedColumns.length === 0) {
-        setWarning("You haven't selected Column ");
-      } else if (downLaodFileType.length === 0) {
-        setWarning("You haven't selected File Type");
+        setWarning("Select at least one column");
+      } else if (downloadTypes.length === 0) {
+        setWarning("Select at least one file type");
       }
     }
   };
@@ -945,7 +968,7 @@ const ExportData = memo(props => {
     const marginLeft = 300;
     const doc = new jsPDF(orientation, unit, size);
     doc.setFontSize(15);
-    const title = "iCargo Report";
+    const title = "iCargo Neo Report";
     const headers = [managedColumns.map(column => {
       return column.Header;
     })];
@@ -956,14 +979,14 @@ const ExportData = memo(props => {
     };
     doc.text(title, marginLeft, 40);
     doc.autoTable(content);
-    doc.save("report.pdf");
+    doc.save("iCargo Neo Report.pdf");
     isDownload = false;
   };
 
   const downloadCSVFile = filteredRowValue => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".csv";
-    const fileName = "CSVDownload";
+    const fileName = "iCargo Neo Report";
     const ws = utils.json_to_sheet(filteredRowValue);
     const wb = {
       Sheets: {
@@ -984,7 +1007,7 @@ const ExportData = memo(props => {
   const downloadXLSFile = filteredRowValue => {
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-    const fileName = "XLSXDownload";
+    const fileName = "iCargo Neo Report";
     const ws = utils.json_to_sheet(filteredRowValue);
     const wb = {
       Sheets: {
@@ -1006,14 +1029,16 @@ const ExportData = memo(props => {
     let {
       value
     } = event ? event.target : "";
-    value = value.toLowerCase();
+    value = value ? value.toLowerCase() : "";
 
     if (value != "") {
       setSearchedColumns(originalColumns.filter(column => {
         return column.Header.toLowerCase().includes(value);
-      }));
+      }).concat(getRemarksColumnIfAvailable().filter(column => {
+        return column.Header.toLowerCase().includes(value);
+      })));
     } else {
-      setSearchedColumns(originalColumns);
+      setSearchedColumns(updatedColumns);
     }
   };
 
@@ -1030,7 +1055,7 @@ const ExportData = memo(props => {
 
   const selectAllColumns = event => {
     if (event.target.checked) {
-      setManagedColumns(searchedColumns);
+      setManagedColumns(updatedColumns);
     } else {
       setManagedColumns([]);
     }
@@ -1046,15 +1071,15 @@ const ExportData = memo(props => {
     } = currentTarget;
 
     if (checked) {
-      let indexOfColumnToAdd = originalColumns.findIndex(column => {
+      let indexOfColumnToAdd = updatedColumns.findIndex(column => {
         return column.Header == value;
       });
-      const itemToAdd = originalColumns[indexOfColumnToAdd];
+      const itemToAdd = updatedColumns[indexOfColumnToAdd];
       let prevItemIndex = -1;
 
       while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
         prevItemIndex = managedColumns.findIndex(column => {
-          return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+          return column.Header == updatedColumns[indexOfColumnToAdd - 1].Header;
         });
         indexOfColumnToAdd = indexOfColumnToAdd - 1;
       }
@@ -1069,8 +1094,25 @@ const ExportData = memo(props => {
     }
   };
 
+  const changeDownloadType = event => {
+    const {
+      value,
+      checked
+    } = event ? event.currentTarget : "";
+
+    if (checked) {
+      setDownloadTypes(downloadTypes.concat([value]));
+    } else {
+      setDownloadTypes(downloadTypes.filter(type => {
+        return type !== value;
+      }));
+    }
+  };
+
   if (isExportOverlayOpen) {
-    return /*#__PURE__*/React.createElement("div", {
+    return /*#__PURE__*/React.createElement(ClickAwayListener, {
+      onClickAway: toggleExportDataOverlay
+    }, /*#__PURE__*/React.createElement("div", {
       className: "exports--grid"
     }, /*#__PURE__*/React.createElement("div", {
       className: "export__grid"
@@ -1084,7 +1126,7 @@ const ExportData = memo(props => {
       className: "export__body"
     }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
       type: "text",
-      placeholder: "Search export",
+      placeholder: "Search column",
       className: "custom__ctrl",
       onChange: filterColumnsList
     })), /*#__PURE__*/React.createElement("div", {
@@ -1131,12 +1173,13 @@ const ExportData = memo(props => {
     }, /*#__PURE__*/React.createElement("div", {
       className: "export__reorder"
     }, /*#__PURE__*/React.createElement("div", {
-      className: ""
+      className: "check-wrap"
     }, /*#__PURE__*/React.createElement("input", {
       type: "checkbox",
-      id: "fileType[]",
-      name: "fileType[]",
-      value: "pdf"
+      id: "chk_pdf",
+      value: "pdf",
+      checked: downloadTypes.includes("pdf"),
+      onChange: changeDownloadType
     })), /*#__PURE__*/React.createElement("div", {
       className: "export__file"
     }, /*#__PURE__*/React.createElement("i", {
@@ -1145,12 +1188,13 @@ const ExportData = memo(props => {
     }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("strong", null, "PDF"))), /*#__PURE__*/React.createElement("div", {
       className: "export__reorder"
     }, /*#__PURE__*/React.createElement("div", {
-      className: ""
+      className: "check-wrap"
     }, /*#__PURE__*/React.createElement("input", {
       type: "checkbox",
-      id: "fileType[]",
-      name: "fileType[]",
-      value: "excel"
+      id: "chk_excel",
+      value: "excel",
+      checked: downloadTypes.includes("excel"),
+      onChange: changeDownloadType
     })), /*#__PURE__*/React.createElement("div", {
       className: "export__file"
     }, /*#__PURE__*/React.createElement("i", {
@@ -1159,12 +1203,13 @@ const ExportData = memo(props => {
     }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("strong", null, "Excel"))), /*#__PURE__*/React.createElement("div", {
       className: "export__reorder"
     }, /*#__PURE__*/React.createElement("div", {
-      className: ""
+      className: "check-wrap"
     }, /*#__PURE__*/React.createElement("input", {
       type: "checkbox",
-      id: "fileType[]",
-      name: "fileType[]",
-      value: "csv"
+      id: "chk_csv",
+      value: "csv",
+      checked: downloadTypes.includes("csv"),
+      onChange: changeDownloadType
     })), /*#__PURE__*/React.createElement("div", {
       className: "export__file"
     }, /*#__PURE__*/React.createElement("i", {
@@ -1188,7 +1233,7 @@ const ExportData = memo(props => {
     }, "Cancel"), /*#__PURE__*/React.createElement("button", {
       className: "btns btns__save",
       onClick: exportRowData
-    }, "Export"))))));
+    }, "Export")))))));
   } else {
     return /*#__PURE__*/React.createElement("div", null);
   }
@@ -1202,6 +1247,7 @@ const Customgrid = memo(props => {
     gridWidth,
     managableColumns,
     originalColumns,
+    additionalColumn,
     data,
     originalData,
     rowEditOverlay,
@@ -1212,6 +1258,7 @@ const Customgrid = memo(props => {
     globalSearchLogic,
     selectBulkData,
     calculateRowHeight,
+    isExpandContentAvailable,
     renderExpandedContent,
     hasNextPage,
     isNextPageLoading,
@@ -1219,6 +1266,7 @@ const Customgrid = memo(props => {
     doGroupSort
   } = props;
   const [columns, setColumns] = useState(managableColumns);
+  const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(isExpandContentAvailable);
 
   if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
     return /*#__PURE__*/React.createElement("h2", {
@@ -1256,8 +1304,9 @@ const Customgrid = memo(props => {
     setManageColumnOpen(!isManageColumnOpen);
   };
 
-  const updateColumnStructure = newColumnStructure => {
-    setColumns(newColumnStructure);
+  const updateColumnStructure = (newColumnStructure, remarksColumn) => {
+    setColumns([...newColumnStructure]);
+    setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
     toggleManageColumns();
   };
 
@@ -1333,7 +1382,7 @@ const Customgrid = memo(props => {
           RowEditOverlay: rowEditOverlay,
           rowEditData: rowEditData,
           updateRowInGrid: updateRowInGrid
-        }), /*#__PURE__*/React.createElement("span", Object.assign({
+        }), isRowExpandEnabled ? /*#__PURE__*/React.createElement("span", Object.assign({
           className: "expander"
         }, row.getToggleRowExpandedProps()), row.isExpanded ? /*#__PURE__*/React.createElement("i", {
           className: "fa fa-angle-up",
@@ -1341,7 +1390,7 @@ const Customgrid = memo(props => {
         }) : /*#__PURE__*/React.createElement("i", {
           className: "fa fa-angle-down",
           "aria-hidden": "true"
-        })));
+        })) : null);
       }
     }]);
   });
@@ -1374,7 +1423,7 @@ const Customgrid = memo(props => {
         return /*#__PURE__*/React.createElement("div", Object.assign({}, cell.getCellProps(), {
           className: "table-cell td"
         }), cell.render("Cell"));
-      })), row.isExpanded ? /*#__PURE__*/React.createElement("div", {
+      })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React.createElement("div", {
         className: "expand"
       }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
     }
@@ -1399,6 +1448,8 @@ const Customgrid = memo(props => {
     isManageColumnOpen: isManageColumnOpen,
     toggleManageColumns: toggleManageColumns,
     originalColumns: originalColumns,
+    isExpandContentAvailable: isExpandContentAvailable,
+    additionalColumn: [additionalColumn],
     updateColumnStructure: updateColumnStructure
   }), /*#__PURE__*/React.createElement(GlobalFilter, {
     globalFilter: state.globalFilter,
@@ -1412,7 +1463,9 @@ const Customgrid = memo(props => {
     isExportOverlayOpen: isExportOverlayOpen,
     toggleExportDataOverlay: toggleExportDataOverlay,
     rows: rows,
-    originalColumns: originalColumns
+    originalColumns: originalColumns,
+    isExpandContentAvailable: isExpandContentAvailable,
+    additionalColumn: [additionalColumn]
   }), /*#__PURE__*/React.createElement("div", {
     className: "filter-icon keyword-search",
     onClick: toggleColumnFilter
@@ -1510,6 +1563,7 @@ const Grid = forwardRef((props, ref) => {
     gridHeight,
     gridWidth,
     columns,
+    additionalColumn,
     fetchData,
     rowEditOverlay,
     rowEditData,
@@ -1518,8 +1572,7 @@ const Grid = forwardRef((props, ref) => {
     deleteRowData,
     globalSearchLogic,
     selectBulkData,
-    calculateRowHeight,
-    renderExpandedContent
+    calculateRowHeight
   } = props;
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
@@ -1570,6 +1623,7 @@ const Grid = forwardRef((props, ref) => {
 
     processedColumns.push(column);
   });
+  const renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
   const gridColumns = useMemo(() => processedColumns, []);
 
   const compareValues = (compareOrder, v1, v2) => {
@@ -1679,6 +1733,7 @@ const Grid = forwardRef((props, ref) => {
       gridWidth: gridWidth,
       managableColumns: gridColumns,
       originalColumns: gridColumns,
+      additionalColumn: additionalColumn,
       data: data,
       originalData: items,
       rowEditOverlay: rowEditOverlay,
@@ -1689,6 +1744,7 @@ const Grid = forwardRef((props, ref) => {
       globalSearchLogic: globalSearchLogic,
       selectBulkData: selectBulkData,
       calculateRowHeight: calculateRowHeight,
+      isExpandContentAvailable: typeof renderExpandedContent === "function",
       renderExpandedContent: renderExpandedContent,
       hasNextPage: hasNextPage,
       isNextPageLoading: isNextPageLoading,

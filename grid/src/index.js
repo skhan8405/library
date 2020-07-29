@@ -7,6 +7,7 @@ const Grid = forwardRef((props, ref) => {
         gridHeight,
         gridWidth,
         columns,
+        additionalColumn,
         fetchData,
         rowEditOverlay,
         rowEditData,
@@ -15,8 +16,7 @@ const Grid = forwardRef((props, ref) => {
         deleteRowData,
         globalSearchLogic,
         selectBulkData,
-        calculateRowHeight,
-        renderExpandedContent
+        calculateRowHeight
     } = props;
 
     //Set state value for variable to check if there is anext page available
@@ -76,6 +76,9 @@ const Grid = forwardRef((props, ref) => {
 
         processedColumns.push(column);
     });
+
+    const renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
+
     const gridColumns = useMemo(() => processedColumns, []);
 
     //Function to return sorting logic based on the user selected order of sort
@@ -199,6 +202,7 @@ const Grid = forwardRef((props, ref) => {
                     gridWidth={gridWidth}
                     managableColumns={gridColumns}
                     originalColumns={gridColumns}
+                    additionalColumn={additionalColumn}
                     data={data}
                     originalData={items}
                     rowEditOverlay={rowEditOverlay}
@@ -209,6 +213,7 @@ const Grid = forwardRef((props, ref) => {
                     globalSearchLogic={globalSearchLogic}
                     selectBulkData={selectBulkData}
                     calculateRowHeight={calculateRowHeight}
+                    isExpandContentAvailable={typeof renderExpandedContent === "function"}
                     renderExpandedContent={renderExpandedContent}
                     hasNextPage={hasNextPage}
                     isNextPageLoading={isNextPageLoading}
