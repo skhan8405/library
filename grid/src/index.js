@@ -14,7 +14,6 @@ const Grid = forwardRef((props, ref) => {
         updateRowData,
         deletePopUpOverLay,
         deleteRowData,
-        globalSearchLogic,
         selectBulkData,
         calculateRowHeight
     } = props;
@@ -80,6 +79,62 @@ const Grid = forwardRef((props, ref) => {
     const renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
 
     const gridColumns = useMemo(() => processedColumns, []);
+
+    //Add logic for doing global search in the grid
+    const globalSearchLogic = (rows, columns, filterValue) => {
+        //Enter search logic only if rows and columns are available
+        if (filterValue && processedColumns.length > 0) {
+            //convert user searched text to lower case
+            const searchText = filterValue.toLowerCase();
+            //Loop through all rows
+            return rows.filter((row) => {
+                //Find original data value of each row
+                const { original } = row;
+                //Return value of the filter method
+                let returnValue = false;
+                //Loop through all column values for each row
+                processedColumns.map((column) => {
+                    //Find the accessor node and inner cells array of each column
+                    const { accessor, innerCells } = column;
+                    //Find accessor value of a column
+                    const rowAccessorValue = original[accessor];
+                    //Check if inner cells are available and save value to boolean var
+                    const isInnerCellsPresent = innerCells && innerCells.length > 0;
+                    //Enter if cell value is object or array
+                    if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
+                        //Enter if cell value is array
+                        if (rowAccessorValue.length > 0) {
+                            //Loop through cell array value and check if searched text is present
+                            rowAccessorValue.map((value) => {
+                                innerCells.map((cell) => {
+                                    const dataAccessor = value[cell.accessor];
+                                    if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                                        returnValue = true;
+                                    }
+                                });
+                            });
+                        } else {
+                            //If cell value is an object, loop through inner cells and check if searched text is present
+                            innerCells.map((cell) => {
+                                const dataAccessor = original[accessor][cell.accessor];
+                                if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                                    returnValue = true;
+                                }
+                            });
+                        }
+                    } else {
+                        //If cell value is not an object or array, convert it to text and check if searched text is present
+                        const dataAccessor = original[accessor];
+                        if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                            returnValue = true;
+                        }
+                    }
+                });
+                return returnValue;
+            });
+        }
+        return rows;
+    };
 
     //Function to return sorting logic based on the user selected order of sort
     const compareValues = (compareOrder, v1, v2) => {

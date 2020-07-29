@@ -375,12 +375,14 @@ const App = () => {
         }
     ];
 
+    //Remove columns (that should be displayed in expanded view) if device is not desktop
     if (!isDesktop) {
         columns = columns.filter((item) => {
             return item.accessor !== "details";
         });
     }
 
+    //Configure data to be displayed in expanded view (separate configurations for desktop and other devices)
     const additionalColumn = {
         Header: "Remarks",
         innerCells: isDesktop ? ["remarks"] : ["remarks", "details"],
@@ -427,46 +429,6 @@ const App = () => {
                 );
             }
         }
-    };
-
-    //Add logic for doing global search in the grid
-    const globalSearchLogic = (rows, columns, filterValue) => {
-        if (filterValue) {
-            const searchText = filterValue.toLowerCase();
-            return rows.filter((row) => {
-                const { flight, segment, details, weight, volume, revenue, queuedBooking, uldPositions, sr } = row.original;
-                const { date, flightno } = flight;
-                const { from, to } = segment;
-                const { flightModel, bodyType, type, startTime, endTime, status, additionalStatus, timeStatus } = details;
-                return (
-                    date.toLowerCase().includes(searchText) ||
-                    flightno.toLowerCase().includes(searchText) ||
-                    from.toLowerCase().includes(searchText) ||
-                    to.toLowerCase().includes(searchText) ||
-                    flightModel.toString().toLowerCase().includes(searchText) ||
-                    bodyType.toLowerCase().includes(searchText) ||
-                    type.toLowerCase().includes(searchText) ||
-                    startTime.toLowerCase().includes(searchText) ||
-                    endTime.toLowerCase().includes(searchText) ||
-                    status.toLowerCase().includes(searchText) ||
-                    additionalStatus.toLowerCase().includes(searchText) ||
-                    timeStatus.toLowerCase().includes(searchText) ||
-                    weight.percentage.toLowerCase().includes(searchText) ||
-                    weight.value.toLowerCase().includes(searchText) ||
-                    volume.percentage.toLowerCase().includes(searchText) ||
-                    volume.value.toLowerCase().includes(searchText) ||
-                    revenue.revenue.toLowerCase().includes(searchText) ||
-                    revenue.yeild.toLowerCase().includes(searchText) ||
-                    sr.toLowerCase().includes(searchText) ||
-                    queuedBooking.sr.toLowerCase().includes(searchText) ||
-                    queuedBooking.volume.toLowerCase().includes(searchText) ||
-                    uldPositions.findIndex((item) => {
-                        return (item.position + " " + item.value).toLowerCase().includes(searchText);
-                    }) >= 0
-                );
-            });
-        }
-        return rows;
     };
 
     //Add logic to calculate height of each row, based on the content of  or more columns
@@ -545,7 +507,6 @@ const App = () => {
             updateRowData={updateRowData}
             deletePopUpOverLay={DeletePopUpOverLay}
             deleteRowData={deleteRowData}
-            globalSearchLogic={globalSearchLogic}
             selectBulkData={selectBulkData}
             calculateRowHeight={calculateRowHeight}
         />
