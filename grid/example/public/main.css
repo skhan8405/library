@@ -617,6 +617,14 @@ select:-webkit-autofill:focus {
     left: -855px;
     padding: 50px;
 }
+@media screen and (max-width: 1024px) {
+    .row-option-action-overlay {
+        left: -940px;
+    }
+    .row-option-action-overlay.delete {
+        left: -610px;
+    }
+}
 .row-option-action-overlay label {
     margin-bottom: 5px;
     display: block;
