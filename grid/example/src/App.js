@@ -12,7 +12,7 @@ const App = () => {
     const isDesktop = window.innerWidth > 1024;
 
     //Get grid height value, which is a required value
-    const gridHeight = "84vh";
+    const gridHeight = "80vh";
 
     //Get grid width value
     const gridWidth = "100%";

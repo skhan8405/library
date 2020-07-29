@@ -284,7 +284,15 @@ const Grid = forwardRef((props, ref) => {
                     loadNextPage={loadNextPage}
                     doGroupSort={doGroupSort}
                 />
-                {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
+                {isNextPageLoading ? (
+                    <div id="loader" className="background">
+                        <div className="dots container">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                ) : null}
             </div>
         );
     } else if (isLoading) {
