@@ -14,7 +14,6 @@ const Grid = forwardRef((props, ref) => {
         updateRowData,
         deletePopUpOverLay,
         deleteRowData,
-        globalSearchLogic,
         selectBulkData,
         calculateRowHeight
     } = props;
@@ -59,19 +58,15 @@ const Grid = forwardRef((props, ref) => {
 
         //Add logic to filter column if column filter is not disabled
         if (!column.disableFilters) {
-            if (isInnerCellsPresent) {
-                column.filter = (rows, id, filterValue) => {
-                    const filterText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        const rowValue = row.values[id];
-                        const filterCols = innerCells.filter((cell) => {
-                            const cellValue = rowValue[cell.accessor] ? rowValue[cell.accessor].toString().toLowerCase() : "";
-                            return cellValue.includes(filterText);
-                        });
-                        return filterCols && filterCols.length > 0;
-                    });
-                };
-            }
+            column.filter = (rows, id, filterValue) => {
+                const searchText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    //Find original data value of each row
+                    const { original } = row;
+                    //Do search for the column
+                    return searchColumn(column, original, searchText);
+                });
+            };
         }
 
         processedColumns.push(column);
@@ -81,6 +76,72 @@ const Grid = forwardRef((props, ref) => {
 
     const gridColumns = useMemo(() => processedColumns, []);
 
+    //Logic for searching in each column
+    const searchColumn = (column, original, searchText) => {
+        //Return value
+        let isValuePresent = false;
+        //Find the accessor node and inner cells array of each column
+        const { accessor, innerCells } = column;
+        //Find accessor value of a column
+        const rowAccessorValue = original[accessor];
+        //Check if inner cells are available and save value to boolean var
+        const isInnerCellsPresent = innerCells && innerCells.length > 0;
+        //Enter if cell value is object or array
+        if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
+            //Enter if cell value is array
+            if (rowAccessorValue.length > 0) {
+                //Loop through cell array value and check if searched text is present
+                rowAccessorValue.map((value) => {
+                    innerCells.map((cell) => {
+                        const dataAccessor = value[cell.accessor];
+                        if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                            isValuePresent = true;
+                        }
+                    });
+                });
+            } else {
+                //If cell value is an object, loop through inner cells and check if searched text is present
+                innerCells.map((cell) => {
+                    const dataAccessor = original[accessor][cell.accessor];
+                    if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                        isValuePresent = true;
+                    }
+                });
+            }
+        } else {
+            //If cell value is not an object or array, convert it to text and check if searched text is present
+            const dataAccessor = original[accessor];
+            if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                isValuePresent = true;
+            }
+        }
+        return isValuePresent;
+    };
+
+    //Add logic for doing global search in the grid
+    const globalSearchLogic = (rows, columns, filterValue) => {
+        //Enter search logic only if rows and columns are available
+        if (filterValue && processedColumns.length > 0) {
+            //convert user searched text to lower case
+            const searchText = filterValue.toLowerCase();
+            //Loop through all rows
+            return rows.filter((row) => {
+                //Find original data value of each row
+                const { original } = row;
+                //Return value of the filter method
+                let returnValue = false;
+                //Loop through all column values for each row
+                processedColumns.map((column) => {
+                    //Do search for each column
+                    returnValue = returnValue || searchColumn(column, original, searchText);
+                });
+                return returnValue;
+            });
+        }
+        return rows;
+    };
+
+    //#region - Group sorting logic
     //Function to return sorting logic based on the user selected order of sort
     const compareValues = (compareOrder, v1, v2) => {
         if (compareOrder === "Ascending") {
@@ -104,6 +165,9 @@ const Grid = forwardRef((props, ref) => {
             return compareResult;
         });
     };
+    //#endregion
+
+    //#region - Cell update logic
     //Function to find correct index from original data using index from sorted data
     const getOriginalDataIndex = (sortedDataIndex) => {
         const updatedData = getSortedData([...items]).find((item, index) => {
@@ -115,7 +179,6 @@ const Grid = forwardRef((props, ref) => {
         });
         return originalDataIndex;
     };
-
     //Gets triggered when a cell in grid is updated
     useImperativeHandle(ref, () => ({
         updateCellInGrid(rowIndex, columnId, value) {
@@ -135,6 +198,7 @@ const Grid = forwardRef((props, ref) => {
             }
         }
     }));
+    //#endregion
 
     //Gets triggered when one row item is updated
     const updateRowInGrid = (rowIndex, updatedRow) => {
@@ -220,7 +284,15 @@ const Grid = forwardRef((props, ref) => {
                     loadNextPage={loadNextPage}
                     doGroupSort={doGroupSort}
                 />
-                {isNextPageLoading ? <h2 style={{ textAlign: "center" }}>Loading...</h2> : null}
+                {isNextPageLoading ? (
+                    <div id="loader" className="background">
+                        <div className="dots container">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                ) : null}
             </div>
         );
     } else if (isLoading) {

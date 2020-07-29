@@ -170,7 +170,7 @@ select:-webkit-autofill:focus {
     flex-wrap: wrap;
 }
 .table-outer .table .table-row:last-child {
-    margin-bottom: 150px;
+    margin-bottom: 50px;
 }
 .table-outer .table .table-row .table-row-wrap {
     width: 100%;
@@ -416,6 +416,10 @@ select:-webkit-autofill:focus {
 .table-outer .table .row-options-wrap .icon-row-options {
     position: relative;
     cursor: pointer;
+    width: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .table-outer .table .row-options-wrap .icon-row-options i {
     background: #999999;
@@ -450,6 +454,7 @@ select:-webkit-autofill:focus {
 }
 .table-outer .table .row-options-wrap .row-options-overlay li span {
     margin-left: 8px;
+    padding-right: 5px;
 }
 .table-outer .table .row-options-wrap .row-options-overlay .close {
     position: absolute;
@@ -528,6 +533,144 @@ select:-webkit-autofill:focus {
 .table-outer .table .table-row .table-cell:hover .cell-edit {
     display: block;
 }
+
+/*Infinite loading graphics*/
+#loader.background {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+#loader .dots.container {
+    width: 380px;
+    padding: 20px 0 10px;
+    border: #dce1e5 solid 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#loader .dots span {
+    -webkit-transition: all 6000ms ease;
+    transition: all 6000ms ease;
+    background: rgba(96, 116, 136, 0.5);
+    height: 8px;
+    width: 8px;
+    margin: 0 2px 0 0;
+    display: inline-block;
+    border-radius: 50%;
+    animation: wave 2s ease infinite;
+    -webkit-animation: wave 2s ease infinite;
+}
+#loader .dots span:nth-child(1) {
+    animation-delay: 0;
+    -webkit-animation-delay: 0;
+}
+#loader .dots span:nth-child(2) {
+    animation-delay: 100ms;
+    -webkit-animation-delay: 100ms;
+}
+#loader .dots span:nth-child(3) {
+    animation-delay: 200ms;
+    -webkit-animation-delay: 200ms;
+}
+@-webkit-keyframes wave {
+    0%,
+    40%,
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+        background-color: rgba(96, 116, 136, 0.5);
+    }
+    10% {
+        -webkit-transform: translate(0, -15px);
+        transform: translate(0, -15px);
+        background-color: rgba(96, 116, 136, 1);
+    }
+}
+@keyframes wave {
+    0%,
+    40%,
+    100% {
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+        background-color: rgba(96, 116, 136, 0.5);
+    }
+    10% {
+        -webkit-transform: translate(0, -15px);
+        transform: translate(0, -15px);
+        background-color: rgba(96, 116, 136, 1);
+    }
+}
+
+/*Row Edit Overlay - Start*/
+.row-option-action-overlay {
+    background-color: #fff;
+    width: 890px;
+    box-shadow: 0px 0px 7px -1px rgba(0, 0, 0, 0.3);
+    padding: 20px 20px 20px 020px;
+    z-index: 99;
+    position: absolute;
+    left: -1145px;
+}
+.row-option-action-overlay.delete {
+    width: auto;
+    height: auto;
+    left: -855px;
+    padding: 50px;
+}
+.row-option-action-overlay label {
+    margin-bottom: 5px;
+    display: block;
+}
+.row-option-action-overlay input,
+.row-option-action-overlay select,
+.row-option-action-overlay textarea {
+    width: 100%;
+    border-radius: 2px;
+    border: #d3d3d3 solid 1px;
+    font-size: 12px;
+    padding: 5px;
+}
+.row-option-action-overlay select {
+    margin: 0 0 10px;
+}
+.row-option-action-overlay button {
+    background: #169bd5;
+    color: #fff;
+    width: 98px;
+    height: 33px;
+    border: none;
+    border-radius: 3px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+.row-option-action-overlay button.cancel-Button {
+    background: #fff;
+    color: #169bd5;
+    border: #169bd5 1px solid;
+}
+.row-edit {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.row-edit > div {
+    margin: 0 10px;
+}
+.edit-flight-no,
+.edit-weight-percentage {
+    margin-bottom: 10px;
+}
+.remarks-edit {
+    margin: 0 10px;
+}
+.cancel-save-buttons {
+    margin: 10px 10px;
+    padding-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+/*Row Edit Overlay - End*/
+
 /*To be moved to component*/
 .table-outer .table .table-row .table-cell.column-heading:last-child {
     padding: 0 !important;

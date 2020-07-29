@@ -2,47 +2,6 @@ import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import getValueOfDate from "../utils/DateUtility";
 
-const divStyle = {
-    backgroundColor: "#ccc",
-    height: "100px",
-    width: "1365px",
-    marginLeft: "-1370px",
-    marginTop: "-5px",
-    paddingLeft: "20px",
-    zIndex: "99"
-};
-
-const segmetEditStyle = {
-    marginLeft: "240px",
-    marginTop: "-60px"
-};
-
-const weightPercentageStyle = {
-    width: "25%",
-    marginLeft: "410px",
-    marginTop: "-20px"
-};
-
-const weightValueStyle = {
-    width: "25%",
-    marginLeft: "410px",
-    marginTop: "6px"
-};
-const srStyle = {
-    marginLeft: "410px",
-    marginTop: "4px"
-};
-
-const editRemarksStyle = {
-    marginTop: "-75px",
-    marginLeft: "700px"
-};
-
-const buttonDivStyle = {
-    width: "15%",
-    marginTop: "-80px",
-    marginLeft: "1244px"
-};
 const RowEditOverLay = memo((props) => {
     const { row, rowEditData, updateRow, closeRowEditOverlay } = props;
     const { flight, segment, weight, sr, remarks } = row;
@@ -142,27 +101,24 @@ const RowEditOverLay = memo((props) => {
 
     return (
         <ClickAwayListener onClickAway={closeRowEditOverlay}>
-            <div className="main-div" style={divStyle}>
-                <div className="row-edit-overlay">
-                    <br />
-                    <div className="edit-flight-no">
-                        &nbsp;&nbsp;
-                        <span>Flight No</span> &nbsp;
-                        <input type="text" onChange={(e) => onFlightNoChange(e)} defaultValue={flight.flightno} />
+            <div className="row-option-action-overlay">
+                <div className="row-edit">
+                    <div className="edit-flight">
+                        <div className="edit-flight-no">
+                            <label>FlightNo</label>
+                            <input type="text" onChange={(e) => onFlightNoChange(e)} defaultValue={flight.flightno} />
+                        </div>
+                        <div className="edit-flight-date">
+                            <label>Date</label>
+                            <input
+                                type="date"
+                                onChange={(e) => onFlightDateChange(e)}
+                                defaultValue={getValueOfDate(flight.date, "calendar")}
+                            />
+                        </div>
                     </div>
-                    <br />
-                    <div className="edit-flight-date">
-                        &nbsp;&nbsp;
-                        <span>Date</span> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input
-                            type="date"
-                            onChange={(e) => onFlightDateChange(e)}
-                            defaultValue={getValueOfDate(flight.date, "calendar")}
-                        />
-                    </div>
-                    <div className="edit-flight-segment" style={segmetEditStyle}>
-                        <span>From</span>
-                        &nbsp;
+                    <div className="edit-flight-segment">
+                        <label>Segment From</label>
                         <select defaultValue={segment.from} onChange={(e) => onSegmentFromChange(e)}>
                             {airportCodeList.map((item, index) => {
                                 return (
@@ -172,9 +128,7 @@ const RowEditOverLay = memo((props) => {
                                 );
                             })}
                         </select>
-                        &nbsp;&nbsp;&nbsp;
-                        <span>To</span>
-                        &nbsp;
+                        <label>Segment To</label>
                         <select defaultValue={segment.to} onChange={(e) => onSegmentToChange(e)}>
                             {airportCodeList.map((item, index) => {
                                 return (
@@ -185,36 +139,29 @@ const RowEditOverLay = memo((props) => {
                             })}
                         </select>
                     </div>
-                    <div className="edit-weight-value">
-                        <div className="edit-weight-percentage-value" style={weightPercentageStyle}>
-                            <span>Weight Percentage</span>
-                            &nbsp;
+                    <div className="edit-weight">
+                        <div className="edit-weight-percentage">
+                            <label>Weight Percentage</label>
                             <input type="text" defaultValue={weight.percentage} onChange={(e) => onWeightPercentageChange(e)} />
                         </div>
-                        <div className="edit-weight-value-value" style={weightValueStyle}>
-                            <span>Weight Value</span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div className="edit-weight-value">
+                            <label>Weight Value</label>
                             <input type="text" onChange={(e) => onWeightValueChange(e)} defaultValue={weight.value} />
                         </div>
                     </div>
-
-                    <div className="edit-sr-value" style={srStyle}>
-                        <span>SR</span>
-                        &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <div className="edit-sr">
+                        <label>SR</label>
                         <input type="text" onChange={(e) => onSrChange(e)} defaultValue={sr} />
                     </div>
-                    <div className="edit-remarks-value" style={editRemarksStyle}>
-                        <span>Remarks</span>
-                        <br />
-                        <textarea onChange={(e) => onRemarksChange(e)} defaultValue={remarks} rows="3" cols="80"></textarea>
-                    </div>
                 </div>
-                <div className="cancel-save-buttons" style={buttonDivStyle}>
+                <div className="remarks-edit">
+                    <label>Remarks</label>
+                    <textarea onChange={(e) => onRemarksChange(e)} defaultValue={remarks} rows="3" cols="80"></textarea>
+                </div>
+                <div className="cancel-save-buttons">
                     <button className="save-Button" onClick={() => saveRowEdit(row)}>
                         Save
                     </button>
-                    &nbsp;&nbsp;&nbsp;
                     <button className="cancel-Button" onClick={cancelRowEdit}>
                         Cancel
                     </button>

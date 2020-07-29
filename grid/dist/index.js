@@ -1683,7 +1683,6 @@ var Grid = React.forwardRef(function (props, ref) {
       updateRowData = props.updateRowData,
       deletePopUpOverLay = props.deletePopUpOverLay,
       deleteRowData = props.deleteRowData,
-      globalSearchLogic = props.globalSearchLogic,
       selectBulkData = props.selectBulkData,
       calculateRowHeight = props.calculateRowHeight;
 
@@ -1732,19 +1731,13 @@ var Grid = React.forwardRef(function (props, ref) {
     }
 
     if (!column.disableFilters) {
-      if (isInnerCellsPresent) {
-        column.filter = function (rows, id, filterValue) {
-          var filterText = filterValue ? filterValue.toLowerCase() : "";
-          return rows.filter(function (row) {
-            var rowValue = row.values[id];
-            var filterCols = innerCells.filter(function (cell) {
-              var cellValue = rowValue[cell.accessor] ? rowValue[cell.accessor].toString().toLowerCase() : "";
-              return cellValue.includes(filterText);
-            });
-            return filterCols && filterCols.length > 0;
-          });
-        };
-      }
+      column.filter = function (rows, id, filterValue) {
+        var searchText = filterValue ? filterValue.toLowerCase() : "";
+        return rows.filter(function (row) {
+          var original = row.original;
+          return searchColumn(column, original, searchText);
+        });
+      };
     }
 
     processedColumns.push(column);
@@ -1753,6 +1746,60 @@ var Grid = React.forwardRef(function (props, ref) {
   var gridColumns = React.useMemo(function () {
     return processedColumns;
   }, []);
+
+  var searchColumn = function searchColumn(column, original, searchText) {
+    var isValuePresent = false;
+    var accessor = column.accessor,
+        innerCells = column.innerCells;
+    var rowAccessorValue = original[accessor];
+    var isInnerCellsPresent = innerCells && innerCells.length > 0;
+
+    if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
+      if (rowAccessorValue.length > 0) {
+        rowAccessorValue.map(function (value) {
+          innerCells.map(function (cell) {
+            var dataAccessor = value[cell.accessor];
+
+            if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+              isValuePresent = true;
+            }
+          });
+        });
+      } else {
+        innerCells.map(function (cell) {
+          var dataAccessor = original[accessor][cell.accessor];
+
+          if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+            isValuePresent = true;
+          }
+        });
+      }
+    } else {
+      var dataAccessor = original[accessor];
+
+      if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+        isValuePresent = true;
+      }
+    }
+
+    return isValuePresent;
+  };
+
+  var globalSearchLogic = function globalSearchLogic(rows, columns, filterValue) {
+    if (filterValue && processedColumns.length > 0) {
+      var searchText = filterValue.toLowerCase();
+      return rows.filter(function (row) {
+        var original = row.original;
+        var returnValue = false;
+        processedColumns.map(function (column) {
+          returnValue = returnValue || searchColumn(column, original, searchText);
+        });
+        return returnValue;
+      });
+    }
+
+    return rows;
+  };
 
   var compareValues = function compareValues(compareOrder, v1, v2) {
     if (compareOrder === "Ascending") {
@@ -1887,11 +1934,12 @@ var Grid = React.forwardRef(function (props, ref) {
       isNextPageLoading: isNextPageLoading,
       loadNextPage: loadNextPage,
       doGroupSort: doGroupSort
-    }), isNextPageLoading ? /*#__PURE__*/React__default.createElement("h2", {
-      style: {
-        textAlign: "center"
-      }
-    }, "Loading...") : null);
+    }), isNextPageLoading ? /*#__PURE__*/React__default.createElement("div", {
+      id: "loader",
+      className: "background"
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "dots container"
+    }, /*#__PURE__*/React__default.createElement("span", null), /*#__PURE__*/React__default.createElement("span", null), /*#__PURE__*/React__default.createElement("span", null))) : null);
   } else if (isLoading) {
     return /*#__PURE__*/React__default.createElement("h2", {
       style: {
