@@ -170,7 +170,7 @@ select:-webkit-autofill:focus {
     flex-wrap: wrap;
 }
 .table-outer .table .table-row:last-child {
-    margin-bottom: 150px;
+    margin-bottom: 50px;
 }
 .table-outer .table .table-row .table-row-wrap {
     width: 100%;
@@ -416,6 +416,10 @@ select:-webkit-autofill:focus {
 .table-outer .table .row-options-wrap .icon-row-options {
     position: relative;
     cursor: pointer;
+    width: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .table-outer .table .row-options-wrap .icon-row-options i {
     background: #999999;
@@ -450,6 +454,7 @@ select:-webkit-autofill:focus {
 }
 .table-outer .table .row-options-wrap .row-options-overlay li span {
     margin-left: 8px;
+    padding-right: 5px;
 }
 .table-outer .table .row-options-wrap .row-options-overlay .close {
     position: absolute;
