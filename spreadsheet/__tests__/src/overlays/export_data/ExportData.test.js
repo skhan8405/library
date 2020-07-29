@@ -49,6 +49,8 @@ describe("<ExportData />", () => {
     expect(wrapper.state("isAllSelected")).toStrictEqual(true);
   });
   test("exportRowData as pdf function", () => {
+    // to fix the type error related to createObjectURL
+    global.URL.createObjectURL = jest.fn();
     const rows = [
       {
         key: "flightno",
@@ -63,7 +65,7 @@ describe("<ExportData />", () => {
         filterType: "autoCompleteFilter",
       },
     ];
-    const wrapper = shallow(<ExportData rows={rows} />);
+    const wrapper = mount(<ExportData rows={rows} />);
     wrapper.setState({
       columnEntityList: [
         {
