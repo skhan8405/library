@@ -233,6 +233,7 @@ class ExportData extends React.Component {
               <div className="export__wrap export__headertxt">
                 <div className="export__checkbox">
                   <input
+                    className="selectColumn"
                     type="checkbox"
                     onChange={() => this.selectAllToColumnList()}
                     checked={this.state.isAllSelected}
