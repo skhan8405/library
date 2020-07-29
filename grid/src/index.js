@@ -136,6 +136,7 @@ const Grid = forwardRef((props, ref) => {
         return rows;
     };
 
+    //#region - Group sorting logic
     //Function to return sorting logic based on the user selected order of sort
     const compareValues = (compareOrder, v1, v2) => {
         if (compareOrder === "Ascending") {
@@ -159,6 +160,9 @@ const Grid = forwardRef((props, ref) => {
             return compareResult;
         });
     };
+    //#endregion
+
+    //#region - Cell update logic
     //Function to find correct index from original data using index from sorted data
     const getOriginalDataIndex = (sortedDataIndex) => {
         const updatedData = getSortedData([...items]).find((item, index) => {
@@ -170,7 +174,6 @@ const Grid = forwardRef((props, ref) => {
         });
         return originalDataIndex;
     };
-
     //Gets triggered when a cell in grid is updated
     useImperativeHandle(ref, () => ({
         updateCellInGrid(rowIndex, columnId, value) {
@@ -190,6 +193,7 @@ const Grid = forwardRef((props, ref) => {
             }
         }
     }));
+    //#endregion
 
     //Gets triggered when one row item is updated
     const updateRowInGrid = (rowIndex, updatedRow) => {
