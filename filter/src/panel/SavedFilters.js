@@ -61,7 +61,7 @@ const SavedFilters = (props) => {
   if (showFilter) {
     return (
       <div className="lists" ref={listRef}>
-        <div className="listsView">
+        {/* <div className="listsView">
           <div className="text-muted">list view</div>
           <div className="alignLeft">
             <FontAwesomeIcon
@@ -122,8 +122,9 @@ const SavedFilters = (props) => {
               className="marginLeft"
             ></FontAwesomeIcon>
           </div>
-        </div>
+        </div> */}
         <div className="savedFilters">
+        <div className="text-muted">Saved Filters</div>
           <ul key={keyValue} className="leftSpace">
             {savedFilter}
           </ul>

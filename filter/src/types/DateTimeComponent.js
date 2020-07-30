@@ -83,7 +83,7 @@ export default function FieldComponent(props) {
             </div>
           );
         })}
-        <div className="days">
+        {/* <div className="days">
           <button
             disabled={!item.enabled}
             type="button"
@@ -167,7 +167,7 @@ export default function FieldComponent(props) {
             }}
           />{" "}
           Days
-        </div>
+        </div> */}
       </div>
     );
   });
