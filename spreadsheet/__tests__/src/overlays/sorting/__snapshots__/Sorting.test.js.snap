@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Sorting /> simulates close of export click event 1`] = `ShallowWrapper {}`;
+
+exports[`<Sorting /> simulates search export input field 1`] = `ShallowWrapper {}`;

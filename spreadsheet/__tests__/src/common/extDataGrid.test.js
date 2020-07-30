@@ -23,10 +23,7 @@ describe("<ExtDataGrid />", () => {
     wrapper.metricsUpdated = jest.fn();
     expect(wrapper).not.toBeNull();
     expect(wrapper.instance().metricsUpdated()).toBeNull();
-    // TODO I am getting some error may be becasue I gave invalid properties. Please correct it.
     wrapper.unmount();
   });
-  it("metricsUpdated function",()=>{
-      
-  })
+  it("metricsUpdated function", () => {});
 });
