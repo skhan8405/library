@@ -57,16 +57,48 @@ const ColumnReordering = memo((props) => {
         setManagedColumns(columns);
     };
 
+    const findColumn = (columnList, columnHeader) => {
+        return columnList.find((column) => {
+            return column.Header === columnHeader;
+        });
+    };
+
+    const isItemPresentInList = (list, headerValue) => {
+        const filteredList = list.filter((item) => {
+            return item.Header === headerValue;
+        });
+        return filteredList && filteredList.length > 0;
+    };
+
     const isCheckboxSelected = (header) => {
         if (header === additionalColumnHeader) {
             return remarksColumnToManage.length > 0;
         } else if (header === "Select All") {
             return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
         } else {
-            const selectedColumn = managedColumns.filter((column) => {
-                return column.Header === header;
+            return isItemPresentInList(managedColumns, header);
+        }
+    };
+
+    const isInnerCellSelected = (columnHeader, header) => {
+        if (columnHeader === additionalColumnHeader) {
+            const selectedColumn = findColumn(remarksColumnToManage, columnHeader);
+            return isItemPresentInList(selectedColumn.innerCells, header);
+        } else {
+            const selectedColumn = findColumn(managedColumns, columnHeader);
+            return isItemPresentInList(selectedColumn.innerCells, header);
+        }
+    };
+
+    const findIndexOfItem = (type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) => {
+        if (type === "column") {
+            return columnsList.findIndex((column) => {
+                return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
             });
-            return selectedColumn && selectedColumn.length > 0;
+        } else {
+            return findColumn(columnsList, columnHeader).innerCells.findIndex((cell) => {
+                return cell.Header == originalInnerCells[indexOfColumnToAdd - 1].Header;
+            });
         }
     };
 
@@ -103,9 +135,7 @@ const ColumnReordering = memo((props) => {
                 //Find index of that previous column and push the new column to add in that position
                 let prevItemIndex = -1;
                 while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-                    prevItemIndex = managedColumns.findIndex((column) => {
-                        return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
-                    });
+                    prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
                     indexOfColumnToAdd = indexOfColumnToAdd - 1;
                 }
 
@@ -120,6 +150,64 @@ const ColumnReordering = memo((props) => {
                 );
             }
         }
+    };
+
+    const findAndSelectInnerCells = (stateColumnList, setStateColumnList, event) => {
+        const { currentTarget } = event;
+        const { checked, dataset, value } = currentTarget;
+        const { columnheader } = dataset;
+        const selectedColumn = stateColumnList.filter((column) => {
+            return column.Header === columnheader;
+        });
+
+        if (selectedColumn && selectedColumn.length > 0) {
+            const column = selectedColumn[0];
+            const { originalInnerCells } = column;
+            if (checked) {
+                //Find the index of selected column from original column array and also find the user selected column
+                let indexOfColumnToAdd = originalInnerCells.findIndex((column) => {
+                    return column.Header == value;
+                });
+                const itemToAdd = originalInnerCells[indexOfColumnToAdd];
+
+                //Loop through the stateColumnList array to find the position of the column that is present previous to the user selected column
+                //Find index of that previous column and push the new column to add in that position
+                let prevItemIndex = -1;
+                while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+                    prevItemIndex = findIndexOfItem(
+                        "innercell",
+                        stateColumnList,
+                        indexOfColumnToAdd,
+                        columnheader,
+                        originalInnerCells
+                    );
+                    indexOfColumnToAdd = indexOfColumnToAdd - 1;
+                }
+
+                const newColumnsList = stateColumnList.slice(0); //Copying state value
+                findColumn(newColumnsList, columnheader).innerCells.splice(prevItemIndex + 1, 0, itemToAdd);
+                setStateColumnList(newColumnsList);
+            } else {
+                setStateColumnList(
+                    stateColumnList.map((column) => {
+                        if (column.Header === columnheader) {
+                            column.innerCells = column.innerCells.filter((cell) => {
+                                return cell.Header !== value;
+                            });
+                        }
+                        return column;
+                    })
+                );
+            }
+        }
+    };
+
+    const selectInnerCells = (event) => {
+        findAndSelectInnerCells(managedColumns, setManagedColumns, event);
+    };
+
+    const selectRemarksInnerCells = (event) => {
+        findAndSelectInnerCells(remarksColumnToManage, setRemarksColumnToManage, event);
     };
 
     const doColumnUpdate = () => {
@@ -203,11 +291,40 @@ const ColumnReordering = memo((props) => {
                             </div>
                             <div className="column__body">
                                 <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-                                    <ColumnsList columnsToManage={managedColumns} updateColumnsInState={updateColumnsInState} />
+                                    <ColumnsList
+                                        columnsToManage={managedColumns}
+                                        updateColumnsInState={updateColumnsInState}
+                                        isInnerCellSelected={isInnerCellSelected}
+                                        selectInnerCells={selectInnerCells}
+                                    />
                                 </DndProvider>
                                 {remarksColumnToManage && remarksColumnToManage.length > 0 ? (
                                     <div className="column__reorder full-width">
                                         <div className="">{remarksColumnToManage[0].Header}</div>
+                                        <div className="column__innerCells__wrap">
+                                            {remarksColumnToManage[0].originalInnerCells &&
+                                            remarksColumnToManage[0].originalInnerCells.length > 0
+                                                ? remarksColumnToManage[0].originalInnerCells.map((cell, index) => {
+                                                      return (
+                                                          <div className="column__wrap" key={index}>
+                                                              <div className="column__checkbox">
+                                                                  <input
+                                                                      type="checkbox"
+                                                                      data-columnheader={remarksColumnToManage[0].Header}
+                                                                      value={cell.Header}
+                                                                      checked={isInnerCellSelected(
+                                                                          remarksColumnToManage[0].Header,
+                                                                          cell.Header
+                                                                      )}
+                                                                      onChange={selectRemarksInnerCells}
+                                                                  ></input>
+                                                              </div>
+                                                              <div className="column__txt">{cell.Header}</div>
+                                                          </div>
+                                                      );
+                                                  })
+                                                : null}
+                                        </div>
                                     </div>
                                 ) : null}
                             </div>

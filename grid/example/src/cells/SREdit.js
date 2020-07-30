@@ -1,7 +1,7 @@
 import React, { useState, useEffect, memo } from "react";
 import ClickAwayListener from "react-click-away-listener";
 
-const SREdit = memo(({ index, columnId, columnValue, updateCellData }) => {
+const SREdit = memo(({ index, columnId, columnValue, innerCells, updateCellData, isInnerCellShown, isInnerCellsNotEmpty }) => {
     const [value, setValue] = useState(columnValue);
     const [oldValue] = useState(columnValue);
     const [isEdit, setEdit] = useState(false);
@@ -33,15 +33,21 @@ const SREdit = memo(({ index, columnId, columnValue, updateCellData }) => {
     return (
         <ClickAwayListener onClickAway={clearEdit}>
             <div className="sr-details content">
-                <div className="cell-edit" onClick={openEdit}>
-                    <i className="fa fa-pencil" aria-hidden="true"></i>
-                </div>
-                <div className={`content-display ${isEdit ? "close" : "open"}`}>{value}</div>
-                <div className={`content-edit ${isEdit ? "open" : "close"}`}>
-                    <input type="text" value={value} onChange={onChange} />
-                    <button className="ok" onClick={saveEdit} />
-                    <button className="cancel" onClick={clearEdit} />
-                </div>
+                {isInnerCellsNotEmpty(innerCells) ? (
+                    <div className="cell-edit" onClick={openEdit}>
+                        <i className="fa fa-pencil" aria-hidden="true"></i>
+                    </div>
+                ) : null}
+                {isInnerCellShown(innerCells, "value") ? (
+                    <div className={`content-display ${isEdit ? "close" : "open"}`}>{value}</div>
+                ) : null}
+                {isInnerCellShown(innerCells, "value") ? (
+                    <div className={`content-edit ${isEdit ? "open" : "close"}`}>
+                        <input type="text" value={value} onChange={onChange} />
+                        <button className="ok" onClick={saveEdit} />
+                        <button className="cancel" onClick={clearEdit} />
+                    </div>
+                ) : null}
             </div>
         </ClickAwayListener>
     );
