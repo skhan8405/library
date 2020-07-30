@@ -189,7 +189,7 @@ const ExportData = memo((props) => {
         if (checked) {
             //Find the index of selected column from original column array and also find the user selected column
             let indexOfColumnToAdd = updatedColumns.findIndex((column) => {
-                return column.Header == value;
+                return column.Header === value;
             });
             const itemToAdd = updatedColumns[indexOfColumnToAdd];
 
@@ -198,7 +198,7 @@ const ExportData = memo((props) => {
             let prevItemIndex = -1;
             while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
                 prevItemIndex = managedColumns.findIndex((column) => {
-                    return column.Header == updatedColumns[indexOfColumnToAdd - 1].Header;
+                    return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
                 });
                 indexOfColumnToAdd = indexOfColumnToAdd - 1;
             }
