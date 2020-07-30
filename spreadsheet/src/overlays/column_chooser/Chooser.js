@@ -1,4 +1,5 @@
 import React from "react";
+
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -165,7 +166,7 @@ class ColumnReordering extends React.Component {
               <div className="column__checkbox">
                 <input
                   type="checkbox"
-                  id={"checkBoxToPinLeft_"+item}
+                  id={"checkBoxToPinLeft_" + item}
                   checked={this.state.leftPinnedColumList.includes(item)}
                   disabled={
                     this.state.maxLeftPinnedColumn -
@@ -259,7 +260,7 @@ class ColumnReordering extends React.Component {
                     <div className="column__checkbox">
                       <input
                         type="checkbox"
-                        id={"checkboxtoselectreorder_"+item}
+                        id={"checkboxtoselectreorder_" + item}
                         checked={this.state.columnReorderEntityList.includes(
                           item
                         )}
