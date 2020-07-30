@@ -548,7 +548,7 @@ class Spreadsheet extends Component {
 
   clearAllSortingParams = () => {
     this.setState({
-    rows: JSON.parse(JSON.stringify(this.props.rows))
+      rows: JSON.parse(JSON.stringify(this.props.rows)),
     });
   };
 

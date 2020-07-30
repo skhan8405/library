@@ -1,6 +1,10 @@
 import React from "react";
 import { shallow, mount } from "enzyme";
+import ReactDOM from "react-dom";
 import ColumnReordering from "../../../../src/overlays/column_chooser/Chooser";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import renderer from "react-test-renderer";
 
 const columns = [
   {
@@ -354,6 +358,50 @@ const columns = [
 ];
 
 describe("<ColumnReordering />", () => {
+  const props = {
+    closeColumnReOrdering: jest.fn(),
+    handleheaderNameList: jest.fn(),
+    columns: [
+      {
+        key: "flightno",
+        name: "FlightNo",
+        draggable: false,
+        editor: "Text",
+        formulaApplicable: false,
+        sortable: true,
+        resizable: true,
+        filterable: true,
+        width: 150,
+        filterType: "autoCompleteFilter",
+      },
+      {
+        key: "date",
+        name: "Date",
+        draggable: false,
+        editor: "DatePicker",
+        formulaApplicable: false,
+        sortable: true,
+        resizable: true,
+        filterable: true,
+        width: 150,
+        filterType: "autoCompleteFilter",
+      },
+      {
+        key: "segmentfrom",
+        name: "Segment From",
+        draggable: false,
+        editor: "DropDown",
+        formulaApplicable: false,
+        sortable: true,
+        resizable: true,
+        filterable: true,
+        width: 150,
+        filterType: "autoCompleteFilter",
+      },
+    ],
+    headerKeys: ["FlightNo", "Date", "Segment From"],
+    existingPinnedHeadersList: ["FlightNo", "Date"],
+  };
   it("mount", () => {
     const mockUpdateTableAsPerRowChooser = jest.fn();
     const mockCloseColumnReOrdering = jest.fn();
@@ -379,314 +427,431 @@ describe("<ColumnReordering />", () => {
     );
     expect(wrapper).not.toBeNull();
   });
-});
+  test("Coloumn Chooser on-close --TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
 
-test("Coloumn Chooser on-close --TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
 
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+    component.find(".column__close FontAwesomeIcon").simulate("click");
+    expect(mockCloseColumnReOrdering.mock.calls.length).toBe(1);
+  });
 
-  component.find(".column__close FontAwesomeIcon").simulate("click");
-  expect(mockCloseColumnReOrdering.mock.calls.length).toBe(1);
-});
+  test("Select all to ColumReorderList --TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
 
-test("Select all to ColumReorderList --TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
-
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
-  component.find("input#selectallcolumncheckbox").simulate("change");
-  let checkBoxBelowSelectAll = component.find(
-    "input#checkboxtoselectreorder_FlightNo"
-  );
-  /*as select all will be checked by default. A simulate change on it will deselect it. 
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
+    component.find("input#selectallcolumncheckbox").simulate("change");
+    let checkBoxBelowSelectAll = component.find(
+      "input#checkboxtoselectreorder_FlightNo"
+    );
+    /*as select all will be checked by default. A simulate change on it will deselect it. 
     So asserting false */
-  expect(checkBoxBelowSelectAll.props().checked).toBe(false);
-});
+    expect(checkBoxBelowSelectAll.props().checked).toBe(false);
+  });
 
-test("un-Selecting FlightNo to Column Reorder Entity List --Test", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
+  test("un-Selecting FlightNo to Column Reorder Entity List --Test", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
 
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
-  component.find("input#checkboxtoselectreorder_FlightNo").simulate("change");
-  let checkBoxSelectAll = component.find("input#selectallcolumncheckbox");
-  /*as on un selecting the Flight No check-box, select All 
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
+    component.find("input#checkboxtoselectreorder_FlightNo").simulate("change");
+    let checkBoxSelectAll = component.find("input#selectallcolumncheckbox");
+    /*as on un selecting the Flight No check-box, select All 
   Check Box will be unselected */
-  expect(checkBoxSelectAll.props().checked).toBe(false);
-});
+    expect(checkBoxSelectAll.props().checked).toBe(false);
+  });
 
-test("select Yeild check Box after un selecting All --TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+  test("select Yeild check Box after un selecting All --TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  //unselecting all
-  component.find("input#selectallcolumncheckbox").simulate("change");
+    //unselecting all
+    component.find("input#selectallcolumncheckbox").simulate("change");
 
-  //selecting Yeild checkbox
-  component.find("input#checkboxtoselectreorder_Yeild").simulate("change");
+    //selecting Yeild checkbox
+    component.find("input#checkboxtoselectreorder_Yeild").simulate("change");
 
-  /*checking whether Yeild column has been added to column_body div
+    /*checking whether Yeild column has been added to column_body div
   column__reorder__name should have Yeild as text  
   */
-  let columAddedToBody = component.find(".column__reorder__name");
-  expect(columAddedToBody.text()).toBe("Yeild");
-});
+    let columAddedToBody = component.find(".column__reorder__name");
+    expect(columAddedToBody.text()).toBe("Yeild");
+  });
 
-test("Pinn Left Status Column -- TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+  test("Pinn Left Status Column -- TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  //left pinning Status Column
-  component.find("input#checkBoxToPinLeft_Status").simulate("change");
+    //left pinning Status Column
+    component.find("input#checkBoxToPinLeft_Status").simulate("change");
 
-  //checking whether the first element in column chooser body is Status or not.
-  let columAddedToBody = component.find(".column__reorder__name").at(0);
-  expect(columAddedToBody.text()).toBe("Status");
-});
+    //checking whether the first element in column chooser body is Status or not.
+    let columAddedToBody = component.find(".column__reorder__name").at(0);
+    expect(columAddedToBody.text()).toBe("Status");
+  });
 
-test("Click Of Save button --TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+  test("Click Of Save button --TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  //clicking save button.
-  component.find(".column__btns .btns.btns__save").simulate("click");
-  expect(mockUpdateTableAsPerRowChooser.mock.calls.length).toBe(1);
-});
+    //clicking save button.
+    component.find(".column__btns .btns.btns__save").simulate("click");
+    expect(mockUpdateTableAsPerRowChooser.mock.calls.length).toBe(1);
+  });
 
-test("Click Of Cancel button --TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+  test("Click Of Cancel button --TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  //clicking cancel button.
-  component.find(".column__btns .btns").at(1).simulate("click");
-  expect(mockCloseColumnReOrdering.mock.calls.length).toBe(1);
-});
+    //clicking cancel button.
+    component.find(".column__btns .btns").at(1).simulate("click");
+    expect(mockCloseColumnReOrdering.mock.calls.length).toBe(1);
+  });
 
-test("Click Of Reset button --TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+  test("Click Of Reset button --TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  //clicking reset button.
-  component.find(".column__btns .btns").at(0).simulate("click");
-  //expect(component.instance().resetColumnReorderList()).equals(true);
-});
+    //clicking reset button.
+    component.find(".column__btns .btns").at(0).simulate("click");
+    //expect(component.instance().resetColumnReorderList()).equals(true);
+  });
 
-test("On Change Text Box Search --TEST", () => {
-  const onSearchMock = jest.fn();
-  const event = {
-    preventDefault() {},
-    target: { value: "Flight" },
-  };
+  test("On Change Text Box Search --TEST", () => {
+    const onSearchMock = jest.fn();
+    const event = {
+      preventDefault() {},
+      target: { value: "Flight" },
+    };
 
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  component.find(".column__body .custom__ctrl").simulate("change", event);
-  /**
+    component.find(".column__body .custom__ctrl").simulate("change", event);
+    /**
   checking text present in column chooser left pannel to be filtered as per 
   keyWord Flight. Select All is present by default
    */
-  expect(component.find(".column__body").at(0).text()).toBe(
-    "Select allFlightNoFlight Model"
-  );
-});
+    expect(component.find(".column__body").at(0).text()).toBe(
+      "Select allFlightNoFlight Model"
+    );
+  });
 
+  test("select and unselect checkbox --TEST", () => {
+    const mockUpdateTableAsPerRowChooser = jest.fn();
+    const mockCloseColumnReOrdering = jest.fn();
+    const mockHandleheaderNameList = jest.fn();
+    var mockPinnedHeadersList = [];
+    columns
+      .filter((item) => item.frozen !== undefined && item.frozen === true)
+      .map((item) => mockPinnedHeadersList.push(item.name));
+    var mockHeaderNameList = [];
+    columns.map((item) => mockHeaderNameList.push(item.name));
 
-test("select and unselect checkbox --TEST", () => {
-  const mockUpdateTableAsPerRowChooser = jest.fn();
-  const mockCloseColumnReOrdering = jest.fn();
-  const mockHandleheaderNameList = jest.fn();
-  var mockPinnedHeadersList = [];
-  columns
-    .filter((item) => item.frozen !== undefined && item.frozen === true)
-    .map((item) => mockPinnedHeadersList.push(item.name));
-  var mockHeaderNameList = [];
-  columns.map((item) => mockHeaderNameList.push(item.name));
+    const component = mount(
+      <ColumnReordering
+        maxLeftPinnedColumn={5}
+        headerKeys={mockHeaderNameList}
+        existingPinnedHeadersList={mockPinnedHeadersList}
+        updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
+        closeColumnReOrdering={mockCloseColumnReOrdering}
+        handleheaderNameList={mockHandleheaderNameList}
+        columns={columns}
+      />
+    );
 
-  const component = mount(
-    <ColumnReordering
-      maxLeftPinnedColumn={5}
-      headerKeys={mockHeaderNameList}
-      existingPinnedHeadersList={mockPinnedHeadersList}
-      updateTableAsPerRowChooser={mockUpdateTableAsPerRowChooser}
-      closeColumnReOrdering={mockCloseColumnReOrdering}
-      handleheaderNameList={mockHandleheaderNameList}
-      columns={columns}
-    />
-  );
+    //unselect
+    component.find("input#selectallcolumncheckbox").simulate("change");
+    //select
+    component.find("input#selectallcolumncheckbox").simulate("change");
 
-  //unselect
-  component.find("input#selectallcolumncheckbox").simulate("change");
-  //select
-  component.find("input#selectallcolumncheckbox").simulate("change");
-
-  let checkBoxBelowSelectAll = component.find(
-    "input#checkboxtoselectreorder_FlightNo"
-  );
-  /*as select all will be checked by default. A simulate change on it will deselect it and . 
+    let checkBoxBelowSelectAll = component.find(
+      "input#checkboxtoselectreorder_FlightNo"
+    );
+    /*as select all will be checked by default. A simulate change on it will deselect it and . 
     So asserting true */
-  expect(checkBoxBelowSelectAll.props().checked).toBe(true);
-});
+    expect(checkBoxBelowSelectAll.props().checked).toBe(true);
+  });
+  it("Should not call action on/off click inside the ColumnReordering", () => {
+    const map = {};
+    document.addEventListener = jest.fn((event, cb) => {
+      map[event] = cb;
+    });
 
+    const props = {
+      closeColumnReOrdering: jest.fn(),
+      columns: [
+        {
+          key: "flightno",
+          name: "FlightNo",
+          draggable: false,
+          editor: "Text",
+          formulaApplicable: false,
+          sortable: true,
+          resizable: true,
+          filterable: true,
+          width: 150,
+          filterType: "autoCompleteFilter",
+        },
+        {
+          key: "date",
+          name: "Date",
+          draggable: false,
+          editor: "DatePicker",
+          formulaApplicable: false,
+          sortable: true,
+          resizable: true,
+          filterable: true,
+          width: 150,
+          filterType: "autoCompleteFilter",
+        },
+        {
+          key: "segmentfrom",
+          name: "Segment From",
+          draggable: false,
+          editor: "DropDown",
+          formulaApplicable: false,
+          sortable: true,
+          resizable: true,
+          filterable: true,
+          width: 150,
+          filterType: "autoCompleteFilter",
+        },
+      ],
+      headerKeys: ["FlightNo", "Date", "Segment From"],
+      existingPinnedHeadersList: ["FlightNo", "Date"],
+    };
+
+    const wrapper = mount(<ColumnReordering {...props} />);
+    const mockFunc = jest.fn();
+    const component = mount(
+      <FontAwesomeIcon
+        className="icon-close"
+        icon={faTimes}
+        onClick={mockFunc}
+      ></FontAwesomeIcon>
+    );
+
+    map.mousedown({
+      target: ReactDOM.findDOMNode(wrapper.instance()),
+    });
+
+    expect(props.closeColumnReOrdering).not.toHaveBeenCalled();
+
+    map.mousedown({
+      target: ReactDOM.findDOMNode(component.instance()),
+    });
+    expect(props.closeColumnReOrdering).toHaveBeenCalled();
+    wrapper.unmount();
+  });
+  it("addToColumnReorderEntityList function negation part testing", () => {
+    const wrapper = shallow(<ColumnReordering {...props} />);
+    wrapper.addToColumnReorderEntityList = jest.fn();
+    wrapper.setState({
+      leftPinnedColumList: ["e", "c", "a"],
+    });
+    wrapper.setState({ columnSelectList: ["a", "c"] });
+    wrapper.setState({ columnReorderEntityList: ["a", "b", "c", "d", "e"] });
+    wrapper.instance().addToColumnReorderEntityList("c");
+    expect(wrapper.state("isAllSelected")).toStrictEqual(false);
+    expect(wrapper.state("columnSelectList")).toStrictEqual(["a", "c"]);
+    expect(wrapper.state("leftPinnedColumList")).toStrictEqual(["e", "a"]);
+    expect(wrapper.state("columnReorderEntityList")).toStrictEqual([
+      "a",
+      "b",
+      "d",
+      "e",
+    ]);
+  });
+  test("filterColumnReorderList else part", () => {
+    const wrapper = shallow(<ColumnReordering {...props} />);
+    wrapper.filterColumnReorderList = jest.fn();
+    wrapper.instance().filterColumnReorderList({ target: { value: "" } });
+  });
+  test("reArrangeLeftPinnedColumn else part", () => {
+    const wrapper = shallow(<ColumnReordering {...props} />);
+    wrapper.reArrangeLeftPinnedColumn = jest.fn();
+    expect(wrapper.state("leftPinnedColumList")).toStrictEqual([
+      "FlightNo",
+      "Date",
+    ]);
+    wrapper.instance().reArrangeLeftPinnedColumn("FlightNo");
+  });
+  test("handleReorderList else part", () => {
+    const wrapper = shallow(<ColumnReordering {...props} />);
+    wrapper.handleReorderList = jest.fn();
+    expect(wrapper.state("leftPinnedColumList")).toStrictEqual([
+      "FlightNo",
+      "Date",
+    ]);
+    wrapper.instance().handleReorderList(["a", "b", "c"]);
+  });
+  it("render correctly date component", () => {
+    const DateInputComponent = renderer
+      .create(<ColumnReordering {...props} />)
+      .toJSON();
+    expect(DateInputComponent).toMatchSnapshot();
+  });
+});
