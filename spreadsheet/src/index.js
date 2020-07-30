@@ -6,14 +6,10 @@ import { range } from "lodash";
 import { applyFormula } from "./utilities/utils";
 import { FormControl } from "react-bootstrap";
 import DatePicker from "./functions/DatePicker.js";
-//import {onRowsSelected} from "../components/functions/OnRowsSelected.js"
 import {
   faSortAmountDown,
   faColumns,
-  // faSyncAlt,
   faShareAlt,
-  // faAlignLeft,
-  // faFilter,
   faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -675,9 +671,6 @@ class Spreadsheet extends Component {
               value={this.state.searchValue}
             />
           </div>
-          {/* <div className="filterIcons">
-            <FontAwesomeIcon icon={faFilter} />
-          </div> */}
           <div className="filterIcons" onClick={this.sortingPanel}>
             <FontAwesomeIcon title="Group Sort" icon={faSortAmountDown} />
             <FontAwesomeIcon icon={faSortDown} className="filterArrow" />
@@ -696,12 +689,6 @@ class Spreadsheet extends Component {
             />
           </div>
           {this.state.exportComponent}
-          {/* <div className="filterIcons">
-            <FontAwesomeIcon title="Reload" icon={faSyncAlt} />
-          </div> */}
-          {/* <div className="filterIcons">
-            <FontAwesomeIcon icon={faAlignLeft} />
-          </div> */}
         </div>
         <ErrorMessage
           className="errorDiv"
