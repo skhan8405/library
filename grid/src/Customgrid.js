@@ -31,7 +31,6 @@ const Customgrid = memo((props) => {
         originalColumns,
         additionalColumn,
         data,
-        originalData,
         rowEditOverlay,
         rowEditData,
         updateRowInGrid,
