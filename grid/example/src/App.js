@@ -387,19 +387,10 @@ const App = () => {
             accessor: "sr",
             width: 90,
             Cell: (row) => {
-                const { innerCells } = row.column;
                 const columnId = "sr";
                 const { index, original } = row.row;
                 return (
-                    <SREdit
-                        index={index}
-                        columnId={columnId}
-                        columnValue={original[columnId]}
-                        innerCells={innerCells}
-                        updateCellData={updateCellData}
-                        isInnerCellShown={isInnerCellShown}
-                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
-                    />
+                    <SREdit index={index} columnId={columnId} columnValue={original[columnId]} updateCellData={updateCellData} />
                 );
             }
         },
