@@ -218,6 +218,7 @@ const ColumnReordering = memo((props) => {
         } else {
             setIsErrorDisplayed(true);
         }
+        toggleManageColumns();
     };
 
     const resetInnerCells = (columnList) => {

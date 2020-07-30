@@ -95,7 +95,6 @@ const Customgrid = memo((props) => {
     const updateColumnStructure = (newColumnStructure, remarksColumn) => {
         setColumns([...newColumnStructure]);
         setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
-        toggleManageColumns();
     };
 
     //Local state value for hiding/unhiding export data overlay

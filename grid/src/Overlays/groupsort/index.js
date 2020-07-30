@@ -46,7 +46,6 @@ const GroupSort = memo((props) => {
     const clearSortingOptions = () => {
         setSortOptions([]);
         applyGroupSort([]);
-        toggleGroupSortOverLay();
     };
 
     const updateSingleSortingOption = (sortIndex, sortByValue, sortOnValue, sortOrder) => {
