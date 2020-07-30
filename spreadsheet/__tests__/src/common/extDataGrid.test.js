@@ -25,5 +25,4 @@ describe("<ExtDataGrid />", () => {
     expect(wrapper.instance().metricsUpdated()).toBeNull();
     wrapper.unmount();
   });
-  it("metricsUpdated function", () => {});
 });
