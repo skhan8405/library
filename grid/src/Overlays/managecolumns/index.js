@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -14,8 +14,10 @@ const ColumnReordering = memo((props) => {
         return isExpandContentAvailable ? additionalColumn : [];
     };
 
+    const concatedOriginalColumns = originalColumns.concat(getRemarksColumnIfAvailable());
+
     const [managedColumns, setManagedColumns] = useState(originalColumns);
-    const [searchedColumns, setSearchedColumns] = useState([...originalColumns].concat(getRemarksColumnIfAvailable()));
+    const [searchedColumns, setSearchedColumns] = useState(concatedOriginalColumns);
     const [remarksColumnToManage, setRemarksColumnToManage] = useState(getRemarksColumnIfAvailable);
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
@@ -49,7 +51,7 @@ const ColumnReordering = memo((props) => {
                     )
             );
         } else {
-            setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+            setSearchedColumns(concatedOriginalColumns);
         }
     };
 
@@ -81,23 +83,19 @@ const ColumnReordering = memo((props) => {
     };
 
     const isInnerCellSelected = (columnHeader, header) => {
-        if (columnHeader === additionalColumnHeader) {
-            const selectedColumn = findColumn(remarksColumnToManage, columnHeader);
-            return isItemPresentInList(selectedColumn.innerCells, header);
-        } else {
-            const selectedColumn = findColumn(managedColumns, columnHeader);
-            return isItemPresentInList(selectedColumn.innerCells, header);
-        }
+        const columnListToSearch = columnHeader === additionalColumnHeader ? remarksColumnToManage : managedColumns;
+        const selectedColumn = findColumn(columnListToSearch, columnHeader);
+        return isItemPresentInList(selectedColumn.innerCells, header);
     };
 
     const findIndexOfItem = (type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) => {
         if (type === "column") {
             return columnsList.findIndex((column) => {
-                return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
+                return column.Header === originalColumns[indexOfColumnToAdd].Header;
             });
         } else {
             return findColumn(columnsList, columnHeader).innerCells.findIndex((cell) => {
-                return cell.Header == originalInnerCells[indexOfColumnToAdd - 1].Header;
+                return cell.Header === originalInnerCells[indexOfColumnToAdd].Header;
             });
         }
     };
@@ -127,19 +125,19 @@ const ColumnReordering = memo((props) => {
             if (checked) {
                 //Find the index of selected column from original column array and also find the user selected column
                 let indexOfColumnToAdd = originalColumns.findIndex((column) => {
-                    return column.Header == value;
+                    return column.Header === value;
                 });
                 const itemToAdd = originalColumns[indexOfColumnToAdd];
 
                 //Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
-                //Find index of that previous column and push the new column to add in that position
+                //Find index of that previous column in original column list and push the new column next to that position
                 let prevItemIndex = -1;
                 while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-                    prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
                     indexOfColumnToAdd = indexOfColumnToAdd - 1;
+                    prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
                 }
 
-                const newColumnsList = managedColumns.slice(0); //Copying state value
+                const newColumnsList = [...managedColumns];
                 newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
                 setManagedColumns(newColumnsList);
             } else {
@@ -156,17 +154,15 @@ const ColumnReordering = memo((props) => {
         const { currentTarget } = event;
         const { checked, dataset, value } = currentTarget;
         const { columnheader } = dataset;
-        const selectedColumn = stateColumnList.filter((column) => {
-            return column.Header === columnheader;
-        });
 
-        if (selectedColumn && selectedColumn.length > 0) {
-            const column = selectedColumn[0];
-            const { originalInnerCells } = column;
+        //Find the column in which checked/unchecked inner cell is present
+        const selectedColumn = findColumn(stateColumnList, columnheader);
+        const { originalInnerCells } = selectedColumn;
+        if (originalInnerCells && originalInnerCells.length > 0) {
             if (checked) {
                 //Find the index of selected column from original column array and also find the user selected column
                 let indexOfColumnToAdd = originalInnerCells.findIndex((column) => {
-                    return column.Header == value;
+                    return column.Header === value;
                 });
                 const itemToAdd = originalInnerCells[indexOfColumnToAdd];
 
@@ -174,6 +170,7 @@ const ColumnReordering = memo((props) => {
                 //Find index of that previous column and push the new column to add in that position
                 let prevItemIndex = -1;
                 while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+                    indexOfColumnToAdd = indexOfColumnToAdd - 1;
                     prevItemIndex = findIndexOfItem(
                         "innercell",
                         stateColumnList,
@@ -181,10 +178,9 @@ const ColumnReordering = memo((props) => {
                         columnheader,
                         originalInnerCells
                     );
-                    indexOfColumnToAdd = indexOfColumnToAdd - 1;
                 }
 
-                const newColumnsList = stateColumnList.slice(0); //Copying state value
+                const newColumnsList = [...stateColumnList];
                 findColumn(newColumnsList, columnheader).innerCells.splice(prevItemIndex + 1, 0, itemToAdd);
                 setStateColumnList(newColumnsList);
             } else {
@@ -213,7 +209,7 @@ const ColumnReordering = memo((props) => {
     const doColumnUpdate = () => {
         setIsErrorDisplayed(false);
         if (managedColumns && managedColumns.length > 0) {
-            setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+            setSearchedColumns(concatedOriginalColumns);
             props.updateColumnStructure(managedColumns, remarksColumnToManage);
         } else {
             setIsErrorDisplayed(true);

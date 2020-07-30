@@ -31,8 +31,51 @@ const Grid = forwardRef((props, ref) => {
 
     //Local variable for keeping updated column structure
     let processedColumns = [];
+    //Loop through the columns configuration and create required column structure
+    columns.forEach((column, index) => {
+        const { innerCells, accessor, sortValue } = column;
+        const isInnerCellsPresent = innerCells && innerCells.length > 0;
+
+        //Add column Id
+        column.columnId = `column_${index}`;
+
+        //Add logic to sort column if sort is not disabled
+        if (!column.disableSortBy) {
+            if (isInnerCellsPresent) {
+                //If there are inner cells and a sort value specified, do sort on that value
+                if (sortValue) {
+                    column.sortType = (rowA, rowB) => {
+                        return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
+                    };
+                } else {
+                    column.disableSortBy = true;
+                }
+            } else if (!innerCells) {
+                //If no inner cells are there, just do sort on column value
+                column.sortType = (rowA, rowB) => {
+                    return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
+                };
+            }
+        }
+
+        //Add logic to filter column if column filter is not disabled
+        if (!column.disableFilters) {
+            column.filter = (rows, id, filterValue) => {
+                const searchText = filterValue ? filterValue.toLowerCase() : "";
+                return rows.filter((row) => {
+                    //Find original data value of each row
+                    const { original } = row;
+                    //Do search for the column
+                    return searchColumn(column, original, searchText);
+                });
+            };
+        }
+
+        processedColumns.push(column);
+    });
+
     //Local variable for keeping the expanded row rendering method
-    let renderExpandedContent = null;
+    let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
 
     const gridColumns = useMemo(() => processedColumns, []);
 
@@ -206,60 +249,17 @@ const Grid = forwardRef((props, ref) => {
     };
 
     useEffect(() => {
-        //Loop through the columns configuration and create required column structure
-        columns.forEach((column, index) => {
-            const { innerCells, accessor, sortValue } = column;
-            const isInnerCellsPresent = innerCells && innerCells.length > 0;
-
-            //Add duplicate copy of inner cells to be used for data chooser
-            if (isInnerCellsPresent) {
-                column.originalInnerCells = [...innerCells];
+        //Add duplicate copy of inner cells to be used for data chooser
+        processedColumns.map((column) => {
+            if (column.innerCells) {
+                column.originalInnerCells = column.innerCells;
             }
-
-            //Add column Id
-            column.columnId = `column_${index}`;
-
-            //Add logic to sort column if sort is not disabled
-            if (!column.disableSortBy) {
-                if (isInnerCellsPresent) {
-                    //If there are inner cells and a sort value specified, do sort on that value
-                    if (sortValue) {
-                        column.sortType = (rowA, rowB) => {
-                            return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
-                        };
-                    } else {
-                        column.disableSortBy = true;
-                    }
-                } else if (!innerCells) {
-                    //If no inner cells are there, just do sort on column value
-                    column.sortType = (rowA, rowB) => {
-                        return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
-                    };
-                }
-            }
-
-            //Add logic to filter column if column filter is not disabled
-            if (!column.disableFilters) {
-                column.filter = (rows, id, filterValue) => {
-                    const searchText = filterValue ? filterValue.toLowerCase() : "";
-                    return rows.filter((row) => {
-                        //Find original data value of each row
-                        const { original } = row;
-                        //Do search for the column
-                        return searchColumn(column, original, searchText);
-                    });
-                };
-            }
-
-            processedColumns.push(column);
+            return column;
         });
-
-        //Process additional columns and create required structure
         if (additionalColumn) {
-            renderExpandedContent = additionalColumn.Cell;
             const { innerCells } = additionalColumn;
-            if (innerCells && innerCells.length > 0) {
-                additionalColumn.originalInnerCells = [...innerCells];
+            if (innerCells) {
+                additionalColumn.originalInnerCells = innerCells;
             }
         }
 
