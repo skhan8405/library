@@ -15,7 +15,6 @@ describe("<DatePicker />", () => {
     wrapper.setState({ value: new Date() });
     const instance = wrapper.instance();
     expect(instance.getValue()).not.toBeNull(); // calling getValue method directly - this is an anti pattern :)
-    //TODO - the above line throws RangeError: Invalid time value. Please correct
     expect(instance.getInputNode()).not.toBeNull();
   });
 });
