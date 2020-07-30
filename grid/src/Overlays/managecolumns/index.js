@@ -81,17 +81,22 @@ const ColumnReordering = memo((props) => {
     };
 
     const isInnerCellSelected = (columnHeader, header) => {
-        const selectedColumn = findColumn(managedColumns, columnHeader);
-        return isItemPresentInList(selectedColumn.innerCells, header);
+        if (columnHeader === additionalColumnHeader) {
+            const selectedColumn = findColumn(remarksColumnToManage, columnHeader);
+            return isItemPresentInList(selectedColumn.innerCells, header);
+        } else {
+            const selectedColumn = findColumn(managedColumns, columnHeader);
+            return isItemPresentInList(selectedColumn.innerCells, header);
+        }
     };
 
-    const findIndexOfItem = (type, indexOfColumnToAdd, columnHeader, originalInnerCells) => {
+    const findIndexOfItem = (type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) => {
         if (type === "column") {
-            return managedColumns.findIndex((column) => {
+            return columnsList.findIndex((column) => {
                 return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
             });
         } else {
-            return findColumn(managedColumns, columnHeader).innerCells.findIndex((cell) => {
+            return findColumn(columnsList, columnHeader).innerCells.findIndex((cell) => {
                 return cell.Header == originalInnerCells[indexOfColumnToAdd - 1].Header;
             });
         }
@@ -130,7 +135,7 @@ const ColumnReordering = memo((props) => {
                 //Find index of that previous column and push the new column to add in that position
                 let prevItemIndex = -1;
                 while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-                    prevItemIndex = findIndexOfItem("column", indexOfColumnToAdd);
+                    prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
                     indexOfColumnToAdd = indexOfColumnToAdd - 1;
                 }
 
@@ -147,12 +152,11 @@ const ColumnReordering = memo((props) => {
         }
     };
 
-    const selectInnerCells = (event) => {
+    const findAndSelectInnerCells = (stateColumnList, setStateColumnList, event) => {
         const { currentTarget } = event;
         const { checked, dataset, value } = currentTarget;
         const { columnheader } = dataset;
-
-        const selectedColumn = managedColumns.filter((column) => {
+        const selectedColumn = stateColumnList.filter((column) => {
             return column.Header === columnheader;
         });
 
@@ -166,20 +170,26 @@ const ColumnReordering = memo((props) => {
                 });
                 const itemToAdd = originalInnerCells[indexOfColumnToAdd];
 
-                //Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
+                //Loop through the stateColumnList array to find the position of the column that is present previous to the user selected column
                 //Find index of that previous column and push the new column to add in that position
                 let prevItemIndex = -1;
                 while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-                    prevItemIndex = findIndexOfItem("innercell", indexOfColumnToAdd, columnheader, originalInnerCells);
+                    prevItemIndex = findIndexOfItem(
+                        "innercell",
+                        stateColumnList,
+                        indexOfColumnToAdd,
+                        columnheader,
+                        originalInnerCells
+                    );
                     indexOfColumnToAdd = indexOfColumnToAdd - 1;
                 }
 
-                const newColumnsList = managedColumns.slice(0); //Copying state value
+                const newColumnsList = stateColumnList.slice(0); //Copying state value
                 findColumn(newColumnsList, columnheader).innerCells.splice(prevItemIndex + 1, 0, itemToAdd);
-                setManagedColumns(newColumnsList);
+                setStateColumnList(newColumnsList);
             } else {
-                setManagedColumns(
-                    managedColumns.map((column) => {
+                setStateColumnList(
+                    stateColumnList.map((column) => {
                         if (column.Header === columnheader) {
                             column.innerCells = column.innerCells.filter((cell) => {
                                 return cell.Header !== value;
@@ -190,6 +200,14 @@ const ColumnReordering = memo((props) => {
                 );
             }
         }
+    };
+
+    const selectInnerCells = (event) => {
+        findAndSelectInnerCells(managedColumns, setManagedColumns, event);
+    };
+
+    const selectRemarksInnerCells = (event) => {
+        findAndSelectInnerCells(remarksColumnToManage, setRemarksColumnToManage, event);
     };
 
     const doColumnUpdate = () => {
@@ -284,12 +302,22 @@ const ColumnReordering = memo((props) => {
                                     <div className="column__reorder full-width">
                                         <div className="">{remarksColumnToManage[0].Header}</div>
                                         <div className="column__innerCells__wrap">
-                                            {remarksColumnToManage[0].innerCells && remarksColumnToManage[0].innerCells.length > 0
-                                                ? remarksColumnToManage[0].innerCells.map((cell, index) => {
+                                            {remarksColumnToManage[0].originalInnerCells &&
+                                            remarksColumnToManage[0].originalInnerCells.length > 0
+                                                ? remarksColumnToManage[0].originalInnerCells.map((cell, index) => {
                                                       return (
                                                           <div className="column__wrap" key={index}>
                                                               <div className="column__checkbox">
-                                                                  <input type="checkbox" value={cell.Header}></input>
+                                                                  <input
+                                                                      type="checkbox"
+                                                                      data-columnheader={remarksColumnToManage[0].Header}
+                                                                      value={cell.Header}
+                                                                      checked={isInnerCellSelected(
+                                                                          remarksColumnToManage[0].Header,
+                                                                          cell.Header
+                                                                      )}
+                                                                      onChange={selectRemarksInnerCells}
+                                                                  ></input>
                                                               </div>
                                                               <div className="column__txt">{cell.Header}</div>
                                                           </div>

@@ -77,7 +77,15 @@ const Grid = forwardRef((props, ref) => {
         processedColumns.push(column);
     });
 
-    const renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
+    let renderExpandedContent = null;
+
+    if (additionalColumn) {
+        renderExpandedContent = additionalColumn.Cell;
+        const { innerCells } = additionalColumn;
+        if (innerCells && innerCells.length > 0) {
+            additionalColumn.originalInnerCells = [...innerCells];
+        }
+    }
 
     const gridColumns = useMemo(() => processedColumns, []);
 
