@@ -3,7 +3,18 @@ import ClickAwayListener from "react-click-away-listener";
 import FlightIcon from "../images/FlightIcon.png";
 
 const SegmentEdit = memo(
-    ({ index, segmentId, segmentValue, weightId, weightValue, innerCells, airportCodeList, updateCellData }) => {
+    ({
+        index,
+        segmentId,
+        segmentValue,
+        weightId,
+        weightValue,
+        innerCells,
+        airportCodeList,
+        updateCellData,
+        isInnerCellShown,
+        isInnerCellsNotEmpty
+    }) => {
         const [cellSegmentValue, setCellSegmentValue] = useState(segmentValue);
         const [oldSegValue] = useState(segmentValue);
         const [cellWeightValue, setCellWeightValue] = useState(weightValue);
@@ -61,37 +72,25 @@ const SegmentEdit = memo(
             setCellWeightValue(cellWeightValue);
         }, [cellSegmentValue, cellWeightValue]);
 
-        const isInnerCellShown = (value) => {
-            if (innerCells && innerCells.length > 0) {
-                const innerCellItem = innerCells.filter((cell) => {
-                    return cell.accessor === value;
-                });
-                return innerCellItem && innerCellItem.length > 0;
-            }
-            return false;
-        };
-
-        const isInnerCellsNotEmpty = () => {
-            return innerCells && innerCells.length > 0;
-        };
-
         return (
             <ClickAwayListener onClickAway={clearEdit}>
                 <div className="revenue-details content">
-                    <div className="cell-edit" onClick={openEdit}>
-                        <i className="fa fa-pencil" aria-hidden="true"></i>
-                    </div>
+                    {isInnerCellsNotEmpty(innerCells) ? (
+                        <div className="cell-edit" onClick={openEdit}>
+                            <i className="fa fa-pencil" aria-hidden="true"></i>
+                        </div>
+                    ) : null}
                     <div className={`segment-details content ${isEdit ? "close" : "open"}`}>
-                        {isInnerCellShown("from") ? <span>{cellSegmentValue.from}</span> : null}
-                        {isInnerCellsNotEmpty() ? (
+                        {isInnerCellShown(innerCells, "from") ? <span>{cellSegmentValue.from}</span> : null}
+                        {isInnerCellsNotEmpty(innerCells) ? (
                             <i>
                                 <img src={FlightIcon} alt="segment" />
                             </i>
                         ) : null}
-                        {isInnerCellShown("to") ? <span>{cellSegmentValue.to}</span> : null}
+                        {isInnerCellShown(innerCells, "to") ? <span>{cellSegmentValue.to}</span> : null}
                     </div>
                     <div className={`content-edit ${isEdit ? "open" : "close"}`}>
-                        {isInnerCellShown("from") ? (
+                        {isInnerCellShown(innerCells, "from") ? (
                             <select onChange={onChangeFrom} key="segment-from" value={cellSegmentValue.from}>
                                 {airportCodeList.map((item, index) => {
                                     return (
@@ -102,7 +101,7 @@ const SegmentEdit = memo(
                                 })}
                             </select>
                         ) : null}
-                        {isInnerCellShown("to") ? (
+                        {isInnerCellShown(innerCells, "to") ? (
                             <select onChange={onChangeTo} key="segment-to" value={cellSegmentValue.to}>
                                 {airportCodeList.map((item, index) => {
                                     return (

@@ -237,7 +237,9 @@ const Customgrid = memo((props) => {
                         </div>
                         {/*Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region*/}
                         {isRowExpandEnabled && row.isExpanded ? (
-                            <div className="expand">{renderExpandedContent ? renderExpandedContent(row) : null}</div>
+                            <div className="expand">
+                                {renderExpandedContent ? renderExpandedContent(row, additionalColumn) : null}
+                            </div>
                         ) : null}
                     </div>
                 );

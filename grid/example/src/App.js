@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import Grid from "grid";
+import { isInnerCellShown, isInnerCellsNotEmpty } from "./utils/CellDisplayUtility";
 import { fetchData } from "./getData";
 import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
 import RowEditOverlay from "./cells/RowEditOverlay";
@@ -111,6 +112,8 @@ const App = () => {
                         innerCells={innerCells}
                         columnValue={original[columnId]}
                         updateCellData={updateCellData}
+                        isInnerCellShown={isInnerCellShown}
+                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
                     />
                 );
             },
@@ -146,6 +149,8 @@ const App = () => {
                         weightValue={original[weightColumn]}
                         innerCells={innerCells}
                         updateCellData={updateCellData}
+                        isInnerCellShown={isInnerCellShown}
+                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
                     />
                 );
             }
@@ -190,6 +195,7 @@ const App = () => {
             ],
             disableSortBy: true,
             Cell: (row) => {
+                const { innerCells } = row.column;
                 const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = row.value;
                 let timeStatusArray = timeStatus.split(" ");
                 const timeValue = timeStatusArray.shift();
@@ -197,28 +203,57 @@ const App = () => {
                 return (
                     <div className="details-wrap content">
                         <ul>
-                            <li>
-                                {startTime} – {endTime}
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{status}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>{additionalStatus}</li>
-                            <li className="divider">|</li>
-                            <li>{flightModel}</li>
-                            <li className="divider">|</li>
-                            <li>{bodyType}</li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{type}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <strong>{timeValue} </strong>
-                                <span>{timeText}</span>
-                            </li>
+                            {isInnerCellShown(innerCells, "startTime") || isInnerCellShown(innerCells, "endTime") ? (
+                                <>
+                                    <li>
+                                        {isInnerCellShown(innerCells, "startTime") ? startTime + " - " : null}
+                                        {isInnerCellShown(innerCells, "endTime") ? endTime : null}
+                                    </li>
+                                    <li className="divider">|</li>
+                                </>
+                            ) : null}
+                            {isInnerCellShown(innerCells, "status") ? (
+                                <>
+                                    <li>
+                                        <span>{isInnerCellShown(innerCells, "status") ? status : null}</span>
+                                    </li>
+                                    <li className="divider">|</li>
+                                </>
+                            ) : null}
+                            {isInnerCellShown(innerCells, "additionalStatus") ? (
+                                <>
+                                    <li>{additionalStatus}</li>
+                                    <li className="divider">|</li>
+                                </>
+                            ) : null}
+                            {isInnerCellShown(innerCells, "flightModel") ? (
+                                <>
+                                    <li>{flightModel}</li>
+                                    <li className="divider">|</li>
+                                </>
+                            ) : null}
+                            {isInnerCellShown(innerCells, "bodyType") ? (
+                                <>
+                                    <li>{bodyType}</li>
+                                    <li className="divider">|</li>
+                                </>
+                            ) : null}
+                            {isInnerCellShown(innerCells, "type") ? (
+                                <>
+                                    <li>
+                                        <span>{type}</span>
+                                    </li>
+                                    <li className="divider">|</li>
+                                </>
+                            ) : null}
+                            {isInnerCellShown(innerCells, "timeStatus") ? (
+                                <>
+                                    <li>
+                                        <strong>{timeValue} </strong>
+                                        <span>{timeText}</span>
+                                    </li>
+                                </>
+                            ) : null}
                         </ul>
                     </div>
                 );
@@ -239,14 +274,17 @@ const App = () => {
                 }
             ],
             Cell: (row) => {
+                const { innerCells } = row.column;
                 const { percentage, value } = row.value;
                 return (
                     <div className="weight-details content">
-                        <strong className="per">{percentage}</strong>
-                        <span>
-                            <strong>{value.split("/")[0]}/</strong>
-                            {value.split("/")[1]}
-                        </span>
+                        {isInnerCellShown(innerCells, "percentage") ? <strong className="per">{percentage}</strong> : null}
+                        {isInnerCellShown(innerCells, "value") ? (
+                            <span>
+                                <strong>{value.split("/")[0]}/</strong>
+                                {value.split("/")[1]}
+                            </span>
+                        ) : null}
                     </div>
                 );
             },
@@ -267,14 +305,17 @@ const App = () => {
                 }
             ],
             Cell: (row) => {
+                const { innerCells } = row.column;
                 const { percentage, value } = row.value;
                 return (
                     <div className="weight-details content">
-                        <strong className="per">{percentage}</strong>
-                        <span>
-                            <strong>{value.split("/")[0]}/</strong>
-                            {value.split("/")[1]}
-                        </span>
+                        {isInnerCellShown(innerCells, "percentage") ? <strong className="per">{percentage}</strong> : null}
+                        {isInnerCellShown(innerCells, "value") ? (
+                            <span>
+                                <strong>{value.split("/")[0]}/</strong>
+                                {value.split("/")[1]}
+                            </span>
+                        ) : null}
                     </div>
                 );
             },
@@ -295,20 +336,25 @@ const App = () => {
                     accessor: "value"
                 }
             ],
-            Cell: (row) => (
-                <div className="uld-details content">
-                    <ul>
-                        {row.value.map((positions, index) => {
-                            return (
-                                <li key={index}>
-                                    <span>{positions.position}</span>
-                                    <strong>{positions.value}</strong>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
-            )
+            Cell: (row) => {
+                const { innerCells } = row.column;
+                return (
+                    <div className="uld-details content">
+                        {isInnerCellsNotEmpty(innerCells) ? (
+                            <ul>
+                                {row.value.map((positions, index) => {
+                                    return (
+                                        <li key={index}>
+                                            {isInnerCellShown(innerCells, "position") ? <span>{positions.position}</span> : null}
+                                            {isInnerCellShown(innerCells, "value") ? <strong>{positions.value}</strong> : null}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : null}
+                    </div>
+                );
+            }
         },
         {
             Header: "Revenue/Yield",
@@ -325,11 +371,12 @@ const App = () => {
                 }
             ],
             Cell: (row) => {
+                const { innerCells } = row.column;
                 const { revenue, yeild } = row.value;
                 return (
                     <div className="revenue-details content">
-                        <span className="large">{revenue}</span>
-                        <span>{yeild}</span>
+                        {isInnerCellShown(innerCells, "revenue") ? <span className="large">{revenue}</span> : null}
+                        {isInnerCellShown(innerCells, "yeild") ? <span>{yeild}</span> : null}
                     </div>
                 );
             },
@@ -340,10 +387,19 @@ const App = () => {
             accessor: "sr",
             width: 90,
             Cell: (row) => {
+                const { innerCells } = row.column;
                 const columnId = "sr";
                 const { index, original } = row.row;
                 return (
-                    <SREdit index={index} columnId={columnId} columnValue={original[columnId]} updateCellData={updateCellData} />
+                    <SREdit
+                        index={index}
+                        columnId={columnId}
+                        columnValue={original[columnId]}
+                        innerCells={innerCells}
+                        updateCellData={updateCellData}
+                        isInnerCellShown={isInnerCellShown}
+                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
+                    />
                 );
             }
         },
@@ -363,16 +419,16 @@ const App = () => {
             ],
             disableSortBy: true,
             Cell: (row) => {
+                const { innerCells } = row.column;
                 const { sr, volume } = row.value;
                 return (
                     <div className="queued-details content">
-                        <span>
-                            <strong></strong>
-                            {sr}
-                        </span>
-                        <span>
-                            <strong></strong> {volume}
-                        </span>
+                        <span>{isInnerCellShown(innerCells, "sr") ? <strong>{sr}</strong> : null}</span>
+                        {isInnerCellShown(innerCells, "volume") ? (
+                            <span>
+                                <strong>{volume}</strong>
+                            </span>
+                        ) : null}
                     </div>
                 );
             }
@@ -395,7 +451,8 @@ const App = () => {
                   { Header: "Remarks", accessor: "remarks" },
                   { Header: "Details", accessor: "details" }
               ],
-        Cell: (row) => {
+        Cell: (row, column) => {
+            const { innerCells } = column;
             const { remarks, details } = row.original;
             if (isDesktop) {
                 return remarks;
@@ -406,34 +463,38 @@ const App = () => {
                 const timeText = timeStatusArray.join(" ");
                 return (
                     <div className="details-wrap content">
-                        <ul>
-                            <li>{remarks}</li>
-                            <li className="divider">|</li>
-                        </ul>
-                        <ul>
-                            <li>
-                                {startTime} – {endTime}
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{status}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>{additionalStatus}</li>
-                            <li className="divider">|</li>
-                            <li>{flightModel}</li>
-                            <li className="divider">|</li>
-                            <li>{bodyType}</li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{type}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <strong>{timeValue} </strong>
-                                <span>{timeText}</span>
-                            </li>
-                        </ul>
+                        {isInnerCellShown(innerCells, "remarks") ? (
+                            <ul>
+                                <li>{remarks}</li>
+                                <li className="divider">|</li>
+                            </ul>
+                        ) : null}
+                        {isInnerCellShown(innerCells, "details") ? (
+                            <ul>
+                                <li>
+                                    {startTime} – {endTime}
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <span>{status}</span>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>{additionalStatus}</li>
+                                <li className="divider">|</li>
+                                <li>{flightModel}</li>
+                                <li className="divider">|</li>
+                                <li>{bodyType}</li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <span>{type}</span>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <strong>{timeValue} </strong>
+                                    <span>{timeText}</span>
+                                </li>
+                            </ul>
+                        ) : null}
                     </div>
                 );
             }
