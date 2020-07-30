@@ -249,7 +249,7 @@ class App extends React.Component {
                 <FontAwesomeIcon
                   className="icon-close"
                   icon={faTimes}
-                  onClick={() => this.props.closeSorting()}
+                  onClick={(e) => this.props.closeSorting()}
                 ></FontAwesomeIcon>
               </div>
             </div>
