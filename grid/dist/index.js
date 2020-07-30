@@ -131,7 +131,6 @@ var RowPin = require("./RowPin~qQRdvcXq.png");
 
 var RowOptions = React.memo(function (props) {
   var row = props.row,
-      originalData = props.originalData,
       DeletePopUpOverLay = props.DeletePopUpOverLay,
       deleteRowFromGrid = props.deleteRowFromGrid,
       RowEditOverlay = props.RowEditOverlay,
@@ -169,10 +168,7 @@ var RowOptions = React.memo(function (props) {
   };
 
   var updateRow = function updateRow(updatedrow) {
-    var originalDataIndex = originalData.findIndex(function (data) {
-      return data === original;
-    });
-    updateRowInGrid(originalDataIndex, updatedrow);
+    updateRowInGrid(original, updatedrow);
   };
 
   var openDeleteOverlay = function openDeleteOverlay() {
@@ -185,10 +181,7 @@ var RowOptions = React.memo(function (props) {
   };
 
   var deleteRow = function deleteRow() {
-    var originalDataIndex = originalData.findIndex(function (data) {
-      return data === original;
-    });
-    deleteRowFromGrid(originalDataIndex, original);
+    deleteRowFromGrid(original);
   };
 
   return /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("div", {
@@ -237,9 +230,12 @@ var ItemTypes = {
 
 var ColumnItem = function ColumnItem(_ref) {
   var id = _ref.id,
-      name = _ref.name,
+      Header = _ref.Header,
       moveColumn = _ref.moveColumn,
-      findColumn = _ref.findColumn;
+      findColumn = _ref.findColumn,
+      originalInnerCells = _ref.originalInnerCells,
+      isInnerCellSelected = _ref.isInnerCellSelected,
+      selectInnerCells = _ref.selectInnerCells;
   var originalIndex = findColumn(id).index;
 
   var _useDrag = reactDnd.useDrag({
@@ -306,12 +302,31 @@ var ColumnItem = function ColumnItem(_ref) {
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
     className: ""
-  }, name)));
+  }, Header), /*#__PURE__*/React__default.createElement("div", {
+    className: "column__innerCells__wrap"
+  }, originalInnerCells && originalInnerCells.length > 0 ? originalInnerCells.map(function (cell, index) {
+    return /*#__PURE__*/React__default.createElement("div", {
+      className: "column__wrap",
+      key: index
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React__default.createElement("input", {
+      type: "checkbox",
+      "data-columnheader": Header,
+      value: cell.Header,
+      checked: isInnerCellSelected(Header, cell.Header),
+      onChange: selectInnerCells
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__txt"
+    }, cell.Header));
+  }) : null)));
 };
 
 var ColumnsList = function ColumnsList(props) {
   var updateColumnsInState = props.updateColumnsInState,
-      columnsToManage = props.columnsToManage;
+      columnsToManage = props.columnsToManage,
+      isInnerCellSelected = props.isInnerCellSelected,
+      selectInnerCells = props.selectInnerCells;
 
   var moveColumn = function moveColumn(columnId, atIndex) {
     var _findColumn = findColumn(columnId),
@@ -348,10 +363,12 @@ var ColumnsList = function ColumnsList(props) {
     return /*#__PURE__*/React__default.createElement(ColumnItem, {
       key: index,
       id: "" + column.columnId,
-      name: "" + column.Header,
+      Header: "" + column.Header,
       moveColumn: moveColumn,
       findColumn: findColumn,
-      innerCells: column.innerCells
+      originalInnerCells: column.originalInnerCells,
+      isInnerCellSelected: isInnerCellSelected,
+      selectInnerCells: selectInnerCells
     });
   })));
 };
@@ -368,11 +385,13 @@ var ColumnReordering = React.memo(function (props) {
     return isExpandContentAvailable ? additionalColumn : [];
   };
 
+  var concatedOriginalColumns = originalColumns.concat(getRemarksColumnIfAvailable());
+
   var _useState = React.useState(originalColumns),
       managedColumns = _useState[0],
       setManagedColumns = _useState[1];
 
-  var _useState2 = React.useState([].concat(originalColumns).concat(getRemarksColumnIfAvailable())),
+  var _useState2 = React.useState(concatedOriginalColumns),
       searchedColumns = _useState2[0],
       setSearchedColumns = _useState2[1];
 
@@ -410,12 +429,25 @@ var ColumnReordering = React.memo(function (props) {
         return column.Header.toLowerCase().includes(value);
       })));
     } else {
-      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+      setSearchedColumns(concatedOriginalColumns);
     }
   };
 
   var updateColumnsInState = function updateColumnsInState(columns) {
     setManagedColumns(columns);
+  };
+
+  var findColumn = function findColumn(columnList, columnHeader) {
+    return columnList.find(function (column) {
+      return column.Header === columnHeader;
+    });
+  };
+
+  var isItemPresentInList = function isItemPresentInList(list, headerValue) {
+    var filteredList = list.filter(function (item) {
+      return item.Header === headerValue;
+    });
+    return filteredList && filteredList.length > 0;
   };
 
   var isCheckboxSelected = function isCheckboxSelected(header) {
@@ -424,10 +456,25 @@ var ColumnReordering = React.memo(function (props) {
     } else if (header === "Select All") {
       return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
     } else {
-      var selectedColumn = managedColumns.filter(function (column) {
-        return column.Header === header;
+      return isItemPresentInList(managedColumns, header);
+    }
+  };
+
+  var isInnerCellSelected = function isInnerCellSelected(columnHeader, header) {
+    var columnListToSearch = columnHeader === additionalColumnHeader ? remarksColumnToManage : managedColumns;
+    var selectedColumn = findColumn(columnListToSearch, columnHeader);
+    return isItemPresentInList(selectedColumn.innerCells, header);
+  };
+
+  var findIndexOfItem = function findIndexOfItem(type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) {
+    if (type === "column") {
+      return columnsList.findIndex(function (column) {
+        return column.Header === originalColumns[indexOfColumnToAdd].Header;
       });
-      return selectedColumn && selectedColumn.length > 0;
+    } else {
+      return findColumn(columnsList, columnHeader).innerCells.findIndex(function (cell) {
+        return cell.Header === originalInnerCells[indexOfColumnToAdd].Header;
+      });
     }
   };
 
@@ -454,24 +501,20 @@ var ColumnReordering = React.memo(function (props) {
       }
     } else {
       if (checked) {
-        (function () {
-          var indexOfColumnToAdd = originalColumns.findIndex(function (column) {
-            return column.Header == value;
-          });
-          var itemToAdd = originalColumns[indexOfColumnToAdd];
-          var prevItemIndex = -1;
+        var indexOfColumnToAdd = originalColumns.findIndex(function (column) {
+          return column.Header === value;
+        });
+        var itemToAdd = originalColumns[indexOfColumnToAdd];
+        var prevItemIndex = -1;
 
-          while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-            prevItemIndex = managedColumns.findIndex(function (column) {
-              return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
-            });
-            indexOfColumnToAdd = indexOfColumnToAdd - 1;
-          }
+        while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+          indexOfColumnToAdd = indexOfColumnToAdd - 1;
+          prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
+        }
 
-          var newColumnsList = managedColumns.slice(0);
-          newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
-          setManagedColumns(newColumnsList);
-        })();
+        var newColumnsList = [].concat(managedColumns);
+        newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
+        setManagedColumns(newColumnsList);
       } else {
         setManagedColumns(managedColumns.filter(function (column) {
           return column.Header !== value;
@@ -480,21 +523,81 @@ var ColumnReordering = React.memo(function (props) {
     }
   };
 
+  var findAndSelectInnerCells = function findAndSelectInnerCells(stateColumnList, setStateColumnList, event) {
+    var currentTarget = event.currentTarget;
+    var checked = currentTarget.checked,
+        dataset = currentTarget.dataset,
+        value = currentTarget.value;
+    var columnheader = dataset.columnheader;
+    var selectedColumn = findColumn(stateColumnList, columnheader);
+    var originalInnerCells = selectedColumn.originalInnerCells;
+
+    if (originalInnerCells && originalInnerCells.length > 0) {
+      if (checked) {
+        var indexOfColumnToAdd = originalInnerCells.findIndex(function (column) {
+          return column.Header === value;
+        });
+        var itemToAdd = originalInnerCells[indexOfColumnToAdd];
+        var prevItemIndex = -1;
+
+        while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+          indexOfColumnToAdd = indexOfColumnToAdd - 1;
+          prevItemIndex = findIndexOfItem("innercell", stateColumnList, indexOfColumnToAdd, columnheader, originalInnerCells);
+        }
+
+        var newColumnsList = [].concat(stateColumnList);
+        findColumn(newColumnsList, columnheader).innerCells.splice(prevItemIndex + 1, 0, itemToAdd);
+        setStateColumnList(newColumnsList);
+      } else {
+        setStateColumnList(stateColumnList.map(function (column) {
+          if (column.Header === columnheader) {
+            column.innerCells = column.innerCells.filter(function (cell) {
+              return cell.Header !== value;
+            });
+          }
+
+          return column;
+        }));
+      }
+    }
+  };
+
+  var selectInnerCells = function selectInnerCells(event) {
+    findAndSelectInnerCells(managedColumns, setManagedColumns, event);
+  };
+
+  var selectRemarksInnerCells = function selectRemarksInnerCells(event) {
+    findAndSelectInnerCells(remarksColumnToManage, setRemarksColumnToManage, event);
+  };
+
   var doColumnUpdate = function doColumnUpdate() {
     setIsErrorDisplayed(false);
 
     if (managedColumns && managedColumns.length > 0) {
-      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+      setSearchedColumns(concatedOriginalColumns);
       props.updateColumnStructure(managedColumns, remarksColumnToManage);
     } else {
       setIsErrorDisplayed(true);
     }
+
+    toggleManageColumns();
+  };
+
+  var resetInnerCells = function resetInnerCells(columnList) {
+    if (columnList && columnList.length) {
+      return columnList.map(function (column) {
+        column.innerCells = column.originalInnerCells;
+        return column;
+      });
+    }
+
+    return columnList;
   };
 
   var resetColumnUpdate = function resetColumnUpdate() {
-    setManagedColumns(originalColumns);
+    setManagedColumns(resetInnerCells(originalColumns));
     setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
-    setRemarksColumnToManage(getRemarksColumnIfAvailable());
+    setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
     props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
   };
 
@@ -567,12 +670,31 @@ var ColumnReordering = React.memo(function (props) {
       options: HTML5toTouch
     }, /*#__PURE__*/React__default.createElement(ColumnsList, {
       columnsToManage: managedColumns,
-      updateColumnsInState: updateColumnsInState
+      updateColumnsInState: updateColumnsInState,
+      isInnerCellSelected: isInnerCellSelected,
+      selectInnerCells: selectInnerCells
     })), remarksColumnToManage && remarksColumnToManage.length > 0 ? /*#__PURE__*/React__default.createElement("div", {
       className: "column__reorder full-width"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: ""
-    }, remarksColumnToManage[0].Header)) : null), /*#__PURE__*/React__default.createElement("div", {
+    }, remarksColumnToManage[0].Header), /*#__PURE__*/React__default.createElement("div", {
+      className: "column__innerCells__wrap"
+    }, remarksColumnToManage[0].originalInnerCells && remarksColumnToManage[0].originalInnerCells.length > 0 ? remarksColumnToManage[0].originalInnerCells.map(function (cell, index) {
+      return /*#__PURE__*/React__default.createElement("div", {
+        className: "column__wrap",
+        key: index
+      }, /*#__PURE__*/React__default.createElement("div", {
+        className: "column__checkbox"
+      }, /*#__PURE__*/React__default.createElement("input", {
+        type: "checkbox",
+        "data-columnheader": remarksColumnToManage[0].Header,
+        value: cell.Header,
+        checked: isInnerCellSelected(remarksColumnToManage[0].Header, cell.Header),
+        onChange: selectRemarksInnerCells
+      })), /*#__PURE__*/React__default.createElement("div", {
+        className: "column__txt"
+      }, cell.Header));
+    }) : null)) : null), /*#__PURE__*/React__default.createElement("div", {
       className: "column__footer"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__btns"
@@ -854,7 +976,6 @@ var GroupSort = React.memo(function (props) {
   var clearSortingOptions = function clearSortingOptions() {
     setSortOptions([]);
     applyGroupSort([]);
-    toggleGroupSortOverLay();
   };
 
   var updateSingleSortingOption = function updateSingleSortingOption(sortIndex, sortByValue, sortOnValue, sortOrder) {
@@ -1160,14 +1281,14 @@ var ExportData = React.memo(function (props) {
     if (checked) {
       (function () {
         var indexOfColumnToAdd = updatedColumns.findIndex(function (column) {
-          return column.Header == value;
+          return column.Header === value;
         });
         var itemToAdd = updatedColumns[indexOfColumnToAdd];
         var prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
           prevItemIndex = managedColumns.findIndex(function (column) {
-            return column.Header == updatedColumns[indexOfColumnToAdd - 1].Header;
+            return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
           });
           indexOfColumnToAdd = indexOfColumnToAdd - 1;
         }
@@ -1336,7 +1457,6 @@ var Customgrid = React.memo(function (props) {
       originalColumns = props.originalColumns,
       additionalColumn = props.additionalColumn,
       data = props.data,
-      originalData = props.originalData,
       rowEditOverlay = props.rowEditOverlay,
       rowEditData = props.rowEditData,
       updateRowInGrid = props.updateRowInGrid,
@@ -1407,7 +1527,6 @@ var Customgrid = React.memo(function (props) {
   var updateColumnStructure = function updateColumnStructure(newColumnStructure, remarksColumn) {
     setColumns([].concat(newColumnStructure));
     setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
-    toggleManageColumns();
   };
 
   var _useState6 = React.useState(false),
@@ -1474,7 +1593,6 @@ var Customgrid = React.memo(function (props) {
             className: "action"
           }, /*#__PURE__*/React__default.createElement(RowOptions, {
             row: row,
-            originalData: originalData,
             DeletePopUpOverLay: deletePopUpOverLay,
             deleteRowFromGrid: deleteRowFromGrid,
             RowEditOverlay: rowEditOverlay,
@@ -1532,7 +1650,7 @@ var Customgrid = React.memo(function (props) {
         }), cell.render("Cell"));
       })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
         className: "expand"
-      }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
+      }, renderExpandedContent ? renderExpandedContent(row, additionalColumn) : null) : null);
     }
   }, [prepareRow, rows, renderExpandedContent]);
   return /*#__PURE__*/React__default.createElement("div", {
@@ -1856,10 +1974,10 @@ var Grid = React.forwardRef(function (props, ref) {
     };
   });
 
-  var updateRowInGrid = function updateRowInGrid(rowIndex, updatedRow) {
+  var updateRowInGrid = function updateRowInGrid(original, updatedRow) {
     setItems(function (old) {
-      return old.map(function (row, index) {
-        if (index === rowIndex) {
+      return old.map(function (row) {
+        if (row === original) {
           row = updatedRow;
         }
 
@@ -1869,13 +1987,13 @@ var Grid = React.forwardRef(function (props, ref) {
     updateRowData(updatedRow);
   };
 
-  var deleteRowFromGrid = function deleteRowFromGrid(rowIndexToBeDeleted, deletedRow) {
+  var deleteRowFromGrid = function deleteRowFromGrid(original) {
     setItems(function (old) {
-      return old.filter(function (row, index) {
-        return index !== rowIndexToBeDeleted;
+      return old.filter(function (row) {
+        return row !== original;
       });
     });
-    deleteRowData(deletedRow);
+    deleteRowData(original);
   };
 
   var doGroupSort = function doGroupSort(sortOptions) {
@@ -1902,6 +2020,22 @@ var Grid = React.forwardRef(function (props, ref) {
   };
 
   React.useEffect(function () {
+    processedColumns.map(function (column) {
+      if (column.innerCells) {
+        column.originalInnerCells = column.innerCells;
+      }
+
+      return column;
+    });
+
+    if (additionalColumn) {
+      var innerCells = additionalColumn.innerCells;
+
+      if (innerCells) {
+        additionalColumn.originalInnerCells = innerCells;
+      }
+    }
+
     setIsLoading(true);
     fetchData(0).then(function (data) {
       setIsLoading(false);
@@ -1919,7 +2053,6 @@ var Grid = React.forwardRef(function (props, ref) {
       originalColumns: gridColumns,
       additionalColumn: additionalColumn,
       data: data,
-      originalData: items,
       rowEditOverlay: rowEditOverlay,
       rowEditData: rowEditData,
       updateRowInGrid: updateRowInGrid,
