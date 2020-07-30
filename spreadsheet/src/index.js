@@ -6,6 +6,7 @@ import { range } from "lodash";
 import { applyFormula } from "./utilities/utils";
 import { FormControl } from "react-bootstrap";
 import DatePicker from "./functions/DatePicker.js";
+//import {onRowsSelected} from "../components/functions/OnRowsSelected.js"
 import {
   faSortAmountDown,
   faColumns,
@@ -73,8 +74,8 @@ class Spreadsheet extends Component {
         return item;
       }),
     };
-    document.addEventListener("copy", this.handleCopy);
-    document.addEventListener("paste", this.handlePaste);
+    // document.addEventListener("copy", this.handleCopy);
+    // document.addEventListener("paste", this.handlePaste);
     this.handleSearchValue = this.handleSearchValue.bind(this);
     this.clearSearchValue = this.clearSearchValue.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -89,72 +90,73 @@ class Spreadsheet extends Component {
     resizeEvent.initEvent("resize", true, false);
     window.dispatchEvent(resizeEvent);
   }
-  updateRows = (startIdx, newRows) => {
-    this.setState((state) => {
-      const rows = state.rows.slice();
-      for (let i = 0; i < newRows.length; i++) {
-        if (startIdx + i < rows.length) {
-          rows[startIdx + i] = {
-            ...rows[startIdx + i],
-            ...newRows[i],
-          };
-        }
-      }
-      return {
-        rows,
-      };
-    });
-  };
+  // updateRows = (startIdx, newRows) => {
+  //   this.setState((state) => {
+  //     const rows = state.rows.slice();
+  //     for (let i = 0; i < newRows.length; i++) {
+  //       if (startIdx + i < rows.length) {
+  //         rows[startIdx + i] = {
+  //           ...rows[startIdx + i],
+  //           ...newRows[i],
+  //         };
+  //       }
+  //     }
+  //     return {
+  //       rows,
+  //     };
+  //   });
+  // };
 
-  rowGetter = (i) => {
-    const { rows } = this.state;
-    return rows[i];
-  };
+  // rowGetter = (i) => {
+	// console.log(i)
+  //   const { rows } = this.state;
+  //   return rows[i];
+  // };
 
-  handleCopy = (e) => {
-    e.preventDefault();
-    const { topLeft, botRight } = this.state;
-    const text = range(topLeft.rowIdx, botRight.rowIdx + 1)
-      .map((rowIdx) =>
-        this.state.columns
-          .slice(topLeft.colIdx - 1, botRight.colIdx)
-          .map((col) => this.rowGetter(rowIdx)[col.key])
-          .join("\t")
-      )
-      .join("\n");
-    e.clipboardData.setData("text/plain", text);
-  };
+  // handleCopy = (e) => {
+  //   e.preventDefault();
+  //   const { topLeft, botRight } = this.state;
+  //   const text = range(topLeft.rowIdx, botRight.rowIdx + 1)
+  //     .map((rowIdx) =>
+  //       this.state.columns
+  //         .slice(topLeft.colIdx - 1, botRight.colIdx)
+  //         .map((col) => this.rowGetter(rowIdx)[col.key])
+  //         .join("\t")
+  //     )
+  //     .join("\n");
+  //   e.clipboardData.setData("text/plain", text);
+  // };
 
-  handlePaste = (e) => {
-    e.preventDefault();
-    const { topLeft } = this.state;
-    const newRows = [];
-    const pasteData = defaultParsePaste(e.clipboardData.getData("text/plain"));
-    pasteData.forEach((row) => {
-      const rowData = {};
-      // Merge the values from pasting and the keys from the columns
-      this.state.columns
-        .slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length)
-        .forEach((col, j) => {
-          rowData[col.key] = row[j];
-        });
-      newRows.push(rowData);
-    });
-    this.updateRows(topLeft.rowIdx, newRows);
-  };
+  // handlePaste = (e) => {
+  //   e.preventDefault();
+  //   const { topLeft } = this.state;
+  //   const newRows = [];
+  //   const pasteData = defaultParsePaste(e.clipboardData.getData("text/plain"));
+  //   pasteData.forEach((row) => {
+  //     const rowData = {};
+  //     // Merge the values from pasting and the keys from the columns
+  //     this.state.columns
+  //       .slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length)
+  //       .forEach((col, j) => {
+  //         rowData[col.key] = row[j];
+  //       });
+  //     newRows.push(rowData);
+  //   });
+  //   this.updateRows(topLeft.rowIdx, newRows);
+  // };
 
-  setSelection = (args) => {
-    this.setState({
-      topLeft: {
-        rowIdx: args.topLeft.rowIdx,
-        colIdx: args.topLeft.idx,
-      },
-      botRight: {
-        rowIdx: args.bottomRight.rowIdx,
-        colIdx: args.bottomRight.idx,
-      },
-    });
-  };
+  // setSelection = (args) => {
+  //   this.setState({
+  //     topLeft: {
+  //       rowIdx: args.topLeft.rowIdx,
+  //       colIdx: args.topLeft.idx,
+  //     },
+  //     botRight: {
+  //       rowIdx: args.bottomRight.rowIdx,
+  //       colIdx: args.bottomRight.idx,
+  //     },
+  //   });
+  // };
 
   handleWarningStatus = () => {
     this.setState({ warningStatus: "invalid" });
@@ -346,31 +348,31 @@ class Spreadsheet extends Component {
    * @param {*} source is source column
    * @param {*} target is the target column
    */
-  onHeaderDrop = (source, target) => {
-    const stateCopy = Object.assign({}, this.state);
-    const columnSourceIndex = this.state.columns.findIndex(
-      (i) => i.key === source
-    );
-    const columnTargetIndex = this.state.columns.findIndex(
-      (i) => i.key === target
-    );
+  // onHeaderDrop = (source, target) => {
+  //   const stateCopy = Object.assign({}, this.state);
+  //   const columnSourceIndex = this.state.columns.findIndex(
+  //     (i) => i.key === source
+  //   );
+  //   const columnTargetIndex = this.state.columns.findIndex(
+  //     (i) => i.key === target
+  //   );
 
-    stateCopy.columns.splice(
-      columnTargetIndex,
-      0,
-      stateCopy.columns.splice(columnSourceIndex, 1)[0]
-    );
+  //   stateCopy.columns.splice(
+  //     columnTargetIndex,
+  //     0,
+  //     stateCopy.columns.splice(columnSourceIndex, 1)[0]
+  //   );
 
-    const emptyColumns = Object.assign({}, this.state, {
-      columns: [],
-    });
-    this.setState(emptyColumns);
+  //   const emptyColumns = Object.assign({}, this.state, {
+  //     columns: [],
+  //   });
+  //   this.setState(emptyColumns);
 
-    const reorderedColumns = Object.assign({}, this.state, {
-      columns: stateCopy.columns,
-    });
-    this.setState(reorderedColumns);
-  };
+  //   const reorderedColumns = Object.assign({}, this.state, {
+  //     columns: stateCopy.columns,
+  //   });
+  //   this.setState(reorderedColumns);
+  // };
   /**
    * Method To dynamically swap the column from column chooser
    * @param {*} reordered is the swapped array of columns
@@ -548,7 +550,7 @@ class Spreadsheet extends Component {
 
   clearAllSortingParams = () => {
     this.setState({
-      rows: JSON.parse(JSON.stringify(this.props.rows)),
+    rows: JSON.parse(JSON.stringify(this.props.rows))
     });
   };
 
@@ -571,15 +573,15 @@ class Spreadsheet extends Component {
       exportComponent: null,
     });
   };
-  handleColumnResize = (idx, width) => {
-    let columnArray = [...this.state.columns];
-    columnArray.forEach((item) => {
-      if (item.name === this.state.columns[idx - 1].name) {
-        item.width = width;
-      }
-    });
-    this.setState({ columns: columnArray });
-  };
+  // handleColumnResize = (idx, width) => {
+  //   let columnArray = [...this.state.columns];
+  //   columnArray.forEach((item) => {
+  //     if (item.name === this.state.columns[idx - 1].name) {
+  //       item.width = width;
+  //     }
+  //   });
+  //   this.setState({ columns: columnArray });
+  // };
   setTableAsPerSortingParams = (tableSortList) => {
     var existingRows = this.state.rows;
     var sortingOrderNameList = [];
