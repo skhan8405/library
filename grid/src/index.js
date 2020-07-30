@@ -214,10 +214,10 @@ const Grid = forwardRef((props, ref) => {
     //#endregion
 
     //Gets triggered when one row item is updated
-    const updateRowInGrid = (rowIndex, updatedRow) => {
+    const updateRowInGrid = (original, updatedRow) => {
         setItems((old) =>
-            old.map((row, index) => {
-                if (index === rowIndex) {
+            old.map((row) => {
+                if (row === original) {
                     row = updatedRow;
                 }
                 return row;
@@ -227,13 +227,13 @@ const Grid = forwardRef((props, ref) => {
     };
 
     //Gets triggered when one row item is deleted
-    const deleteRowFromGrid = (rowIndexToBeDeleted, deletedRow) => {
+    const deleteRowFromGrid = (original) => {
         setItems((old) =>
-            old.filter((row, index) => {
-                return index !== rowIndexToBeDeleted;
+            old.filter((row) => {
+                return row !== original;
             })
         );
-        deleteRowData(deletedRow);
+        deleteRowData(original);
     };
 
     //Gets called when group sort is applied or cleared
