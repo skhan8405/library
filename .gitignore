@@ -12,3 +12,5 @@ spreadsheet/dist/index.js
 spreadsheet/dist/index.js.map
 spreadsheet/dist/index.modern.js
 spreadsheet/dist/index.modern.js.map
+filter/dist/index.js
+filter/dist/index.js.map
