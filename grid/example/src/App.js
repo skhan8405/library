@@ -134,6 +134,7 @@ const App = () => {
             Cell: (row) => {
                 const segmentColumn = "segment";
                 const weightColumn = "weight";
+                const { innerCells } = row.column;
                 const { index, original } = row.row;
                 return (
                     <SegmentEdit
@@ -143,6 +144,7 @@ const App = () => {
                         segmentValue={original[segmentColumn]}
                         weightId={weightColumn}
                         weightValue={original[weightColumn]}
+                        innerCells={innerCells}
                         updateCellData={updateCellData}
                     />
                 );

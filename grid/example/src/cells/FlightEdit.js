@@ -50,12 +50,18 @@ const FlightEdit = memo(({ index, columnId, innerCells, columnValue, updateCellD
         return false;
     };
 
+    const isInnerCellsNotEmpty = () => {
+        return innerCells && innerCells.length > 0;
+    };
+
     return (
         <ClickAwayListener onClickAway={clearEdit}>
             <div className="flight-details content">
-                <div className="cell-edit" onClick={openEdit}>
-                    <i className="fa fa-pencil" aria-hidden="true"></i>
-                </div>
+                {isInnerCellsNotEmpty() ? (
+                    <div className="cell-edit" onClick={openEdit}>
+                        <i className="fa fa-pencil" aria-hidden="true"></i>
+                    </div>
+                ) : null}
                 <div>
                     {isInnerCellShown("flightno") ? <strong>{value.flightno}</strong> : null}
                     {isInnerCellShown("date") ? <span>{value.date}</span> : null}
