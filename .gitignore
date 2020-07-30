@@ -1,10 +1,12 @@
 filter/node_modules
 filter/example/node_modules
+grid/example/node_modules
 filter/dist/
 filter/dist/index.js
 filter/dist/index.js.map
 filter/dist/index.modern.js
 filter/dist/index.modern.js.map
+grid/node_modules
 spreadsheet/node_modules
 spreadsheet/example/node_modules
 spreadsheet/dist/
