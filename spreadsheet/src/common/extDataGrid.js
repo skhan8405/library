@@ -8,7 +8,6 @@ class ExtDataGrid extends ReactDataGrid {
     )[0];
 
     window.addEventListener("resize", this.metricsUpdated);
-
     if (this.props.cellRangeSelection) {
       this.dataGridComponent.addEventListener("mouseup", this.onWindowMouseUp);
     }
