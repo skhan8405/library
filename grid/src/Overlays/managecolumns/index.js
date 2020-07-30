@@ -220,10 +220,20 @@ const ColumnReordering = memo((props) => {
         }
     };
 
+    const resetInnerCells = (columnList) => {
+        if (columnList && columnList.length) {
+            return columnList.map((column) => {
+                column.innerCells = column.originalInnerCells;
+                return column;
+            });
+        }
+        return columnList;
+    };
+
     const resetColumnUpdate = () => {
-        setManagedColumns(originalColumns);
+        setManagedColumns(resetInnerCells(originalColumns));
         setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
-        setRemarksColumnToManage(getRemarksColumnIfAvailable());
+        setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
         props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
     };
 
