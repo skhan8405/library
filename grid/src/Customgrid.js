@@ -179,7 +179,6 @@ const Customgrid = memo((props) => {
                             <div className="action">
                                 <RowOptions
                                     row={row}
-                                    originalData={originalData}
                                     DeletePopUpOverLay={deletePopUpOverLay}
                                     deleteRowFromGrid={deleteRowFromGrid}
                                     RowEditOverlay={rowEditOverlay}

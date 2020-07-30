@@ -5,8 +5,8 @@ import RowEdit from "../Images/RowEdit.svg";
 import RowPin from "../Images/RowPin.png";
 
 const RowOptions = memo((props) => {
-    const { row, originalData, DeletePopUpOverLay, deleteRowFromGrid, RowEditOverlay, rowEditData, updateRowInGrid } = props;
-    const { index, original } = row;
+    const { row, DeletePopUpOverLay, deleteRowFromGrid, RowEditOverlay, rowEditData, updateRowInGrid } = props;
+    const { original } = row;
 
     const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
     const [isRowEditOverlayOpen, setRowEditOverlayOpen] = useState(false);
@@ -30,10 +30,7 @@ const RowOptions = memo((props) => {
     };
 
     const updateRow = (updatedrow) => {
-        const originalDataIndex = originalData.findIndex((data) => {
-            return data === original;
-        });
-        updateRowInGrid(originalDataIndex, updatedrow);
+        updateRowInGrid(original, updatedrow);
     };
 
     const openDeleteOverlay = () => {
@@ -46,10 +43,7 @@ const RowOptions = memo((props) => {
     };
 
     const deleteRow = () => {
-        const originalDataIndex = originalData.findIndex((data) => {
-            return data === original;
-        });
-        deleteRowFromGrid(originalDataIndex, original);
+        deleteRowFromGrid(original);
     };
 
     return (
