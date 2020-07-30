@@ -2,7 +2,7 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 
-const ColumnItem = ({ id, name, moveColumn, findColumn, innerCells }) => {
+const ColumnItem = ({ id, Header, moveColumn, findColumn, originalInnerCells, isInnerCellSelected, selectInnerCells }) => {
     const originalIndex = findColumn(id).index;
 
     const [{ isDragging }, drag] = useDrag({
@@ -38,7 +38,27 @@ const ColumnItem = ({ id, name, moveColumn, findColumn, innerCells }) => {
                 <div ref={(node) => drag(drop(node))} style={{ cursor: "move" }} className="">
                     <i className="fa fa-align-justify" aria-hidden="true"></i>
                 </div>
-                <div className="">{name}</div>
+                <div className="">{Header}</div>
+                <div className="column__innerCells__wrap">
+                    {originalInnerCells && originalInnerCells.length > 0
+                        ? originalInnerCells.map((cell, index) => {
+                              return (
+                                  <div className="column__wrap" key={index}>
+                                      <div className="column__checkbox">
+                                          <input
+                                              type="checkbox"
+                                              data-columnheader={Header}
+                                              value={cell.Header}
+                                              checked={isInnerCellSelected(Header, cell.Header)}
+                                              onChange={selectInnerCells}
+                                          ></input>
+                                      </div>
+                                      <div className="column__txt">{cell.Header}</div>
+                                  </div>
+                              );
+                          })
+                        : null}
+                </div>
             </div>
         </div>
     );

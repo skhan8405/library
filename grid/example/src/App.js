@@ -102,11 +102,13 @@ const App = () => {
             ],
             Cell: (row) => {
                 const columnId = "flight";
+                const { innerCells } = row.column;
                 const { index, original } = row.row;
                 return (
                     <FlightEdit
                         index={index}
                         columnId={columnId}
+                        innerCells={innerCells}
                         columnValue={original[columnId]}
                         updateCellData={updateCellData}
                     />
@@ -385,7 +387,12 @@ const App = () => {
     //Configure data to be displayed in expanded view (separate configurations for desktop and other devices)
     const additionalColumn = {
         Header: "Remarks",
-        innerCells: isDesktop ? ["remarks"] : ["remarks", "details"],
+        innerCells: isDesktop
+            ? null
+            : [
+                  { Header: "Remarks", accessor: "remarks" },
+                  { Header: "Details", accessor: "details" }
+              ],
         Cell: (row) => {
             const { remarks, details } = row.original;
             if (isDesktop) {

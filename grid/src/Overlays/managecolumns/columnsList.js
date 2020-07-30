@@ -5,7 +5,7 @@ import { ItemTypes } from "./ItemTypes";
 import ColumnItem from "./columnItem";
 
 const ColumnsList = (props) => {
-    const { updateColumnsInState, columnsToManage } = props;
+    const { updateColumnsInState, columnsToManage, isInnerCellSelected, selectInnerCells } = props;
 
     const moveColumn = (columnId, atIndex) => {
         const { column, index } = findColumn(columnId);
@@ -37,10 +37,12 @@ const ColumnsList = (props) => {
                         <ColumnItem
                             key={index}
                             id={`${column.columnId}`}
-                            name={`${column.Header}`}
+                            Header={`${column.Header}`}
                             moveColumn={moveColumn}
                             findColumn={findColumn}
-                            innerCells={column.innerCells}
+                            originalInnerCells={column.originalInnerCells}
+                            isInnerCellSelected={isInnerCellSelected}
+                            selectInnerCells={selectInnerCells}
                         />
                     );
                 })}

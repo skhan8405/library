@@ -34,6 +34,11 @@ const Grid = forwardRef((props, ref) => {
         const { innerCells, accessor, sortValue } = column;
         const isInnerCellsPresent = innerCells && innerCells.length > 0;
 
+        //Add duplicate copy of inner cells to be used for data chooser
+        if (isInnerCellsPresent) {
+            column.originalInnerCells = [...innerCells];
+        }
+
         //Add column Id
         column.columnId = `column_${index}`;
 

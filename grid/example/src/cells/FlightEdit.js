@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import getDateValue from "../utils/DateUtility";
 
-const FlightEdit = memo(({ index, columnId, columnValue, updateCellData }) => {
+const FlightEdit = memo(({ index, columnId, innerCells, columnValue, updateCellData }) => {
     const [value, setValue] = useState(columnValue);
     const [oldValue] = useState(columnValue);
     const [isEdit, setEdit] = useState(false);
@@ -40,6 +40,16 @@ const FlightEdit = memo(({ index, columnId, columnValue, updateCellData }) => {
         setValue(columnValue);
     }, [columnValue]);
 
+    const isInnerCellShown = (value) => {
+        if (innerCells && innerCells.length > 0) {
+            const innerCellItem = innerCells.filter((cell) => {
+                return cell.accessor === value;
+            });
+            return innerCellItem && innerCellItem.length > 0;
+        }
+        return false;
+    };
+
     return (
         <ClickAwayListener onClickAway={clearEdit}>
             <div className="flight-details content">
@@ -47,12 +57,14 @@ const FlightEdit = memo(({ index, columnId, columnValue, updateCellData }) => {
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                 </div>
                 <div>
-                    <strong>{value.flightno}</strong>
-                    <span>{value.date}</span>
+                    {isInnerCellShown("flightno") ? <strong>{value.flightno}</strong> : null}
+                    {isInnerCellShown("date") ? <span>{value.date}</span> : null}
                 </div>
                 <div className={`content-edit ${isEdit ? "open" : "close"}`}>
-                    <input type="text" value={value.flightno} onChange={onFlightChange} />
-                    <input type="date" value={getDateValue(value.date, "calendar")} onChange={onDateChange} />
+                    {isInnerCellShown("flightno") ? <input type="text" value={value.flightno} onChange={onFlightChange} /> : null}
+                    {isInnerCellShown("date") ? (
+                        <input type="date" value={getDateValue(value.date, "calendar")} onChange={onDateChange} />
+                    ) : null}
                     <button className="ok" onClick={saveEdit} />
                     <button className="cancel" onClick={clearEdit} />
                 </div>
