@@ -81,6 +81,7 @@ const Grid = forwardRef((props, ref) => {
     //Local variable for keeping the expanded row rendering method
     let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
 
+    //Create memoized column, to be used by grid component
     const gridColumns = useMemo(() => processedColumns, []);
 
     //Add logic for doing global search in the grid
