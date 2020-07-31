@@ -614,6 +614,8 @@ describe('DataSheet component', () => {
         columns
       }
 
+      const status = ""
+
       const wrapper = mount(<Spreadsheet rows={data}
         columns={columns} junk={junk}
         closeWarningStatus={closeWarningStatus}
@@ -668,6 +670,7 @@ describe('DataSheet component', () => {
       const selectBulkData = jest.fn();
       const length = 2;
       const maxLeftPinnedColumn = 5;
+      const status = ""
       const wrapper = shallow(<Spreadsheet rows={data}
         columns={columns} junk={junk}
         closeWarningStatus={closeWarningStatus}
@@ -741,6 +744,7 @@ describe('DataSheet component', () => {
       const selectBulkData = jest.fn();
       const length = 2;
       const maxLeftPinnedColumn = 5;
+      const status = ""
       const wrapper = mount(<Spreadsheet rows={data}
         columns={columns} junk={junk}
         closeWarningStatus={closeWarningStatus}
@@ -776,7 +780,7 @@ describe('DataSheet component', () => {
       const selectBulkData = jest.fn();
       const length = 2;
       const maxLeftPinnedColumn = 5;
-
+      const status = ""
       // act(() => {
       const onClick = jest.fn();
       let tree = mount(
