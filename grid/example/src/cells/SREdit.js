@@ -36,7 +36,9 @@ const SREdit = memo(({ index, columnId, columnValue, updateCellData }) => {
                 <div className="cell-edit" onClick={openEdit}>
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                 </div>
-                <div className={`content-display ${isEdit ? "close" : "open"}`}>{value}</div>
+                <div className={`content-display ${isEdit ? "close" : "open"}`}>
+                    <span>{value}</span>
+                </div>
                 <div className={`content-edit ${isEdit ? "open" : "close"}`}>
                     <input type="text" value={value} onChange={onChange} />
                     <button className="ok" onClick={saveEdit} />

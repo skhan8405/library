@@ -9,16 +9,6 @@ import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = () => {
-    //Check if device is desktop
-    const isDesktop = window.innerWidth > 1024;
-
-    //Get grid height value, which is a required value
-    const gridHeight = "80vh";
-
-    //Get grid width value
-    const gridWidth = "100%";
-
-    //For call back functions from component
     const childRef = useRef();
 
     //Create an array of airports
@@ -158,6 +148,7 @@ const App = () => {
         {
             Header: "Details",
             accessor: "details",
+            onlyInDesktop: true,
             width: 300,
             innerCells: [
                 {
@@ -426,104 +417,90 @@ const App = () => {
         }
     ];
 
-    //Remove columns (that should be displayed in expanded view) if device is not desktop
-    if (!isDesktop) {
-        columns = columns.filter((item) => {
-            return item.accessor !== "details";
-        });
-    }
-
     //Configure data to be displayed in expanded view (separate configurations for desktop and other devices)
-    const additionalColumn = {
+    const columnsToExpand = {
         Header: "Remarks",
-        innerCells: isDesktop
-            ? null
-            : [
-                  { Header: "Remarks", accessor: "remarks" },
-                  { Header: "Details", accessor: "details" }
-              ],
+        innerCells: [
+            { Header: "Remarks", accessor: "remarks" },
+            { Header: "Details", onlyInIpad: true, accessor: "details" }
+        ],
         Cell: (row, column) => {
             const { innerCells } = column;
             const { remarks, details } = row.original;
-            if (isDesktop) {
-                return remarks;
-            } else {
-                const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
-                let timeStatusArray = timeStatus.split(" ");
-                const timeValue = timeStatusArray.shift();
-                const timeText = timeStatusArray.join(" ");
-                return (
-                    <div className="details-wrap content">
-                        {isInnerCellShown(innerCells, "remarks") ? (
-                            <ul>
-                                <li>{remarks}</li>
-                                <li className="divider">|</li>
-                            </ul>
-                        ) : null}
-                        {isInnerCellShown(innerCells, "details") ? (
-                            <ul>
-                                <li>
-                                    {startTime} – {endTime}
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <span>{status}</span>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>{additionalStatus}</li>
-                                <li className="divider">|</li>
-                                <li>{flightModel}</li>
-                                <li className="divider">|</li>
-                                <li>{bodyType}</li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <span>{type}</span>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <strong>{timeValue} </strong>
-                                    <span>{timeText}</span>
-                                </li>
-                            </ul>
-                        ) : null}
-                    </div>
-                );
-            }
+            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
+            let timeStatusArray = timeStatus.split(" ");
+            const timeValue = timeStatusArray.shift();
+            const timeText = timeStatusArray.join(" ");
+            return (
+                <div className="details-wrap content">
+                    {isInnerCellShown(innerCells, "remarks") ? (
+                        <ul>
+                            <li>{remarks}</li>
+                            <li className="divider">|</li>
+                        </ul>
+                    ) : null}
+                    {isInnerCellShown(innerCells, "details") ? (
+                        <ul>
+                            <li>
+                                {startTime} – {endTime}
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{status}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>{additionalStatus}</li>
+                            <li className="divider">|</li>
+                            <li>{flightModel}</li>
+                            <li className="divider">|</li>
+                            <li>{bodyType}</li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{type}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <strong>{timeValue} </strong>
+                                <span>{timeText}</span>
+                            </li>
+                        </ul>
+                    ) : null}
+                </div>
+            );
         }
     };
 
     //Add logic to calculate height of each row, based on the content of  or more columns
-    const calculateRowHeight = (rows, index, headerCells) => {
+    const calculateRowHeight = (row, gridColumns) => {
+        //Minimum height for each row
         let rowHeight = 50;
-        if (headerCells && headerCells.length > 0 && rows && rows.length > 0 && index >= 0) {
-            const { headers } = headerCells[0];
-            const { original, isExpanded } = rows[index];
-            headers.forEach((header) => {
-                const { id, totalFlexWidth } = header;
-                if (id === "details") {
-                    const details = original.details;
-                    if (details) {
-                        const text =
-                            details.additionalStatus +
-                            details.bodyType +
-                            details.endTime +
-                            details.flightModel +
-                            details.startTime +
-                            details.status +
-                            details.timeStatus +
-                            details.type;
-                        rowHeight = rowHeight + Math.ceil((65 * text.length) / totalFlexWidth);
-                        if (totalFlexWidth > 300) {
-                            rowHeight = rowHeight + 0.001 * (totalFlexWidth - 300);
-                        }
-                        if (totalFlexWidth < 300) {
-                            rowHeight = rowHeight + (300 - totalFlexWidth) / 4;
-                        }
-                    }
-                }
-            });
+        if (gridColumns && gridColumns.length > 0 && row) {
+            //Get properties of a row
+            const { original, isExpanded } = row;
+            //Find the column with maximum width configured, from grid columns list
+            const columnWithMaxWidth = [...gridColumns].sort((a, b) => {
+                return b.width - a.width;
+            })[0];
+            //Get column properties including the user resized column width (totalFlexWidth)
+            const { id, width, totalFlexWidth } = columnWithMaxWidth;
+            //Get row value of that column
+            const rowValue = original[id];
+            if (rowValue) {
+                //Find the length of text of data in that column
+                const textLength = Object.values(rowValue).join(",").length;
+                //This is a formula that was created for the test data used.
+                rowHeight = rowHeight + Math.ceil((75 * textLength) / totalFlexWidth);
+                const widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+                rowHeight = rowHeight + widthVariable / 1000;
+            }
+            //Add logic to increase row height if row is expanded
             if (isExpanded) {
-                rowHeight = rowHeight + (isDesktop ? 30 : 80);
+                //Increase height based on the number of inner cells in additional columns
+                rowHeight =
+                    rowHeight +
+                    (columnsToExpand.innerCells && columnsToExpand.innerCells.length > 0
+                        ? columnsToExpand.innerCells.length * 35
+                        : 35);
             }
         }
         return rowHeight;
@@ -556,10 +533,10 @@ const App = () => {
         <Grid
             ref={childRef}
             title="AWBs"
-            gridHeight={gridHeight}
-            gridWidth={gridWidth}
+            gridHeight="80vh"
+            gridWidth="100%"
             columns={columns}
-            additionalColumn={additionalColumn}
+            columnsToExpand={columnsToExpand}
             fetchData={fetchData}
             rowEditOverlay={RowEditOverlay}
             rowEditData={{

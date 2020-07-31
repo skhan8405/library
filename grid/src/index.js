@@ -1,4 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useMemo, useState, useEffect } from "react";
+import { extractColumns, extractAdditionalColumns } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
 
 const Grid = forwardRef((props, ref) => {
@@ -7,7 +8,7 @@ const Grid = forwardRef((props, ref) => {
         gridHeight,
         gridWidth,
         columns,
-        additionalColumn,
+        columnsToExpand,
         fetchData,
         rowEditOverlay,
         rowEditData,
@@ -17,6 +18,9 @@ const Grid = forwardRef((props, ref) => {
         selectBulkData,
         calculateRowHeight
     } = props;
+
+    //Check if device is desktop
+    const isDesktop = window.innerWidth > 1024;
 
     //Set state value for variable to check if there is anext page available
     const [hasNextPage, setHasNextPage] = useState(true);
@@ -28,56 +32,6 @@ const Grid = forwardRef((props, ref) => {
     const [items, setItems] = useState([]);
     //Local state for group sort options
     const [groupSortOptions, setGroupSortOptions] = useState([]);
-
-    //Local variable for keeping updated column structure
-    let processedColumns = [];
-    //Loop through the columns configuration and create required column structure
-    columns.forEach((column, index) => {
-        const { innerCells, accessor, sortValue } = column;
-        const isInnerCellsPresent = innerCells && innerCells.length > 0;
-
-        //Add column Id
-        column.columnId = `column_${index}`;
-
-        //Add logic to sort column if sort is not disabled
-        if (!column.disableSortBy) {
-            if (isInnerCellsPresent) {
-                //If there are inner cells and a sort value specified, do sort on that value
-                if (sortValue) {
-                    column.sortType = (rowA, rowB) => {
-                        return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
-                    };
-                } else {
-                    column.disableSortBy = true;
-                }
-            } else if (!innerCells) {
-                //If no inner cells are there, just do sort on column value
-                column.sortType = (rowA, rowB) => {
-                    return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
-                };
-            }
-        }
-
-        //Add logic to filter column if column filter is not disabled
-        if (!column.disableFilters) {
-            column.filter = (rows, id, filterValue) => {
-                const searchText = filterValue ? filterValue.toLowerCase() : "";
-                return rows.filter((row) => {
-                    //Find original data value of each row
-                    const { original } = row;
-                    //Do search for the column
-                    return searchColumn(column, original, searchText);
-                });
-            };
-        }
-
-        processedColumns.push(column);
-    });
-
-    //Local variable for keeping the expanded row rendering method
-    let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
-
-    const gridColumns = useMemo(() => processedColumns, []);
 
     //Logic for searching in each column
     const searchColumn = (column, original, searchText) => {
@@ -121,6 +75,16 @@ const Grid = forwardRef((props, ref) => {
         return isValuePresent;
     };
 
+    //Extract/add and modify required data from user configured columns and expand columns
+    let processedColumns = extractColumns(columns, searchColumn, isDesktop);
+    let additionalColumn = extractAdditionalColumns(columnsToExpand, isDesktop);
+
+    //Local variable for keeping the expanded row rendering method
+    let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
+
+    //Create memoized column, to be used by grid component
+    const gridColumns = useMemo(() => processedColumns, []);
+
     //Add logic for doing global search in the grid
     const globalSearchLogic = (rows, columns, filterValue) => {
         //Enter search logic only if rows and columns are available
@@ -142,6 +106,43 @@ const Grid = forwardRef((props, ref) => {
             });
         }
         return rows;
+    };
+
+    //Add logic to calculate height of each row, based on the content of  or more columns
+    //This can be used only if developer using the component has not passed a function to calculate row height
+    const calculateDefaultRowHeight = (row, gridColumns) => {
+        //Minimum height for each row
+        let rowHeight = 50;
+        if (gridColumns && gridColumns.length > 0 && row) {
+            //Get properties of a row
+            const { original, isExpanded } = row;
+            //Find the column with maximum width configured, from grid columns list
+            const columnWithMaxWidth = [...gridColumns].sort((a, b) => {
+                return b.width - a.width;
+            })[0];
+            //Get column properties including the user resized column width (totalFlexWidth)
+            const { id, width, totalFlexWidth } = columnWithMaxWidth;
+            //Get row value of that column
+            const rowValue = original[id];
+            if (rowValue) {
+                //Find the length of text of data in that column
+                const textLength = Object.values(rowValue).join(",").length;
+                //This is a formula that was created for the test data used.
+                rowHeight = rowHeight + Math.ceil((80 * textLength) / totalFlexWidth);
+                const widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+                rowHeight = rowHeight + widthVariable / 1000;
+            }
+            //Add logic to increase row height if row is expanded
+            if (isExpanded) {
+                //Increase height based on the number of inner cells in additional columns
+                rowHeight =
+                    rowHeight +
+                    (additionalColumn.innerCells && additionalColumn.innerCells.length > 0
+                        ? additionalColumn.innerCells.length * 35
+                        : 35);
+            }
+        }
+        return rowHeight;
     };
 
     //#region - Group sorting logic
@@ -274,7 +275,7 @@ const Grid = forwardRef((props, ref) => {
     //Sort the data based on the user selected group sort optipons
     const data = getSortedData([...items]);
 
-    if (data && data.length > 0) {
+    if (data && data.length > 0 && processedColumns && processedColumns.length > 0) {
         return (
             <div>
                 <Customgrid
@@ -292,7 +293,11 @@ const Grid = forwardRef((props, ref) => {
                     deleteRowFromGrid={deleteRowFromGrid}
                     globalSearchLogic={globalSearchLogic}
                     selectBulkData={selectBulkData}
-                    calculateRowHeight={calculateRowHeight}
+                    calculateRowHeight={
+                        calculateRowHeight && typeof calculateRowHeight === "function"
+                            ? calculateRowHeight
+                            : calculateDefaultRowHeight
+                    }
                     isExpandContentAvailable={typeof renderExpandedContent === "function"}
                     renderExpandedContent={renderExpandedContent}
                     hasNextPage={hasNextPage}
