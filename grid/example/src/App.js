@@ -437,7 +437,7 @@ const App = () => {
     const additionalColumn = {
         Header: "Remarks",
         innerCells: isDesktop
-            ? null
+            ? [{ Header: "Remarks", accessor: "remarks" }]
             : [
                   { Header: "Remarks", accessor: "remarks" },
                   { Header: "Details", accessor: "details" }
@@ -446,7 +446,7 @@ const App = () => {
             const { innerCells } = column;
             const { remarks, details } = row.original;
             if (isDesktop) {
-                return remarks;
+                return isInnerCellShown(innerCells, "remarks") ? remarks : null;
             } else {
                 const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
                 let timeStatusArray = timeStatus.split(" ");
