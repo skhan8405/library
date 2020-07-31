@@ -158,6 +158,7 @@ const App = () => {
         {
             Header: "Details",
             accessor: "details",
+            onlyInDesktop: true,
             width: 300,
             innerCells: [
                 {
@@ -425,13 +426,6 @@ const App = () => {
             }
         }
     ];
-
-    //Remove columns (that should be displayed in expanded view) if device is not desktop
-    if (!isDesktop) {
-        columns = columns.filter((item) => {
-            return item.accessor !== "details";
-        });
-    }
 
     //Configure data to be displayed in expanded view (separate configurations for desktop and other devices)
     const additionalColumn = {
