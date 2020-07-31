@@ -14,12 +14,27 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
 
         if (!column.Cell && column.displayCell) {
             column.Cell = (row) => {
-                debugger;
-                let params = {};
-                row.column.innerCells.forEach((e) => {
-                    params[e.accessor] = row.value[e.accessor];
-                });
-                return column.displayCell(params);
+                const { column } = row;
+                if (column && row.row) {
+                    const originalRowValue = { ...row.row.original };
+                    const { id, innerCells, originalInnerCells } = column;
+                    if (
+                        originalRowValue &&
+                        originalInnerCells &&
+                        originalInnerCells.length &&
+                        innerCells &&
+                        innerCells.length &&
+                        innerCells.length < originalInnerCells.length
+                    ) {
+                        let params = {};
+                        innerCells.forEach((cell) => {
+                            const cellAccessor = cell.accessor;
+                            params[cellAccessor] = row.value[cellAccessor];
+                        });
+                        originalRowValue[id] = params;
+                    }
+                    return column.displayCell(originalRowValue);
+                }
             };
         }
 

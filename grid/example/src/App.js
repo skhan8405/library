@@ -185,7 +185,8 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: ({ startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus }) => {
+            displayCell: (rowData) => {
+                const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = rowData.details;
                 let timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
@@ -234,7 +235,8 @@ const App = () => {
                 }
             ],
             sortValue: "percentage",
-            displayCell: ({ percentage, value }) => {
+            displayCell: (rowData) => {
+                const { percentage, value } = rowData.weight;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix,
                     valueSuffix = "";
@@ -270,7 +272,8 @@ const App = () => {
                 }
             ],
             sortValue: "percentage",
-            displayCell: ({ percentage, value }) => {
+            displayCell: (rowData) => {
+                const { percentage, value } = rowData.volume;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix,
                     valueSuffix = "";
@@ -340,13 +343,12 @@ const App = () => {
                     accessor: "yeild"
                 }
             ],
-            Cell: (row) => {
-                const { innerCells } = row.column;
-                const { revenue, yeild } = row.value;
+            displayCell: (rowData) => {
+                const { revenue, yeild } = rowData.revenue;
                 return (
                     <div className="revenue-details content">
-                        {isInnerCellShown(innerCells, "revenue") ? <span className="large">{revenue}</span> : null}
-                        {isInnerCellShown(innerCells, "yeild") ? <span>{yeild}</span> : null}
+                        <span className="large">{revenue}</span>
+                        <span>{yeild}</span>
                     </div>
                 );
             },
@@ -379,7 +381,8 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: ({ sr, volume }) => {
+            displayCell: (rowData) => {
+                const { sr, volume } = rowData.queuedBooking;
                 return (
                     <div className="queued-details content">
                         <span>
