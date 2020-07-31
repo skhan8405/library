@@ -372,9 +372,6 @@ select:-webkit-autofill:focus {
 .table-outer .table .weight-details span strong {
     color: #566a81;
 }
-.table-outer .table .uld-details {
-    display: flex;
-}
 .table-outer .table .uld-details ul {
     display: flex;
     flex-wrap: wrap;
@@ -395,7 +392,7 @@ select:-webkit-autofill:focus {
 .table-outer .table .revenue-details span.large {
     font-size: 15px;
 }
-.table-outer .table .sr-details {
+.table-outer .table .sr-details span {
     color: #3171b2;
 }
 .table-outer .table .queued-wrap {
