@@ -12,6 +12,17 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
         //Add column Id
         column.columnId = `column_${index}`;
 
+        if (!column.Cell && column.displayCell) {
+            column.Cell = (row) => {
+                debugger;
+                let params = {};
+                row.column.innerCells.forEach((e) => {
+                    params[e.accessor] = row.value[e.accessor];
+                });
+                return column.displayCell(params);
+            };
+        }
+
         //Add logic to sort column if sort is not disabled
         if (!column.disableSortBy) {
             if (isInnerCellsPresent) {
