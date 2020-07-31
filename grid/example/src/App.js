@@ -309,22 +309,20 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            Cell: (row) => {
-                const { innerCells } = row.column;
+            displayCell: (rowData) => {
+                const { uldPositions } = rowData;
                 return (
                     <div className="uld-details content">
-                        {isInnerCellsNotEmpty(innerCells) ? (
-                            <ul>
-                                {row.value.map((positions, index) => {
-                                    return (
-                                        <li key={index}>
-                                            {isInnerCellShown(innerCells, "position") ? <span>{positions.position}</span> : null}
-                                            {isInnerCellShown(innerCells, "value") ? <strong>{positions.value}</strong> : null}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        ) : null}
+                        <ul>
+                            {uldPositions.map((positions, index) => {
+                                return (
+                                    <li key={index}>
+                                        <span>{positions.position}</span>
+                                        <strong>{positions.value}</strong>
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </div>
                 );
             }

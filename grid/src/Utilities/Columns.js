@@ -12,6 +12,7 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
         //Add column Id
         column.columnId = `column_${index}`;
 
+        //Configure Cell function (which is used by react-table component), based on the user defined function displayCell
         if (!column.Cell && column.displayCell) {
             column.Cell = (row) => {
                 const { column } = row;
@@ -26,12 +27,28 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
                         innerCells.length &&
                         innerCells.length < originalInnerCells.length
                     ) {
-                        let params = {};
-                        innerCells.forEach((cell) => {
-                            const cellAccessor = cell.accessor;
-                            params[cellAccessor] = row.value[cellAccessor];
-                        });
-                        originalRowValue[id] = params;
+                        const columnValue = originalRowValue[id];
+                        if (typeof columnValue === "object") {
+                            if (columnValue.length > 0) {
+                                const newcolumnValue = columnValue.map((value) => {
+                                    let params = {};
+                                    innerCells.forEach((cell) => {
+                                        const cellAccessor = cell.accessor;
+                                        params[cellAccessor] = value[cellAccessor];
+                                    });
+                                    value = params;
+                                    return value;
+                                });
+                                originalRowValue[id] = newcolumnValue;
+                            } else {
+                                let params = {};
+                                innerCells.forEach((cell) => {
+                                    const cellAccessor = cell.accessor;
+                                    params[cellAccessor] = row.value[cellAccessor];
+                                });
+                                originalRowValue[id] = params;
+                            }
+                        }
                     }
                     return column.displayCell(originalRowValue);
                 }
