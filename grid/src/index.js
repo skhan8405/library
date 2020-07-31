@@ -144,6 +144,43 @@ const Grid = forwardRef((props, ref) => {
         return rows;
     };
 
+    //Add logic to calculate height of each row, based on the content of  or more columns
+    //This can be used only if developer using the component has not passed a function to calculate row height
+    const calculateDefaultRowHeight = (row, gridColumns) => {
+        //Minimum height for each row
+        let rowHeight = 50;
+        if (gridColumns && gridColumns.length > 0 && row) {
+            //Get properties of a row
+            const { original, isExpanded } = row;
+            //Find the column with maximum width configured, from grid columns list
+            const columnWithMaxWidth = [...gridColumns].sort((a, b) => {
+                return b.width - a.width;
+            })[0];
+            //Get column properties including the user resized column width (totalFlexWidth)
+            const { id, width, totalFlexWidth } = columnWithMaxWidth;
+            //Get row value of that column
+            const rowValue = original[id];
+            if (rowValue) {
+                //Find the length of text of data in that column
+                const textLength = Object.values(rowValue).join(",").length;
+                //This is a formula that was created for the test data used.
+                rowHeight = rowHeight + Math.ceil((80 * textLength) / totalFlexWidth);
+                const widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+                rowHeight = rowHeight + widthVariable / 1000;
+            }
+            //Add logic to increase row height if row is expanded
+            if (isExpanded) {
+                //Increase height based on the number of inner cells in additional columns
+                rowHeight =
+                    rowHeight +
+                    (additionalColumn.innerCells && additionalColumn.innerCells.length > 0
+                        ? additionalColumn.innerCells.length * 35
+                        : 35);
+            }
+        }
+        return rowHeight;
+    };
+
     //#region - Group sorting logic
     //Function to return sorting logic based on the user selected order of sort
     const compareValues = (compareOrder, v1, v2) => {
@@ -274,7 +311,7 @@ const Grid = forwardRef((props, ref) => {
     //Sort the data based on the user selected group sort optipons
     const data = getSortedData([...items]);
 
-    if (data && data.length > 0) {
+    if (data && data.length > 0 && processedColumns && processedColumns.length > 0) {
         return (
             <div>
                 <Customgrid
@@ -292,7 +329,11 @@ const Grid = forwardRef((props, ref) => {
                     deleteRowFromGrid={deleteRowFromGrid}
                     globalSearchLogic={globalSearchLogic}
                     selectBulkData={selectBulkData}
-                    calculateRowHeight={calculateRowHeight}
+                    calculateRowHeight={
+                        calculateRowHeight && typeof calculateRowHeight === "function"
+                            ? calculateRowHeight
+                            : calculateDefaultRowHeight
+                    }
                     isExpandContentAvailable={typeof renderExpandedContent === "function"}
                     renderExpandedContent={renderExpandedContent}
                     hasNextPage={hasNextPage}
