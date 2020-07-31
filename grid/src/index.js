@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useMemo, useState, useEffect } from "react";
-import { extractColumns } from "./Utilities/Columns";
+import { extractColumns, extractAdditionalColumns } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
 
 const Grid = forwardRef((props, ref) => {
@@ -8,7 +8,7 @@ const Grid = forwardRef((props, ref) => {
         gridHeight,
         gridWidth,
         columns,
-        additionalColumn,
+        columnsToExpand,
         fetchData,
         rowEditOverlay,
         rowEditData,
@@ -75,8 +75,9 @@ const Grid = forwardRef((props, ref) => {
         return isValuePresent;
     };
 
-    //Extract/add and modify required data from user configured columns
+    //Extract/add and modify required data from user configured columns and expand columns
     let processedColumns = extractColumns(columns, searchColumn, isDesktop);
+    let additionalColumn = extractAdditionalColumns(columnsToExpand, isDesktop);
 
     //Local variable for keeping the expanded row rendering method
     let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;

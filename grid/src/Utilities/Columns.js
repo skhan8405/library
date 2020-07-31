@@ -48,3 +48,13 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
     });
     return modifiedColumns;
 };
+
+export const extractAdditionalColumns = (additionalColumns, isDesktop) => {
+    const { innerCells } = additionalColumns;
+    if (innerCells && innerCells.length > 0) {
+        additionalColumns.innerCells = innerCells.filter((cell) => {
+            return isDesktop ? !cell.onlyInIpad : !cell.onlyInDesktop;
+        });
+    }
+    return additionalColumns;
+};

@@ -428,61 +428,55 @@ const App = () => {
     ];
 
     //Configure data to be displayed in expanded view (separate configurations for desktop and other devices)
-    const additionalColumn = {
+    const columnsToExpand = {
         Header: "Remarks",
-        innerCells: isDesktop
-            ? [{ Header: "Remarks", accessor: "remarks" }]
-            : [
-                  { Header: "Remarks", accessor: "remarks" },
-                  { Header: "Details", accessor: "details" }
-              ],
+        innerCells: [
+            { Header: "Remarks", accessor: "remarks" },
+            { Header: "Details", onlyInIpad: true, accessor: "details" }
+        ],
         Cell: (row, column) => {
             const { innerCells } = column;
             const { remarks, details } = row.original;
-            if (isDesktop) {
-                return isInnerCellShown(innerCells, "remarks") ? remarks : null;
-            } else {
-                const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
-                let timeStatusArray = timeStatus.split(" ");
-                const timeValue = timeStatusArray.shift();
-                const timeText = timeStatusArray.join(" ");
-                return (
-                    <div className="details-wrap content">
-                        {isInnerCellShown(innerCells, "remarks") ? (
-                            <ul>
-                                <li>{remarks}</li>
-                                <li className="divider">|</li>
-                            </ul>
-                        ) : null}
-                        {isInnerCellShown(innerCells, "details") ? (
-                            <ul>
-                                <li>
-                                    {startTime} – {endTime}
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <span>{status}</span>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>{additionalStatus}</li>
-                                <li className="divider">|</li>
-                                <li>{flightModel}</li>
-                                <li className="divider">|</li>
-                                <li>{bodyType}</li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <span>{type}</span>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <strong>{timeValue} </strong>
-                                    <span>{timeText}</span>
-                                </li>
-                            </ul>
-                        ) : null}
-                    </div>
-                );
-            }
+            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
+            let timeStatusArray = timeStatus.split(" ");
+            const timeValue = timeStatusArray.shift();
+            const timeText = timeStatusArray.join(" ");
+            return (
+                <div className="details-wrap content">
+                    {isInnerCellShown(innerCells, "remarks") ? (
+                        <ul>
+                            <li>{remarks}</li>
+                            <li className="divider">|</li>
+                        </ul>
+                    ) : null}
+                    {isInnerCellShown(innerCells, "details") ? (
+                        <ul>
+                            <li>
+                                {startTime} – {endTime}
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{status}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>{additionalStatus}</li>
+                            <li className="divider">|</li>
+                            <li>{flightModel}</li>
+                            <li className="divider">|</li>
+                            <li>{bodyType}</li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{type}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <strong>{timeValue} </strong>
+                                <span>{timeText}</span>
+                            </li>
+                        </ul>
+                    ) : null}
+                </div>
+            );
         }
     };
 
@@ -514,8 +508,8 @@ const App = () => {
                 //Increase height based on the number of inner cells in additional columns
                 rowHeight =
                     rowHeight +
-                    (additionalColumn.innerCells && additionalColumn.innerCells.length > 0
-                        ? additionalColumn.innerCells.length * 35
+                    (columnsToExpand.innerCells && columnsToExpand.innerCells.length > 0
+                        ? columnsToExpand.innerCells.length * 35
                         : 35);
             }
         }
@@ -552,7 +546,7 @@ const App = () => {
             gridHeight={gridHeight}
             gridWidth={gridWidth}
             columns={columns}
-            additionalColumn={additionalColumn}
+            columnsToExpand={columnsToExpand}
             fetchData={fetchData}
             rowEditOverlay={RowEditOverlay}
             rowEditData={{
