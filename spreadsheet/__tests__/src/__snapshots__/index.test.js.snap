@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataSheet component check sorting panel click  sortingDiv 1`] = `ShallowWrapper {}`;
