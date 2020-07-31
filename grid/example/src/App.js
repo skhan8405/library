@@ -9,16 +9,6 @@ import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = () => {
-    //Check if device is desktop
-    const isDesktop = window.innerWidth > 1024;
-
-    //Get grid height value, which is a required value
-    const gridHeight = "80vh";
-
-    //Get grid width value
-    const gridWidth = "100%";
-
-    //For call back functions from component
     const childRef = useRef();
 
     //Create an array of airports
@@ -543,8 +533,8 @@ const App = () => {
         <Grid
             ref={childRef}
             title="AWBs"
-            gridHeight={gridHeight}
-            gridWidth={gridWidth}
+            gridHeight="80vh"
+            gridWidth="100%"
             columns={columns}
             columnsToExpand={columnsToExpand}
             fetchData={fetchData}
