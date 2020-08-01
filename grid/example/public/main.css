@@ -237,13 +237,6 @@ select:-webkit-autofill:focus {
 .table-outer .table .table-row .table-cell .table-cell--heading {
     display: none;
 }
-.table-outer .table .table-row .table-cell .table-cell--content a {
-    font-size: 2em;
-    color: #333;
-}
-.table-outer .table .table-row .table-cell .table-cell--content .webinar-date {
-    font-weight: 700;
-}
 .table-outer .table .flight-details strong {
     display: block;
     color: #3171b2;
@@ -616,7 +609,7 @@ select:-webkit-autofill:focus {
 
 /***************************Cell Edit ***************************/
 .table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit {
-    display: none;
+    display: flex;
     position: absolute;
     z-index: 9;
     background: #fff;
@@ -627,9 +620,6 @@ select:-webkit-autofill:focus {
     width: auto;
     white-space: nowrap;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.35);
-}
-.table-outer .table .table-row .table-cell .flight-details.table-cell--content .table-cell--content-edit {
-    display: flex;
 }
 .table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit input,
 .table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit select {
@@ -644,6 +634,10 @@ select:-webkit-autofill:focus {
 }
 .table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit select {
     height: 29px;
+}
+.table-outer .table .table-row .table-cell .table-cell--content a {
+    font-size: 2em;
+    color: #333;
 }
 .table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit .ok {
     width: 27px;
