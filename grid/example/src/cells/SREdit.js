@@ -11,7 +11,7 @@ const SREdit = ({ rowData }) => {
 
     return (
         <div>
-            <input type="text" value={srValue} onChange={updateSrValue} />
+            <input id="sr" type="text" value={srValue} onChange={updateSrValue} />
         </div>
     );
 };

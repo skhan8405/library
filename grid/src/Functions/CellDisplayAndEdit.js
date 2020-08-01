@@ -23,6 +23,9 @@ const CellDisplayAndEdit = ({ cellDisplayContent, cellEditContent, rowValue, col
                 params[cellAccessor] = updatedValue;
             });
             updatedRowValue[columnId] = params;
+        } else {
+            const updatedValue = document.getElementById(columnId).value;
+            updatedRowValue[columnId] = updatedValue;
         }
         updateRow(rowValue, updatedRowValue);
     };
