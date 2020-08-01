@@ -188,7 +188,7 @@ const App = () => {
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
                 return (
-                    <div className="details-wrap content">
+                    <div className="details-wrap">
                         <ul>
                             <li>
                                 {startTime} -{endTime}
@@ -242,7 +242,7 @@ const App = () => {
                     valueSuffix = splitValue[1];
                 }
                 return (
-                    <div className="weight-details content">
+                    <div className="weight-details">
                         <strong className="per">{percentage}</strong>
                         {value ? (
                             <span>
@@ -279,7 +279,7 @@ const App = () => {
                     valueSuffix = splitValue[1];
                 }
                 return (
-                    <div className="weight-details content">
+                    <div className="weight-details">
                         <strong className="per">{percentage}</strong>
                         {value ? (
                             <span>
@@ -309,7 +309,7 @@ const App = () => {
             displayCell: (rowData) => {
                 const { uldPositions } = rowData;
                 return (
-                    <div className="uld-details content">
+                    <div className="uld-details">
                         <ul>
                             {uldPositions.map((positions, index) => {
                                 return (
@@ -341,7 +341,7 @@ const App = () => {
             displayCell: (rowData) => {
                 const { revenue, yeild } = rowData.revenue;
                 return (
-                    <div className="revenue-details content">
+                    <div className="revenue-details">
                         <span className="large">{revenue}</span>
                         <span>{yeild}</span>
                     </div>
@@ -353,11 +353,12 @@ const App = () => {
             Header: "SR",
             accessor: "sr",
             width: 90,
-            Cell: (row) => {
-                const columnId = "sr";
-                const { index, original } = row.row;
+            displayCell: (rowData) => {
+                const { sr } = rowData;
                 return (
-                    <SREdit index={index} columnId={columnId} columnValue={original[columnId]} updateCellData={updateCellData} />
+                    <div className="sr-details">
+                        <span>{sr}</span>
+                    </div>
                 );
             }
         },
@@ -379,7 +380,7 @@ const App = () => {
             displayCell: (rowData) => {
                 const { sr, volume } = rowData.queuedBooking;
                 return (
-                    <div className="queued-details content">
+                    <div className="queued-details">
                         <span>
                             <strong>{sr}</strong>
                         </span>
@@ -407,7 +408,7 @@ const App = () => {
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
             return (
-                <div className="details-wrap content">
+                <div className="details-wrap">
                     {isInnerCellShown(innerCells, "remarks") ? (
                         <ul>
                             <li>{remarks}</li>
