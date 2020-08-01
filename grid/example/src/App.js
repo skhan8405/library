@@ -396,7 +396,7 @@ const App = () => {
     ];
 
     //Configure data to be displayed in expanded view (separate configurations for desktop and other devices)
-    const columnsToExpand = {
+    const columnToExpand = {
         Header: "Remarks",
         innerCells: [
             { Header: "Remarks", accessor: "remarks" },
@@ -472,12 +472,12 @@ const App = () => {
                 rowHeight = rowHeight + widthVariable / 1000;
             }
             //Add logic to increase row height if row is expanded
-            if (isExpanded) {
+            if (isExpanded && columnToExpand) {
                 //Increase height based on the number of inner cells in additional columns
                 rowHeight =
                     rowHeight +
-                    (columnsToExpand.innerCells && columnsToExpand.innerCells.length > 0
-                        ? columnsToExpand.innerCells.length * 35
+                    (columnToExpand.innerCells && columnToExpand.innerCells.length > 0
+                        ? columnToExpand.innerCells.length * 35
                         : 35);
             }
         }
@@ -514,7 +514,7 @@ const App = () => {
             gridHeight="80vh"
             gridWidth="100%"
             columns={columns}
-            columnsToExpand={columnsToExpand}
+            columnToExpand={columnToExpand}
             fetchData={fetchData}
             rowEditOverlay={RowEditOverlay}
             rowEditData={{

@@ -8,7 +8,7 @@ const Grid = forwardRef((props, ref) => {
         gridHeight,
         gridWidth,
         columns,
-        columnsToExpand,
+        columnToExpand,
         fetchData,
         rowEditOverlay,
         rowEditData,
@@ -77,7 +77,7 @@ const Grid = forwardRef((props, ref) => {
 
     //Extract/add and modify required data from user configured columns and expand columns
     let processedColumns = extractColumns(columns, searchColumn, isDesktop);
-    let additionalColumn = extractAdditionalColumns(columnsToExpand, isDesktop);
+    let additionalColumn = extractAdditionalColumns(columnToExpand, isDesktop);
 
     //Local variable for keeping the expanded row rendering method
     let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
@@ -133,7 +133,7 @@ const Grid = forwardRef((props, ref) => {
                 rowHeight = rowHeight + widthVariable / 1000;
             }
             //Add logic to increase row height if row is expanded
-            if (isExpanded) {
+            if (isExpanded && additionalColumn) {
                 //Increase height based on the number of inner cells in additional columns
                 rowHeight =
                     rowHeight +
