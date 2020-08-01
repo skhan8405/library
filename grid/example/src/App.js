@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Grid from "grid";
 import { isInnerCellShown, isInnerCellsNotEmpty } from "./utils/CellDisplayUtility";
 import { fetchData } from "./getData";
+import FlightIcon from "./images/FlightIcon.png";
 import FlightEdit from "./cells/FlightEdit";
 import getDateValue from "./utils/DateUtility";
 import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
@@ -121,25 +122,20 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            Cell: (row) => {
-                const segmentColumn = "segment";
-                const weightColumn = "weight";
-                const { innerCells } = row.column;
-                const { index, original } = row.row;
+            displayCell: (rowData) => {
+                const { from, to } = rowData.segment;
                 return (
-                    <SegmentEdit
-                        airportCodeList={airportCodeList}
-                        index={index}
-                        segmentId={segmentColumn}
-                        segmentValue={original[segmentColumn]}
-                        weightId={weightColumn}
-                        weightValue={original[weightColumn]}
-                        innerCells={innerCells}
-                        updateCellData={updateCellData}
-                        isInnerCellShown={isInnerCellShown}
-                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
-                    />
+                    <div className="segment-details">
+                        <span>{from}</span>
+                        <i>
+                            <img src={FlightIcon} alt="segment" />
+                        </i>
+                        <span>{to}</span>
+                    </div>
                 );
+            },
+            editCell: (rowData) => {
+                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} />;
             }
         },
         {
