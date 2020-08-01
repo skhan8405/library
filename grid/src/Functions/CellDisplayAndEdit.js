@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 
-const CellDisplayAndEdit = ({ cellDisplayContent, cellEditContent, rowValue, columnId, innerCells, updateRow }) => {
+const CellDisplayAndEdit = memo(({ cellDisplayContent, cellEditContent, rowValue, columnId, innerCells, updateRow }) => {
     const [isEditOpen, setIsEditOpen] = useState(false);
 
     const closeEdit = () => {
@@ -53,6 +53,6 @@ const CellDisplayAndEdit = ({ cellDisplayContent, cellEditContent, rowValue, col
             </div>
         </ClickAwayListener>
     );
-};
+});
 
 export default CellDisplayAndEdit;
