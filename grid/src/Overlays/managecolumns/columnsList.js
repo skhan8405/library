@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import { ItemTypes } from "./ItemTypes";

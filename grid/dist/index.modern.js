@@ -89,7 +89,6 @@ var RowPin = require("./RowPin~qQRdvcXq.png");
 const RowOptions = memo(props => {
   const {
     row,
-    originalData,
     DeletePopUpOverLay,
     deleteRowFromGrid,
     RowEditOverlay,
@@ -97,7 +96,6 @@ const RowOptions = memo(props => {
     updateRowInGrid
   } = props;
   const {
-    index,
     original
   } = row;
   const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
@@ -122,10 +120,7 @@ const RowOptions = memo(props => {
   };
 
   const updateRow = updatedrow => {
-    const originalDataIndex = originalData.findIndex(data => {
-      return data === original;
-    });
-    updateRowInGrid(originalDataIndex, updatedrow);
+    updateRowInGrid(original, updatedrow);
   };
 
   const openDeleteOverlay = () => {
@@ -138,10 +133,7 @@ const RowOptions = memo(props => {
   };
 
   const deleteRow = () => {
-    const originalDataIndex = originalData.findIndex(data => {
-      return data === original;
-    });
-    deleteRowFromGrid(originalDataIndex, original);
+    deleteRowFromGrid(original);
   };
 
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
@@ -190,10 +182,12 @@ const ItemTypes = {
 
 const ColumnItem = ({
   id,
-  name,
+  Header,
   moveColumn,
   findColumn,
-  innerCells
+  originalInnerCells,
+  isInnerCellSelected,
+  selectInnerCells
 }) => {
   const originalIndex = findColumn(id).index;
   const [{
@@ -253,13 +247,32 @@ const ColumnItem = ({
     "aria-hidden": "true"
   })), /*#__PURE__*/React.createElement("div", {
     className: ""
-  }, name)));
+  }, Header), /*#__PURE__*/React.createElement("div", {
+    className: "column__innerCells__wrap"
+  }, originalInnerCells && originalInnerCells.length > 0 ? originalInnerCells.map((cell, index) => {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "column__wrap",
+      key: index
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "column__checkbox"
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "checkbox",
+      "data-columnheader": Header,
+      value: cell.Header,
+      checked: isInnerCellSelected(Header, cell.Header),
+      onChange: selectInnerCells
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "column__txt"
+    }, cell.Header));
+  }) : null)));
 };
 
 const ColumnsList = props => {
   const {
     updateColumnsInState,
-    columnsToManage
+    columnsToManage,
+    isInnerCellSelected,
+    selectInnerCells
   } = props;
 
   const moveColumn = (columnId, atIndex) => {
@@ -293,10 +306,12 @@ const ColumnsList = props => {
     return /*#__PURE__*/React.createElement(ColumnItem, {
       key: index,
       id: `${column.columnId}`,
-      name: `${column.Header}`,
+      Header: `${column.Header}`,
       moveColumn: moveColumn,
       findColumn: findColumn,
-      innerCells: column.innerCells
+      originalInnerCells: column.originalInnerCells,
+      isInnerCellSelected: isInnerCellSelected,
+      selectInnerCells: selectInnerCells
     });
   })));
 };
@@ -315,8 +330,9 @@ const ColumnReordering = memo(props => {
     return isExpandContentAvailable ? additionalColumn : [];
   };
 
+  const concatedOriginalColumns = originalColumns.concat(getRemarksColumnIfAvailable());
   const [managedColumns, setManagedColumns] = useState(originalColumns);
-  const [searchedColumns, setSearchedColumns] = useState([...originalColumns].concat(getRemarksColumnIfAvailable()));
+  const [searchedColumns, setSearchedColumns] = useState(concatedOriginalColumns);
   const [remarksColumnToManage, setRemarksColumnToManage] = useState(getRemarksColumnIfAvailable);
   const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
   const HTML5toTouch = {
@@ -345,12 +361,25 @@ const ColumnReordering = memo(props => {
         return column.Header.toLowerCase().includes(value);
       })));
     } else {
-      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+      setSearchedColumns(concatedOriginalColumns);
     }
   };
 
   const updateColumnsInState = columns => {
     setManagedColumns(columns);
+  };
+
+  const findColumn = (columnList, columnHeader) => {
+    return columnList.find(column => {
+      return column.Header === columnHeader;
+    });
+  };
+
+  const isItemPresentInList = (list, headerValue) => {
+    const filteredList = list.filter(item => {
+      return item.Header === headerValue;
+    });
+    return filteredList && filteredList.length > 0;
   };
 
   const isCheckboxSelected = header => {
@@ -359,10 +388,25 @@ const ColumnReordering = memo(props => {
     } else if (header === "Select All") {
       return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
     } else {
-      const selectedColumn = managedColumns.filter(column => {
-        return column.Header === header;
+      return isItemPresentInList(managedColumns, header);
+    }
+  };
+
+  const isInnerCellSelected = (columnHeader, header) => {
+    const columnListToSearch = columnHeader === additionalColumnHeader ? remarksColumnToManage : managedColumns;
+    const selectedColumn = findColumn(columnListToSearch, columnHeader);
+    return isItemPresentInList(selectedColumn.innerCells, header);
+  };
+
+  const findIndexOfItem = (type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) => {
+    if (type === "column") {
+      return columnsList.findIndex(column => {
+        return column.Header === originalColumns[indexOfColumnToAdd].Header;
       });
-      return selectedColumn && selectedColumn.length > 0;
+    } else {
+      return findColumn(columnsList, columnHeader).innerCells.findIndex(cell => {
+        return cell.Header === originalInnerCells[indexOfColumnToAdd].Header;
+      });
     }
   };
 
@@ -394,19 +438,17 @@ const ColumnReordering = memo(props => {
     } else {
       if (checked) {
         let indexOfColumnToAdd = originalColumns.findIndex(column => {
-          return column.Header == value;
+          return column.Header === value;
         });
         const itemToAdd = originalColumns[indexOfColumnToAdd];
         let prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-          prevItemIndex = managedColumns.findIndex(column => {
-            return column.Header == originalColumns[indexOfColumnToAdd - 1].Header;
-          });
           indexOfColumnToAdd = indexOfColumnToAdd - 1;
+          prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
         }
 
-        const newColumnsList = managedColumns.slice(0);
+        const newColumnsList = [...managedColumns];
         newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
         setManagedColumns(newColumnsList);
       } else {
@@ -417,21 +459,89 @@ const ColumnReordering = memo(props => {
     }
   };
 
+  const findAndSelectInnerCells = (stateColumnList, setStateColumnList, event) => {
+    const {
+      currentTarget
+    } = event;
+    const {
+      checked,
+      dataset,
+      value
+    } = currentTarget;
+    const {
+      columnheader
+    } = dataset;
+    const selectedColumn = findColumn(stateColumnList, columnheader);
+    const {
+      originalInnerCells
+    } = selectedColumn;
+
+    if (originalInnerCells && originalInnerCells.length > 0) {
+      if (checked) {
+        let indexOfColumnToAdd = originalInnerCells.findIndex(column => {
+          return column.Header === value;
+        });
+        const itemToAdd = originalInnerCells[indexOfColumnToAdd];
+        let prevItemIndex = -1;
+
+        while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+          indexOfColumnToAdd = indexOfColumnToAdd - 1;
+          prevItemIndex = findIndexOfItem("innercell", stateColumnList, indexOfColumnToAdd, columnheader, originalInnerCells);
+        }
+
+        const newColumnsList = [...stateColumnList];
+        findColumn(newColumnsList, columnheader).innerCells.splice(prevItemIndex + 1, 0, itemToAdd);
+        setStateColumnList(newColumnsList);
+      } else {
+        setStateColumnList(stateColumnList.map(column => {
+          if (column.Header === columnheader) {
+            column.innerCells = column.innerCells.filter(cell => {
+              return cell.Header !== value;
+            });
+          }
+
+          return column;
+        }));
+      }
+    }
+  };
+
+  const selectInnerCells = event => {
+    findAndSelectInnerCells(managedColumns, setManagedColumns, event);
+  };
+
+  const selectRemarksInnerCells = event => {
+    findAndSelectInnerCells(remarksColumnToManage, setRemarksColumnToManage, event);
+  };
+
   const doColumnUpdate = () => {
     setIsErrorDisplayed(false);
 
     if (managedColumns && managedColumns.length > 0) {
-      setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
+      setSearchedColumns(concatedOriginalColumns);
       props.updateColumnStructure(managedColumns, remarksColumnToManage);
     } else {
       setIsErrorDisplayed(true);
     }
+
+    toggleManageColumns();
+  };
+
+  const resetInnerCells = columnList => {
+    if (columnList && columnList.length) {
+      return columnList.map(column => {
+        column.innerCells = column.originalInnerCells;
+        return column;
+      });
+    }
+
+    return columnList;
   };
 
   const resetColumnUpdate = () => {
-    setManagedColumns(originalColumns);
+    setManagedColumns(resetInnerCells(originalColumns));
     setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
-    setRemarksColumnToManage(getRemarksColumnIfAvailable());
+    setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
     props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
   };
 
@@ -504,12 +614,31 @@ const ColumnReordering = memo(props => {
       options: HTML5toTouch
     }, /*#__PURE__*/React.createElement(ColumnsList, {
       columnsToManage: managedColumns,
-      updateColumnsInState: updateColumnsInState
+      updateColumnsInState: updateColumnsInState,
+      isInnerCellSelected: isInnerCellSelected,
+      selectInnerCells: selectInnerCells
     })), remarksColumnToManage && remarksColumnToManage.length > 0 ? /*#__PURE__*/React.createElement("div", {
       className: "column__reorder full-width"
     }, /*#__PURE__*/React.createElement("div", {
       className: ""
-    }, remarksColumnToManage[0].Header)) : null), /*#__PURE__*/React.createElement("div", {
+    }, remarksColumnToManage[0].Header), /*#__PURE__*/React.createElement("div", {
+      className: "column__innerCells__wrap"
+    }, remarksColumnToManage[0].originalInnerCells && remarksColumnToManage[0].originalInnerCells.length > 0 ? remarksColumnToManage[0].originalInnerCells.map((cell, index) => {
+      return /*#__PURE__*/React.createElement("div", {
+        className: "column__wrap",
+        key: index
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "column__checkbox"
+      }, /*#__PURE__*/React.createElement("input", {
+        type: "checkbox",
+        "data-columnheader": remarksColumnToManage[0].Header,
+        value: cell.Header,
+        checked: isInnerCellSelected(remarksColumnToManage[0].Header, cell.Header),
+        onChange: selectRemarksInnerCells
+      })), /*#__PURE__*/React.createElement("div", {
+        className: "column__txt"
+      }, cell.Header));
+    }) : null)) : null), /*#__PURE__*/React.createElement("div", {
       className: "column__footer"
     }, /*#__PURE__*/React.createElement("div", {
       className: "column__btns"
@@ -774,7 +903,6 @@ const GroupSort = memo(props => {
   const clearSortingOptions = () => {
     setSortOptions([]);
     applyGroupSort([]);
-    toggleGroupSortOverLay();
   };
 
   const updateSingleSortingOption = (sortIndex, sortByValue, sortOnValue, sortOrder) => {
@@ -1072,14 +1200,14 @@ const ExportData = memo(props => {
 
     if (checked) {
       let indexOfColumnToAdd = updatedColumns.findIndex(column => {
-        return column.Header == value;
+        return column.Header === value;
       });
       const itemToAdd = updatedColumns[indexOfColumnToAdd];
       let prevItemIndex = -1;
 
       while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
         prevItemIndex = managedColumns.findIndex(column => {
-          return column.Header == updatedColumns[indexOfColumnToAdd - 1].Header;
+          return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
         });
         indexOfColumnToAdd = indexOfColumnToAdd - 1;
       }
@@ -1249,7 +1377,6 @@ const Customgrid = memo(props => {
     originalColumns,
     additionalColumn,
     data,
-    originalData,
     rowEditOverlay,
     rowEditData,
     updateRowInGrid,
@@ -1307,7 +1434,6 @@ const Customgrid = memo(props => {
   const updateColumnStructure = (newColumnStructure, remarksColumn) => {
     setColumns([...newColumnStructure]);
     setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
-    toggleManageColumns();
   };
 
   const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
@@ -1376,7 +1502,6 @@ const Customgrid = memo(props => {
           className: "action"
         }, /*#__PURE__*/React.createElement(RowOptions, {
           row: row,
-          originalData: originalData,
           DeletePopUpOverLay: deletePopUpOverLay,
           deleteRowFromGrid: deleteRowFromGrid,
           RowEditOverlay: rowEditOverlay,
@@ -1425,7 +1550,7 @@ const Customgrid = memo(props => {
         }), cell.render("Cell"));
       })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React.createElement("div", {
         className: "expand"
-      }, renderExpandedContent ? renderExpandedContent(row) : null) : null);
+      }, renderExpandedContent ? renderExpandedContent(row, additionalColumn) : null) : null);
     }
   }, [prepareRow, rows, renderExpandedContent]);
   return /*#__PURE__*/React.createElement("div", {
@@ -1618,7 +1743,7 @@ const Grid = forwardRef((props, ref) => {
 
     processedColumns.push(column);
   });
-  const renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
+  let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
   const gridColumns = useMemo(() => processedColumns, []);
 
   const searchColumn = (column, original, searchText) => {
@@ -1733,9 +1858,9 @@ const Grid = forwardRef((props, ref) => {
 
   }));
 
-  const updateRowInGrid = (rowIndex, updatedRow) => {
-    setItems(old => old.map((row, index) => {
-      if (index === rowIndex) {
+  const updateRowInGrid = (original, updatedRow) => {
+    setItems(old => old.map(row => {
+      if (row === original) {
         row = updatedRow;
       }
 
@@ -1744,11 +1869,11 @@ const Grid = forwardRef((props, ref) => {
     updateRowData(updatedRow);
   };
 
-  const deleteRowFromGrid = (rowIndexToBeDeleted, deletedRow) => {
-    setItems(old => old.filter((row, index) => {
-      return index !== rowIndexToBeDeleted;
+  const deleteRowFromGrid = original => {
+    setItems(old => old.filter(row => {
+      return row !== original;
     }));
-    deleteRowData(deletedRow);
+    deleteRowData(original);
   };
 
   const doGroupSort = sortOptions => {
@@ -1771,6 +1896,24 @@ const Grid = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
+    processedColumns.map(column => {
+      if (column.innerCells) {
+        column.originalInnerCells = column.innerCells;
+      }
+
+      return column;
+    });
+
+    if (additionalColumn) {
+      const {
+        innerCells
+      } = additionalColumn;
+
+      if (innerCells) {
+        additionalColumn.originalInnerCells = innerCells;
+      }
+    }
+
     setIsLoading(true);
     fetchData(0).then(data => {
       setIsLoading(false);
@@ -1788,7 +1931,6 @@ const Grid = forwardRef((props, ref) => {
       originalColumns: gridColumns,
       additionalColumn: additionalColumn,
       data: data,
-      originalData: items,
       rowEditOverlay: rowEditOverlay,
       rowEditData: rowEditData,
       updateRowInGrid: updateRowInGrid,

@@ -31,7 +31,6 @@ const Customgrid = memo((props) => {
         originalColumns,
         additionalColumn,
         data,
-        originalData,
         rowEditOverlay,
         rowEditData,
         updateRowInGrid,
@@ -52,11 +51,6 @@ const Customgrid = memo((props) => {
     const [columns, setColumns] = useState(managableColumns);
     //Local state value for holding the boolean value to check if row expand is available
     const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(isExpandContentAvailable);
-
-    //Display error message if data or columns configuration is missing.
-    if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
-        return <h2 style={{ marginTop: "50px", textAlign: "center" }}>Invalid Data or Columns Configuration</h2>;
-    }
 
     //Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
@@ -349,11 +343,10 @@ const Customgrid = memo((props) => {
                                             height={height - 60}
                                             itemCount={rows.length}
                                             itemSize={(index) => {
-                                                if (calculateRowHeight && typeof calculateRowHeight === "function") {
-                                                    return calculateRowHeight(rows, index, headerGroups);
-                                                } else {
-                                                    return 70;
-                                                }
+                                                return calculateRowHeight(
+                                                    rows[index],
+                                                    headerGroups && headerGroups.length ? headerGroups[0].headers : []
+                                                );
                                             }}
                                             onItemsRendered={onItemsRendered}
                                             overscanCount={20}
