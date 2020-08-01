@@ -1,8 +1,8 @@
-import React, { forwardRef, useImperativeHandle, useMemo, useState, useEffect } from "react";
+import React, { memo, useMemo, useState, useEffect } from "react";
 import { extractColumns, extractAdditionalColumn } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
 
-const Grid = forwardRef((props, ref) => {
+const Grid = memo((props) => {
     const {
         title,
         gridHeight,
@@ -208,39 +208,6 @@ const Grid = forwardRef((props, ref) => {
             return compareResult;
         });
     };
-    //#endregion
-
-    //#region - Cell update logic
-    //Function to find correct index from original data using index from sorted data
-    const getOriginalDataIndex = (sortedDataIndex) => {
-        const updatedData = getSortedData([...items]).find((item, index) => {
-            return index === sortedDataIndex;
-        });
-        let originalDataIndex = -1;
-        originalDataIndex = items.findIndex((item, index) => {
-            return item === updatedData;
-        });
-        return originalDataIndex;
-    };
-    //Gets triggered when a cell in grid is updated
-    useImperativeHandle(ref, () => ({
-        updateCellInGrid(rowIndex, columnId, value) {
-            const originalDataIndex = getOriginalDataIndex(rowIndex);
-            if (originalDataIndex >= 0) {
-                setItems((old) =>
-                    old.map((row, index) => {
-                        if (index === originalDataIndex) {
-                            return {
-                                ...old[originalDataIndex],
-                                [columnId]: value
-                            };
-                        }
-                        return row;
-                    })
-                );
-            }
-        }
-    }));
     //#endregion
 
     //Gets called when group sort is applied or cleared
