@@ -110,15 +110,17 @@ const Grid = forwardRef((props, ref) => {
 
     //Process data to be rendered to expanded view and return that data to the render function
     const displayExpandedContent = (row, additionalColumn) => {
-        const { innerCells } = additionalColumn;
-        const { original } = row;
-        if (original && innerCells && innerCells.length > 0) {
-            const expandedRowContent = {};
-            innerCells.forEach((cell) => {
-                const { accessor } = cell;
-                expandedRowContent[accessor] = original[accessor];
-            });
-            return renderExpandedContent(expandedRowContent);
+        if (row && additionalColumn) {
+            const { innerCells } = additionalColumn;
+            const { original } = row;
+            if (original && innerCells && innerCells.length > 0) {
+                const expandedRowContent = {};
+                innerCells.forEach((cell) => {
+                    const { accessor } = cell;
+                    expandedRowContent[accessor] = original[accessor];
+                });
+                return renderExpandedContent(expandedRowContent);
+            }
         }
     };
 
