@@ -96,7 +96,7 @@ const App = () => {
             displayCell: (rowData) => {
                 const { flightno, date } = rowData.flight;
                 return (
-                    <div>
+                    <div className="flight-details">
                         <strong>{flightno}</strong>
                         <span>{getDateValue(date, "cell")}</span>
                     </div>
