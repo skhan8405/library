@@ -102,11 +102,25 @@ const Grid = forwardRef((props, ref) => {
     let processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
     let additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop, updateRowInGrid);
 
+    //Create memoized column, to be used by grid component
+    const gridColumns = useMemo(() => processedColumns, []);
+
     //Local variable for keeping the expanded row rendering method
     let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
-    //Create memoized column, to be used by grid component
-    const gridColumns = useMemo(() => processedColumns, []);
+    //Process data to be rendered to expanded view and return that data to the render function
+    const displayExpandedContent = (row, additionalColumn) => {
+        const { innerCells } = additionalColumn;
+        const { original } = row;
+        if (original && innerCells && innerCells.length > 0) {
+            const expandedRowContent = {};
+            innerCells.forEach((cell) => {
+                const { accessor } = cell;
+                expandedRowContent[accessor] = original[accessor];
+            });
+            return renderExpandedContent(expandedRowContent);
+        }
+    };
 
     //Add logic for doing global search in the grid
     const globalSearchLogic = (rows, columns, filterValue) => {
@@ -299,7 +313,7 @@ const Grid = forwardRef((props, ref) => {
                             : calculateDefaultRowHeight
                     }
                     isExpandContentAvailable={typeof renderExpandedContent === "function"}
-                    renderExpandedContent={renderExpandedContent}
+                    displayExpandedContent={displayExpandedContent}
                     hasNextPage={hasNextPage}
                     isNextPageLoading={isNextPageLoading}
                     loadNextPage={loadNextPage}

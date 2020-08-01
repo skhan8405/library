@@ -405,7 +405,9 @@ const App = () => {
         ],
         displayCell: (rowData) => {
             const { remarks, details } = rowData;
-            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
+            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details
+                ? details
+                : {};
             const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");

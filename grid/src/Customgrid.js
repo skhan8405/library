@@ -40,7 +40,7 @@ const Customgrid = memo((props) => {
         selectBulkData,
         calculateRowHeight,
         isExpandContentAvailable,
-        renderExpandedContent,
+        displayExpandedContent,
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
@@ -230,14 +230,14 @@ const Customgrid = memo((props) => {
                         {/*Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region*/}
                         {isRowExpandEnabled && row.isExpanded ? (
                             <div className="expand">
-                                {renderExpandedContent ? renderExpandedContent(row, additionalColumn) : null}
+                                {displayExpandedContent ? displayExpandedContent(row, additionalColumn) : null}
                             </div>
                         ) : null}
                     </div>
                 );
             }
         },
-        [prepareRow, rows, renderExpandedContent]
+        [prepareRow, rows, displayExpandedContent]
     );
 
     //Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
