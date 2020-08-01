@@ -360,6 +360,9 @@ const App = () => {
                         <span>{sr}</span>
                     </div>
                 );
+            },
+            editCell: (rowData) => {
+                return <SREdit rowData={rowData} />;
             }
         },
         {
