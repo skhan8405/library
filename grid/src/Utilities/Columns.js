@@ -1,4 +1,7 @@
-export const extractColumns = (columns, searchColumn, isDesktop) => {
+import React from "react";
+import CellDisplayAndEdit from "../Functions/CellDisplayAndEdit";
+
+export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
     const filteredColumns = columns.filter((column) => {
         return isDesktop ? !column.onlyInIpad : !column.onlyInDesktop;
     });
@@ -50,7 +53,18 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
                             }
                         }
                     }
-                    return column.displayCell(originalRowValue);
+                    const cellDisplayContent = column.displayCell(originalRowValue);
+                    const cellEditContent = column.editCell ? column.editCell(originalRowValue) : null;
+                    return (
+                        <CellDisplayAndEdit
+                            cellDisplayContent={cellDisplayContent}
+                            cellEditContent={cellEditContent}
+                            rowValue={originalRowValue}
+                            columnId={id}
+                            innerCells={innerCells}
+                            updateRow={updateRowInGrid}
+                        />
+                    );
                 }
             };
         }

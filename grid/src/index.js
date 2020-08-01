@@ -75,9 +75,32 @@ const Grid = forwardRef((props, ref) => {
         return isValuePresent;
     };
 
+    //Gets triggered when one row item is updated
+    const updateRowInGrid = (original, updatedRow) => {
+        setItems((old) =>
+            old.map((row) => {
+                if (Object.entries(row).toString() === Object.entries(original).toString()) {
+                    row = updatedRow;
+                }
+                return row;
+            })
+        );
+        updateRowData(updatedRow);
+    };
+
+    //Gets triggered when one row item is deleted
+    const deleteRowFromGrid = (original) => {
+        setItems((old) =>
+            old.filter((row) => {
+                return row !== original;
+            })
+        );
+        deleteRowData(original);
+    };
+
     //Extract/add and modify required data from user configured columns and expand columns
-    let processedColumns = extractColumns(columns, searchColumn, isDesktop);
-    let additionalColumn = extractAdditionalColumns(columnToExpand, isDesktop);
+    let processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
+    let additionalColumn = extractAdditionalColumns(columnToExpand, isDesktop, updateRowInGrid);
 
     //Local variable for keeping the expanded row rendering method
     let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
@@ -203,29 +226,6 @@ const Grid = forwardRef((props, ref) => {
         }
     }));
     //#endregion
-
-    //Gets triggered when one row item is updated
-    const updateRowInGrid = (original, updatedRow) => {
-        setItems((old) =>
-            old.map((row) => {
-                if (row === original) {
-                    row = updatedRow;
-                }
-                return row;
-            })
-        );
-        updateRowData(updatedRow);
-    };
-
-    //Gets triggered when one row item is deleted
-    const deleteRowFromGrid = (original) => {
-        setItems((old) =>
-            old.filter((row) => {
-                return row !== original;
-            })
-        );
-        deleteRowData(original);
-    };
 
     //Gets called when group sort is applied or cleared
     const doGroupSort = (sortOptions) => {

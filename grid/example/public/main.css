@@ -257,7 +257,7 @@ select:-webkit-autofill:focus {
     white-space: nowrap;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.35);
 }
-.table-outer .table .table-row .table-cell .content .content-edit.open {
+.table-outer .table .table-row .table-cell .flight-details.content .content-edit {
     display: flex;
 }
 .table-outer .table .table-row .table-cell .content .content-edit input,

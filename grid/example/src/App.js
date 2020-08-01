@@ -2,10 +2,11 @@ import React, { useRef } from "react";
 import Grid from "grid";
 import { isInnerCellShown, isInnerCellsNotEmpty } from "./utils/CellDisplayUtility";
 import { fetchData } from "./getData";
+import FlightEdit from "./cells/FlightEdit";
+import getDateValue from "./utils/DateUtility";
 import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
 import RowEditOverlay from "./cells/RowEditOverlay";
 import SREdit from "./cells/SREdit";
-import FlightEdit from "./cells/FlightEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = () => {
@@ -92,21 +93,17 @@ const App = () => {
                 }
             ],
             sortValue: "flightno",
-            Cell: (row) => {
-                const columnId = "flight";
-                const { innerCells } = row.column;
-                const { index, original } = row.row;
+            displayCell: (rowData) => {
+                const { flightno, date } = rowData.flight;
                 return (
-                    <FlightEdit
-                        index={index}
-                        columnId={columnId}
-                        innerCells={innerCells}
-                        columnValue={original[columnId]}
-                        updateCellData={updateCellData}
-                        isInnerCellShown={isInnerCellShown}
-                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
-                    />
+                    <div>
+                        <strong>{flightno}</strong>
+                        <span>{getDateValue(date, "cell")}</span>
+                    </div>
                 );
+            },
+            editCell: (rowData) => {
+                return <FlightEdit rowData={rowData} />;
             }
         },
         {
