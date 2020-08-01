@@ -244,74 +244,6 @@ select:-webkit-autofill:focus {
 .table-outer .table .table-row .table-cell .table-cell--content .webinar-date {
     font-weight: 700;
 }
-.table-outer .table .table-row .table-cell .content .content-edit {
-    display: none;
-    position: absolute;
-    z-index: 9;
-    background: #fff;
-    border: #eee solid 1px;
-    top: 5px;
-    padding: 5px;
-    border-radius: 4px;
-    width: auto;
-    white-space: nowrap;
-    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.35);
-}
-.table-outer .table .table-row .table-cell .flight-details.content .content-edit {
-    display: flex;
-}
-.table-outer .table .table-row .table-cell .content .content-edit input,
-.table-outer .table .table-row .table-cell .content .content-edit select {
-    display: inline-block;
-    height: 23px;
-    width: 120px;
-    border-radius: 3px;
-    border: #ccc solid 1px;
-    padding: 2px;
-    font-size: 12px;
-    margin-right: 5px;
-}
-.table-outer .table .table-row .table-cell .content .content-edit select {
-    height: 29px;
-}
-.table-outer .table .table-row .table-cell .content .content-edit .ok {
-    width: 27px;
-    height: 27px;
-    background: #169bd5;
-    border: #169bd5 solid 1px;
-    border-radius: 4px;
-    margin: 0 5px;
-    position: relative;
-    cursor: pointer;
-}
-.table-outer .table .table-row .table-cell .content .content-edit .ok:before {
-    font-family: FontAwesome;
-    position: absolute;
-    content: "\f00c";
-    font-size: 18px;
-    left: 3px;
-    top: 3px;
-    color: #fff;
-}
-.table-outer .table .table-row .table-cell .content .content-edit .cancel {
-    width: 27px;
-    height: 27px;
-    background: #fff;
-    border: #d3d3d3 solid 1px;
-    border-radius: 4px;
-    margin: 0 5px;
-    position: relative;
-    cursor: pointer;
-}
-.table-outer .table .table-row .table-cell .content .content-edit .cancel:before {
-    font-family: FontAwesome;
-    position: absolute;
-    content: "\f00d";
-    font-size: 18px;
-    left: 5px;
-    top: 3px;
-    color: #e9e9e9;
-}
 .table-outer .table .flight-details strong {
     display: block;
     color: #3171b2;
@@ -680,4 +612,74 @@ select:-webkit-autofill:focus {
 .table-outer .table .table-row .table-cell.column-heading:last-child {
     padding: 0 !important;
     width: 53px !important;
+}
+
+/***************************Cell Edit ***************************/
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit {
+    display: none;
+    position: absolute;
+    z-index: 9;
+    background: #fff;
+    border: #eee solid 1px;
+    top: 5px;
+    padding: 5px;
+    border-radius: 4px;
+    width: auto;
+    white-space: nowrap;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.35);
+}
+.table-outer .table .table-row .table-cell .flight-details.table-cell--content .table-cell--content-edit {
+    display: flex;
+}
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit input,
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit select {
+    display: inline-block;
+    height: 23px;
+    width: 120px;
+    border-radius: 3px;
+    border: #ccc solid 1px;
+    padding: 2px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit select {
+    height: 29px;
+}
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit .ok {
+    width: 27px;
+    height: 27px;
+    background: #169bd5;
+    border: #169bd5 solid 1px;
+    border-radius: 4px;
+    margin: 0 5px;
+    position: relative;
+    cursor: pointer;
+}
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit .ok:before {
+    font-family: FontAwesome;
+    position: absolute;
+    content: "\f00c";
+    font-size: 18px;
+    left: 3px;
+    top: 3px;
+    color: #fff;
+}
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit .cancel {
+    width: 27px;
+    height: 27px;
+    background: #fff;
+    border: #d3d3d3 solid 1px;
+    border-radius: 4px;
+    margin: 0 5px;
+    position: relative;
+    cursor: pointer;
+}
+.table-outer .table .table-row .table-cell .table-cell--content .table-cell--content-edit .cancel:before {
+    font-family: FontAwesome;
+    position: absolute;
+    content: "\f00d";
+    font-size: 18px;
+    left: 5px;
+    top: 3px;
+    color: #e9e9e9;
 }

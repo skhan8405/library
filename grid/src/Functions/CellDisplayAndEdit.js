@@ -33,13 +33,13 @@ const CellDisplayAndEdit = ({ cellDisplayContent, cellEditContent, rowValue, col
 
     return (
         <ClickAwayListener onClickAway={closeEdit}>
-            <div className="flight-details content">
+            <div className="flight-details table-cell--content">
                 <div className="cell-edit" onClick={openEdit}>
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                 </div>
                 {cellDisplayContent}
                 {isEditOpen ? (
-                    <div className="content-edit">
+                    <div className="table-cell--content-edit">
                         {cellEditContent}
                         <button className="ok" onClick={saveEdit} />
                         <button className="cancel" onClick={clearEdit} />
