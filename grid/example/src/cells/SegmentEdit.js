@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 const SegmentEdit = ({ rowData, airportCodeList }) => {
-    const { segment } = rowData;
+    const { segment, weight } = rowData;
     const [segmentValue, setSegmentValue] = useState(segment);
+    const [weightValue, setWeightValue] = useState(weight);
 
     const updateFromValue = (e) => {
         setSegmentValue({
@@ -15,6 +16,20 @@ const SegmentEdit = ({ rowData, airportCodeList }) => {
         setSegmentValue({
             ...segmentValue,
             to: e.target.value
+        });
+    };
+
+    const updateWeightPercentage = (e) => {
+        setWeightValue({
+            ...weightValue,
+            percentage: e.target.value
+        });
+    };
+
+    const updateWeightValue = (e) => {
+        setWeightValue({
+            ...weightValue,
+            value: e.target.value
         });
     };
 
@@ -38,6 +53,8 @@ const SegmentEdit = ({ rowData, airportCodeList }) => {
                     );
                 })}
             </select>
+            <input id="weight_percentage" type="text" value={weightValue.percentage} onChange={updateWeightPercentage} />
+            <input id="weight_value" type="text" value={weightValue.value} onChange={updateWeightValue} />
         </div>
     );
 };

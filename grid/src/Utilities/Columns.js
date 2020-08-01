@@ -73,7 +73,7 @@ export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
 const configureCellData = (columnToUpdate, updateRowInGrid) => {
     if (!columnToUpdate.Cell && columnToUpdate.displayCell) {
         columnToUpdate.Cell = (row) => {
-            const { column } = row;
+            const { column, columns } = row;
             if (column && row.row) {
                 const originalRowValue = { ...row.row.original };
                 const { id, innerCells, originalInnerCells } = column;
@@ -116,7 +116,7 @@ const configureCellData = (columnToUpdate, updateRowInGrid) => {
                         cellEditContent={cellEditContent}
                         rowValue={originalRowValue}
                         columnId={id}
-                        innerCells={innerCells}
+                        columns={columns}
                         updateRow={updateRowInGrid}
                     />
                 );

@@ -132,7 +132,7 @@ const App = () => {
                 );
             },
             editCell: (rowData) => {
-                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} />;
+                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} editedOtherCells={["weight"]} />;
             }
         },
         {
