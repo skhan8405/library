@@ -57,7 +57,12 @@ export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid
 
 export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
     const { innerCells } = additionalColumn;
-    if (innerCells && innerCells.length > 0) {
+    const isInnerCellsPresent = innerCells && innerCells.length > 0;
+
+    //Add column Id
+    additionalColumn.columnId = `ExpandColumn`;
+
+    if (isInnerCellsPresent) {
         additionalColumn.innerCells = innerCells.filter((cell) => {
             return isDesktop ? !cell.onlyInIpad : !cell.onlyInDesktop;
         });
@@ -65,9 +70,9 @@ export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
     return additionalColumn;
 };
 
-const configureCellData = (column, updateRowInGrid) => {
-    if (!column.Cell && column.displayCell) {
-        column.Cell = (row) => {
+const configureCellData = (columnToUpdate, updateRowInGrid) => {
+    if (!columnToUpdate.Cell && columnToUpdate.displayCell) {
+        columnToUpdate.Cell = (row) => {
             const { column } = row;
             if (column && row.row) {
                 const originalRowValue = { ...row.row.original };
