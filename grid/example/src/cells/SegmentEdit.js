@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 
 const SegmentEdit = ({ rowData, airportCodeList }) => {
-    const { from, to } = rowData.segment;
-    const [fromValue, setFromValue] = useState(from);
-    const [toValue, setToValue] = useState(to);
+    const { segment } = rowData;
+    const [segmentValue, setSegmentValue] = useState(segment);
 
     const updateFromValue = (e) => {
-        setFromValue(e.target.value);
+        setSegmentValue({
+            ...segmentValue,
+            from: e.target.value
+        });
     };
 
     const updateToValue = (e) => {
-        setToValue(e.target.value);
+        setSegmentValue({
+            ...segmentValue,
+            to: e.target.value
+        });
     };
 
     return (
         <div>
-            <select id="segment_from" onChange={updateFromValue} key="segment-from" value={fromValue}>
+            <select id="segment_from" onChange={updateFromValue} key="segment-from" value={segmentValue.from}>
                 {airportCodeList.map((item, index) => {
                     return (
                         <option key={index} value={item}>
@@ -24,7 +29,7 @@ const SegmentEdit = ({ rowData, airportCodeList }) => {
                     );
                 })}
             </select>
-            <select id="segment_to" onChange={updateToValue} key="segment-to" value={toValue}>
+            <select id="segment_to" onChange={updateToValue} key="segment-to" value={segmentValue.to}>
                 {airportCodeList.map((item, index) => {
                     return (
                         <option key={index} value={item}>
