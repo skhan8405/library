@@ -19,8 +19,11 @@ const CellDisplayAndEdit = memo(({ cellDisplayContent, cellEditContent, rowValue
             let params = {};
             innerCells.forEach((cell) => {
                 const cellAccessor = cell.accessor;
-                const updatedValue = document.getElementById(columnId + "_" + cellAccessor).value;
-                params[cellAccessor] = updatedValue;
+                const updatedElement = document.getElementById(columnId + "_" + cellAccessor);
+                if (updatedElement) {
+                    const updatedValue = updatedElement.value;
+                    params[cellAccessor] = updatedValue;
+                }
             });
             updatedRowValue[columnId] = params;
         } else {

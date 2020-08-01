@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React from "react";
 import Grid from "grid";
-import { isInnerCellShown, isInnerCellsNotEmpty } from "./utils/CellDisplayUtility";
 import { fetchData } from "./getData";
 import FlightIcon from "./images/FlightIcon.png";
 import FlightEdit from "./cells/FlightEdit";
@@ -11,8 +10,6 @@ import SREdit from "./cells/SREdit";
 import SegmentEdit from "./cells/SegmentEdit";
 
 const App = () => {
-    const childRef = useRef();
-
     //Create an array of airports
     const airportCodeList = [
         "AAA",
@@ -481,12 +478,6 @@ const App = () => {
         return rowHeight;
     };
 
-    //Gets called when there is a cell edit
-    const updateCellData = (rowIndex, columnId, value) => {
-        console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
-        childRef.current.updateCellInGrid(rowIndex, columnId, value);
-    };
-
     //Gets called when there is a row edit
     const updateRowData = (row) => {
         console.log("Row updated: ");
@@ -506,7 +497,6 @@ const App = () => {
 
     return (
         <Grid
-            ref={childRef}
             title="AWBs"
             gridHeight="80vh"
             gridWidth="100%"
