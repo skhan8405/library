@@ -184,14 +184,14 @@ const App = () => {
             disableSortBy: true,
             displayCell: (rowData) => {
                 const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = rowData.details;
-                let timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
+                const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
                 return (
                     <div className="details-wrap">
                         <ul>
                             <li>
-                                {startTime} -{endTime}
+                                {startTime} - {endTime}
                             </li>
                             <li className="divider">|</li>
                             <li>
@@ -403,47 +403,42 @@ const App = () => {
             { Header: "Remarks", accessor: "remarks" },
             { Header: "Details", onlyInIpad: true, accessor: "details" }
         ],
-        Cell: (row, column) => {
-            const { innerCells } = column;
-            const { remarks, details } = row.original;
+        displayCell: (rowData) => {
+            const { remarks, details } = rowData;
             const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
-            let timeStatusArray = timeStatus.split(" ");
+            const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
             return (
                 <div className="details-wrap">
-                    {isInnerCellShown(innerCells, "remarks") ? (
-                        <ul>
-                            <li>{remarks}</li>
-                            <li className="divider">|</li>
-                        </ul>
-                    ) : null}
-                    {isInnerCellShown(innerCells, "details") ? (
-                        <ul>
-                            <li>
-                                {startTime} – {endTime}
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{status}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>{additionalStatus}</li>
-                            <li className="divider">|</li>
-                            <li>{flightModel}</li>
-                            <li className="divider">|</li>
-                            <li>{bodyType}</li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{type}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <strong>{timeValue} </strong>
-                                <span>{timeText}</span>
-                            </li>
-                        </ul>
-                    ) : null}
+                    <ul>
+                        <li>{remarks}</li>
+                        <li className="divider">|</li>
+                    </ul>
+                    <ul>
+                        <li>
+                            {startTime} - {endTime}
+                        </li>
+                        <li className="divider">|</li>
+                        <li>
+                            <span>{status}</span>
+                        </li>
+                        <li className="divider">|</li>
+                        <li>{additionalStatus}</li>
+                        <li className="divider">|</li>
+                        <li>{flightModel}</li>
+                        <li className="divider">|</li>
+                        <li>{bodyType}</li>
+                        <li className="divider">|</li>
+                        <li>
+                            <span>{type}</span>
+                        </li>
+                        <li className="divider">|</li>
+                        <li>
+                            <strong>{timeValue} </strong>
+                            <span>{timeText}</span>
+                        </li>
+                    </ul>
                 </div>
             );
         }

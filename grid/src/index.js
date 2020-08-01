@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useMemo, useState, useEffect } from "react";
-import { extractColumns, extractAdditionalColumns } from "./Utilities/Columns";
+import { extractColumns, extractAdditionalColumn } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
 
 const Grid = forwardRef((props, ref) => {
@@ -100,10 +100,10 @@ const Grid = forwardRef((props, ref) => {
 
     //Extract/add and modify required data from user configured columns and expand columns
     let processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
-    let additionalColumn = extractAdditionalColumns(columnToExpand, isDesktop, updateRowInGrid);
+    let additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop, updateRowInGrid);
 
     //Local variable for keeping the expanded row rendering method
-    let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
+    let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
     //Create memoized column, to be used by grid component
     const gridColumns = useMemo(() => processedColumns, []);
