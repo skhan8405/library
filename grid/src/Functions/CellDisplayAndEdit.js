@@ -34,9 +34,11 @@ const CellDisplayAndEdit = ({ cellDisplayContent, cellEditContent, rowValue, col
     return (
         <ClickAwayListener onClickAway={closeEdit}>
             <div className={`table-cell--content table-cell--content__${columnId}`}>
-                <div className="cell-edit" onClick={openEdit}>
-                    <i className="fa fa-pencil" aria-hidden="true"></i>
-                </div>
+                {cellEditContent ? (
+                    <div className="cell-edit" onClick={openEdit}>
+                        <i className="fa fa-pencil" aria-hidden="true"></i>
+                    </div>
+                ) : null}
                 {cellDisplayContent}
                 {isEditOpen ? (
                     <div className="table-cell--content-edit">
