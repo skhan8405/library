@@ -16,58 +16,7 @@ export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid
         column.columnId = `column_${index}`;
 
         //Configure Cell function (which is used by react-table component), based on the user defined function displayCell
-        if (!column.Cell && column.displayCell) {
-            column.Cell = (row) => {
-                const { column } = row;
-                if (column && row.row) {
-                    const originalRowValue = { ...row.row.original };
-                    const { id, innerCells, originalInnerCells } = column;
-                    if (
-                        originalRowValue &&
-                        originalInnerCells &&
-                        originalInnerCells.length &&
-                        innerCells &&
-                        innerCells.length &&
-                        innerCells.length < originalInnerCells.length
-                    ) {
-                        const columnValue = originalRowValue[id];
-                        if (typeof columnValue === "object") {
-                            if (columnValue.length > 0) {
-                                const newcolumnValue = columnValue.map((value) => {
-                                    let params = {};
-                                    innerCells.forEach((cell) => {
-                                        const cellAccessor = cell.accessor;
-                                        params[cellAccessor] = value[cellAccessor];
-                                    });
-                                    value = params;
-                                    return value;
-                                });
-                                originalRowValue[id] = newcolumnValue;
-                            } else {
-                                let params = {};
-                                innerCells.forEach((cell) => {
-                                    const cellAccessor = cell.accessor;
-                                    params[cellAccessor] = row.value[cellAccessor];
-                                });
-                                originalRowValue[id] = params;
-                            }
-                        }
-                    }
-                    const cellDisplayContent = column.displayCell(originalRowValue);
-                    const cellEditContent = column.editCell ? column.editCell(originalRowValue) : null;
-                    return (
-                        <CellDisplayAndEdit
-                            cellDisplayContent={cellDisplayContent}
-                            cellEditContent={cellEditContent}
-                            rowValue={originalRowValue}
-                            columnId={id}
-                            innerCells={innerCells}
-                            updateRow={updateRowInGrid}
-                        />
-                    );
-                }
-            };
-        }
+        configureCellData(column, updateRowInGrid);
 
         //Add logic to sort column if sort is not disabled
         if (!column.disableSortBy) {
@@ -106,12 +55,67 @@ export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid
     return modifiedColumns;
 };
 
-export const extractAdditionalColumns = (additionalColumns, isDesktop) => {
-    const { innerCells } = additionalColumns;
+export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
+    const { innerCells } = additionalColumn;
     if (innerCells && innerCells.length > 0) {
-        additionalColumns.innerCells = innerCells.filter((cell) => {
+        additionalColumn.innerCells = innerCells.filter((cell) => {
             return isDesktop ? !cell.onlyInIpad : !cell.onlyInDesktop;
         });
     }
-    return additionalColumns;
+    return additionalColumn;
+};
+
+const configureCellData = (column, updateRowInGrid) => {
+    if (!column.Cell && column.displayCell) {
+        column.Cell = (row) => {
+            const { column } = row;
+            if (column && row.row) {
+                const originalRowValue = { ...row.row.original };
+                const { id, innerCells, originalInnerCells } = column;
+                if (
+                    originalRowValue &&
+                    originalInnerCells &&
+                    originalInnerCells.length &&
+                    innerCells &&
+                    innerCells.length &&
+                    innerCells.length < originalInnerCells.length
+                ) {
+                    const columnValue = originalRowValue[id];
+                    if (typeof columnValue === "object") {
+                        if (columnValue.length > 0) {
+                            const newcolumnValue = columnValue.map((value) => {
+                                let params = {};
+                                innerCells.forEach((cell) => {
+                                    const cellAccessor = cell.accessor;
+                                    params[cellAccessor] = value[cellAccessor];
+                                });
+                                value = params;
+                                return value;
+                            });
+                            originalRowValue[id] = newcolumnValue;
+                        } else {
+                            let params = {};
+                            innerCells.forEach((cell) => {
+                                const cellAccessor = cell.accessor;
+                                params[cellAccessor] = row.value[cellAccessor];
+                            });
+                            originalRowValue[id] = params;
+                        }
+                    }
+                }
+                const cellDisplayContent = column.displayCell(originalRowValue);
+                const cellEditContent = column.editCell ? column.editCell(originalRowValue) : null;
+                return (
+                    <CellDisplayAndEdit
+                        cellDisplayContent={cellDisplayContent}
+                        cellEditContent={cellEditContent}
+                        rowValue={originalRowValue}
+                        columnId={id}
+                        innerCells={innerCells}
+                        updateRow={updateRowInGrid}
+                    />
+                );
+            }
+        };
+    }
 };
