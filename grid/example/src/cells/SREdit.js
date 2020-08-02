@@ -19,7 +19,7 @@ const SREdit = ({ rowData, getUpdatedData }) => {
 
     return (
         <div>
-            <input id="sr" type="text" value={sr} onChange={updateSrValue} />
+            <input type="text" value={sr} onChange={updateSrValue} />
         </div>
     );
 };

@@ -3,7 +3,7 @@ import Grid from "grid";
 import { fetchData } from "./getData";
 import FlightIcon from "./images/FlightIcon.png";
 import FlightEdit from "./cells/FlightEdit";
-import getDateValue from "./utils/DateUtility";
+import { getValueOfDate } from "./utils/DateUtility";
 import RowEditOverlay from "./cells/RowEditOverlay";
 import SREdit from "./cells/SREdit";
 import SegmentEdit from "./cells/SegmentEdit";
@@ -95,7 +95,7 @@ const App = () => {
                 return (
                     <div className="flight-details">
                         <strong>{flightno}</strong>
-                        <span>{getDateValue(date, "cell")}</span>
+                        <span>{getValueOfDate(date, "cell")}</span>
                     </div>
                 );
             },

@@ -52,7 +52,7 @@ const SegmentEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
 
     return (
         <div>
-            <select onChange={updateFromValue} value={segment.from}>
+            <select value={segment.from} onChange={updateFromValue}>
                 {airportCodeList.map((item, index) => {
                     return (
                         <option key={index} value={item}>
@@ -61,7 +61,7 @@ const SegmentEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
                     );
                 })}
             </select>
-            <select onChange={updateToValue} value={segment.to}>
+            <select value={segment.to} onChange={updateToValue}>
                 {airportCodeList.map((item, index) => {
                     return (
                         <option key={index} value={item}>
