@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getValueOfDate } from "../utils/DateUtility";
 
-const RowEditOverLay = ({ rowData, airportCodeList, getUpdatedData }) => {
+const RowEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
 
     const updateRowData = (updatedFlightData, updatedSegmentData, updatedWeightData, updatedSrData, updatedRemarksData) => {
@@ -143,4 +143,4 @@ const RowEditOverLay = ({ rowData, airportCodeList, getUpdatedData }) => {
     );
 };
 
-export default RowEditOverLay;
+export default RowEdit;

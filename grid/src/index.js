@@ -83,7 +83,9 @@ const Grid = memo((props) => {
                 return row;
             })
         );
-        updateRowData(updatedRow);
+        if (updateRowData) {
+            updateRowData(updatedRow);
+        }
     };
 
     //Gets triggered when one row item is deleted
@@ -93,7 +95,9 @@ const Grid = memo((props) => {
                 return row !== original;
             })
         );
-        deleteRowData(original);
+        if (deleteRowData) {
+            deleteRowData(original);
+        }
     };
 
     //Extract/add and modify required data from user configured columns and expand columns

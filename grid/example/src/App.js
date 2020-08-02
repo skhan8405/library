@@ -1,12 +1,12 @@
 import React from "react";
 import Grid from "grid";
-import { fetchData } from "./getData";
 import FlightIcon from "./images/FlightIcon.png";
-import FlightEdit from "./cells/FlightEdit";
+import { fetchData } from "./getData";
 import { getValueOfDate } from "./utils/DateUtility";
-import RowEditOverlay from "./cells/RowEditOverlay";
-import SREdit from "./cells/SREdit";
+import FlightEdit from "./cells/FlightEdit";
+import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
+import RowEdit from "./cells/RowEdit";
 
 const App = () => {
     //Create an array of airports
@@ -354,7 +354,7 @@ const App = () => {
                 );
             },
             editCell: (rowData, getUpdatedData) => {
-                return <SREdit rowData={rowData} getUpdatedData={getUpdatedData} />;
+                return <SrEdit rowData={rowData} getUpdatedData={getUpdatedData} />;
             }
         },
         {
@@ -443,7 +443,7 @@ const App = () => {
 
     //Pass row edit overlay to the grid component
     const getRowEditOverlay = (rowData, getUpdatedData) => {
-        return <RowEditOverlay airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
+        return <RowEdit airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
     };
 
     //Add logic to calculate height of each row, based on the content of  or more columns
