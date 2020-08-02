@@ -1,41 +1,58 @@
 import React, { useState } from "react";
 
-const SegmentEdit = ({ rowData, airportCodeList }) => {
-    const { segment, weight } = rowData;
-    const [segmentValue, setSegmentValue] = useState(segment);
-    const [weightValue, setWeightValue] = useState(weight);
+const SegmentEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
+    const [updatedRowData, setUpdatedRowData] = useState(rowData);
+    const { segment, weight } = updatedRowData;
+
+    const updateRowData = (updatedSegmentData, updatedWeightData) => {
+        const updatedRow = {
+            ...updatedRowData
+        };
+        if (updatedSegmentData) {
+            updatedRow.segment = updatedSegmentData;
+        }
+        if (updatedWeightData) {
+            updatedRow.weight = updatedWeightData;
+        }
+        setUpdatedRowData(updatedRow);
+        getUpdatedData(updatedRow);
+    };
 
     const updateFromValue = (e) => {
-        setSegmentValue({
-            ...segmentValue,
+        const updatedSegmentData = {
+            ...segment,
             from: e.target.value
-        });
+        };
+        updateRowData(updatedSegmentData, null);
     };
 
     const updateToValue = (e) => {
-        setSegmentValue({
-            ...segmentValue,
+        const updatedSegmentData = {
+            ...segment,
             to: e.target.value
-        });
+        };
+        updateRowData(updatedSegmentData, null);
     };
 
     const updateWeightPercentage = (e) => {
-        setWeightValue({
-            ...weightValue,
+        const updatedWeightData = {
+            ...weight,
             percentage: e.target.value
-        });
+        };
+        updateRowData(null, updatedWeightData);
     };
 
     const updateWeightValue = (e) => {
-        setWeightValue({
-            ...weightValue,
+        const updatedWeightData = {
+            ...weight,
             value: e.target.value
-        });
+        };
+        updateRowData(null, updatedWeightData);
     };
 
     return (
         <div>
-            <select id="segment_from" onChange={updateFromValue} key="segment-from" value={segmentValue.from}>
+            <select onChange={updateFromValue} value={segment.from}>
                 {airportCodeList.map((item, index) => {
                     return (
                         <option key={index} value={item}>
@@ -44,7 +61,7 @@ const SegmentEdit = ({ rowData, airportCodeList }) => {
                     );
                 })}
             </select>
-            <select id="segment_to" onChange={updateToValue} key="segment-to" value={segmentValue.to}>
+            <select onChange={updateToValue} value={segment.to}>
                 {airportCodeList.map((item, index) => {
                     return (
                         <option key={index} value={item}>
@@ -53,8 +70,8 @@ const SegmentEdit = ({ rowData, airportCodeList }) => {
                     );
                 })}
             </select>
-            <input id="weight_percentage" type="text" value={weightValue.percentage} onChange={updateWeightPercentage} />
-            <input id="weight_value" type="text" value={weightValue.value} onChange={updateWeightValue} />
+            <input type="text" value={weight.percentage} onChange={updateWeightPercentage} />
+            <input type="text" value={weight.value} onChange={updateWeightValue} />
         </div>
     );
 };

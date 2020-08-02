@@ -1,17 +1,25 @@
 import React, { useState } from "react";
 
-const SREdit = ({ rowData }) => {
-    const { sr } = rowData;
+const SREdit = ({ rowData, getUpdatedData }) => {
+    const [updatedRowData, setUpdatedRowData] = useState(rowData);
+    const { sr } = updatedRowData;
 
-    const [srValue, setSrValue] = useState(sr);
+    const updateRowData = (updatedSrData) => {
+        const updatedRow = {
+            ...updatedRowData,
+            sr: updatedSrData
+        };
+        setUpdatedRowData(updatedRow);
+        getUpdatedData(updatedRow);
+    };
 
     const updateSrValue = (e) => {
-        setSrValue(e.target.value);
+        updateRowData(e.target.value);
     };
 
     return (
         <div>
-            <input id="sr" type="text" value={srValue} onChange={updateSrValue} />
+            <input id="sr" type="text" value={sr} onChange={updateSrValue} />
         </div>
     );
 };

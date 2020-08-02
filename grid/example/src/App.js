@@ -131,8 +131,8 @@ const App = () => {
                     </div>
                 );
             },
-            editCell: (rowData) => {
-                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} editedOtherCells={["weight"]} />;
+            editCell: (rowData, getUpdatedData) => {
+                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
             }
         },
         {
@@ -354,8 +354,8 @@ const App = () => {
                     </div>
                 );
             },
-            editCell: (rowData) => {
-                return <SREdit rowData={rowData} />;
+            editCell: (rowData, getUpdatedData) => {
+                return <SREdit rowData={rowData} getUpdatedData={getUpdatedData} />;
             }
         },
         {
