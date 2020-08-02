@@ -1,174 +1,146 @@
-import React, { memo, useState } from "react";
-import ClickAwayListener from "react-click-away-listener";
-import getValueOfDate from "../utils/DateUtility";
+import React, { useState } from "react";
+import { getValueOfDate } from "../utils/DateUtility";
 
-const RowEditOverLay = memo((props) => {
-    const { row, rowEditData, updateRow, closeRowEditOverlay } = props;
-    const { flight, segment, weight, sr, remarks } = row;
-    const { airportCodeList } = rowEditData;
+const RowEditOverLay = ({ rowData, airportCodeList, getUpdatedData }) => {
+    const [updatedRowData, setUpdatedRowData] = useState(rowData);
 
-    const [value, setValue] = useState(row);
-    const [oldValue] = useState(row);
-
-    const onFlightNoChange = (e) => {
-        const newFlightCellValue = {
-            flightno: e.target.value,
-            date: value.flight.date
+    const updateRowData = (updatedFlightData, updatedSegmentData, updatedWeightData, updatedSrData, updatedRemarksData) => {
+        const updatedRow = {
+            ...updatedRowData
         };
-        setValue({
-            ...value,
-            flight: newFlightCellValue
-        });
+        if (updatedFlightData) {
+            updatedRow.flight = updatedFlightData;
+        }
+        if (updatedSegmentData) {
+            updatedRow.segment = updatedSegmentData;
+        }
+        if (updatedWeightData) {
+            updatedRow.weight = updatedWeightData;
+        }
+        if (updatedSrData) {
+            updatedRow.sr = updatedSrData;
+        }
+        if (updatedRemarksData) {
+            updatedRow.remarks = updatedRemarksData;
+        }
+        setUpdatedRowData(updatedRow);
+        getUpdatedData(updatedRow);
     };
 
-    const onFlightDateChange = (e) => {
-        const newFlightCellValue = {
-            flightno: value.flight.flightno,
-            date: e.target.value
+    const updateFlightnoValue = (e) => {
+        const updatedFlightData = {
+            ...flight,
+            flightno: e.target.value
         };
-        setValue({
-            ...value,
-            flight: newFlightCellValue
-        });
+        updateRowData(updatedFlightData);
     };
 
-    const onSegmentFromChange = (e) => {
-        const newSegmentCellValue = {
-            from: e.target.value,
-            to: value.segment.to
+    const updateDateValue = (e) => {
+        const updatedFlightData = {
+            ...flight,
+            date: getValueOfDate(e.target.value, "cell")
         };
-        setValue({
-            ...value,
-            segment: newSegmentCellValue
-        });
+        updateRowData(updatedFlightData);
     };
 
-    const onSegmentToChange = (e) => {
-        const newSegmentCellValue = {
-            from: value.segment.from,
+    const updateFromValue = (e) => {
+        const updatedSegmentData = {
+            ...segment,
+            from: e.target.value
+        };
+        updateRowData(null, updatedSegmentData);
+    };
+
+    const updateToValue = (e) => {
+        const updatedSegmentData = {
+            ...segment,
             to: e.target.value
         };
-        setValue({
-            ...value,
-            segment: newSegmentCellValue
-        });
+        updateRowData(null, updatedSegmentData);
     };
 
-    const onWeightPercentageChange = (e) => {
-        const newWeightCellValue = {
-            percentage: e.target.value,
-            value: value.weight.value
+    const updateWeightPercentage = (e) => {
+        const updatedWeightData = {
+            ...weight,
+            percentage: e.target.value
         };
-        setValue({
-            ...value,
-            weight: newWeightCellValue
-        });
+        updateRowData(null, null, updatedWeightData);
     };
 
-    const onWeightValueChange = (e) => {
-        const newWeightCellValue = {
-            percentage: value.weight.percentage,
+    const updateWeightValue = (e) => {
+        const updatedWeightData = {
+            ...weight,
             value: e.target.value
         };
-        setValue({
-            ...value,
-            weight: newWeightCellValue
-        });
+        updateRowData(null, null, updatedWeightData);
     };
 
-    const onSrChange = (e) => {
-        setValue({
-            ...value,
-            sr: e.target.value
-        });
+    const updateSrValue = (e) => {
+        updateRowData(null, null, null, e.target.value);
     };
 
-    const onRemarksChange = (e) => {
-        setValue({
-            ...value,
-            remarks: e.target.value
-        });
+    const updateRemarksValue = (e) => {
+        updateRowData(null, null, null, null, e.target.value);
     };
 
-    const saveRowEdit = () => {
-        updateRow(value);
-    };
-
-    const cancelRowEdit = () => {
-        setValue(oldValue);
-        closeRowEditOverlay();
-    };
+    const { flight, segment, weight, sr, remarks } = updatedRowData;
 
     return (
-        <ClickAwayListener onClickAway={closeRowEditOverlay}>
-            <div className="row-option-action-overlay">
-                <div className="row-edit">
-                    <div className="edit-flight">
-                        <div className="edit-flight-no">
-                            <label>FlightNo</label>
-                            <input type="text" onChange={(e) => onFlightNoChange(e)} defaultValue={flight.flightno} />
-                        </div>
-                        <div className="edit-flight-date">
-                            <label>Date</label>
-                            <input
-                                type="date"
-                                onChange={(e) => onFlightDateChange(e)}
-                                defaultValue={getValueOfDate(flight.date, "calendar")}
-                            />
-                        </div>
+        <>
+            <div className="row-edit">
+                <div className="edit-flight">
+                    <div className="edit-flight-no">
+                        <label>FlightNo</label>
+                        <input type="text" value={flight.flightno} onChange={updateFlightnoValue} />
                     </div>
-                    <div className="edit-flight-segment">
-                        <label>Segment From</label>
-                        <select defaultValue={segment.from} onChange={(e) => onSegmentFromChange(e)}>
-                            {airportCodeList.map((item, index) => {
-                                return (
-                                    <option key={index} value={item}>
-                                        {item}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                        <label>Segment To</label>
-                        <select defaultValue={segment.to} onChange={(e) => onSegmentToChange(e)}>
-                            {airportCodeList.map((item, index) => {
-                                return (
-                                    <option key={index} value={item}>
-                                        {item}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </div>
-                    <div className="edit-weight">
-                        <div className="edit-weight-percentage">
-                            <label>Weight Percentage</label>
-                            <input type="text" defaultValue={weight.percentage} onChange={(e) => onWeightPercentageChange(e)} />
-                        </div>
-                        <div className="edit-weight-value">
-                            <label>Weight Value</label>
-                            <input type="text" onChange={(e) => onWeightValueChange(e)} defaultValue={weight.value} />
-                        </div>
-                    </div>
-                    <div className="edit-sr">
-                        <label>SR</label>
-                        <input type="text" onChange={(e) => onSrChange(e)} defaultValue={sr} />
+                    <div className="edit-flight-date">
+                        <label>Date</label>
+                        <input type="date" value={getValueOfDate(flight.date, "calendar")} onChange={updateDateValue} />
                     </div>
                 </div>
-                <div className="remarks-edit">
-                    <label>Remarks</label>
-                    <textarea onChange={(e) => onRemarksChange(e)} defaultValue={remarks} rows="3" cols="80"></textarea>
+                <div className="edit-flight-segment">
+                    <label>Segment From</label>
+                    <select value={segment.from} onChange={updateFromValue}>
+                        {airportCodeList.map((item, index) => {
+                            return (
+                                <option key={index} value={item}>
+                                    {item}
+                                </option>
+                            );
+                        })}
+                    </select>
+                    <label>Segment To</label>
+                    <select value={segment.to} onChange={updateToValue}>
+                        {airportCodeList.map((item, index) => {
+                            return (
+                                <option key={index} value={item}>
+                                    {item}
+                                </option>
+                            );
+                        })}
+                    </select>
                 </div>
-                <div className="cancel-save-buttons">
-                    <button className="save-Button" onClick={() => saveRowEdit(row)}>
-                        Save
-                    </button>
-                    <button className="cancel-Button" onClick={cancelRowEdit}>
-                        Cancel
-                    </button>
+                <div className="edit-weight">
+                    <div className="edit-weight-percentage">
+                        <label>Weight Percentage</label>
+                        <input type="text" value={weight.percentage} onChange={updateWeightPercentage} />
+                    </div>
+                    <div className="edit-weight-value">
+                        <label>Weight Value</label>
+                        <input type="text" value={weight.value} onChange={updateWeightValue} />
+                    </div>
+                </div>
+                <div className="edit-sr">
+                    <label>SR</label>
+                    <input type="text" value={sr} onChange={updateSrValue} />
                 </div>
             </div>
-        </ClickAwayListener>
+            <div className="remarks-edit">
+                <label>Remarks</label>
+                <textarea rows="4" value={remarks} onChange={updateRemarksValue}></textarea>
+            </div>
+        </>
     );
-});
+};
 
 export default RowEditOverLay;

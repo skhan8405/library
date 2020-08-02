@@ -441,6 +441,11 @@ const App = () => {
         }
     };
 
+    //Pass row edit overlay to the grid component
+    const getRowEditOverlay = (rowData, getUpdatedData) => {
+        return <RowEditOverlay airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
+    };
+
     //Add logic to calculate height of each row, based on the content of  or more columns
     const calculateRowHeight = (row, gridColumns) => {
         //Minimum height for each row
@@ -502,11 +507,8 @@ const App = () => {
             columns={columns}
             columnToExpand={columnToExpand}
             fetchData={fetchData}
+            getRowEditOverlay={getRowEditOverlay}
             calculateRowHeight={calculateRowHeight}
-            RowEditOverlay={RowEditOverlay}
-            rowEditData={{
-                airportCodeList: airportCodeList
-            }}
             updateRowData={updateRowData}
             deleteRowData={deleteRowData}
             selectBulkData={selectBulkData}

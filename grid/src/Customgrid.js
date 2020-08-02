@@ -16,6 +16,7 @@ import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import RowOptions from "./Functions/RowOptions";
+import RowEditOverlay from "./Functions/RowEditOverlay";
 import RowDeleteOverLay from "./Functions/RowDeleteOverLay";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
@@ -32,8 +33,7 @@ const Customgrid = memo((props) => {
         originalColumns,
         additionalColumn,
         data,
-        RowEditOverlay,
-        rowEditData,
+        getRowEditOverlay,
         updateRowInGrid,
         deleteRowFromGrid,
         globalSearchLogic,
@@ -64,6 +64,24 @@ const Customgrid = memo((props) => {
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
     };
+
+    //Local state value for checking if column filter is open/closed
+    const [isRowEditOverlyOpen, setIsRowEditOverlyOpen] = useState(false);
+    //Local state value to hold row data that is going to be edited
+    const [editedRowData, setEditedRowData] = useState(null);
+
+    //Bind the user defined row edit overlay into Grid
+    const bindRowEditOverlay = (rowValue) => {
+        setEditedRowData(rowValue);
+        setIsRowEditOverlyOpen(true);
+    };
+
+    const closeRowEditOverlay = () => {
+        setEditedRowData(null);
+        setIsRowEditOverlyOpen(false);
+    };
+
+    const bindRowDeleteOverlay = () => {};
 
     //Local state value for checking if group Sort Overlay is open/closed.
     const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
@@ -173,11 +191,8 @@ const Customgrid = memo((props) => {
                             <div className="action">
                                 <RowOptions
                                     row={row}
-                                    RowDeleteOverLay={RowDeleteOverLay}
-                                    deleteRowFromGrid={deleteRowFromGrid}
-                                    RowEditOverlay={RowEditOverlay}
-                                    rowEditData={rowEditData}
-                                    updateRowInGrid={updateRowInGrid}
+                                    bindRowEditOverlay={bindRowEditOverlay}
+                                    bindRowDeleteOverlay={bindRowDeleteOverlay}
                                 />
                                 {isRowExpandEnabled ? (
                                     <span className="expander" {...row.getToggleRowExpandedProps()}>
@@ -296,6 +311,16 @@ const Customgrid = memo((props) => {
                     </div>
                 </div>
             </div>
+            {isRowEditOverlyOpen ? (
+                <div className="table-popus">
+                    <RowEditOverlay
+                        row={editedRowData}
+                        getRowEditOverlay={getRowEditOverlay}
+                        closeRowEditOverlay={closeRowEditOverlay}
+                        updateRowInGrid={updateRowInGrid}
+                    />
+                </div>
+            ) : null}
             <div
                 className="tableContainer table-outer"
                 style={{ height: gridHeight ? gridHeight : "50vh", overflowX: "auto", overflowY: "hidden" }}

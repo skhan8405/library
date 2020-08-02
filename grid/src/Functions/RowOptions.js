@@ -4,13 +4,10 @@ import RowDelete from "../Images/RowDelete.svg";
 import RowEdit from "../Images/RowEdit.svg";
 import RowPin from "../Images/RowPin.png";
 
-const RowOptions = memo((props) => {
-    const { row, RowDeleteOverLay, deleteRowFromGrid, RowEditOverlay, rowEditData, updateRowInGrid } = props;
+const RowOptions = memo(({ row, bindRowEditOverlay, bindRowDeleteOverlay }) => {
     const { original } = row;
 
     const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
-    const [isRowEditOverlayOpen, setRowEditOverlayOpen] = useState(false);
-    const [isDeleteOverlayOpen, setDeleteOverlayOpen] = useState(false);
 
     const openRowOptionsOverlay = () => {
         setRowOptionsOpen(true);
@@ -21,29 +18,13 @@ const RowOptions = memo((props) => {
     };
 
     const openRowEditOverlay = () => {
-        setRowOptionsOpen(false);
-        setRowEditOverlayOpen(true);
-    };
-
-    const closeRowEditOverlay = () => {
-        setRowEditOverlayOpen(false);
-    };
-
-    const updateRow = (updatedrow) => {
-        updateRowInGrid(original, updatedrow);
+        bindRowEditOverlay(original);
+        closeRowOptionsOverlay();
     };
 
     const openDeleteOverlay = () => {
-        setRowOptionsOpen(false);
-        setDeleteOverlayOpen(true);
-    };
-
-    const closeDeleteOverlay = () => {
-        setDeleteOverlayOpen(false);
-    };
-
-    const deleteRow = () => {
-        deleteRowFromGrid(original);
+        bindRowDeleteOverlay(original);
+        closeRowOptionsOverlay();
     };
 
     return (
@@ -90,15 +71,6 @@ const RowOptions = memo((props) => {
                     </ClickAwayListener>
                 ) : null}
             </div>
-            {isRowEditOverlayOpen ? (
-                <RowEditOverlay
-                    row={original}
-                    rowEditData={rowEditData}
-                    closeRowEditOverlay={closeRowEditOverlay}
-                    updateRow={updateRow}
-                />
-            ) : null}
-            {isDeleteOverlayOpen ? <RowDeleteOverLay closeDeleteOverlay={closeDeleteOverlay} deleteRow={deleteRow} /> : null}
         </div>
     );
 });
