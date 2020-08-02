@@ -272,7 +272,7 @@ const Customgrid = memo((props) => {
     //Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
     //React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
     return (
-        <div className="wrapper" style={{ width: gridWidth ? gridWidth : "100%" }}>
+        <div className="table-wrapper" style={{ width: gridWidth ? gridWidth : "100%" }}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
             <div className="table-filter">
                 <div className="results">

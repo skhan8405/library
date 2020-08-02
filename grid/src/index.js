@@ -260,50 +260,53 @@ const Grid = memo((props) => {
     //Sort the data based on the user selected group sort optipons
     const data = getSortedData([...items]);
 
-    if (data && data.length > 0 && processedColumns && processedColumns.length > 0) {
-        return (
-            <div>
-                <Customgrid
-                    title={title}
-                    gridHeight={gridHeight}
-                    gridWidth={gridWidth}
-                    managableColumns={gridColumns}
-                    originalColumns={gridColumns}
-                    additionalColumn={additionalColumn}
-                    data={data}
-                    getRowEditOverlay={getRowEditOverlay}
-                    updateRowInGrid={updateRowInGrid}
-                    deleteRowFromGrid={deleteRowFromGrid}
-                    globalSearchLogic={globalSearchLogic}
-                    selectBulkData={selectBulkData}
-                    calculateRowHeight={
-                        calculateRowHeight && typeof calculateRowHeight === "function"
-                            ? calculateRowHeight
-                            : calculateDefaultRowHeight
-                    }
-                    isExpandContentAvailable={typeof renderExpandedContent === "function"}
-                    displayExpandedContent={displayExpandedContent}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                    doGroupSort={doGroupSort}
-                />
-                {isNextPageLoading ? (
-                    <div id="loader" className="background">
-                        <div className="dots container">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+    return (
+        <div className="grid-component-container">
+            {data && data.length > 0 && processedColumns && processedColumns.length > 0 ? (
+                <div>
+                    <Customgrid
+                        title={title}
+                        gridHeight={gridHeight}
+                        gridWidth={gridWidth}
+                        managableColumns={gridColumns}
+                        originalColumns={gridColumns}
+                        additionalColumn={additionalColumn}
+                        data={data}
+                        getRowEditOverlay={getRowEditOverlay}
+                        updateRowInGrid={updateRowInGrid}
+                        deleteRowFromGrid={deleteRowFromGrid}
+                        globalSearchLogic={globalSearchLogic}
+                        selectBulkData={selectBulkData}
+                        calculateRowHeight={
+                            calculateRowHeight && typeof calculateRowHeight === "function"
+                                ? calculateRowHeight
+                                : calculateDefaultRowHeight
+                        }
+                        isExpandContentAvailable={typeof renderExpandedContent === "function"}
+                        displayExpandedContent={displayExpandedContent}
+                        hasNextPage={hasNextPage}
+                        isNextPageLoading={isNextPageLoading}
+                        loadNextPage={loadNextPage}
+                        doGroupSort={doGroupSort}
+                    />
+                    {isNextPageLoading ? (
+                        <div id="loader" className="background">
+                            <div className="dots container">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                         </div>
-                    </div>
-                ) : null}
-            </div>
-        );
-    } else if (isLoading) {
-        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
-    } else {
-        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Invalid Data or Column Configurations</h2>;
-    }
+                    ) : null}
+                    )
+                </div>
+            ) : (
+                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                    {isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"}
+                </h2>
+            )}
+        </div>
+    );
 });
 
 export default Grid;
