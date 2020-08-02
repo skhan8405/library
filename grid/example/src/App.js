@@ -100,8 +100,8 @@ const App = () => {
                     </div>
                 );
             },
-            editCell: (rowData) => {
-                return <FlightEdit rowData={rowData} />;
+            editCell: (rowData, getUpdatedData) => {
+                return <FlightEdit rowData={rowData} getUpdatedData={getUpdatedData} />;
             }
         },
         {

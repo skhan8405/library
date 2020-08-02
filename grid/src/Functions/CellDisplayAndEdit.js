@@ -1,8 +1,9 @@
 import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 
-const CellDisplayAndEdit = memo(({ cellDisplayContent, cellEditContent, rowValue, columnId, columns, updateRow }) => {
+const CellDisplayAndEdit = memo(({ row, updateRowInGrid }) => {
     const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editedRowValue, setEditedRowValue] = useState(null);
 
     const closeEdit = () => {
         setIsEditOpen(false);
@@ -12,84 +13,74 @@ const CellDisplayAndEdit = memo(({ cellDisplayContent, cellEditContent, rowValue
         setIsEditOpen(true);
     };
 
-    const getInnerCellsOfColumn = (columnId) => {
-        const selectedColumn = columns.find((col) => {
-            return col.id === columnId;
-        });
-        if (selectedColumn) {
-            const { innerCells } = selectedColumn;
-            return innerCells && innerCells.length > 0 ? innerCells : [];
-        }
-        return [];
+    const getUpdatedRowValue = (value) => {
+        setEditedRowValue(value);
     };
-
-    const updateCellValue = (columnId, updatedRowValue) => {
-        const columnValue = updatedRowValue[columnId];
-        if (typeof columnValue === "object") {
-            let params = Object.assign({}, columnValue);
-            const innerCellsOfColumn = getInnerCellsOfColumn(columnId);
-            innerCellsOfColumn.forEach((cell) => {
-                const cellAccessor = cell.accessor;
-                const updatedElement = document.getElementById(columnId + "_" + cellAccessor);
-                if (updatedElement) {
-                    const updatedValue = updatedElement.value;
-                    params[cellAccessor] = updatedValue;
-                }
-            });
-            updatedRowValue[columnId] = params;
-        } else {
-            const updatedElement = document.getElementById(columnId);
-            if (updatedElement) {
-                const updatedValue = updatedElement.value;
-                updatedRowValue[columnId] = updatedValue;
-            }
-        }
-    };
-
-    let editableCells = [];
-    if (
-        cellEditContent &&
-        cellEditContent.props &&
-        cellEditContent.props.editedOtherCells &&
-        cellEditContent.props.editedOtherCells.length
-    ) {
-        editableCells = cellEditContent.props.editedOtherCells;
-    }
 
     const saveEdit = () => {
-        const updatedRowValue = Object.assign({}, rowValue);
-        if (columnId) {
-            editableCells.push(columnId);
+        updateRowInGrid(row.row.original, editedRowValue);
+    };
+
+    const { column } = row;
+    if (column && row.row) {
+        const originalRowValue = { ...row.row.original };
+        const { id, innerCells, originalInnerCells } = column;
+
+        //Remove inncer cell data from row value if it is hidden from column chooser overlay.
+        if (
+            originalRowValue &&
+            originalInnerCells &&
+            originalInnerCells.length &&
+            innerCells &&
+            innerCells.length &&
+            innerCells.length < originalInnerCells.length
+        ) {
+            const columnValue = originalRowValue[id];
+            if (typeof columnValue === "object") {
+                if (columnValue.length > 0) {
+                    const newcolumnValue = columnValue.map((value) => {
+                        let params = {};
+                        innerCells.forEach((cell) => {
+                            const cellAccessor = cell.accessor;
+                            params[cellAccessor] = value[cellAccessor];
+                        });
+                        value = params;
+                        return value;
+                    });
+                    originalRowValue[id] = newcolumnValue;
+                } else {
+                    let params = {};
+                    innerCells.forEach((cell) => {
+                        const cellAccessor = cell.accessor;
+                        params[cellAccessor] = row.value[cellAccessor];
+                    });
+                    originalRowValue[id] = params;
+                }
+            }
         }
-        editableCells.forEach((cell) => {
-            updateCellValue(cell, updatedRowValue);
-        });
-        updateRow(rowValue, updatedRowValue);
-    };
 
-    const clearEdit = () => {
-        closeEdit();
-    };
-
-    return (
-        <ClickAwayListener onClickAway={closeEdit}>
-            <div className={`table-cell--content table-cell--content__${columnId}`}>
-                {cellEditContent ? (
-                    <div className="cell-edit" onClick={openEdit}>
-                        <i className="fa fa-pencil" aria-hidden="true"></i>
-                    </div>
-                ) : null}
-                {cellDisplayContent}
-                {isEditOpen ? (
-                    <div className="table-cell--content-edit">
-                        {cellEditContent}
-                        <button className="ok" onClick={saveEdit} />
-                        <button className="cancel" onClick={clearEdit} />
-                    </div>
-                ) : null}
-            </div>
-        </ClickAwayListener>
-    );
+        const cellDisplayContent = column.displayCell(originalRowValue);
+        const cellEditContent = column.editCell ? column.editCell(originalRowValue, getUpdatedRowValue) : null;
+        return (
+            <ClickAwayListener onClickAway={closeEdit}>
+                <div className={`table-cell--content table-cell--content__${id}`}>
+                    {cellEditContent ? (
+                        <div className="cell-edit" onClick={openEdit}>
+                            <i className="fa fa-pencil" aria-hidden="true"></i>
+                        </div>
+                    ) : null}
+                    {cellDisplayContent}
+                    {isEditOpen ? (
+                        <div className="table-cell--content-edit">
+                            {cellEditContent}
+                            <button className="ok" onClick={saveEdit} />
+                            <button className="cancel" onClick={closeEdit} />
+                        </div>
+                    ) : null}
+                </div>
+            </ClickAwayListener>
+        );
+    }
 });
 
 export default CellDisplayAndEdit;
