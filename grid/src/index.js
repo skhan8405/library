@@ -10,10 +10,10 @@ const Grid = memo((props) => {
         columns,
         columnToExpand,
         fetchData,
-        rowEditOverlay,
+        RowEditOverlay,
         rowEditData,
         updateRowData,
-        deletePopUpOverLay,
+        RowDeleteOverLay,
         deleteRowData,
         selectBulkData,
         calculateRowHeight
@@ -269,10 +269,10 @@ const Grid = memo((props) => {
                     originalColumns={gridColumns}
                     additionalColumn={additionalColumn}
                     data={data}
-                    rowEditOverlay={rowEditOverlay}
+                    RowEditOverlay={RowEditOverlay}
                     rowEditData={rowEditData}
                     updateRowInGrid={updateRowInGrid}
-                    deletePopUpOverLay={deletePopUpOverLay}
+                    RowDeleteOverLay={RowDeleteOverLay}
                     deleteRowFromGrid={deleteRowFromGrid}
                     globalSearchLogic={globalSearchLogic}
                     selectBulkData={selectBulkData}

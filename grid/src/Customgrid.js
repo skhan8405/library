@@ -31,10 +31,10 @@ const Customgrid = memo((props) => {
         originalColumns,
         additionalColumn,
         data,
-        rowEditOverlay,
+        RowEditOverlay,
         rowEditData,
         updateRowInGrid,
-        deletePopUpOverLay,
+        RowDeleteOverLay,
         deleteRowFromGrid,
         globalSearchLogic,
         selectBulkData,
@@ -173,9 +173,9 @@ const Customgrid = memo((props) => {
                             <div className="action">
                                 <RowOptions
                                     row={row}
-                                    DeletePopUpOverLay={deletePopUpOverLay}
+                                    DeletePopUpOverLay={RowDeleteOverLay}
                                     deleteRowFromGrid={deleteRowFromGrid}
-                                    RowEditOverlay={rowEditOverlay}
+                                    RowEditOverlay={RowEditOverlay}
                                     rowEditData={rowEditData}
                                     updateRowInGrid={updateRowInGrid}
                                 />

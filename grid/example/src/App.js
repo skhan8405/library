@@ -4,7 +4,7 @@ import { fetchData } from "./getData";
 import FlightIcon from "./images/FlightIcon.png";
 import FlightEdit from "./cells/FlightEdit";
 import getDateValue from "./utils/DateUtility";
-import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
+import RowDeleteOverLay from "./cells/RowDeleteOverLay";
 import RowEditOverlay from "./cells/RowEditOverlay";
 import SREdit from "./cells/SREdit";
 import SegmentEdit from "./cells/SegmentEdit";
@@ -503,15 +503,15 @@ const App = () => {
             columns={columns}
             columnToExpand={columnToExpand}
             fetchData={fetchData}
-            rowEditOverlay={RowEditOverlay}
+            calculateRowHeight={calculateRowHeight}
+            RowEditOverlay={RowEditOverlay}
             rowEditData={{
                 airportCodeList: airportCodeList
             }}
+            RowDeleteOverLay={RowDeleteOverLay}
             updateRowData={updateRowData}
-            deletePopUpOverLay={DeletePopUpOverLay}
             deleteRowData={deleteRowData}
             selectBulkData={selectBulkData}
-            calculateRowHeight={calculateRowHeight}
         />
     );
 };
