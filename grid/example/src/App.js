@@ -286,7 +286,7 @@ const App = () => {
         {
             Header: "ULD Positions",
             accessor: "uldPositions",
-            width: 100,
+            width: 120,
             innerCells: [
                 {
                     Header: "Position",
