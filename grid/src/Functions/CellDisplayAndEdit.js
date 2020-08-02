@@ -2,27 +2,32 @@ import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 
 const CellDisplayAndEdit = memo(({ row, updateRowInGrid }) => {
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const [editedRowValue, setEditedRowValue] = useState(null);
-
-    const closeEdit = () => {
-        setIsEditOpen(false);
-    };
-
-    const openEdit = () => {
-        setIsEditOpen(true);
-    };
-
-    const getUpdatedRowValue = (value) => {
-        setEditedRowValue(value);
-    };
-
-    const saveEdit = () => {
-        updateRowInGrid(row.row.original, editedRowValue);
-    };
-
     const { column } = row;
     if (column && row.row) {
+        const [isEditOpen, setIsEditOpen] = useState(false);
+        const [editedRowValue, setEditedRowValue] = useState(null);
+
+        const closeEdit = () => {
+            setIsEditOpen(false);
+        };
+
+        const openEdit = () => {
+            setIsEditOpen(true);
+        };
+
+        const getUpdatedRowValue = (value) => {
+            if (value) {
+                setEditedRowValue(value);
+            }
+        };
+
+        const saveEdit = () => {
+            if (editedRowValue) {
+                updateRowInGrid(row.row.original, editedRowValue);
+            }
+            closeEdit();
+        };
+
         const originalRowValue = { ...row.row.original };
         const { id, innerCells, originalInnerCells } = column;
 
