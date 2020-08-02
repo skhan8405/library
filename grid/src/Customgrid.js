@@ -16,6 +16,7 @@ import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import RowOptions from "./Functions/RowOptions";
+import RowDeleteOverLay from "./Functions/RowDeleteOverLay";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
 import ExportData from "./Overlays/exportdata";
@@ -34,7 +35,6 @@ const Customgrid = memo((props) => {
         RowEditOverlay,
         rowEditData,
         updateRowInGrid,
-        RowDeleteOverLay,
         deleteRowFromGrid,
         globalSearchLogic,
         selectBulkData,
@@ -173,7 +173,7 @@ const Customgrid = memo((props) => {
                             <div className="action">
                                 <RowOptions
                                     row={row}
-                                    DeletePopUpOverLay={RowDeleteOverLay}
+                                    RowDeleteOverLay={RowDeleteOverLay}
                                     deleteRowFromGrid={deleteRowFromGrid}
                                     RowEditOverlay={RowEditOverlay}
                                     rowEditData={rowEditData}

@@ -4,7 +4,6 @@ import { fetchData } from "./getData";
 import FlightIcon from "./images/FlightIcon.png";
 import FlightEdit from "./cells/FlightEdit";
 import getDateValue from "./utils/DateUtility";
-import RowDeleteOverLay from "./cells/RowDeleteOverLay";
 import RowEditOverlay from "./cells/RowEditOverlay";
 import SREdit from "./cells/SREdit";
 import SegmentEdit from "./cells/SegmentEdit";
@@ -508,7 +507,6 @@ const App = () => {
             rowEditData={{
                 airportCodeList: airportCodeList
             }}
-            RowDeleteOverLay={RowDeleteOverLay}
             updateRowData={updateRowData}
             deleteRowData={deleteRowData}
             selectBulkData={selectBulkData}

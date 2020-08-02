@@ -13,7 +13,6 @@ const Grid = memo((props) => {
         RowEditOverlay,
         rowEditData,
         updateRowData,
-        RowDeleteOverLay,
         deleteRowData,
         selectBulkData,
         calculateRowHeight
@@ -272,7 +271,6 @@ const Grid = memo((props) => {
                     RowEditOverlay={RowEditOverlay}
                     rowEditData={rowEditData}
                     updateRowInGrid={updateRowInGrid}
-                    RowDeleteOverLay={RowDeleteOverLay}
                     deleteRowFromGrid={deleteRowFromGrid}
                     globalSearchLogic={globalSearchLogic}
                     selectBulkData={selectBulkData}
