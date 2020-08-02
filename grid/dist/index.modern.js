@@ -1862,7 +1862,7 @@ var Customgrid = memo(function (props) {
     }
   }, [prepareRow, rows, displayExpandedContent]);
   return /*#__PURE__*/React.createElement("div", {
-    className: "wrapper",
+    className: "table-wrapper",
     style: {
       width: gridWidth ? gridWidth : "100%"
     }
@@ -2241,49 +2241,39 @@ var Grid = memo(function (props) {
     });
   }, []);
   var data = getSortedData([].concat(items));
-
-  if (data && data.length > 0 && processedColumns && processedColumns.length > 0) {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Customgrid, {
-      title: title,
-      gridHeight: gridHeight,
-      gridWidth: gridWidth,
-      managableColumns: gridColumns,
-      originalColumns: gridColumns,
-      additionalColumn: additionalColumn,
-      data: data,
-      getRowEditOverlay: getRowEditOverlay,
-      updateRowInGrid: updateRowInGrid,
-      deleteRowFromGrid: deleteRowFromGrid,
-      globalSearchLogic: globalSearchLogic,
-      selectBulkData: selectBulkData,
-      calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
-      isExpandContentAvailable: typeof renderExpandedContent === "function",
-      displayExpandedContent: displayExpandedContent,
-      hasNextPage: hasNextPage,
-      isNextPageLoading: isNextPageLoading,
-      loadNextPage: loadNextPage,
-      doGroupSort: doGroupSort
-    }), isNextPageLoading ? /*#__PURE__*/React.createElement("div", {
-      id: "loader",
-      className: "background"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "dots container"
-    }, /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null))) : null);
-  } else if (isLoading) {
-    return /*#__PURE__*/React.createElement("h2", {
-      style: {
-        textAlign: "center",
-        marginTop: "70px"
-      }
-    }, "Initializing Grid...");
-  } else {
-    return /*#__PURE__*/React.createElement("h2", {
-      style: {
-        textAlign: "center",
-        marginTop: "70px"
-      }
-    }, "Invalid Data or Column Configurations");
-  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "grid-component-container"
+  }, data && data.length > 0 && processedColumns && processedColumns.length > 0 ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Customgrid, {
+    title: title,
+    gridHeight: gridHeight,
+    gridWidth: gridWidth,
+    managableColumns: gridColumns,
+    originalColumns: gridColumns,
+    additionalColumn: additionalColumn,
+    data: data,
+    getRowEditOverlay: getRowEditOverlay,
+    updateRowInGrid: updateRowInGrid,
+    deleteRowFromGrid: deleteRowFromGrid,
+    globalSearchLogic: globalSearchLogic,
+    selectBulkData: selectBulkData,
+    calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
+    isExpandContentAvailable: typeof renderExpandedContent === "function",
+    displayExpandedContent: displayExpandedContent,
+    hasNextPage: hasNextPage,
+    isNextPageLoading: isNextPageLoading,
+    loadNextPage: loadNextPage,
+    doGroupSort: doGroupSort
+  }), isNextPageLoading ? /*#__PURE__*/React.createElement("div", {
+    id: "loader",
+    className: "background"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dots container"
+  }, /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null))) : null, ")") : /*#__PURE__*/React.createElement("h2", {
+    style: {
+      textAlign: "center",
+      marginTop: "70px"
+    }
+  }, isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"));
 });
 
 export default Grid;
