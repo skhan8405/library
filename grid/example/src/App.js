@@ -439,7 +439,7 @@ const App = () => {
             { Header: "Remarks", accessor: "remarks" },
             { Header: "Details", onlyInTablet: true, accessor: "details" }
         ],
-        displayCell: (rowData) => {
+        displayCell: (rowData, DisplayTag) => {
             const { remarks, details } = rowData;
             const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details
                 ? details
@@ -449,12 +449,12 @@ const App = () => {
             const timeText = timeStatusArray.join(" ");
             return (
                 <div className="details-wrap">
-                    {remarks ? (
+                    <DisplayTag cellKey="remarks">
                         <ul>
                             <li>{remarks}</li>
                         </ul>
-                    ) : null}
-                    {details ? (
+                    </DisplayTag>
+                    <DisplayTag cellKey="details">
                         <ul>
                             <li>
                                 {startTime} - {endTime}
@@ -479,7 +479,7 @@ const App = () => {
                                 <span>{timeText}</span>
                             </li>
                         </ul>
-                    ) : null}
+                    </DisplayTag>
                 </div>
             );
         }

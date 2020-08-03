@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState, useEffect } from "react";
+import React, { memo, useMemo, useState, useEffect, Fragment } from "react";
 import { extractColumns, extractAdditionalColumn } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
 
@@ -110,21 +110,41 @@ const Grid = memo((props) => {
     //Local variable for keeping the expanded row rendering method
     let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
-    //Process data to be rendered to expanded view and return that data to the render function
-    const displayExpandedContent = (row, additionalColumn) => {
-        if (row && additionalColumn) {
-            const { innerCells } = additionalColumn;
-            const { original } = row;
-            if (original && innerCells && innerCells.length > 0) {
-                const expandedRowContent = {};
-                innerCells.forEach((cell) => {
-                    const { accessor } = cell;
-                    expandedRowContent[accessor] = original[accessor];
-                });
-                return renderExpandedContent(expandedRowContent);
+    //#region - Check if data is hidden or not and display data in rendered section
+    //A custom tag created to be used by developer to bind data into the expanded component (if data chooser is selected)
+    const DisplayTag = (props) => {
+        console.log(additionalColumn);
+        const { cellKey } = props;
+        if (additionalColumn && cellKey) {
+            if (checkInnerCells(additionalColumn, cellKey)) {
+                return <Fragment> {props.children}</Fragment>;
             }
         }
+        return null;
     };
+    //Check if data to be bind is
+    const checkInnerCells = (column, cellKey) => {
+        if (column) {
+            const { innerCells } = column;
+            if (innerCells) {
+                const innerCellData = innerCells.find((cell) => {
+                    return cell.accessor === cellKey;
+                });
+                if (innerCellData) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    //Process data to be rendered to expanded view and return that data to the render function
+    const displayExpandedContent = (row) => {
+        const { original } = row;
+        if (original) {
+            return renderExpandedContent(original, DisplayTag);
+        }
+    };
+    //#endregion
 
     //Add logic for doing global search in the grid
     const globalSearchLogic = (rows, columns, filterValue) => {
