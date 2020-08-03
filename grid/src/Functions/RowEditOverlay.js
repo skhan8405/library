@@ -1,7 +1,8 @@
 import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
+import { removeHiddenInnerCellValues } from "../Utilities/HandleData";
 
-const RowEditOverLay = memo(({ row, getRowEditOverlay, closeRowEditOverlay, updateRowInGrid }) => {
+const RowEditOverLay = memo(({ row, columns, getRowEditOverlay, closeRowEditOverlay, updateRowInGrid }) => {
     const [editedRowValue, setEditedRowValue] = useState(null);
 
     const getUpdatedRowValue = (value) => {
@@ -17,7 +18,8 @@ const RowEditOverLay = memo(({ row, getRowEditOverlay, closeRowEditOverlay, upda
         closeRowEditOverlay();
     };
 
-    const rowEditContent = getRowEditOverlay(row, getUpdatedRowValue);
+    const originalRowValue = removeHiddenInnerCellValues({ ...row }, columns);
+    const rowEditContent = getRowEditOverlay(originalRowValue, getUpdatedRowValue);
     return (
         <ClickAwayListener onClickAway={closeRowEditOverlay}>
             <div className="row-option-action-overlay">

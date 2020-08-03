@@ -88,57 +88,83 @@ const RowEdit = ({ rowData, airportCodeList, rowUpdateCallBack }) => {
     return (
         <>
             <div className="row-edit">
-                <div className="edit-flight">
-                    <div className="edit-flight-no">
-                        <label>FlightNo</label>
-                        <input type="text" value={flight.flightno} onChange={updateFlightnoValue} />
+                {flight ? (
+                    <div className="edit-flight">
+                        {flight.flightno ? (
+                            <div className="edit-flight-no">
+                                <label>FlightNo</label>
+                                <input type="text" value={flight.flightno} onChange={updateFlightnoValue} />
+                            </div>
+                        ) : null}
+                        {flight.date ? (
+                            <div className="edit-flight-date">
+                                <label>Date</label>
+                                <input type="date" value={getValueOfDate(flight.date, "calendar")} onChange={updateDateValue} />
+                            </div>
+                        ) : null}
                     </div>
-                    <div className="edit-flight-date">
-                        <label>Date</label>
-                        <input type="date" value={getValueOfDate(flight.date, "calendar")} onChange={updateDateValue} />
+                ) : null}
+                {segment ? (
+                    <div className="edit-flight-segment">
+                        {segment.from ? (
+                            <div>
+                                <label>Segment From</label>
+                                <select value={segment.from} onChange={updateFromValue}>
+                                    {airportCodeList.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item}>
+                                                {item}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                        ) : null}
+                        {segment.to ? (
+                            <div>
+                                <label>Segment To</label>
+                                <select value={segment.to} onChange={updateToValue}>
+                                    {airportCodeList.map((item, index) => {
+                                        return (
+                                            <option key={index} value={item}>
+                                                {item}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                        ) : null}
                     </div>
-                </div>
-                <div className="edit-flight-segment">
-                    <label>Segment From</label>
-                    <select value={segment.from} onChange={updateFromValue}>
-                        {airportCodeList.map((item, index) => {
-                            return (
-                                <option key={index} value={item}>
-                                    {item}
-                                </option>
-                            );
-                        })}
-                    </select>
-                    <label>Segment To</label>
-                    <select value={segment.to} onChange={updateToValue}>
-                        {airportCodeList.map((item, index) => {
-                            return (
-                                <option key={index} value={item}>
-                                    {item}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
-                <div className="edit-weight">
-                    <div className="edit-weight-percentage">
-                        <label>Weight Percentage</label>
-                        <input type="text" value={weight.percentage} onChange={updateWeightPercentage} />
+                ) : null}
+                {weight ? (
+                    <div className="edit-weight">
+                        {weight.percentage ? (
+                            <div className="edit-weight-percentage">
+                                <label>Weight Percentage</label>
+                                <input type="text" value={weight.percentage} onChange={updateWeightPercentage} />
+                            </div>
+                        ) : null}
+                        {weight.value ? (
+                            <div className="edit-weight-value">
+                                <label>Weight Value</label>
+                                <input type="text" value={weight.value} onChange={updateWeightValue} />
+                            </div>
+                        ) : null}
                     </div>
-                    <div className="edit-weight-value">
-                        <label>Weight Value</label>
-                        <input type="text" value={weight.value} onChange={updateWeightValue} />
+                ) : null}
+                {sr ? (
+                    <div className="edit-sr">
+                        <label>SR</label>
+                        <input type="text" value={sr} onChange={updateSrValue} />
                     </div>
-                </div>
-                <div className="edit-sr">
-                    <label>SR</label>
-                    <input type="text" value={sr} onChange={updateSrValue} />
-                </div>
+                ) : null}
             </div>
-            <div className="remarks-edit">
-                <label>Remarks</label>
-                <textarea rows="4" value={remarks} onChange={updateRemarksValue}></textarea>
-            </div>
+            {remarks ? (
+                <div className="remarks-edit">
+                    <label>Remarks</label>
+                    <textarea rows="4" value={remarks} onChange={updateRemarksValue}></textarea>
+                </div>
+            ) : null}
         </>
     );
 };

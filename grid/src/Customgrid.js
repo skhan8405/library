@@ -327,6 +327,7 @@ const Customgrid = memo((props) => {
                 {isRowEditOverlyOpen ? (
                     <RowEditOverlay
                         row={editedRowData}
+                        columns={columns}
                         getRowEditOverlay={getRowEditOverlay}
                         closeRowEditOverlay={closeRowEditOverlay}
                         updateRowInGrid={updateRowInGrid}
