@@ -1,16 +1,14 @@
-import React, { useRef } from "react";
+import React from "react";
 import Grid from "grid";
-import { isInnerCellShown, isInnerCellsNotEmpty } from "./utils/CellDisplayUtility";
+import FlightIcon from "./images/FlightIcon.png";
 import { fetchData } from "./getData";
-import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
-import RowEditOverlay from "./cells/RowEditOverlay";
-import SREdit from "./cells/SREdit";
+import { getValueOfDate } from "./utils/DateUtility";
 import FlightEdit from "./cells/FlightEdit";
+import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
+import RowEdit from "./cells/RowEdit";
 
 const App = () => {
-    const childRef = useRef();
-
     //Create an array of airports
     const airportCodeList = [
         "AAA",
@@ -92,21 +90,17 @@ const App = () => {
                 }
             ],
             sortValue: "flightno",
-            Cell: (row) => {
-                const columnId = "flight";
-                const { innerCells } = row.column;
-                const { index, original } = row.row;
+            displayCell: (rowData) => {
+                const { flightno, date } = rowData.flight;
                 return (
-                    <FlightEdit
-                        index={index}
-                        columnId={columnId}
-                        innerCells={innerCells}
-                        columnValue={original[columnId]}
-                        updateCellData={updateCellData}
-                        isInnerCellShown={isInnerCellShown}
-                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
-                    />
+                    <div className="flight-details">
+                        <strong>{flightno}</strong>
+                        <span>{getValueOfDate(date, "cell")}</span>
+                    </div>
                 );
+            },
+            editCell: (rowData, rowUpdateCallBack) => {
+                return <FlightEdit rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
             }
         },
         {
@@ -124,25 +118,20 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            Cell: (row) => {
-                const segmentColumn = "segment";
-                const weightColumn = "weight";
-                const { innerCells } = row.column;
-                const { index, original } = row.row;
+            displayCell: (rowData) => {
+                const { from, to } = rowData.segment;
                 return (
-                    <SegmentEdit
-                        airportCodeList={airportCodeList}
-                        index={index}
-                        segmentId={segmentColumn}
-                        segmentValue={original[segmentColumn]}
-                        weightId={weightColumn}
-                        weightValue={original[weightColumn]}
-                        innerCells={innerCells}
-                        updateCellData={updateCellData}
-                        isInnerCellShown={isInnerCellShown}
-                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
-                    />
+                    <div className="segment-details">
+                        <span>{from}</span>
+                        <i>
+                            <img src={FlightIcon} alt="segment" />
+                        </i>
+                        <span>{to}</span>
+                    </div>
                 );
+            },
+            editCell: (rowData, rowUpdateCallBack) => {
+                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
             }
         },
         {
@@ -185,15 +174,16 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: ({ startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus }) => {
-                let timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
+            displayCell: (rowData) => {
+                const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = rowData.details;
+                const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
                 return (
-                    <div className="details-wrap content">
+                    <div className="details-wrap">
                         <ul>
                             <li>
-                                {startTime} -{endTime}
+                                {startTime} - {endTime}
                             </li>
                             <li className="divider">|</li>
                             <li>
@@ -234,7 +224,8 @@ const App = () => {
                 }
             ],
             sortValue: "percentage",
-            displayCell: ({ percentage, value }) => {
+            displayCell: (rowData) => {
+                const { percentage, value } = rowData.weight;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix,
                     valueSuffix = "";
@@ -243,7 +234,7 @@ const App = () => {
                     valueSuffix = splitValue[1];
                 }
                 return (
-                    <div className="weight-details content">
+                    <div className="weight-details">
                         <strong className="per">{percentage}</strong>
                         {value ? (
                             <span>
@@ -270,7 +261,8 @@ const App = () => {
                 }
             ],
             sortValue: "percentage",
-            displayCell: ({ percentage, value }) => {
+            displayCell: (rowData) => {
+                const { percentage, value } = rowData.volume;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix,
                     valueSuffix = "";
@@ -279,7 +271,7 @@ const App = () => {
                     valueSuffix = splitValue[1];
                 }
                 return (
-                    <div className="weight-details content">
+                    <div className="weight-details">
                         <strong className="per">{percentage}</strong>
                         {value ? (
                             <span>
@@ -294,7 +286,7 @@ const App = () => {
         {
             Header: "ULD Positions",
             accessor: "uldPositions",
-            width: 100,
+            width: 120,
             innerCells: [
                 {
                     Header: "Position",
@@ -306,22 +298,20 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            Cell: (row) => {
-                const { innerCells } = row.column;
+            displayCell: (rowData) => {
+                const { uldPositions } = rowData;
                 return (
-                    <div className="uld-details content">
-                        {isInnerCellsNotEmpty(innerCells) ? (
-                            <ul>
-                                {row.value.map((positions, index) => {
-                                    return (
-                                        <li key={index}>
-                                            {isInnerCellShown(innerCells, "position") ? <span>{positions.position}</span> : null}
-                                            {isInnerCellShown(innerCells, "value") ? <strong>{positions.value}</strong> : null}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        ) : null}
+                    <div className="uld-details">
+                        <ul>
+                            {uldPositions.map((positions, index) => {
+                                return (
+                                    <li key={index}>
+                                        <span>{positions.position}</span>
+                                        <strong>{positions.value}</strong>
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </div>
                 );
             }
@@ -340,13 +330,12 @@ const App = () => {
                     accessor: "yeild"
                 }
             ],
-            Cell: (row) => {
-                const { innerCells } = row.column;
-                const { revenue, yeild } = row.value;
+            displayCell: (rowData) => {
+                const { revenue, yeild } = rowData.revenue;
                 return (
-                    <div className="revenue-details content">
-                        {isInnerCellShown(innerCells, "revenue") ? <span className="large">{revenue}</span> : null}
-                        {isInnerCellShown(innerCells, "yeild") ? <span>{yeild}</span> : null}
+                    <div className="revenue-details">
+                        <span className="large">{revenue}</span>
+                        <span>{yeild}</span>
                     </div>
                 );
             },
@@ -356,12 +345,16 @@ const App = () => {
             Header: "SR",
             accessor: "sr",
             width: 90,
-            Cell: (row) => {
-                const columnId = "sr";
-                const { index, original } = row.row;
+            displayCell: (rowData) => {
+                const { sr } = rowData;
                 return (
-                    <SREdit index={index} columnId={columnId} columnValue={original[columnId]} updateCellData={updateCellData} />
+                    <div className="sr-details">
+                        <span>{sr}</span>
+                    </div>
                 );
+            },
+            editCell: (rowData, rowUpdateCallBack) => {
+                return <SrEdit rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
             }
         },
         {
@@ -379,9 +372,10 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: ({ sr, volume }) => {
+            displayCell: (rowData) => {
+                const { sr, volume } = rowData.queuedBooking;
                 return (
-                    <div className="queued-details content">
+                    <div className="queued-details">
                         <span>
                             <strong>{sr}</strong>
                         </span>
@@ -395,31 +389,31 @@ const App = () => {
     ];
 
     //Configure data to be displayed in expanded view (separate configurations for desktop and other devices)
-    const columnsToExpand = {
+    const columnToExpand = {
         Header: "Remarks",
         innerCells: [
             { Header: "Remarks", accessor: "remarks" },
-            { Header: "Details", onlyInIpad: true, accessor: "details" }
+            { Header: "Details", onlyInTablet: true, accessor: "details" }
         ],
-        Cell: (row, column) => {
-            const { innerCells } = column;
-            const { remarks, details } = row.original;
-            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
-            let timeStatusArray = timeStatus.split(" ");
+        displayCell: (rowData) => {
+            const { remarks, details } = rowData;
+            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details
+                ? details
+                : {};
+            const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
             return (
-                <div className="details-wrap content">
-                    {isInnerCellShown(innerCells, "remarks") ? (
+                <div className="details-wrap">
+                    {remarks ? (
                         <ul>
                             <li>{remarks}</li>
-                            <li className="divider">|</li>
                         </ul>
                     ) : null}
-                    {isInnerCellShown(innerCells, "details") ? (
+                    {details ? (
                         <ul>
                             <li>
-                                {startTime} – {endTime}
+                                {startTime} - {endTime}
                             </li>
                             <li className="divider">|</li>
                             <li>
@@ -447,6 +441,11 @@ const App = () => {
         }
     };
 
+    //Pass row edit overlay to the grid component
+    const getRowEditOverlay = (rowData, rowUpdateCallBack) => {
+        return <RowEdit airportCodeList={airportCodeList} rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
+    };
+
     //Add logic to calculate height of each row, based on the content of  or more columns
     const calculateRowHeight = (row, gridColumns) => {
         //Minimum height for each row
@@ -471,22 +470,16 @@ const App = () => {
                 rowHeight = rowHeight + widthVariable / 1000;
             }
             //Add logic to increase row height if row is expanded
-            if (isExpanded) {
+            if (isExpanded && columnToExpand) {
                 //Increase height based on the number of inner cells in additional columns
                 rowHeight =
                     rowHeight +
-                    (columnsToExpand.innerCells && columnsToExpand.innerCells.length > 0
-                        ? columnsToExpand.innerCells.length * 35
+                    (columnToExpand.innerCells && columnToExpand.innerCells.length > 0
+                        ? columnToExpand.innerCells.length * 35
                         : 35);
             }
         }
         return rowHeight;
-    };
-
-    //Gets called when there is a cell edit
-    const updateCellData = (rowIndex, columnId, value) => {
-        console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
-        childRef.current.updateCellInGrid(rowIndex, columnId, value);
     };
 
     //Gets called when there is a row edit
@@ -508,22 +501,17 @@ const App = () => {
 
     return (
         <Grid
-            ref={childRef}
             title="AWBs"
             gridHeight="80vh"
             gridWidth="100%"
             columns={columns}
-            columnsToExpand={columnsToExpand}
+            columnToExpand={columnToExpand}
             fetchData={fetchData}
-            rowEditOverlay={RowEditOverlay}
-            rowEditData={{
-                airportCodeList: airportCodeList
-            }}
+            getRowEditOverlay={getRowEditOverlay}
+            calculateRowHeight={calculateRowHeight}
             updateRowData={updateRowData}
-            deletePopUpOverLay={DeletePopUpOverLay}
             deleteRowData={deleteRowData}
             selectBulkData={selectBulkData}
-            calculateRowHeight={calculateRowHeight}
         />
     );
 };

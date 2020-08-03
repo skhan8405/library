@@ -1,19 +1,17 @@
-import React, { forwardRef, useImperativeHandle, useMemo, useState, useEffect } from "react";
-import { extractColumns, extractAdditionalColumns } from "./Utilities/Columns";
+import React, { memo, useMemo, useState, useEffect } from "react";
+import { extractColumns, extractAdditionalColumn } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
 
-const Grid = forwardRef((props, ref) => {
+const Grid = memo((props) => {
     const {
         title,
         gridHeight,
         gridWidth,
         columns,
-        columnsToExpand,
+        columnToExpand,
         fetchData,
-        rowEditOverlay,
-        rowEditData,
+        getRowEditOverlay,
         updateRowData,
-        deletePopUpOverLay,
         deleteRowData,
         selectBulkData,
         calculateRowHeight
@@ -75,15 +73,58 @@ const Grid = forwardRef((props, ref) => {
         return isValuePresent;
     };
 
-    //Extract/add and modify required data from user configured columns and expand columns
-    let processedColumns = extractColumns(columns, searchColumn, isDesktop);
-    let additionalColumn = extractAdditionalColumns(columnsToExpand, isDesktop);
+    //Gets triggered when one row item is updated
+    const updateRowInGrid = (original, updatedRow) => {
+        setItems((old) =>
+            old.map((row) => {
+                if (Object.entries(row).toString() === Object.entries(original).toString()) {
+                    row = updatedRow;
+                }
+                return row;
+            })
+        );
+        if (updateRowData) {
+            updateRowData(updatedRow);
+        }
+    };
 
-    //Local variable for keeping the expanded row rendering method
-    let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
+    //Gets triggered when one row item is deleted
+    const deleteRowFromGrid = (original) => {
+        setItems((old) =>
+            old.filter((row) => {
+                return row !== original;
+            })
+        );
+        if (deleteRowData) {
+            deleteRowData(original);
+        }
+    };
+
+    //Extract/add and modify required data from user configured columns and expand columns
+    let processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
+    let additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop, updateRowInGrid);
 
     //Create memoized column, to be used by grid component
     const gridColumns = useMemo(() => processedColumns, []);
+
+    //Local variable for keeping the expanded row rendering method
+    let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
+
+    //Process data to be rendered to expanded view and return that data to the render function
+    const displayExpandedContent = (row, additionalColumn) => {
+        if (row && additionalColumn) {
+            const { innerCells } = additionalColumn;
+            const { original } = row;
+            if (original && innerCells && innerCells.length > 0) {
+                const expandedRowContent = {};
+                innerCells.forEach((cell) => {
+                    const { accessor } = cell;
+                    expandedRowContent[accessor] = original[accessor];
+                });
+                return renderExpandedContent(expandedRowContent);
+            }
+        }
+    };
 
     //Add logic for doing global search in the grid
     const globalSearchLogic = (rows, columns, filterValue) => {
@@ -133,7 +174,7 @@ const Grid = forwardRef((props, ref) => {
                 rowHeight = rowHeight + widthVariable / 1000;
             }
             //Add logic to increase row height if row is expanded
-            if (isExpanded) {
+            if (isExpanded && additionalColumn) {
                 //Increase height based on the number of inner cells in additional columns
                 rowHeight =
                     rowHeight +
@@ -170,62 +211,6 @@ const Grid = forwardRef((props, ref) => {
         });
     };
     //#endregion
-
-    //#region - Cell update logic
-    //Function to find correct index from original data using index from sorted data
-    const getOriginalDataIndex = (sortedDataIndex) => {
-        const updatedData = getSortedData([...items]).find((item, index) => {
-            return index === sortedDataIndex;
-        });
-        let originalDataIndex = -1;
-        originalDataIndex = items.findIndex((item, index) => {
-            return item === updatedData;
-        });
-        return originalDataIndex;
-    };
-    //Gets triggered when a cell in grid is updated
-    useImperativeHandle(ref, () => ({
-        updateCellInGrid(rowIndex, columnId, value) {
-            const originalDataIndex = getOriginalDataIndex(rowIndex);
-            if (originalDataIndex >= 0) {
-                setItems((old) =>
-                    old.map((row, index) => {
-                        if (index === originalDataIndex) {
-                            return {
-                                ...old[originalDataIndex],
-                                [columnId]: value
-                            };
-                        }
-                        return row;
-                    })
-                );
-            }
-        }
-    }));
-    //#endregion
-
-    //Gets triggered when one row item is updated
-    const updateRowInGrid = (original, updatedRow) => {
-        setItems((old) =>
-            old.map((row) => {
-                if (row === original) {
-                    row = updatedRow;
-                }
-                return row;
-            })
-        );
-        updateRowData(updatedRow);
-    };
-
-    //Gets triggered when one row item is deleted
-    const deleteRowFromGrid = (original) => {
-        setItems((old) =>
-            old.filter((row) => {
-                return row !== original;
-            })
-        );
-        deleteRowData(original);
-    };
 
     //Gets called when group sort is applied or cleared
     const doGroupSort = (sortOptions) => {
@@ -275,52 +260,53 @@ const Grid = forwardRef((props, ref) => {
     //Sort the data based on the user selected group sort optipons
     const data = getSortedData([...items]);
 
-    if (data && data.length > 0 && processedColumns && processedColumns.length > 0) {
-        return (
-            <div>
-                <Customgrid
-                    title={title}
-                    gridHeight={gridHeight}
-                    gridWidth={gridWidth}
-                    managableColumns={gridColumns}
-                    originalColumns={gridColumns}
-                    additionalColumn={additionalColumn}
-                    data={data}
-                    rowEditOverlay={rowEditOverlay}
-                    rowEditData={rowEditData}
-                    updateRowInGrid={updateRowInGrid}
-                    deletePopUpOverLay={deletePopUpOverLay}
-                    deleteRowFromGrid={deleteRowFromGrid}
-                    globalSearchLogic={globalSearchLogic}
-                    selectBulkData={selectBulkData}
-                    calculateRowHeight={
-                        calculateRowHeight && typeof calculateRowHeight === "function"
-                            ? calculateRowHeight
-                            : calculateDefaultRowHeight
-                    }
-                    isExpandContentAvailable={typeof renderExpandedContent === "function"}
-                    renderExpandedContent={renderExpandedContent}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                    doGroupSort={doGroupSort}
-                />
-                {isNextPageLoading ? (
-                    <div id="loader" className="background">
-                        <div className="dots container">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+    return (
+        <div className="grid-component-container">
+            {data && data.length > 0 && processedColumns && processedColumns.length > 0 ? (
+                <div>
+                    <Customgrid
+                        title={title}
+                        gridHeight={gridHeight}
+                        gridWidth={gridWidth}
+                        managableColumns={gridColumns}
+                        originalColumns={gridColumns}
+                        additionalColumn={additionalColumn}
+                        data={data}
+                        getRowEditOverlay={getRowEditOverlay}
+                        updateRowInGrid={updateRowInGrid}
+                        deleteRowFromGrid={deleteRowFromGrid}
+                        globalSearchLogic={globalSearchLogic}
+                        selectBulkData={selectBulkData}
+                        calculateRowHeight={
+                            calculateRowHeight && typeof calculateRowHeight === "function"
+                                ? calculateRowHeight
+                                : calculateDefaultRowHeight
+                        }
+                        isExpandContentAvailable={typeof renderExpandedContent === "function"}
+                        displayExpandedContent={displayExpandedContent}
+                        hasNextPage={hasNextPage}
+                        isNextPageLoading={isNextPageLoading}
+                        loadNextPage={loadNextPage}
+                        doGroupSort={doGroupSort}
+                    />
+                    {isNextPageLoading ? (
+                        <div id="loader" className="background">
+                            <div className="dots container">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                         </div>
-                    </div>
-                ) : null}
-            </div>
-        );
-    } else if (isLoading) {
-        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Initializing Grid...</h2>;
-    } else {
-        return <h2 style={{ textAlign: "center", marginTop: "70px" }}>Invalid Data or Column Configurations</h2>;
-    }
+                    ) : null}
+                    )
+                </div>
+            ) : (
+                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                    {isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"}
+                </h2>
+            )}
+        </div>
+    );
 });
 
 export default Grid;

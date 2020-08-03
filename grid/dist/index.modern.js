@@ -1,9 +1,9 @@
-import React, { memo, forwardRef, useState, useRef, useEffect, createRef, useMemo, useCallback, useImperativeHandle } from 'react';
+import React, { memo, useState, forwardRef, useRef, useEffect, createRef, useMemo, useCallback } from 'react';
+import ClickAwayListener from 'react-click-away-listener';
 import { useAsyncDebounce, useTable, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns } from 'react-table';
 import { VariableSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import InfiniteLoader from 'react-window-infinite-loader';
-import ClickAwayListener from 'react-click-away-listener';
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
@@ -14,24 +14,217 @@ import 'jspdf-autotable';
 import { saveAs } from 'file-saver';
 import { utils, write } from 'xlsx';
 
-const RowSelector = memo(forwardRef(({
-  indeterminate,
-  ...rest
-}, ref) => {
-  const [checkValue, setCheckValue] = useState(indeterminate);
-  const defaultRef = useRef();
-  const resolvedRef = ref || defaultRef;
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
 
-  const onChange = () => {
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+var CellDisplayAndEdit = memo(function (_ref) {
+  var row = _ref.row,
+      updateRowInGrid = _ref.updateRowInGrid;
+  var column = row.column;
+
+  if (column && row.row) {
+    var _useState = useState(false),
+        isEditOpen = _useState[0],
+        setIsEditOpen = _useState[1];
+
+    var _useState2 = useState(null),
+        editedRowValue = _useState2[0],
+        setEditedRowValue = _useState2[1];
+
+    var closeEdit = function closeEdit() {
+      setIsEditOpen(false);
+    };
+
+    var openEdit = function openEdit() {
+      setIsEditOpen(true);
+    };
+
+    var getUpdatedRowValue = function getUpdatedRowValue(value) {
+      if (value) {
+        setEditedRowValue(value);
+      }
+    };
+
+    var saveEdit = function saveEdit() {
+      if (editedRowValue) {
+        updateRowInGrid(row.row.original, editedRowValue);
+      }
+
+      closeEdit();
+    };
+
+    var originalRowValue = _extends({}, row.row.original);
+
+    var id = column.id,
+        innerCells = column.innerCells,
+        originalInnerCells = column.originalInnerCells;
+
+    if (originalRowValue && originalInnerCells && originalInnerCells.length && innerCells && innerCells.length && innerCells.length < originalInnerCells.length) {
+      var columnValue = originalRowValue[id];
+
+      if (typeof columnValue === "object") {
+        if (columnValue.length > 0) {
+          var newcolumnValue = columnValue.map(function (value) {
+            var params = {};
+            innerCells.forEach(function (cell) {
+              var cellAccessor = cell.accessor;
+              params[cellAccessor] = value[cellAccessor];
+            });
+            value = params;
+            return value;
+          });
+          originalRowValue[id] = newcolumnValue;
+        } else {
+          var params = {};
+          innerCells.forEach(function (cell) {
+            var cellAccessor = cell.accessor;
+            params[cellAccessor] = row.value[cellAccessor];
+          });
+          originalRowValue[id] = params;
+        }
+      }
+    }
+
+    var cellDisplayContent = column.displayCell(originalRowValue);
+    var cellEditContent = column.editCell ? column.editCell(originalRowValue, getUpdatedRowValue) : null;
+    return /*#__PURE__*/React.createElement(ClickAwayListener, {
+      onClickAway: closeEdit
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "table-cell--content table-cell--content__" + id
+    }, cellEditContent ? /*#__PURE__*/React.createElement("div", {
+      className: "cell-edit",
+      onClick: openEdit
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "fa fa-pencil",
+      "aria-hidden": "true"
+    })) : null, cellDisplayContent, isEditOpen ? /*#__PURE__*/React.createElement("div", {
+      className: "table-cell--content-edit"
+    }, cellEditContent, /*#__PURE__*/React.createElement("button", {
+      className: "ok",
+      onClick: saveEdit
+    }), /*#__PURE__*/React.createElement("button", {
+      className: "cancel",
+      onClick: closeEdit
+    })) : null));
+  }
+});
+
+var extractColumns = function extractColumns(columns, searchColumn, isDesktop, updateRowInGrid) {
+  var filteredColumns = columns.filter(function (column) {
+    return isDesktop ? !column.onlyInIpad : !column.onlyInDesktop;
+  });
+  var modifiedColumns = [];
+  filteredColumns.forEach(function (column, index) {
+    var innerCells = column.innerCells,
+        accessor = column.accessor,
+        sortValue = column.sortValue;
+    var isInnerCellsPresent = innerCells && innerCells.length > 0;
+    column.columnId = "column_" + index;
+
+    if (!column.Cell && column.displayCell) {
+      column.Cell = function (row) {
+        return /*#__PURE__*/React.createElement(CellDisplayAndEdit, {
+          row: row,
+          updateRowInGrid: updateRowInGrid
+        });
+      };
+    }
+
+    if (!column.disableSortBy) {
+      if (isInnerCellsPresent) {
+        if (sortValue) {
+          column.sortType = function (rowA, rowB) {
+            return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
+          };
+        } else {
+          column.disableSortBy = true;
+        }
+      } else if (!innerCells) {
+        column.sortType = function (rowA, rowB) {
+          return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
+        };
+      }
+    }
+
+    if (!column.disableFilters) {
+      column.filter = function (rows, id, filterValue) {
+        var searchText = filterValue ? filterValue.toLowerCase() : "";
+        return rows.filter(function (row) {
+          var original = row.original;
+          return searchColumn(column, original, searchText);
+        });
+      };
+    }
+
+    modifiedColumns.push(column);
+  });
+  return modifiedColumns;
+};
+var extractAdditionalColumn = function extractAdditionalColumn(additionalColumn, isDesktop) {
+  var innerCells = additionalColumn.innerCells;
+  var isInnerCellsPresent = innerCells && innerCells.length > 0;
+  additionalColumn.columnId = "ExpandColumn";
+
+  if (isInnerCellsPresent) {
+    additionalColumn.innerCells = innerCells.filter(function (cell) {
+      return isDesktop ? !cell.onlyInIpad : !cell.onlyInDesktop;
+    });
+  }
+
+  return additionalColumn;
+};
+
+var RowSelector = memo(forwardRef(function (_ref, ref) {
+  var indeterminate = _ref.indeterminate,
+      rest = _objectWithoutPropertiesLoose(_ref, ["indeterminate"]);
+
+  var _useState = useState(indeterminate),
+      checkValue = _useState[0],
+      setCheckValue = _useState[1];
+
+  var defaultRef = useRef();
+  var resolvedRef = ref || defaultRef;
+
+  var onChange = function onChange() {
     setCheckValue(!indeterminate);
   };
 
-  useEffect(() => {
+  useEffect(function () {
     resolvedRef.current.indeterminate = indeterminate;
   }, [resolvedRef, indeterminate]);
   return /*#__PURE__*/React.createElement("div", {
     className: "check-wrap"
-  }, /*#__PURE__*/React.createElement("input", Object.assign({
+  }, /*#__PURE__*/React.createElement("input", _extends({
     type: "checkbox",
     checked: checkValue,
     onChange: onChange,
@@ -39,38 +232,41 @@ const RowSelector = memo(forwardRef(({
   }, rest)));
 }));
 
-const DefaultColumnFilter = memo(({
-  column: {
-    filterValue,
-    setFilter
-  }
-}) => {
+var DefaultColumnFilter = memo(function (_ref) {
+  var _ref$column = _ref.column,
+      filterValue = _ref$column.filterValue,
+      setFilter = _ref$column.setFilter;
   return /*#__PURE__*/React.createElement("input", {
     className: "txt",
     value: filterValue || "",
-    onChange: e => {
+    onChange: function onChange(e) {
       setFilter(e.target.value || undefined);
     },
     placeholder: "Search"
   });
 });
 
-const GlobalFilter = memo(({
-  globalFilter,
-  setGlobalFilter
-}) => {
-  const [value, setValue] = useState(globalFilter);
-  const onChange = useAsyncDebounce(value => {
+var GlobalFilter = memo(function (_ref) {
+  var globalFilter = _ref.globalFilter,
+      setGlobalFilter = _ref.setGlobalFilter;
+
+  var _useState = useState(globalFilter),
+      value = _useState[0],
+      setValue = _useState[1];
+
+  var _onChange = useAsyncDebounce(function (value) {
     setGlobalFilter(value || undefined);
   }, 200);
+
   return /*#__PURE__*/React.createElement("div", {
     className: "txt-wrap"
   }, /*#__PURE__*/React.createElement("input", {
     type: "text",
     value: value || "",
-    onChange: e => {
+    onChange: function onChange(e) {
       setValue(e.target.value);
-      onChange(e.target.value);
+
+      _onChange(e.target.value);
     },
     className: "txt",
     placeholder: "Search"
@@ -86,54 +282,32 @@ var RowEdit = require("./RowEdit~BuKwAcSl.svg");
 
 var RowPin = require("./RowPin~qQRdvcXq.png");
 
-const RowOptions = memo(props => {
-  const {
-    row,
-    DeletePopUpOverLay,
-    deleteRowFromGrid,
-    RowEditOverlay,
-    rowEditData,
-    updateRowInGrid
-  } = props;
-  const {
-    original
-  } = row;
-  const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
-  const [isRowEditOverlayOpen, setRowEditOverlayOpen] = useState(false);
-  const [isDeleteOverlayOpen, setDeleteOverlayOpen] = useState(false);
+var RowOptions = memo(function (_ref) {
+  var row = _ref.row,
+      bindRowEditOverlay = _ref.bindRowEditOverlay,
+      bindRowDeleteOverlay = _ref.bindRowDeleteOverlay;
+  var original = row.original;
 
-  const openRowOptionsOverlay = () => {
+  var _useState = useState(false),
+      isRowOptionsOpen = _useState[0],
+      setRowOptionsOpen = _useState[1];
+
+  var openRowOptionsOverlay = function openRowOptionsOverlay() {
     setRowOptionsOpen(true);
   };
 
-  const closeRowOptionsOverlay = () => {
+  var closeRowOptionsOverlay = function closeRowOptionsOverlay() {
     setRowOptionsOpen(false);
   };
 
-  const openRowEditOverlay = () => {
-    setRowOptionsOpen(false);
-    setRowEditOverlayOpen(true);
+  var openRowEditOverlay = function openRowEditOverlay() {
+    bindRowEditOverlay(original);
+    closeRowOptionsOverlay();
   };
 
-  const closeRowEditOverlay = () => {
-    setRowEditOverlayOpen(false);
-  };
-
-  const updateRow = updatedrow => {
-    updateRowInGrid(original, updatedrow);
-  };
-
-  const openDeleteOverlay = () => {
-    setRowOptionsOpen(false);
-    setDeleteOverlayOpen(true);
-  };
-
-  const closeDeleteOverlay = () => {
-    setDeleteOverlayOpen(false);
-  };
-
-  const deleteRow = () => {
-    deleteRowFromGrid(original);
+  var openDeleteOverlay = function openDeleteOverlay() {
+    bindRowDeleteOverlay(original);
+    closeRowOptionsOverlay();
   };
 
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
@@ -165,79 +339,146 @@ const RowOptions = memo(props => {
     onClick: closeRowOptionsOverlay
   }, /*#__PURE__*/React.createElement("i", {
     className: "fa fa-close"
-  })))) : null), isRowEditOverlayOpen ? /*#__PURE__*/React.createElement(RowEditOverlay, {
-    row: original,
-    rowEditData: rowEditData,
-    closeRowEditOverlay: closeRowEditOverlay,
-    updateRow: updateRow
-  }) : null, isDeleteOverlayOpen ? /*#__PURE__*/React.createElement(DeletePopUpOverLay, {
-    closeDeleteOverlay: closeDeleteOverlay,
-    deleteRow: deleteRow
-  }) : null);
+  })))) : null));
 });
 
-const ItemTypes = {
+var RowEditOverLay = memo(function (_ref) {
+  var row = _ref.row,
+      getRowEditOverlay = _ref.getRowEditOverlay,
+      closeRowEditOverlay = _ref.closeRowEditOverlay,
+      updateRowInGrid = _ref.updateRowInGrid;
+
+  var _useState = useState(null),
+      editedRowValue = _useState[0],
+      setEditedRowValue = _useState[1];
+
+  var getUpdatedRowValue = function getUpdatedRowValue(value) {
+    if (value) {
+      setEditedRowValue(value);
+    }
+  };
+
+  var saveRowEdit = function saveRowEdit() {
+    if (editedRowValue) {
+      updateRowInGrid(row, editedRowValue);
+    }
+
+    closeRowEditOverlay();
+  };
+
+  var rowEditContent = getRowEditOverlay(row, getUpdatedRowValue);
+  return /*#__PURE__*/React.createElement(ClickAwayListener, {
+    onClickAway: closeRowEditOverlay
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "row-option-action-overlay"
+  }, rowEditContent, /*#__PURE__*/React.createElement("div", {
+    className: "cancel-save-buttons"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "save-Button",
+    onClick: saveRowEdit
+  }, "Save"), /*#__PURE__*/React.createElement("button", {
+    className: "cancel-Button",
+    onClick: closeRowEditOverlay
+  }, "Cancel"))));
+});
+
+var RowDeleteOverLay = memo(function (_ref) {
+  var row = _ref.row,
+      closeRowDeleteOverlay = _ref.closeRowDeleteOverlay,
+      deleteRowFromGrid = _ref.deleteRowFromGrid;
+
+  var deleteRow = function deleteRow() {
+    if (row) {
+      deleteRowFromGrid(row);
+    }
+
+    closeRowDeleteOverlay();
+  };
+
+  return /*#__PURE__*/React.createElement(ClickAwayListener, {
+    onClickAway: closeRowDeleteOverlay
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "row-option-action-overlay delete"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "cancel-save-buttons-delete"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "delete-Button",
+    onClick: deleteRow
+  }, "Delete"), /*#__PURE__*/React.createElement("button", {
+    className: "cancel-Button",
+    onClick: closeRowDeleteOverlay
+  }, "Cancel"))));
+});
+
+var ItemTypes = {
   COLUMN: "column"
 };
 
-const ColumnItem = ({
-  id,
-  Header,
-  moveColumn,
-  findColumn,
-  originalInnerCells,
-  isInnerCellSelected,
-  selectInnerCells
-}) => {
-  const originalIndex = findColumn(id).index;
-  const [{
-    isDragging
-  }, drag] = useDrag({
+var ColumnItem = function ColumnItem(_ref) {
+  var id = _ref.id,
+      Header = _ref.Header,
+      moveColumn = _ref.moveColumn,
+      findColumn = _ref.findColumn,
+      originalInnerCells = _ref.originalInnerCells,
+      isInnerCellSelected = _ref.isInnerCellSelected,
+      selectInnerCells = _ref.selectInnerCells;
+  var originalIndex = findColumn(id).index;
+
+  var _useDrag = useDrag({
     item: {
       type: ItemTypes.COLUMN,
-      id,
-      originalIndex
+      id: id,
+      originalIndex: originalIndex
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging()
-    }),
-    end: (dropResult, monitor) => {
-      const {
-        id: droppedId,
-        originalIndex
-      } = monitor.getItem();
-      const didDrop = monitor.didDrop();
+    collect: function collect(monitor) {
+      return {
+        isDragging: monitor.isDragging()
+      };
+    },
+    end: function end(dropResult, monitor) {
+      var _monitor$getItem = monitor.getItem(),
+          droppedId = _monitor$getItem.id,
+          originalIndex = _monitor$getItem.originalIndex;
+
+      var didDrop = monitor.didDrop();
 
       if (!didDrop) {
         moveColumn(droppedId, originalIndex);
       }
     }
-  });
-  const [, drop] = useDrop({
-    accept: ItemTypes.COLUMN,
-    canDrop: () => false,
+  }),
+      isDragging = _useDrag[0].isDragging,
+      drag = _useDrag[1];
 
-    hover({
-      id: draggedId
-    }) {
+  var _useDrop = useDrop({
+    accept: ItemTypes.COLUMN,
+    canDrop: function canDrop() {
+      return false;
+    },
+    hover: function hover(_ref2) {
+      var draggedId = _ref2.id;
+
       if (draggedId !== id) {
-        const {
-          index: overIndex
-        } = findColumn(id);
+        var _findColumn = findColumn(id),
+            overIndex = _findColumn.index;
+
         moveColumn(draggedId, overIndex);
       }
     }
+  }),
+      drop = _useDrop[1];
 
-  });
-  const opacity = isDragging ? 0.1 : 1;
+  var opacity = isDragging ? 0.1 : 1;
   return /*#__PURE__*/React.createElement("div", {
     style: {
-      opacity
+      opacity: opacity
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "column__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    ref: node => drag(drop(node)),
+    ref: function ref(node) {
+      return drag(drop(node));
+    },
     style: {
       cursor: "move"
     },
@@ -249,7 +490,7 @@ const ColumnItem = ({
     className: ""
   }, Header), /*#__PURE__*/React.createElement("div", {
     className: "column__innerCells__wrap"
-  }, originalInnerCells && originalInnerCells.length > 0 ? originalInnerCells.map((cell, index) => {
+  }, originalInnerCells && originalInnerCells.length > 0 ? originalInnerCells.map(function (cell, index) {
     return /*#__PURE__*/React.createElement("div", {
       className: "column__wrap",
       key: index
@@ -267,46 +508,48 @@ const ColumnItem = ({
   }) : null)));
 };
 
-const ColumnsList = props => {
-  const {
-    updateColumnsInState,
-    columnsToManage,
-    isInnerCellSelected,
-    selectInnerCells
-  } = props;
+var ColumnsList = function ColumnsList(props) {
+  var updateColumnsInState = props.updateColumnsInState,
+      columnsToManage = props.columnsToManage,
+      isInnerCellSelected = props.isInnerCellSelected,
+      selectInnerCells = props.selectInnerCells;
 
-  const moveColumn = (columnId, atIndex) => {
-    const {
-      column,
-      index
-    } = findColumn(columnId);
+  var moveColumn = function moveColumn(columnId, atIndex) {
+    var _findColumn = findColumn(columnId),
+        column = _findColumn.column,
+        index = _findColumn.index;
+
     updateColumnsInState(update(columnsToManage, {
       $splice: [[index, 1], [atIndex, 0, column]]
     }));
   };
 
-  const findColumn = columnId => {
-    const column = columnsToManage.filter(c => `${c.columnId}` === columnId)[0];
+  var findColumn = function findColumn(columnId) {
+    var column = columnsToManage.filter(function (c) {
+      return "" + c.columnId === columnId;
+    })[0];
     return {
-      column,
+      column: column,
       index: columnsToManage.indexOf(column)
     };
   };
 
-  const [, drop] = useDrop({
+  var _useDrop = useDrop({
     accept: ItemTypes.COLUMN
-  });
+  }),
+      drop = _useDrop[1];
+
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     ref: drop,
     style: {
       display: "flex",
       flexWrap: "wrap"
     }
-  }, columnsToManage.map((column, index) => {
+  }, columnsToManage.map(function (column, index) {
     return /*#__PURE__*/React.createElement(ColumnItem, {
       key: index,
-      id: `${column.columnId}`,
-      Header: `${column.Header}`,
+      id: "" + column.columnId,
+      Header: "" + column.Header,
       moveColumn: moveColumn,
       findColumn: findColumn,
       originalInnerCells: column.originalInnerCells,
@@ -316,26 +559,37 @@ const ColumnsList = props => {
   })));
 };
 
-const ColumnReordering = memo(props => {
-  const {
-    isManageColumnOpen,
-    toggleManageColumns,
-    originalColumns,
-    isExpandContentAvailable,
-    additionalColumn
-  } = props;
-  const additionalColumnHeader = additionalColumn && additionalColumn.length ? additionalColumn[0].Header : "";
+var ColumnReordering = memo(function (props) {
+  var isManageColumnOpen = props.isManageColumnOpen,
+      toggleManageColumns = props.toggleManageColumns,
+      originalColumns = props.originalColumns,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      additionalColumn = props.additionalColumn;
+  var additionalColumnHeader = additionalColumn && additionalColumn.length ? additionalColumn[0].Header : "";
 
-  const getRemarksColumnIfAvailable = () => {
+  var getRemarksColumnIfAvailable = function getRemarksColumnIfAvailable() {
     return isExpandContentAvailable ? additionalColumn : [];
   };
 
-  const concatedOriginalColumns = originalColumns.concat(getRemarksColumnIfAvailable());
-  const [managedColumns, setManagedColumns] = useState(originalColumns);
-  const [searchedColumns, setSearchedColumns] = useState(concatedOriginalColumns);
-  const [remarksColumnToManage, setRemarksColumnToManage] = useState(getRemarksColumnIfAvailable);
-  const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
-  const HTML5toTouch = {
+  var concatedOriginalColumns = originalColumns.concat(getRemarksColumnIfAvailable());
+
+  var _useState = useState(originalColumns),
+      managedColumns = _useState[0],
+      setManagedColumns = _useState[1];
+
+  var _useState2 = useState(concatedOriginalColumns),
+      searchedColumns = _useState2[0],
+      setSearchedColumns = _useState2[1];
+
+  var _useState3 = useState(getRemarksColumnIfAvailable),
+      remarksColumnToManage = _useState3[0],
+      setRemarksColumnToManage = _useState3[1];
+
+  var _useState4 = useState(false),
+      isErrorDisplayed = _useState4[0],
+      setIsErrorDisplayed = _useState4[1];
+
+  var HTML5toTouch = {
     backends: [{
       backend: HTML5Backend
     }, {
@@ -348,16 +602,16 @@ const ColumnReordering = memo(props => {
     }]
   };
 
-  const filterColumnsList = event => {
-    let {
-      value
-    } = event ? event.target : "";
+  var filterColumnsList = function filterColumnsList(event) {
+    var _ref = event ? event.target : "",
+        value = _ref.value;
+
     value = value ? value.toLowerCase() : "";
 
     if (value != "") {
-      setSearchedColumns(originalColumns.filter(column => {
+      setSearchedColumns(originalColumns.filter(function (column) {
         return column.Header.toLowerCase().includes(value);
-      }).concat(getRemarksColumnIfAvailable().filter(column => {
+      }).concat(getRemarksColumnIfAvailable().filter(function (column) {
         return column.Header.toLowerCase().includes(value);
       })));
     } else {
@@ -365,24 +619,24 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const updateColumnsInState = columns => {
+  var updateColumnsInState = function updateColumnsInState(columns) {
     setManagedColumns(columns);
   };
 
-  const findColumn = (columnList, columnHeader) => {
-    return columnList.find(column => {
+  var findColumn = function findColumn(columnList, columnHeader) {
+    return columnList.find(function (column) {
       return column.Header === columnHeader;
     });
   };
 
-  const isItemPresentInList = (list, headerValue) => {
-    const filteredList = list.filter(item => {
+  var isItemPresentInList = function isItemPresentInList(list, headerValue) {
+    var filteredList = list.filter(function (item) {
       return item.Header === headerValue;
     });
     return filteredList && filteredList.length > 0;
   };
 
-  const isCheckboxSelected = header => {
+  var isCheckboxSelected = function isCheckboxSelected(header) {
     if (header === additionalColumnHeader) {
       return remarksColumnToManage.length > 0;
     } else if (header === "Select All") {
@@ -392,25 +646,25 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const isInnerCellSelected = (columnHeader, header) => {
-    const columnListToSearch = columnHeader === additionalColumnHeader ? remarksColumnToManage : managedColumns;
-    const selectedColumn = findColumn(columnListToSearch, columnHeader);
+  var isInnerCellSelected = function isInnerCellSelected(columnHeader, header) {
+    var columnListToSearch = columnHeader === additionalColumnHeader ? remarksColumnToManage : managedColumns;
+    var selectedColumn = findColumn(columnListToSearch, columnHeader);
     return isItemPresentInList(selectedColumn.innerCells, header);
   };
 
-  const findIndexOfItem = (type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) => {
+  var findIndexOfItem = function findIndexOfItem(type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) {
     if (type === "column") {
-      return columnsList.findIndex(column => {
+      return columnsList.findIndex(function (column) {
         return column.Header === originalColumns[indexOfColumnToAdd].Header;
       });
     } else {
-      return findColumn(columnsList, columnHeader).innerCells.findIndex(cell => {
+      return findColumn(columnsList, columnHeader).innerCells.findIndex(function (cell) {
         return cell.Header === originalInnerCells[indexOfColumnToAdd].Header;
       });
     }
   };
 
-  const selectAllColumns = event => {
+  var selectAllColumns = function selectAllColumns(event) {
     if (event.currentTarget.checked) {
       setManagedColumns(originalColumns);
       setRemarksColumnToManage(getRemarksColumnIfAvailable());
@@ -420,14 +674,10 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const selectSingleColumn = event => {
-    const {
-      currentTarget
-    } = event;
-    const {
-      checked,
-      value
-    } = currentTarget;
+  var selectSingleColumn = function selectSingleColumn(event) {
+    var currentTarget = event.currentTarget;
+    var checked = currentTarget.checked,
+        value = currentTarget.value;
 
     if (value === additionalColumnHeader) {
       if (checked) {
@@ -437,65 +687,57 @@ const ColumnReordering = memo(props => {
       }
     } else {
       if (checked) {
-        let indexOfColumnToAdd = originalColumns.findIndex(column => {
+        var indexOfColumnToAdd = originalColumns.findIndex(function (column) {
           return column.Header === value;
         });
-        const itemToAdd = originalColumns[indexOfColumnToAdd];
-        let prevItemIndex = -1;
+        var itemToAdd = originalColumns[indexOfColumnToAdd];
+        var prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
           indexOfColumnToAdd = indexOfColumnToAdd - 1;
           prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
         }
 
-        const newColumnsList = [...managedColumns];
+        var newColumnsList = [].concat(managedColumns);
         newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
         setManagedColumns(newColumnsList);
       } else {
-        setManagedColumns(managedColumns.filter(column => {
+        setManagedColumns(managedColumns.filter(function (column) {
           return column.Header !== value;
         }));
       }
     }
   };
 
-  const findAndSelectInnerCells = (stateColumnList, setStateColumnList, event) => {
-    const {
-      currentTarget
-    } = event;
-    const {
-      checked,
-      dataset,
-      value
-    } = currentTarget;
-    const {
-      columnheader
-    } = dataset;
-    const selectedColumn = findColumn(stateColumnList, columnheader);
-    const {
-      originalInnerCells
-    } = selectedColumn;
+  var findAndSelectInnerCells = function findAndSelectInnerCells(stateColumnList, setStateColumnList, event) {
+    var currentTarget = event.currentTarget;
+    var checked = currentTarget.checked,
+        dataset = currentTarget.dataset,
+        value = currentTarget.value;
+    var columnheader = dataset.columnheader;
+    var selectedColumn = findColumn(stateColumnList, columnheader);
+    var originalInnerCells = selectedColumn.originalInnerCells;
 
     if (originalInnerCells && originalInnerCells.length > 0) {
       if (checked) {
-        let indexOfColumnToAdd = originalInnerCells.findIndex(column => {
+        var indexOfColumnToAdd = originalInnerCells.findIndex(function (column) {
           return column.Header === value;
         });
-        const itemToAdd = originalInnerCells[indexOfColumnToAdd];
-        let prevItemIndex = -1;
+        var itemToAdd = originalInnerCells[indexOfColumnToAdd];
+        var prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
           indexOfColumnToAdd = indexOfColumnToAdd - 1;
           prevItemIndex = findIndexOfItem("innercell", stateColumnList, indexOfColumnToAdd, columnheader, originalInnerCells);
         }
 
-        const newColumnsList = [...stateColumnList];
+        var newColumnsList = [].concat(stateColumnList);
         findColumn(newColumnsList, columnheader).innerCells.splice(prevItemIndex + 1, 0, itemToAdd);
         setStateColumnList(newColumnsList);
       } else {
-        setStateColumnList(stateColumnList.map(column => {
+        setStateColumnList(stateColumnList.map(function (column) {
           if (column.Header === columnheader) {
-            column.innerCells = column.innerCells.filter(cell => {
+            column.innerCells = column.innerCells.filter(function (cell) {
               return cell.Header !== value;
             });
           }
@@ -506,15 +748,15 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const selectInnerCells = event => {
+  var selectInnerCells = function selectInnerCells(event) {
     findAndSelectInnerCells(managedColumns, setManagedColumns, event);
   };
 
-  const selectRemarksInnerCells = event => {
+  var selectRemarksInnerCells = function selectRemarksInnerCells(event) {
     findAndSelectInnerCells(remarksColumnToManage, setRemarksColumnToManage, event);
   };
 
-  const doColumnUpdate = () => {
+  var doColumnUpdate = function doColumnUpdate() {
     setIsErrorDisplayed(false);
 
     if (managedColumns && managedColumns.length > 0) {
@@ -527,9 +769,9 @@ const ColumnReordering = memo(props => {
     toggleManageColumns();
   };
 
-  const resetInnerCells = columnList => {
+  var resetInnerCells = function resetInnerCells(columnList) {
     if (columnList && columnList.length) {
-      return columnList.map(column => {
+      return columnList.map(function (column) {
         column.innerCells = column.originalInnerCells;
         return column;
       });
@@ -538,7 +780,7 @@ const ColumnReordering = memo(props => {
     return columnList;
   };
 
-  const resetColumnUpdate = () => {
+  var resetColumnUpdate = function resetColumnUpdate() {
     setManagedColumns(resetInnerCells(originalColumns));
     setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
     setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
@@ -576,7 +818,7 @@ const ColumnReordering = memo(props => {
       onChange: selectAllColumns
     })), /*#__PURE__*/React.createElement("div", {
       className: "column__selectTxt"
-    }, "Select All")), searchedColumns.map((column, index) => {
+    }, "Select All")), searchedColumns.map(function (column, index) {
       return /*#__PURE__*/React.createElement("div", {
         className: "column__wrap",
         key: index
@@ -623,7 +865,7 @@ const ColumnReordering = memo(props => {
       className: ""
     }, remarksColumnToManage[0].Header), /*#__PURE__*/React.createElement("div", {
       className: "column__innerCells__wrap"
-    }, remarksColumnToManage[0].originalInnerCells && remarksColumnToManage[0].originalInnerCells.length > 0 ? remarksColumnToManage[0].originalInnerCells.map((cell, index) => {
+    }, remarksColumnToManage[0].originalInnerCells && remarksColumnToManage[0].originalInnerCells.length > 0 ? remarksColumnToManage[0].originalInnerCells.map(function (cell, index) {
       return /*#__PURE__*/React.createElement("div", {
         className: "column__wrap",
         key: index
@@ -657,7 +899,7 @@ const ColumnReordering = memo(props => {
   }
 });
 
-const ItemTypes$1 = {
+var ItemTypes$1 = {
   SORT_ITEM: "SORT_ITEM"
 };
 
@@ -665,97 +907,103 @@ var SortCopy = require("./SortCopy~IGKyJbDR.svg");
 
 var SortDelete = require("./SortDelete~MFpZtzWS.svg");
 
-const SortItem = ({
-  id,
-  sortOption,
-  originalColumns,
-  moveSort,
-  findSort,
-  updateSingleSortingOption,
-  copySortOption,
-  deleteSortOption
-}) => {
-  const originalIndex = findSort(id).index;
-  const [{
-    isDragging
-  }, drag] = useDrag({
+var SortItem = function SortItem(_ref) {
+  var id = _ref.id,
+      sortOption = _ref.sortOption,
+      originalColumns = _ref.originalColumns,
+      moveSort = _ref.moveSort,
+      findSort = _ref.findSort,
+      updateSingleSortingOption = _ref.updateSingleSortingOption,
+      copySortOption = _ref.copySortOption,
+      deleteSortOption = _ref.deleteSortOption;
+  var originalIndex = findSort(id).index;
+
+  var _useDrag = useDrag({
     item: {
       type: ItemTypes$1.SORT_ITEM,
-      id,
-      originalIndex
+      id: id,
+      originalIndex: originalIndex
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging()
-    }),
-    end: (dropResult, monitor) => {
-      const {
-        id: droppedId,
-        originalIndex
-      } = monitor.getItem();
-      const didDrop = monitor.didDrop();
+    collect: function collect(monitor) {
+      return {
+        isDragging: monitor.isDragging()
+      };
+    },
+    end: function end(dropResult, monitor) {
+      var _monitor$getItem = monitor.getItem(),
+          droppedId = _monitor$getItem.id,
+          originalIndex = _monitor$getItem.originalIndex;
+
+      var didDrop = monitor.didDrop();
 
       if (!didDrop) {
         moveSort(droppedId, originalIndex);
       }
     }
-  });
-  const [, drop] = useDrop({
-    accept: ItemTypes$1.SORT_ITEM,
-    canDrop: () => false,
+  }),
+      isDragging = _useDrag[0].isDragging,
+      drag = _useDrag[1];
 
-    hover({
-      id: draggedId
-    }) {
+  var _useDrop = useDrop({
+    accept: ItemTypes$1.SORT_ITEM,
+    canDrop: function canDrop() {
+      return false;
+    },
+    hover: function hover(_ref2) {
+      var draggedId = _ref2.id;
+
       if (draggedId !== id) {
-        const {
-          index: overIndex
-        } = findSort(id);
+        var _findSort = findSort(id),
+            overIndex = _findSort.index;
+
         moveSort(draggedId, overIndex);
       }
     }
+  }),
+      drop = _useDrop[1];
 
-  });
-
-  const getInncerCellsOfColumn = columnAccessor => {
-    return originalColumns.find(column => {
+  var getInncerCellsOfColumn = function getInncerCellsOfColumn(columnAccessor) {
+    return originalColumns.find(function (column) {
       return column.accessor === columnAccessor;
     }).innerCells;
   };
 
-  const changeSortByOptions = event => {
-    const newSortByValue = event.target.value;
-    const innerCellsList = getInncerCellsOfColumn(newSortByValue);
+  var changeSortByOptions = function changeSortByOptions(event) {
+    var newSortByValue = event.target.value;
+    var innerCellsList = getInncerCellsOfColumn(newSortByValue);
     updateSingleSortingOption(id, newSortByValue, innerCellsList && innerCellsList.length > 0 ? innerCellsList[0].accessor : "value", sortOption.order);
   };
 
-  const changeSortOnOptions = event => {
-    const newSortOnValue = event.target.value;
+  var changeSortOnOptions = function changeSortOnOptions(event) {
+    var newSortOnValue = event.target.value;
     updateSingleSortingOption(id, sortOption.sortBy, newSortOnValue, sortOption.order);
   };
 
-  const changeSortOrderOptions = event => {
-    const newSortOrderValue = event.target.value;
+  var changeSortOrderOptions = function changeSortOrderOptions(event) {
+    var newSortOrderValue = event.target.value;
     updateSingleSortingOption(id, sortOption.sortBy, sortOption.sortOn, newSortOrderValue);
   };
 
-  const copySort = () => {
+  var copySort = function copySort() {
     copySortOption(id);
   };
 
-  const deleteSort = () => {
+  var deleteSort = function deleteSort() {
     deleteSortOption(id);
   };
 
-  const opacity = isDragging ? 0.5 : 1;
+  var opacity = isDragging ? 0.5 : 1;
   return /*#__PURE__*/React.createElement("div", {
     className: "sort__bodyContent",
     style: {
-      opacity
+      opacity: opacity
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
-    ref: node => drag(drop(node)),
+    ref: function ref(node) {
+      return drag(drop(node));
+    },
     style: {
       cursor: "move"
     },
@@ -770,10 +1018,12 @@ const SortItem = ({
     className: "custom__ctrl",
     onChange: changeSortByOptions,
     value: sortOption.sortBy
-  }, originalColumns.map((orgItem, index) => /*#__PURE__*/React.createElement("option", {
-    key: index,
-    value: orgItem.accessor
-  }, orgItem.Header))))), /*#__PURE__*/React.createElement("div", {
+  }, originalColumns.map(function (orgItem, index) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: index,
+      value: orgItem.accessor
+    }, orgItem.Header);
+  })))), /*#__PURE__*/React.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React.createElement("div", {
     className: "sort__file"
@@ -781,10 +1031,12 @@ const SortItem = ({
     className: "custom__ctrl",
     onChange: changeSortOnOptions,
     value: sortOption.sortOn
-  }, getInncerCellsOfColumn(sortOption.sortBy) && getInncerCellsOfColumn(sortOption.sortBy).length > 0 ? getInncerCellsOfColumn(sortOption.sortBy).map((innerCellItem, innerCellIndex) => /*#__PURE__*/React.createElement("option", {
-    key: innerCellIndex,
-    value: innerCellItem.accessor
-  }, innerCellItem.Header)) : /*#__PURE__*/React.createElement("option", {
+  }, getInncerCellsOfColumn(sortOption.sortBy) && getInncerCellsOfColumn(sortOption.sortBy).length > 0 ? getInncerCellsOfColumn(sortOption.sortBy).map(function (innerCellItem, innerCellIndex) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: innerCellIndex,
+      value: innerCellItem.accessor
+    }, innerCellItem.Header);
+  }) : /*#__PURE__*/React.createElement("option", {
     key: 0,
     value: "value"
   }, "Value")))), /*#__PURE__*/React.createElement("div", {
@@ -816,40 +1068,42 @@ const SortItem = ({
   })))));
 };
 
-const SortingList = props => {
-  const {
-    updateSortingOptions,
-    sortOptions
-  } = props;
+var SortingList = function SortingList(props) {
+  var updateSortingOptions = props.updateSortingOptions,
+      sortOptions = props.sortOptions;
 
-  const moveSort = (sortId, atIndex) => {
-    const {
-      sort,
-      index
-    } = findSort(sortId);
+  var moveSort = function moveSort(sortId, atIndex) {
+    var _findSort = findSort(sortId),
+        sort = _findSort.sort,
+        index = _findSort.index;
+
     updateSortingOptions(update(sortOptions, {
       $splice: [[index, 1], [atIndex, 0, sort]]
     }));
   };
 
-  const findSort = sortId => {
-    const sort = sortOptions.filter((c, index) => index === sortId)[0];
+  var findSort = function findSort(sortId) {
+    var sort = sortOptions.filter(function (c, index) {
+      return index === sortId;
+    })[0];
     return {
-      sort,
+      sort: sort,
       index: sortOptions.indexOf(sort)
     };
   };
 
-  const [, drop] = useDrop({
+  var _useDrop = useDrop({
     accept: ItemTypes$1.SORT_ITEM
-  });
+  }),
+      drop = _useDrop[1];
+
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     ref: drop,
     style: {
       display: "flex",
       flexWrap: "wrap"
     }
-  }, sortOptions && sortOptions.length > 0 ? /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, "Sort By"), /*#__PURE__*/React.createElement("li", null, "Sort On"), /*#__PURE__*/React.createElement("li", null, "Order")) : null, sortOptions.map((sortOption, index) => {
+  }, sortOptions && sortOptions.length > 0 ? /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, "Sort By"), /*#__PURE__*/React.createElement("li", null, "Sort On"), /*#__PURE__*/React.createElement("li", null, "Order")) : null, sortOptions.map(function (sortOption, index) {
     return /*#__PURE__*/React.createElement(SortItem, {
       id: index,
       key: index,
@@ -864,22 +1118,27 @@ const SortingList = props => {
   })));
 };
 
-const GroupSort = memo(props => {
-  const {
-    isGroupSortOverLayOpen,
-    toggleGroupSortOverLay,
-    applyGroupSort,
-    originalColumns
-  } = props;
-  const sortingOrders = ["Ascending", "Descending"];
-  const defaultSortingOption = [{
+var GroupSort = memo(function (props) {
+  var isGroupSortOverLayOpen = props.isGroupSortOverLayOpen,
+      toggleGroupSortOverLay = props.toggleGroupSortOverLay,
+      applyGroupSort = props.applyGroupSort,
+      originalColumns = props.originalColumns;
+  var sortingOrders = ["Ascending", "Descending"];
+  var defaultSortingOption = [{
     sortBy: originalColumns[0].accessor,
     sortOn: originalColumns[0].innerCells ? originalColumns[0].innerCells[0].accessor : "value",
     order: sortingOrders[0]
   }];
-  const [sortOptions, setSortOptions] = useState([]);
-  const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
-  const HTML5toTouch = {
+
+  var _useState = useState([]),
+      sortOptions = _useState[0],
+      setSortOptions = _useState[1];
+
+  var _useState2 = useState(false),
+      isErrorDisplayed = _useState2[0],
+      setIsErrorDisplayed = _useState2[1];
+
+  var HTML5toTouch = {
     backends: [{
       backend: HTML5Backend
     }, {
@@ -892,50 +1151,50 @@ const GroupSort = memo(props => {
     }]
   };
 
-  const updateSortingOptions = sortingOptions => {
+  var updateSortingOptions = function updateSortingOptions(sortingOptions) {
     setSortOptions(sortingOptions);
   };
 
-  const addSortingOptions = () => {
-    setSortOptions([...sortOptions, ...defaultSortingOption]);
+  var addSortingOptions = function addSortingOptions() {
+    setSortOptions([].concat(sortOptions, defaultSortingOption));
   };
 
-  const clearSortingOptions = () => {
+  var clearSortingOptions = function clearSortingOptions() {
     setSortOptions([]);
     applyGroupSort([]);
   };
 
-  const updateSingleSortingOption = (sortIndex, sortByValue, sortOnValue, sortOrder) => {
-    const newOptionsList = sortOptions.slice(0);
-    const newSortingOption = {
+  var updateSingleSortingOption = function updateSingleSortingOption(sortIndex, sortByValue, sortOnValue, sortOrder) {
+    var newOptionsList = sortOptions.slice(0);
+    var newSortingOption = {
       sortBy: sortByValue,
       sortOn: sortOnValue,
       order: sortOrder
     };
-    const updatedSortOptions = newOptionsList.map((option, index) => index === sortIndex ? newSortingOption : option);
+    var updatedSortOptions = newOptionsList.map(function (option, index) {
+      return index === sortIndex ? newSortingOption : option;
+    });
     updateSortingOptions(updatedSortOptions);
   };
 
-  const copySortOption = sortIndex => {
-    const newOption = sortOptions.slice(0)[sortIndex];
+  var copySortOption = function copySortOption(sortIndex) {
+    var newOption = sortOptions.slice(0)[sortIndex];
     setSortOptions(sortOptions.concat(newOption));
   };
 
-  const deleteSortOption = sortIndex => {
-    setSortOptions(sortOptions.filter((option, index) => {
+  var deleteSortOption = function deleteSortOption(sortIndex) {
+    setSortOptions(sortOptions.filter(function (option, index) {
       return index !== sortIndex;
     }));
   };
 
-  const applySort = () => {
-    let isError = false;
-    sortOptions.map((option, index) => {
-      const {
-        sortBy,
-        sortOn
-      } = option;
-      const optionIndex = index;
-      const duplicateSort = sortOptions.find((opt, optIndex) => {
+  var applySort = function applySort() {
+    var isError = false;
+    sortOptions.map(function (option, index) {
+      var sortBy = option.sortBy,
+          sortOn = option.sortOn;
+      var optionIndex = index;
+      var duplicateSort = sortOptions.find(function (opt, optIndex) {
         return sortBy === opt.sortBy && sortOn === opt.sortOn && optionIndex !== optIndex;
       });
 
@@ -1009,50 +1268,61 @@ const GroupSort = memo(props => {
   }
 });
 
-const ExportData = memo(props => {
-  const {
-    isExportOverlayOpen,
-    toggleExportDataOverlay,
-    rows,
-    originalColumns,
-    isExpandContentAvailable,
-    additionalColumn
-  } = props;
+var ExportData = memo(function (props) {
+  var isExportOverlayOpen = props.isExportOverlayOpen,
+      toggleExportDataOverlay = props.toggleExportDataOverlay,
+      rows = props.rows,
+      originalColumns = props.originalColumns,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      additionalColumn = props.additionalColumn;
 
-  const getRemarksColumnIfAvailable = () => {
+  var getRemarksColumnIfAvailable = function getRemarksColumnIfAvailable() {
     return isExpandContentAvailable ? additionalColumn : [];
   };
 
-  const updatedColumns = [...originalColumns].concat(getRemarksColumnIfAvailable());
-  const [managedColumns, setManagedColumns] = useState(updatedColumns);
-  const [searchedColumns, setSearchedColumns] = useState(updatedColumns);
-  const [downloadTypes, setDownloadTypes] = useState([]);
-  const [warning, setWarning] = useState("");
-  let isDownload = false;
+  var updatedColumns = [].concat(originalColumns).concat(getRemarksColumnIfAvailable());
 
-  const exportRowData = () => {
+  var _useState = useState(updatedColumns),
+      managedColumns = _useState[0],
+      setManagedColumns = _useState[1];
+
+  var _useState2 = useState(updatedColumns),
+      searchedColumns = _useState2[0],
+      setSearchedColumns = _useState2[1];
+
+  var _useState3 = useState([]),
+      downloadTypes = _useState3[0],
+      setDownloadTypes = _useState3[1];
+
+  var _useState4 = useState(""),
+      warning = _useState4[0],
+      setWarning = _useState4[1];
+
+  var isDownload = false;
+
+  var exportRowData = function exportRowData() {
     isDownload = true;
-    let filteredRow = [];
-    let filteredRowValues = [];
+    var filteredRow = [];
+    var filteredRowValues = [];
     setWarning("");
 
     if (managedColumns.length > 0 && downloadTypes.length > 0) {
-      rows.forEach(rowDetails => {
-        let row = rowDetails.original;
-        const keys = Object.getOwnPropertyNames(row);
-        let filteredColumnVal = {};
-        let rowFilteredValues = [];
+      rows.forEach(function (rowDetails) {
+        var row = rowDetails.original;
+        var keys = Object.getOwnPropertyNames(row);
+        var filteredColumnVal = {};
+        var rowFilteredValues = [];
         keys.forEach(function (key) {
-          managedColumns.forEach(columnName => {
+          managedColumns.forEach(function (columnName) {
             if (columnName.accessor === key || columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key)) {
-              let columnValue = "";
+              var columnValue = "";
 
               if (typeof row[key] === "object") {
                 if (row[key].length === undefined) columnValue = Object.values(row[key]).toString().replace(",", " | ");
 
                 if (row[key].length > 0) {
-                  let arrObj = "";
-                  row[key].forEach((item, index) => {
+                  var arrObj = "";
+                  row[key].forEach(function (item, index) {
                     arrObj = index != 0 ? arrObj + " | " + Object.values(item) : Object.values(item);
                   });
                   columnValue = arrObj;
@@ -1069,7 +1339,7 @@ const ExportData = memo(props => {
         filteredRow.push(filteredColumnVal);
         filteredRowValues.push(rowFilteredValues);
       });
-      downloadTypes.map(item => {
+      downloadTypes.map(function (item) {
         if (item === "pdf") {
           downloadPDF(filteredRowValues);
         } else if (item === "excel") {
@@ -1089,18 +1359,18 @@ const ExportData = memo(props => {
     }
   };
 
-  const downloadPDF = rowFilteredValues => {
-    const unit = "pt";
-    const size = "A4";
-    const orientation = "landscape";
-    const marginLeft = 300;
-    const doc = new jsPDF(orientation, unit, size);
+  var downloadPDF = function downloadPDF(rowFilteredValues) {
+    var unit = "pt";
+    var size = "A4";
+    var orientation = "landscape";
+    var marginLeft = 300;
+    var doc = new jsPDF(orientation, unit, size);
     doc.setFontSize(15);
-    const title = "iCargo Neo Report";
-    const headers = [managedColumns.map(column => {
+    var title = "iCargo Neo Report";
+    var headers = [managedColumns.map(function (column) {
       return column.Header;
     })];
-    let content = {
+    var content = {
       startY: 50,
       head: headers,
       body: rowFilteredValues
@@ -1111,58 +1381,58 @@ const ExportData = memo(props => {
     isDownload = false;
   };
 
-  const downloadCSVFile = filteredRowValue => {
-    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-    const fileExtension = ".csv";
-    const fileName = "iCargo Neo Report";
-    const ws = utils.json_to_sheet(filteredRowValue);
-    const wb = {
+  var downloadCSVFile = function downloadCSVFile(filteredRowValue) {
+    var fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    var fileExtension = ".csv";
+    var fileName = "iCargo Neo Report";
+    var ws = utils.json_to_sheet(filteredRowValue);
+    var wb = {
       Sheets: {
         data: ws
       },
       SheetNames: ["data"]
     };
-    const excelBuffer = write(wb, {
+    var excelBuffer = write(wb, {
       bookType: "csv",
       type: "array"
     });
-    const data = new Blob([excelBuffer], {
+    var data = new Blob([excelBuffer], {
       type: fileType
     });
     saveAs(data, fileName + fileExtension);
   };
 
-  const downloadXLSFile = filteredRowValue => {
-    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-    const fileExtension = ".xlsx";
-    const fileName = "iCargo Neo Report";
-    const ws = utils.json_to_sheet(filteredRowValue);
-    const wb = {
+  var downloadXLSFile = function downloadXLSFile(filteredRowValue) {
+    var fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    var fileExtension = ".xlsx";
+    var fileName = "iCargo Neo Report";
+    var ws = utils.json_to_sheet(filteredRowValue);
+    var wb = {
       Sheets: {
         data: ws
       },
       SheetNames: ["data"]
     };
-    const excelBuffer = write(wb, {
+    var excelBuffer = write(wb, {
       bookType: "xlsx",
       type: "array"
     });
-    const data = new Blob([excelBuffer], {
+    var data = new Blob([excelBuffer], {
       type: fileType
     });
     saveAs(data, fileName + fileExtension);
   };
 
-  const filterColumnsList = event => {
-    let {
-      value
-    } = event ? event.target : "";
+  var filterColumnsList = function filterColumnsList(event) {
+    var _ref = event ? event.target : "",
+        value = _ref.value;
+
     value = value ? value.toLowerCase() : "";
 
     if (value != "") {
-      setSearchedColumns(originalColumns.filter(column => {
+      setSearchedColumns(originalColumns.filter(function (column) {
         return column.Header.toLowerCase().includes(value);
-      }).concat(getRemarksColumnIfAvailable().filter(column => {
+      }).concat(getRemarksColumnIfAvailable().filter(function (column) {
         return column.Header.toLowerCase().includes(value);
       })));
     } else {
@@ -1170,18 +1440,18 @@ const ExportData = memo(props => {
     }
   };
 
-  const isCheckboxSelected = header => {
+  var isCheckboxSelected = function isCheckboxSelected(header) {
     if (header === "Select All") {
       return managedColumns.length === searchedColumns.length;
     } else {
-      const selectedColumn = managedColumns.filter(column => {
+      var selectedColumn = managedColumns.filter(function (column) {
         return column.Header === header;
       });
       return selectedColumn && selectedColumn.length > 0;
     }
   };
 
-  const selectAllColumns = event => {
+  var selectAllColumns = function selectAllColumns(event) {
     if (event.target.checked) {
       setManagedColumns(updatedColumns);
     } else {
@@ -1189,49 +1459,46 @@ const ExportData = memo(props => {
     }
   };
 
-  const selectSingleColumn = event => {
-    const {
-      currentTarget
-    } = event;
-    const {
-      checked,
-      value
-    } = currentTarget;
+  var selectSingleColumn = function selectSingleColumn(event) {
+    var currentTarget = event.currentTarget;
+    var checked = currentTarget.checked,
+        value = currentTarget.value;
 
     if (checked) {
-      let indexOfColumnToAdd = updatedColumns.findIndex(column => {
-        return column.Header === value;
-      });
-      const itemToAdd = updatedColumns[indexOfColumnToAdd];
-      let prevItemIndex = -1;
-
-      while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-        prevItemIndex = managedColumns.findIndex(column => {
-          return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
+      (function () {
+        var indexOfColumnToAdd = updatedColumns.findIndex(function (column) {
+          return column.Header === value;
         });
-        indexOfColumnToAdd = indexOfColumnToAdd - 1;
-      }
+        var itemToAdd = updatedColumns[indexOfColumnToAdd];
+        var prevItemIndex = -1;
 
-      const newColumnsList = managedColumns.slice(0);
-      newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
-      setManagedColumns(newColumnsList);
+        while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
+          prevItemIndex = managedColumns.findIndex(function (column) {
+            return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
+          });
+          indexOfColumnToAdd = indexOfColumnToAdd - 1;
+        }
+
+        var newColumnsList = managedColumns.slice(0);
+        newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
+        setManagedColumns(newColumnsList);
+      })();
     } else {
-      setManagedColumns(managedColumns.filter(column => {
+      setManagedColumns(managedColumns.filter(function (column) {
         return column.Header !== value;
       }));
     }
   };
 
-  const changeDownloadType = event => {
-    const {
-      value,
-      checked
-    } = event ? event.currentTarget : "";
+  var changeDownloadType = function changeDownloadType(event) {
+    var _ref2 = event ? event.currentTarget : "",
+        value = _ref2.value,
+        checked = _ref2.checked;
 
     if (checked) {
       setDownloadTypes(downloadTypes.concat([value]));
     } else {
-      setDownloadTypes(downloadTypes.filter(type => {
+      setDownloadTypes(downloadTypes.filter(function (type) {
         return type !== value;
       }));
     }
@@ -1268,7 +1535,7 @@ const ExportData = memo(props => {
       onChange: selectAllColumns
     })), /*#__PURE__*/React.createElement("div", {
       className: "export__txt"
-    }, "Select All")), searchedColumns.map((column, index) => {
+    }, "Select All")), searchedColumns.map(function (column, index) {
       return /*#__PURE__*/React.createElement("div", {
         className: "export__wrap",
         key: index
@@ -1367,98 +1634,131 @@ const ExportData = memo(props => {
   }
 });
 
-const listRef = createRef(null);
-const Customgrid = memo(props => {
-  const {
-    title,
-    gridHeight,
-    gridWidth,
-    managableColumns,
-    originalColumns,
-    additionalColumn,
-    data,
-    rowEditOverlay,
-    rowEditData,
-    updateRowInGrid,
-    deletePopUpOverLay,
-    deleteRowFromGrid,
-    globalSearchLogic,
-    selectBulkData,
-    calculateRowHeight,
-    isExpandContentAvailable,
-    renderExpandedContent,
-    hasNextPage,
-    isNextPageLoading,
-    loadNextPage,
-    doGroupSort
-  } = props;
-  const [columns, setColumns] = useState(managableColumns);
-  const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(isExpandContentAvailable);
+var listRef = createRef(null);
+var Customgrid = memo(function (props) {
+  var title = props.title,
+      gridHeight = props.gridHeight,
+      gridWidth = props.gridWidth,
+      managableColumns = props.managableColumns,
+      originalColumns = props.originalColumns,
+      additionalColumn = props.additionalColumn,
+      data = props.data,
+      getRowEditOverlay = props.getRowEditOverlay,
+      updateRowInGrid = props.updateRowInGrid,
+      deleteRowFromGrid = props.deleteRowFromGrid,
+      globalSearchLogic = props.globalSearchLogic,
+      selectBulkData = props.selectBulkData,
+      calculateRowHeight = props.calculateRowHeight,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      displayExpandedContent = props.displayExpandedContent,
+      hasNextPage = props.hasNextPage,
+      isNextPageLoading = props.isNextPageLoading,
+      loadNextPage = props.loadNextPage,
+      doGroupSort = props.doGroupSort;
 
-  if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
-    return /*#__PURE__*/React.createElement("h2", {
-      style: {
-        marginTop: "50px",
-        textAlign: "center"
-      }
-    }, "Invalid Data or Columns Configuration");
-  }
+  var _useState = useState(managableColumns),
+      columns = _useState[0],
+      setColumns = _useState[1];
 
-  const itemCount = hasNextPage ? data.length + 1 : data.length;
-  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage ? loadNextPage : () => {};
+  var _useState2 = useState(isExpandContentAvailable),
+      isRowExpandEnabled = _useState2[0],
+      setIsRowExpandEnabled = _useState2[1];
 
-  const isItemLoaded = index => !hasNextPage || index < data.length;
+  var itemCount = hasNextPage ? data.length + 1 : data.length;
+  var loadMoreItems = isNextPageLoading ? function () {} : loadNextPage ? loadNextPage : function () {};
 
-  const [isFilterOpen, setFilterOpen] = useState(false);
+  var isItemLoaded = function isItemLoaded(index) {
+    return !hasNextPage || index < data.length;
+  };
 
-  const toggleColumnFilter = () => {
+  var _useState3 = useState(false),
+      isFilterOpen = _useState3[0],
+      setFilterOpen = _useState3[1];
+
+  var toggleColumnFilter = function toggleColumnFilter() {
     setFilterOpen(!isFilterOpen);
   };
 
-  const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
+  var _useState4 = useState(false),
+      isRowEditOverlyOpen = _useState4[0],
+      setIsRowEditOverlyOpen = _useState4[1];
 
-  const toggleGroupSortOverLay = () => {
+  var _useState5 = useState(null),
+      editedRowData = _useState5[0],
+      setEditedRowData = _useState5[1];
+
+  var bindRowEditOverlay = function bindRowEditOverlay(rowValue) {
+    setEditedRowData(rowValue);
+    setIsRowEditOverlyOpen(true);
+  };
+
+  var closeRowEditOverlay = function closeRowEditOverlay() {
+    setEditedRowData(null);
+    setIsRowEditOverlyOpen(false);
+  };
+
+  var _useState6 = useState(false),
+      isRowDeleteOverlyOpen = _useState6[0],
+      setIsRowDeleteOverlyOpen = _useState6[1];
+
+  var _useState7 = useState(null),
+      deletedRowData = _useState7[0],
+      setDeletedRowData = _useState7[1];
+
+  var bindRowDeleteOverlay = function bindRowDeleteOverlay(rowValue) {
+    setDeletedRowData(rowValue);
+    setIsRowDeleteOverlyOpen(true);
+  };
+
+  var closeRowDeleteOverlay = function closeRowDeleteOverlay() {
+    setDeletedRowData(null);
+    setIsRowDeleteOverlyOpen(false);
+  };
+
+  var _useState8 = useState(false),
+      isGroupSortOverLayOpen = _useState8[0],
+      setGroupSortOverLay = _useState8[1];
+
+  var toggleGroupSortOverLay = function toggleGroupSortOverLay() {
     setGroupSortOverLay(!isGroupSortOverLayOpen);
   };
 
-  const applyGroupSort = sortOptions => {
+  var applyGroupSort = function applyGroupSort(sortOptions) {
     doGroupSort(sortOptions);
   };
 
-  const [isManageColumnOpen, setManageColumnOpen] = useState(false);
+  var _useState9 = useState(false),
+      isManageColumnOpen = _useState9[0],
+      setManageColumnOpen = _useState9[1];
 
-  const toggleManageColumns = () => {
+  var toggleManageColumns = function toggleManageColumns() {
     setManageColumnOpen(!isManageColumnOpen);
   };
 
-  const updateColumnStructure = (newColumnStructure, remarksColumn) => {
-    setColumns([...newColumnStructure]);
+  var updateColumnStructure = function updateColumnStructure(newColumnStructure, remarksColumn) {
+    setColumns([].concat(newColumnStructure));
     setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
   };
 
-  const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
+  var _useState10 = useState(false),
+      isExportOverlayOpen = _useState10[0],
+      setIsExportOverlayOpen = _useState10[1];
 
-  const toggleExportDataOverlay = () => {
+  var toggleExportDataOverlay = function toggleExportDataOverlay() {
     setIsExportOverlayOpen(!isExportOverlayOpen);
   };
 
-  const defaultColumn = useMemo(() => ({
-    Filter: DefaultColumnFilter
-  }), []);
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    selectedFlatRows,
-    state,
-    setGlobalFilter
-  } = useTable({
-    columns,
-    data,
-    defaultColumn,
-    globalFilter: (rows, columns, filterValue) => {
+  var defaultColumn = useMemo(function () {
+    return {
+      Filter: DefaultColumnFilter
+    };
+  }, []);
+
+  var _useTable = useTable({
+    columns: columns,
+    data: data,
+    defaultColumn: defaultColumn,
+    globalFilter: function globalFilter(rows, columns, filterValue) {
       if (globalSearchLogic && typeof globalSearchLogic === "function") {
         return globalSearchLogic(rows, columns, filterValue);
       } else {
@@ -1470,91 +1770,99 @@ const Customgrid = memo(props => {
     autoResetSortBy: false,
     autoResetExpanded: false,
     autoResetSelectedRows: false
-  }, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns, hooks => {
-    hooks.allColumns.push(columns => [{
-      id: "selection",
-      columnId: "column_custom_0",
-      disableResizing: true,
-      disableFilters: true,
-      disableSortBy: true,
-      minWidth: 35,
-      width: 35,
-      maxWidth: 35,
-      Header: ({
-        getToggleAllRowsSelectedProps
-      }) => /*#__PURE__*/React.createElement(RowSelector, getToggleAllRowsSelectedProps()),
-      Cell: ({
-        row
-      }) => /*#__PURE__*/React.createElement(RowSelector, row.getToggleRowSelectedProps())
-    }, ...columns, {
-      id: "custom",
-      columnId: "column_custom_1",
-      disableResizing: true,
-      disableFilters: true,
-      disableSortBy: true,
-      minWidth: 35,
-      width: 35,
-      maxWidth: 35,
-      Cell: ({
-        row
-      }) => {
-        return /*#__PURE__*/React.createElement("div", {
-          className: "action"
-        }, /*#__PURE__*/React.createElement(RowOptions, {
-          row: row,
-          DeletePopUpOverLay: deletePopUpOverLay,
-          deleteRowFromGrid: deleteRowFromGrid,
-          RowEditOverlay: rowEditOverlay,
-          rowEditData: rowEditData,
-          updateRowInGrid: updateRowInGrid
-        }), isRowExpandEnabled ? /*#__PURE__*/React.createElement("span", Object.assign({
-          className: "expander"
-        }, row.getToggleRowExpandedProps()), row.isExpanded ? /*#__PURE__*/React.createElement("i", {
-          className: "fa fa-angle-up",
-          "aria-hidden": "true"
-        }) : /*#__PURE__*/React.createElement("i", {
-          className: "fa fa-angle-down",
-          "aria-hidden": "true"
-        })) : null);
-      }
-    }]);
-  });
+  }, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns, function (hooks) {
+    hooks.allColumns.push(function (columns) {
+      return [{
+        id: "selection",
+        columnId: "column_custom_0",
+        disableResizing: true,
+        disableFilters: true,
+        disableSortBy: true,
+        minWidth: 35,
+        width: 35,
+        maxWidth: 35,
+        Header: function Header(_ref) {
+          var getToggleAllRowsSelectedProps = _ref.getToggleAllRowsSelectedProps;
+          return /*#__PURE__*/React.createElement(RowSelector, getToggleAllRowsSelectedProps());
+        },
+        Cell: function Cell(_ref2) {
+          var row = _ref2.row;
+          return /*#__PURE__*/React.createElement(RowSelector, row.getToggleRowSelectedProps());
+        }
+      }].concat(columns, [{
+        id: "custom",
+        columnId: "column_custom_1",
+        disableResizing: true,
+        disableFilters: true,
+        disableSortBy: true,
+        minWidth: 35,
+        width: 35,
+        maxWidth: 35,
+        Cell: function Cell(_ref3) {
+          var row = _ref3.row;
+          return /*#__PURE__*/React.createElement("div", {
+            className: "action"
+          }, /*#__PURE__*/React.createElement(RowOptions, {
+            row: row,
+            bindRowEditOverlay: bindRowEditOverlay,
+            bindRowDeleteOverlay: bindRowDeleteOverlay
+          }), isRowExpandEnabled ? /*#__PURE__*/React.createElement("span", _extends({
+            className: "expander"
+          }, row.getToggleRowExpandedProps()), row.isExpanded ? /*#__PURE__*/React.createElement("i", {
+            className: "fa fa-angle-up",
+            "aria-hidden": "true"
+          }) : /*#__PURE__*/React.createElement("i", {
+            className: "fa fa-angle-down",
+            "aria-hidden": "true"
+          })) : null);
+        }
+      }]);
+    });
+  }),
+      getTableProps = _useTable.getTableProps,
+      getTableBodyProps = _useTable.getTableBodyProps,
+      headerGroups = _useTable.headerGroups,
+      rows = _useTable.rows,
+      prepareRow = _useTable.prepareRow,
+      selectedFlatRows = _useTable.selectedFlatRows,
+      state = _useTable.state,
+      setGlobalFilter = _useTable.setGlobalFilter;
 
-  const bulkSelector = () => {
+  var bulkSelector = function bulkSelector() {
     if (selectBulkData) {
       selectBulkData(selectedFlatRows);
     }
   };
 
-  useEffect(() => {
+  useEffect(function () {
     if (listRef && listRef.current) {
       listRef.current.resetAfterIndex(0, true);
     }
   });
-  const RenderRow = useCallback(({
-    index,
-    style
-  }) => {
+  var RenderRow = useCallback(function (_ref4) {
+    var index = _ref4.index,
+        style = _ref4.style;
+
     if (isItemLoaded(index)) {
-      const row = rows[index];
+      var row = rows[index];
       prepareRow(row);
-      return /*#__PURE__*/React.createElement("div", Object.assign({}, row.getRowProps({
-        style
+      return /*#__PURE__*/React.createElement("div", _extends({}, row.getRowProps({
+        style: style
       }), {
         className: "table-row tr"
       }), /*#__PURE__*/React.createElement("div", {
         className: "table-row-wrap"
-      }, row.cells.map(cell => {
-        return /*#__PURE__*/React.createElement("div", Object.assign({}, cell.getCellProps(), {
+      }, row.cells.map(function (cell) {
+        return /*#__PURE__*/React.createElement("div", _extends({}, cell.getCellProps(), {
           className: "table-cell td"
         }), cell.render("Cell"));
       })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React.createElement("div", {
         className: "expand"
-      }, renderExpandedContent ? renderExpandedContent(row, additionalColumn) : null) : null);
+      }, displayExpandedContent ? displayExpandedContent(row, additionalColumn) : null) : null);
     }
-  }, [prepareRow, rows, renderExpandedContent]);
+  }, [prepareRow, rows, displayExpandedContent]);
   return /*#__PURE__*/React.createElement("div", {
-    className: "wrapper",
+    className: "table-wrapper",
     style: {
       width: gridWidth ? gridWidth : "100%"
     }
@@ -1622,6 +1930,17 @@ const Customgrid = memo(props => {
     className: "fa fa-share-alt",
     "aria-hidden": "true"
   })))), /*#__PURE__*/React.createElement("div", {
+    className: "table-popus"
+  }, isRowEditOverlyOpen ? /*#__PURE__*/React.createElement(RowEditOverLay, {
+    row: editedRowData,
+    getRowEditOverlay: getRowEditOverlay,
+    closeRowEditOverlay: closeRowEditOverlay,
+    updateRowInGrid: updateRowInGrid
+  }) : null, isRowDeleteOverlyOpen ? /*#__PURE__*/React.createElement(RowDeleteOverLay, {
+    row: deletedRowData,
+    closeRowDeleteOverlay: closeRowDeleteOverlay,
+    deleteRowFromGrid: deleteRowFromGrid
+  }) : null), /*#__PURE__*/React.createElement("div", {
     className: "tableContainer table-outer",
     style: {
       height: gridHeight ? gridHeight : "50vh",
@@ -1631,135 +1950,106 @@ const Customgrid = memo(props => {
   }, /*#__PURE__*/React.createElement(AutoSizer, {
     disableWidth: true,
     disableResizing: true
-  }, ({
-    height
-  }) => /*#__PURE__*/React.createElement("div", Object.assign({}, getTableProps(), {
-    className: "table"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "thead table-row table-row--head"
-  }, headerGroups.map(headerGroup => /*#__PURE__*/React.createElement("div", Object.assign({}, headerGroup.getHeaderGroupProps(), {
-    className: "tr"
-  }), headerGroup.headers.map(column => /*#__PURE__*/React.createElement("div", Object.assign({}, column.getHeaderProps(), {
-    className: "table-cell column-heading th"
-  }), /*#__PURE__*/React.createElement("div", column.getSortByToggleProps(), column.render("Header"), /*#__PURE__*/React.createElement("span", null, column.isSorted ? column.isSortedDesc ? /*#__PURE__*/React.createElement("i", {
-    className: "fa fa-sort-desc",
-    "aria-hidden": "true"
-  }) : /*#__PURE__*/React.createElement("i", {
-    className: "fa fa-sort-asc",
-    "aria-hidden": "true"
-  }) : "")), /*#__PURE__*/React.createElement("div", {
-    className: `txt-wrap column-filter ${isFilterOpen ? "open" : ""}`
-  }, !column.disableFilters ? column.render("Filter") : null), column.canResize && /*#__PURE__*/React.createElement("div", Object.assign({}, column.getResizerProps(), {
-    className: "resizer"
-  }))))))), /*#__PURE__*/React.createElement("div", Object.assign({}, getTableBodyProps(), {
-    className: "tbody"
-  }), /*#__PURE__*/React.createElement(InfiniteLoader, {
-    isItemLoaded: isItemLoaded,
-    itemCount: itemCount,
-    loadMoreItems: loadMoreItems
-  }, ({
-    onItemsRendered,
-    ref
-  }) => /*#__PURE__*/React.createElement(VariableSizeList, {
-    ref: list => {
-      ref(list);
-      listRef.current = list;
-    },
-    style: {
-      overflowX: "hidden"
-    },
-    height: height - 60,
-    itemCount: rows.length,
-    itemSize: index => {
-      if (calculateRowHeight && typeof calculateRowHeight === "function") {
-        return calculateRowHeight(rows, index, headerGroups);
-      } else {
-        return 70;
-      }
-    },
-    onItemsRendered: onItemsRendered,
-    overscanCount: 20
-  }, RenderRow)))))));
+  }, function (_ref5) {
+    var height = _ref5.height;
+    return /*#__PURE__*/React.createElement("div", _extends({}, getTableProps(), {
+      className: "table"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "thead table-row table-row--head"
+    }, headerGroups.map(function (headerGroup) {
+      return /*#__PURE__*/React.createElement("div", _extends({}, headerGroup.getHeaderGroupProps(), {
+        className: "tr"
+      }), headerGroup.headers.map(function (column) {
+        return /*#__PURE__*/React.createElement("div", _extends({}, column.getHeaderProps(), {
+          className: "table-cell column-heading th"
+        }), /*#__PURE__*/React.createElement("div", column.getSortByToggleProps(), column.render("Header"), /*#__PURE__*/React.createElement("span", null, column.isSorted ? column.isSortedDesc ? /*#__PURE__*/React.createElement("i", {
+          className: "fa fa-sort-desc",
+          "aria-hidden": "true"
+        }) : /*#__PURE__*/React.createElement("i", {
+          className: "fa fa-sort-asc",
+          "aria-hidden": "true"
+        }) : "")), /*#__PURE__*/React.createElement("div", {
+          className: "txt-wrap column-filter " + (isFilterOpen ? "open" : "")
+        }, !column.disableFilters ? column.render("Filter") : null), column.canResize && /*#__PURE__*/React.createElement("div", _extends({}, column.getResizerProps(), {
+          className: "resizer"
+        })));
+      }));
+    })), /*#__PURE__*/React.createElement("div", _extends({}, getTableBodyProps(), {
+      className: "tbody"
+    }), /*#__PURE__*/React.createElement(InfiniteLoader, {
+      isItemLoaded: isItemLoaded,
+      itemCount: itemCount,
+      loadMoreItems: loadMoreItems
+    }, function (_ref6) {
+      var onItemsRendered = _ref6.onItemsRendered,
+          _ref7 = _ref6.ref;
+      return /*#__PURE__*/React.createElement(VariableSizeList, {
+        ref: function ref(list) {
+          _ref7(list);
+
+          listRef.current = list;
+        },
+        style: {
+          overflowX: "hidden"
+        },
+        height: height - 60,
+        itemCount: rows.length,
+        itemSize: function itemSize(index) {
+          return calculateRowHeight(rows[index], headerGroups && headerGroups.length ? headerGroups[0].headers : []);
+        },
+        onItemsRendered: onItemsRendered,
+        overscanCount: 20
+      }, RenderRow);
+    })));
+  })));
 });
 
-const Grid = forwardRef((props, ref) => {
-  const {
-    title,
-    gridHeight,
-    gridWidth,
-    columns,
-    additionalColumn,
-    fetchData,
-    rowEditOverlay,
-    rowEditData,
-    updateRowData,
-    deletePopUpOverLay,
-    deleteRowData,
-    selectBulkData,
-    calculateRowHeight
-  } = props;
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
-  const [groupSortOptions, setGroupSortOptions] = useState([]);
-  let processedColumns = [];
-  columns.forEach((column, index) => {
-    const {
-      innerCells,
-      accessor,
-      sortValue
-    } = column;
-    const isInnerCellsPresent = innerCells && innerCells.length > 0;
-    column.columnId = `column_${index}`;
+var Grid = memo(function (props) {
+  var title = props.title,
+      gridHeight = props.gridHeight,
+      gridWidth = props.gridWidth,
+      columns = props.columns,
+      columnToExpand = props.columnToExpand,
+      fetchData = props.fetchData,
+      getRowEditOverlay = props.getRowEditOverlay,
+      updateRowData = props.updateRowData,
+      deleteRowData = props.deleteRowData,
+      selectBulkData = props.selectBulkData,
+      calculateRowHeight = props.calculateRowHeight;
+  var isDesktop = window.innerWidth > 1024;
 
-    if (!column.disableSortBy) {
-      if (isInnerCellsPresent) {
-        if (sortValue) {
-          column.sortType = (rowA, rowB) => {
-            return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
-          };
-        } else {
-          column.disableSortBy = true;
-        }
-      } else if (!innerCells) {
-        column.sortType = (rowA, rowB) => {
-          return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
-        };
-      }
-    }
+  var _useState = useState(true),
+      hasNextPage = _useState[0],
+      setHasNextPage = _useState[1];
 
-    if (!column.disableFilters) {
-      column.filter = (rows, id, filterValue) => {
-        const searchText = filterValue ? filterValue.toLowerCase() : "";
-        return rows.filter(row => {
-          const {
-            original
-          } = row;
-          return searchColumn(column, original, searchText);
-        });
-      };
-    }
+  var _useState2 = useState(false),
+      isNextPageLoading = _useState2[0],
+      setIsNextPageLoading = _useState2[1];
 
-    processedColumns.push(column);
-  });
-  let renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
-  const gridColumns = useMemo(() => processedColumns, []);
+  var _useState3 = useState(false),
+      isLoading = _useState3[0],
+      setIsLoading = _useState3[1];
 
-  const searchColumn = (column, original, searchText) => {
-    let isValuePresent = false;
-    const {
-      accessor,
-      innerCells
-    } = column;
-    const rowAccessorValue = original[accessor];
-    const isInnerCellsPresent = innerCells && innerCells.length > 0;
+  var _useState4 = useState([]),
+      items = _useState4[0],
+      setItems = _useState4[1];
+
+  var _useState5 = useState([]),
+      groupSortOptions = _useState5[0],
+      setGroupSortOptions = _useState5[1];
+
+  var searchColumn = function searchColumn(column, original, searchText) {
+    var isValuePresent = false;
+    var accessor = column.accessor,
+        innerCells = column.innerCells;
+    var rowAccessorValue = original[accessor];
+    var isInnerCellsPresent = innerCells && innerCells.length > 0;
 
     if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
       if (rowAccessorValue.length > 0) {
-        rowAccessorValue.map(value => {
-          innerCells.map(cell => {
-            const dataAccessor = value[cell.accessor];
+        rowAccessorValue.map(function (value) {
+          innerCells.map(function (cell) {
+            var dataAccessor = value[cell.accessor];
 
             if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
               isValuePresent = true;
@@ -1767,8 +2057,8 @@ const Grid = forwardRef((props, ref) => {
           });
         });
       } else {
-        innerCells.map(cell => {
-          const dataAccessor = original[accessor][cell.accessor];
+        innerCells.map(function (cell) {
+          var dataAccessor = original[accessor][cell.accessor];
 
           if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
             isValuePresent = true;
@@ -1776,7 +2066,7 @@ const Grid = forwardRef((props, ref) => {
         });
       }
     } else {
-      const dataAccessor = original[accessor];
+      var dataAccessor = original[accessor];
 
       if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
         isValuePresent = true;
@@ -1786,15 +2076,64 @@ const Grid = forwardRef((props, ref) => {
     return isValuePresent;
   };
 
-  const globalSearchLogic = (rows, columns, filterValue) => {
+  var updateRowInGrid = function updateRowInGrid(original, updatedRow) {
+    setItems(function (old) {
+      return old.map(function (row) {
+        if (Object.entries(row).toString() === Object.entries(original).toString()) {
+          row = updatedRow;
+        }
+
+        return row;
+      });
+    });
+
+    if (updateRowData) {
+      updateRowData(updatedRow);
+    }
+  };
+
+  var deleteRowFromGrid = function deleteRowFromGrid(original) {
+    setItems(function (old) {
+      return old.filter(function (row) {
+        return row !== original;
+      });
+    });
+
+    if (deleteRowData) {
+      deleteRowData(original);
+    }
+  };
+
+  var processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
+  var additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop);
+  var gridColumns = useMemo(function () {
+    return processedColumns;
+  }, []);
+  var renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
+
+  var displayExpandedContent = function displayExpandedContent(row, additionalColumn) {
+    if (row && additionalColumn) {
+      var innerCells = additionalColumn.innerCells;
+      var original = row.original;
+
+      if (original && innerCells && innerCells.length > 0) {
+        var expandedRowContent = {};
+        innerCells.forEach(function (cell) {
+          var accessor = cell.accessor;
+          expandedRowContent[accessor] = original[accessor];
+        });
+        return renderExpandedContent(expandedRowContent);
+      }
+    }
+  };
+
+  var globalSearchLogic = function globalSearchLogic(rows, columns, filterValue) {
     if (filterValue && processedColumns.length > 0) {
-      const searchText = filterValue.toLowerCase();
-      return rows.filter(row => {
-        const {
-          original
-        } = row;
-        let returnValue = false;
-        processedColumns.map(column => {
+      var searchText = filterValue.toLowerCase();
+      return rows.filter(function (row) {
+        var original = row.original;
+        var returnValue = false;
+        processedColumns.map(function (column) {
           returnValue = returnValue || searchColumn(column, original, searchText);
         });
         return returnValue;
@@ -1804,7 +2143,36 @@ const Grid = forwardRef((props, ref) => {
     return rows;
   };
 
-  const compareValues = (compareOrder, v1, v2) => {
+  var calculateDefaultRowHeight = function calculateDefaultRowHeight(row, gridColumns) {
+    var rowHeight = 50;
+
+    if (gridColumns && gridColumns.length > 0 && row) {
+      var original = row.original,
+          isExpanded = row.isExpanded;
+      var columnWithMaxWidth = [].concat(gridColumns).sort(function (a, b) {
+        return b.width - a.width;
+      })[0];
+      var id = columnWithMaxWidth.id,
+          width = columnWithMaxWidth.width,
+          totalFlexWidth = columnWithMaxWidth.totalFlexWidth;
+      var rowValue = original[id];
+
+      if (rowValue) {
+        var textLength = Object.values(rowValue).join(",").length;
+        rowHeight = rowHeight + Math.ceil(80 * textLength / totalFlexWidth);
+        var widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+        rowHeight = rowHeight + widthVariable / 1000;
+      }
+
+      if (isExpanded && additionalColumn) {
+        rowHeight = rowHeight + (additionalColumn.innerCells && additionalColumn.innerCells.length > 0 ? additionalColumn.innerCells.length * 35 : 35);
+      }
+    }
+
+    return rowHeight;
+  };
+
+  var compareValues = function compareValues(compareOrder, v1, v2) {
     if (compareOrder === "Ascending") {
       return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
     } else {
@@ -1812,81 +2180,35 @@ const Grid = forwardRef((props, ref) => {
     }
   };
 
-  const getSortedData = originalData => {
+  var getSortedData = function getSortedData(originalData) {
     return originalData.sort(function (x, y) {
-      let compareResult = 0;
-      groupSortOptions.forEach(option => {
-        const {
-          sortBy,
-          sortOn,
-          order
-        } = option;
-        const newResult = sortOn === "value" ? compareValues(order, x[sortBy], y[sortBy]) : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
+      var compareResult = 0;
+      groupSortOptions.forEach(function (option) {
+        var sortBy = option.sortBy,
+            sortOn = option.sortOn,
+            order = option.order;
+        var newResult = sortOn === "value" ? compareValues(order, x[sortBy], y[sortBy]) : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
         compareResult = compareResult || newResult;
       });
       return compareResult;
     });
   };
 
-  const getOriginalDataIndex = sortedDataIndex => {
-    const updatedData = getSortedData([...items]).find((item, index) => {
-      return index === sortedDataIndex;
-    });
-    let originalDataIndex = -1;
-    originalDataIndex = items.findIndex((item, index) => {
-      return item === updatedData;
-    });
-    return originalDataIndex;
-  };
-
-  useImperativeHandle(ref, () => ({
-    updateCellInGrid(rowIndex, columnId, value) {
-      const originalDataIndex = getOriginalDataIndex(rowIndex);
-
-      if (originalDataIndex >= 0) {
-        setItems(old => old.map((row, index) => {
-          if (index === originalDataIndex) {
-            return { ...old[originalDataIndex],
-              [columnId]: value
-            };
-          }
-
-          return row;
-        }));
-      }
-    }
-
-  }));
-
-  const updateRowInGrid = (original, updatedRow) => {
-    setItems(old => old.map(row => {
-      if (row === original) {
-        row = updatedRow;
-      }
-
-      return row;
-    }));
-    updateRowData(updatedRow);
-  };
-
-  const deleteRowFromGrid = original => {
-    setItems(old => old.filter(row => {
-      return row !== original;
-    }));
-    deleteRowData(original);
-  };
-
-  const doGroupSort = sortOptions => {
+  var doGroupSort = function doGroupSort(sortOptions) {
     setGroupSortOptions(sortOptions);
   };
 
-  const loadNextPage = (...args) => {
-    const newIndex = args && args.length > 0 ? args[0] : -1;
+  var loadNextPage = function loadNextPage() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var newIndex = args && args.length > 0 ? args[0] : -1;
 
     if (newIndex >= 0 && hasNextPage) {
       setIsLoading(true);
       setIsNextPageLoading(true);
-      fetchData(newIndex).then(data => {
+      fetchData(newIndex).then(function (data) {
         setIsLoading(false);
         setHasNextPage(data && data.length > 0);
         setIsNextPageLoading(false);
@@ -1895,8 +2217,8 @@ const Grid = forwardRef((props, ref) => {
     }
   };
 
-  useEffect(() => {
-    processedColumns.map(column => {
+  useEffect(function () {
+    processedColumns.map(function (column) {
       if (column.innerCells) {
         column.originalInnerCells = column.innerCells;
       }
@@ -1905,9 +2227,7 @@ const Grid = forwardRef((props, ref) => {
     });
 
     if (additionalColumn) {
-      const {
-        innerCells
-      } = additionalColumn;
+      var innerCells = additionalColumn.innerCells;
 
       if (innerCells) {
         additionalColumn.originalInnerCells = innerCells;
@@ -1915,57 +2235,45 @@ const Grid = forwardRef((props, ref) => {
     }
 
     setIsLoading(true);
-    fetchData(0).then(data => {
+    fetchData(0).then(function (data) {
       setIsLoading(false);
       setItems(data);
     });
   }, []);
-  const data = getSortedData([...items]);
-
-  if (data && data.length > 0) {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Customgrid, {
-      title: title,
-      gridHeight: gridHeight,
-      gridWidth: gridWidth,
-      managableColumns: gridColumns,
-      originalColumns: gridColumns,
-      additionalColumn: additionalColumn,
-      data: data,
-      rowEditOverlay: rowEditOverlay,
-      rowEditData: rowEditData,
-      updateRowInGrid: updateRowInGrid,
-      deletePopUpOverLay: deletePopUpOverLay,
-      deleteRowFromGrid: deleteRowFromGrid,
-      globalSearchLogic: globalSearchLogic,
-      selectBulkData: selectBulkData,
-      calculateRowHeight: calculateRowHeight,
-      isExpandContentAvailable: typeof renderExpandedContent === "function",
-      renderExpandedContent: renderExpandedContent,
-      hasNextPage: hasNextPage,
-      isNextPageLoading: isNextPageLoading,
-      loadNextPage: loadNextPage,
-      doGroupSort: doGroupSort
-    }), isNextPageLoading ? /*#__PURE__*/React.createElement("div", {
-      id: "loader",
-      className: "background"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "dots container"
-    }, /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null))) : null);
-  } else if (isLoading) {
-    return /*#__PURE__*/React.createElement("h2", {
-      style: {
-        textAlign: "center",
-        marginTop: "70px"
-      }
-    }, "Initializing Grid...");
-  } else {
-    return /*#__PURE__*/React.createElement("h2", {
-      style: {
-        textAlign: "center",
-        marginTop: "70px"
-      }
-    }, "Invalid Data or Column Configurations");
-  }
+  var data = getSortedData([].concat(items));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "grid-component-container"
+  }, data && data.length > 0 && processedColumns && processedColumns.length > 0 ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Customgrid, {
+    title: title,
+    gridHeight: gridHeight,
+    gridWidth: gridWidth,
+    managableColumns: gridColumns,
+    originalColumns: gridColumns,
+    additionalColumn: additionalColumn,
+    data: data,
+    getRowEditOverlay: getRowEditOverlay,
+    updateRowInGrid: updateRowInGrid,
+    deleteRowFromGrid: deleteRowFromGrid,
+    globalSearchLogic: globalSearchLogic,
+    selectBulkData: selectBulkData,
+    calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
+    isExpandContentAvailable: typeof renderExpandedContent === "function",
+    displayExpandedContent: displayExpandedContent,
+    hasNextPage: hasNextPage,
+    isNextPageLoading: isNextPageLoading,
+    loadNextPage: loadNextPage,
+    doGroupSort: doGroupSort
+  }), isNextPageLoading ? /*#__PURE__*/React.createElement("div", {
+    id: "loader",
+    className: "background"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dots container"
+  }, /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("span", null))) : null, ")") : /*#__PURE__*/React.createElement("h2", {
+    style: {
+      textAlign: "center",
+      marginTop: "70px"
+    }
+  }, isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"));
 });
 
 export default Grid;
