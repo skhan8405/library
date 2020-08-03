@@ -3,7 +3,7 @@
  * @param {String} inputDate
  * @param {String} type
  */
-const getValueOfDate = (dateValue, type) => {
+export const getValueOfDate = (dateValue, type) => {
     const date = new Date(dateValue);
     if (type === "calendar") {
         const dateTimeFormat = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -15,5 +15,3 @@ const getValueOfDate = (dateValue, type) => {
         return `${day}-${month}-${year}`;
     }
 };
-
-export default getValueOfDate;

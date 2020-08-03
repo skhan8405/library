@@ -1,4 +1,8 @@
-export const extractColumns = (columns, searchColumn, isDesktop) => {
+import React from "react";
+import CellDisplayAndEdit from "../Functions/CellDisplayAndEdit";
+
+export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
+    //Remove iPad only columns from desktop and vice-versa
     const filteredColumns = columns.filter((column) => {
         return isDesktop ? !column.onlyInIpad : !column.onlyInDesktop;
     });
@@ -11,6 +15,13 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
 
         //Add column Id
         column.columnId = `column_${index}`;
+
+        //Configure Cell function (which is used by react-table component), based on the user defined function displayCell
+        if (!column.Cell && column.displayCell) {
+            column.Cell = (row) => {
+                return <CellDisplayAndEdit row={row} updateRowInGrid={updateRowInGrid} />;
+            };
+        }
 
         //Add logic to sort column if sort is not disabled
         if (!column.disableSortBy) {
@@ -49,12 +60,18 @@ export const extractColumns = (columns, searchColumn, isDesktop) => {
     return modifiedColumns;
 };
 
-export const extractAdditionalColumns = (additionalColumns, isDesktop) => {
-    const { innerCells } = additionalColumns;
-    if (innerCells && innerCells.length > 0) {
-        additionalColumns.innerCells = innerCells.filter((cell) => {
+export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
+    const { innerCells } = additionalColumn;
+    const isInnerCellsPresent = innerCells && innerCells.length > 0;
+
+    //Add column Id
+    additionalColumn.columnId = `ExpandColumn`;
+
+    //Remove iPad only columns from desktop and vice-versa
+    if (isInnerCellsPresent) {
+        additionalColumn.innerCells = innerCells.filter((cell) => {
             return isDesktop ? !cell.onlyInIpad : !cell.onlyInDesktop;
         });
     }
-    return additionalColumns;
+    return additionalColumn;
 };

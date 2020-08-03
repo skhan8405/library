@@ -2,11 +2,11 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var React = require('react');
 var React__default = _interopDefault(React);
+var ClickAwayListener = _interopDefault(require('react-click-away-listener'));
 var reactTable = require('react-table');
 var reactWindow = require('react-window');
 var AutoSizer = _interopDefault(require('react-virtualized-auto-sizer'));
 var InfiniteLoader = _interopDefault(require('react-window-infinite-loader'));
-var ClickAwayListener = _interopDefault(require('react-click-away-listener'));
 var reactDnd = require('react-dnd');
 var reactDndHtml5Backend = require('react-dnd-html5-backend');
 var reactDndTouchBackend = require('react-dnd-touch-backend');
@@ -50,6 +50,163 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 
   return target;
 }
+
+var CellDisplayAndEdit = React.memo(function (_ref) {
+  var row = _ref.row,
+      updateRowInGrid = _ref.updateRowInGrid;
+  var column = row.column;
+
+  if (column && row.row) {
+    var _useState = React.useState(false),
+        isEditOpen = _useState[0],
+        setIsEditOpen = _useState[1];
+
+    var _useState2 = React.useState(null),
+        editedRowValue = _useState2[0],
+        setEditedRowValue = _useState2[1];
+
+    var closeEdit = function closeEdit() {
+      setIsEditOpen(false);
+    };
+
+    var openEdit = function openEdit() {
+      setIsEditOpen(true);
+    };
+
+    var getUpdatedRowValue = function getUpdatedRowValue(value) {
+      if (value) {
+        setEditedRowValue(value);
+      }
+    };
+
+    var saveEdit = function saveEdit() {
+      if (editedRowValue) {
+        updateRowInGrid(row.row.original, editedRowValue);
+      }
+
+      closeEdit();
+    };
+
+    var originalRowValue = _extends({}, row.row.original);
+
+    var id = column.id,
+        innerCells = column.innerCells,
+        originalInnerCells = column.originalInnerCells;
+
+    if (originalRowValue && originalInnerCells && originalInnerCells.length && innerCells && innerCells.length && innerCells.length < originalInnerCells.length) {
+      var columnValue = originalRowValue[id];
+
+      if (typeof columnValue === "object") {
+        if (columnValue.length > 0) {
+          var newcolumnValue = columnValue.map(function (value) {
+            var params = {};
+            innerCells.forEach(function (cell) {
+              var cellAccessor = cell.accessor;
+              params[cellAccessor] = value[cellAccessor];
+            });
+            value = params;
+            return value;
+          });
+          originalRowValue[id] = newcolumnValue;
+        } else {
+          var params = {};
+          innerCells.forEach(function (cell) {
+            var cellAccessor = cell.accessor;
+            params[cellAccessor] = row.value[cellAccessor];
+          });
+          originalRowValue[id] = params;
+        }
+      }
+    }
+
+    var cellDisplayContent = column.displayCell(originalRowValue);
+    var cellEditContent = column.editCell ? column.editCell(originalRowValue, getUpdatedRowValue) : null;
+    return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+      onClickAway: closeEdit
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "table-cell--content table-cell--content__" + id
+    }, cellEditContent ? /*#__PURE__*/React__default.createElement("div", {
+      className: "cell-edit",
+      onClick: openEdit
+    }, /*#__PURE__*/React__default.createElement("i", {
+      className: "fa fa-pencil",
+      "aria-hidden": "true"
+    })) : null, cellDisplayContent, isEditOpen ? /*#__PURE__*/React__default.createElement("div", {
+      className: "table-cell--content-edit"
+    }, cellEditContent, /*#__PURE__*/React__default.createElement("button", {
+      className: "ok",
+      onClick: saveEdit
+    }), /*#__PURE__*/React__default.createElement("button", {
+      className: "cancel",
+      onClick: closeEdit
+    })) : null));
+  }
+});
+
+var extractColumns = function extractColumns(columns, searchColumn, isDesktop, updateRowInGrid) {
+  var filteredColumns = columns.filter(function (column) {
+    return isDesktop ? !column.onlyInIpad : !column.onlyInDesktop;
+  });
+  var modifiedColumns = [];
+  filteredColumns.forEach(function (column, index) {
+    var innerCells = column.innerCells,
+        accessor = column.accessor,
+        sortValue = column.sortValue;
+    var isInnerCellsPresent = innerCells && innerCells.length > 0;
+    column.columnId = "column_" + index;
+
+    if (!column.Cell && column.displayCell) {
+      column.Cell = function (row) {
+        return /*#__PURE__*/React__default.createElement(CellDisplayAndEdit, {
+          row: row,
+          updateRowInGrid: updateRowInGrid
+        });
+      };
+    }
+
+    if (!column.disableSortBy) {
+      if (isInnerCellsPresent) {
+        if (sortValue) {
+          column.sortType = function (rowA, rowB) {
+            return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
+          };
+        } else {
+          column.disableSortBy = true;
+        }
+      } else if (!innerCells) {
+        column.sortType = function (rowA, rowB) {
+          return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
+        };
+      }
+    }
+
+    if (!column.disableFilters) {
+      column.filter = function (rows, id, filterValue) {
+        var searchText = filterValue ? filterValue.toLowerCase() : "";
+        return rows.filter(function (row) {
+          var original = row.original;
+          return searchColumn(column, original, searchText);
+        });
+      };
+    }
+
+    modifiedColumns.push(column);
+  });
+  return modifiedColumns;
+};
+var extractAdditionalColumn = function extractAdditionalColumn(additionalColumn, isDesktop) {
+  var innerCells = additionalColumn.innerCells;
+  var isInnerCellsPresent = innerCells && innerCells.length > 0;
+  additionalColumn.columnId = "ExpandColumn";
+
+  if (isInnerCellsPresent) {
+    additionalColumn.innerCells = innerCells.filter(function (cell) {
+      return isDesktop ? !cell.onlyInIpad : !cell.onlyInDesktop;
+    });
+  }
+
+  return additionalColumn;
+};
 
 var RowSelector = React.memo(React.forwardRef(function (_ref, ref) {
   var indeterminate = _ref.indeterminate,
@@ -129,26 +286,15 @@ var RowEdit = require("./RowEdit~BuKwAcSl.svg");
 
 var RowPin = require("./RowPin~qQRdvcXq.png");
 
-var RowOptions = React.memo(function (props) {
-  var row = props.row,
-      DeletePopUpOverLay = props.DeletePopUpOverLay,
-      deleteRowFromGrid = props.deleteRowFromGrid,
-      RowEditOverlay = props.RowEditOverlay,
-      rowEditData = props.rowEditData,
-      updateRowInGrid = props.updateRowInGrid;
+var RowOptions = React.memo(function (_ref) {
+  var row = _ref.row,
+      bindRowEditOverlay = _ref.bindRowEditOverlay,
+      bindRowDeleteOverlay = _ref.bindRowDeleteOverlay;
   var original = row.original;
 
   var _useState = React.useState(false),
       isRowOptionsOpen = _useState[0],
       setRowOptionsOpen = _useState[1];
-
-  var _useState2 = React.useState(false),
-      isRowEditOverlayOpen = _useState2[0],
-      setRowEditOverlayOpen = _useState2[1];
-
-  var _useState3 = React.useState(false),
-      isDeleteOverlayOpen = _useState3[0],
-      setDeleteOverlayOpen = _useState3[1];
 
   var openRowOptionsOverlay = function openRowOptionsOverlay() {
     setRowOptionsOpen(true);
@@ -159,29 +305,13 @@ var RowOptions = React.memo(function (props) {
   };
 
   var openRowEditOverlay = function openRowEditOverlay() {
-    setRowOptionsOpen(false);
-    setRowEditOverlayOpen(true);
-  };
-
-  var closeRowEditOverlay = function closeRowEditOverlay() {
-    setRowEditOverlayOpen(false);
-  };
-
-  var updateRow = function updateRow(updatedrow) {
-    updateRowInGrid(original, updatedrow);
+    bindRowEditOverlay(original);
+    closeRowOptionsOverlay();
   };
 
   var openDeleteOverlay = function openDeleteOverlay() {
-    setRowOptionsOpen(false);
-    setDeleteOverlayOpen(true);
-  };
-
-  var closeDeleteOverlay = function closeDeleteOverlay() {
-    setDeleteOverlayOpen(false);
-  };
-
-  var deleteRow = function deleteRow() {
-    deleteRowFromGrid(original);
+    bindRowDeleteOverlay(original);
+    closeRowOptionsOverlay();
   };
 
   return /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("div", {
@@ -213,15 +343,75 @@ var RowOptions = React.memo(function (props) {
     onClick: closeRowOptionsOverlay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-close"
-  })))) : null), isRowEditOverlayOpen ? /*#__PURE__*/React__default.createElement(RowEditOverlay, {
-    row: original,
-    rowEditData: rowEditData,
-    closeRowEditOverlay: closeRowEditOverlay,
-    updateRow: updateRow
-  }) : null, isDeleteOverlayOpen ? /*#__PURE__*/React__default.createElement(DeletePopUpOverLay, {
-    closeDeleteOverlay: closeDeleteOverlay,
-    deleteRow: deleteRow
-  }) : null);
+  })))) : null));
+});
+
+var RowEditOverLay = React.memo(function (_ref) {
+  var row = _ref.row,
+      getRowEditOverlay = _ref.getRowEditOverlay,
+      closeRowEditOverlay = _ref.closeRowEditOverlay,
+      updateRowInGrid = _ref.updateRowInGrid;
+
+  var _useState = React.useState(null),
+      editedRowValue = _useState[0],
+      setEditedRowValue = _useState[1];
+
+  var getUpdatedRowValue = function getUpdatedRowValue(value) {
+    if (value) {
+      setEditedRowValue(value);
+    }
+  };
+
+  var saveRowEdit = function saveRowEdit() {
+    if (editedRowValue) {
+      updateRowInGrid(row, editedRowValue);
+    }
+
+    closeRowEditOverlay();
+  };
+
+  var rowEditContent = getRowEditOverlay(row, getUpdatedRowValue);
+  return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+    onClickAway: closeRowEditOverlay
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "row-option-action-overlay"
+  }, rowEditContent, /*#__PURE__*/React__default.createElement("div", {
+    className: "cancel-save-buttons"
+  }, /*#__PURE__*/React__default.createElement("button", {
+    className: "save-Button",
+    onClick: saveRowEdit
+  }, "Save"), /*#__PURE__*/React__default.createElement("button", {
+    className: "cancel-Button",
+    onClick: closeRowEditOverlay
+  }, "Cancel"))));
+});
+
+var RowDeleteOverLay = React.memo(function (_ref) {
+  var row = _ref.row,
+      closeRowDeleteOverlay = _ref.closeRowDeleteOverlay,
+      deleteRowFromGrid = _ref.deleteRowFromGrid;
+
+  var deleteRow = function deleteRow() {
+    if (row) {
+      deleteRowFromGrid(row);
+    }
+
+    closeRowDeleteOverlay();
+  };
+
+  return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+    onClickAway: closeRowDeleteOverlay
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "row-option-action-overlay delete"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "cancel-save-buttons-delete"
+  }, /*#__PURE__*/React__default.createElement("button", {
+    className: "delete-Button",
+    onClick: deleteRow
+  }, "Delete"), /*#__PURE__*/React__default.createElement("button", {
+    className: "cancel-Button",
+    onClick: closeRowDeleteOverlay
+  }, "Cancel"))));
 });
 
 var ItemTypes = {
@@ -1457,16 +1647,14 @@ var Customgrid = React.memo(function (props) {
       originalColumns = props.originalColumns,
       additionalColumn = props.additionalColumn,
       data = props.data,
-      rowEditOverlay = props.rowEditOverlay,
-      rowEditData = props.rowEditData,
+      getRowEditOverlay = props.getRowEditOverlay,
       updateRowInGrid = props.updateRowInGrid,
-      deletePopUpOverLay = props.deletePopUpOverLay,
       deleteRowFromGrid = props.deleteRowFromGrid,
       globalSearchLogic = props.globalSearchLogic,
       selectBulkData = props.selectBulkData,
       calculateRowHeight = props.calculateRowHeight,
       isExpandContentAvailable = props.isExpandContentAvailable,
-      renderExpandedContent = props.renderExpandedContent,
+      displayExpandedContent = props.displayExpandedContent,
       hasNextPage = props.hasNextPage,
       isNextPageLoading = props.isNextPageLoading,
       loadNextPage = props.loadNextPage,
@@ -1479,15 +1667,6 @@ var Customgrid = React.memo(function (props) {
   var _useState2 = React.useState(isExpandContentAvailable),
       isRowExpandEnabled = _useState2[0],
       setIsRowExpandEnabled = _useState2[1];
-
-  if (!(data && data.length > 0) || !(columns && columns.length > 0)) {
-    return /*#__PURE__*/React__default.createElement("h2", {
-      style: {
-        marginTop: "50px",
-        textAlign: "center"
-      }
-    }, "Invalid Data or Columns Configuration");
-  }
 
   var itemCount = hasNextPage ? data.length + 1 : data.length;
   var loadMoreItems = isNextPageLoading ? function () {} : loadNextPage ? loadNextPage : function () {};
@@ -1505,8 +1684,44 @@ var Customgrid = React.memo(function (props) {
   };
 
   var _useState4 = React.useState(false),
-      isGroupSortOverLayOpen = _useState4[0],
-      setGroupSortOverLay = _useState4[1];
+      isRowEditOverlyOpen = _useState4[0],
+      setIsRowEditOverlyOpen = _useState4[1];
+
+  var _useState5 = React.useState(null),
+      editedRowData = _useState5[0],
+      setEditedRowData = _useState5[1];
+
+  var bindRowEditOverlay = function bindRowEditOverlay(rowValue) {
+    setEditedRowData(rowValue);
+    setIsRowEditOverlyOpen(true);
+  };
+
+  var closeRowEditOverlay = function closeRowEditOverlay() {
+    setEditedRowData(null);
+    setIsRowEditOverlyOpen(false);
+  };
+
+  var _useState6 = React.useState(false),
+      isRowDeleteOverlyOpen = _useState6[0],
+      setIsRowDeleteOverlyOpen = _useState6[1];
+
+  var _useState7 = React.useState(null),
+      deletedRowData = _useState7[0],
+      setDeletedRowData = _useState7[1];
+
+  var bindRowDeleteOverlay = function bindRowDeleteOverlay(rowValue) {
+    setDeletedRowData(rowValue);
+    setIsRowDeleteOverlyOpen(true);
+  };
+
+  var closeRowDeleteOverlay = function closeRowDeleteOverlay() {
+    setDeletedRowData(null);
+    setIsRowDeleteOverlyOpen(false);
+  };
+
+  var _useState8 = React.useState(false),
+      isGroupSortOverLayOpen = _useState8[0],
+      setGroupSortOverLay = _useState8[1];
 
   var toggleGroupSortOverLay = function toggleGroupSortOverLay() {
     setGroupSortOverLay(!isGroupSortOverLayOpen);
@@ -1516,9 +1731,9 @@ var Customgrid = React.memo(function (props) {
     doGroupSort(sortOptions);
   };
 
-  var _useState5 = React.useState(false),
-      isManageColumnOpen = _useState5[0],
-      setManageColumnOpen = _useState5[1];
+  var _useState9 = React.useState(false),
+      isManageColumnOpen = _useState9[0],
+      setManageColumnOpen = _useState9[1];
 
   var toggleManageColumns = function toggleManageColumns() {
     setManageColumnOpen(!isManageColumnOpen);
@@ -1529,9 +1744,9 @@ var Customgrid = React.memo(function (props) {
     setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
   };
 
-  var _useState6 = React.useState(false),
-      isExportOverlayOpen = _useState6[0],
-      setIsExportOverlayOpen = _useState6[1];
+  var _useState10 = React.useState(false),
+      isExportOverlayOpen = _useState10[0],
+      setIsExportOverlayOpen = _useState10[1];
 
   var toggleExportDataOverlay = function toggleExportDataOverlay() {
     setIsExportOverlayOpen(!isExportOverlayOpen);
@@ -1593,11 +1808,8 @@ var Customgrid = React.memo(function (props) {
             className: "action"
           }, /*#__PURE__*/React__default.createElement(RowOptions, {
             row: row,
-            DeletePopUpOverLay: deletePopUpOverLay,
-            deleteRowFromGrid: deleteRowFromGrid,
-            RowEditOverlay: rowEditOverlay,
-            rowEditData: rowEditData,
-            updateRowInGrid: updateRowInGrid
+            bindRowEditOverlay: bindRowEditOverlay,
+            bindRowDeleteOverlay: bindRowDeleteOverlay
           }), isRowExpandEnabled ? /*#__PURE__*/React__default.createElement("span", _extends({
             className: "expander"
           }, row.getToggleRowExpandedProps()), row.isExpanded ? /*#__PURE__*/React__default.createElement("i", {
@@ -1650,11 +1862,11 @@ var Customgrid = React.memo(function (props) {
         }), cell.render("Cell"));
       })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
         className: "expand"
-      }, renderExpandedContent ? renderExpandedContent(row, additionalColumn) : null) : null);
+      }, displayExpandedContent ? displayExpandedContent(row, additionalColumn) : null) : null);
     }
-  }, [prepareRow, rows, renderExpandedContent]);
+  }, [prepareRow, rows, displayExpandedContent]);
   return /*#__PURE__*/React__default.createElement("div", {
-    className: "wrapper",
+    className: "table-wrapper",
     style: {
       width: gridWidth ? gridWidth : "100%"
     }
@@ -1722,6 +1934,17 @@ var Customgrid = React.memo(function (props) {
     className: "fa fa-share-alt",
     "aria-hidden": "true"
   })))), /*#__PURE__*/React__default.createElement("div", {
+    className: "table-popus"
+  }, isRowEditOverlyOpen ? /*#__PURE__*/React__default.createElement(RowEditOverLay, {
+    row: editedRowData,
+    getRowEditOverlay: getRowEditOverlay,
+    closeRowEditOverlay: closeRowEditOverlay,
+    updateRowInGrid: updateRowInGrid
+  }) : null, isRowDeleteOverlyOpen ? /*#__PURE__*/React__default.createElement(RowDeleteOverLay, {
+    row: deletedRowData,
+    closeRowDeleteOverlay: closeRowDeleteOverlay,
+    deleteRowFromGrid: deleteRowFromGrid
+  }) : null), /*#__PURE__*/React__default.createElement("div", {
     className: "tableContainer table-outer",
     style: {
       height: gridHeight ? gridHeight : "50vh",
@@ -1776,11 +1999,7 @@ var Customgrid = React.memo(function (props) {
         height: height - 60,
         itemCount: rows.length,
         itemSize: function itemSize(index) {
-          if (calculateRowHeight && typeof calculateRowHeight === "function") {
-            return calculateRowHeight(rows, index, headerGroups);
-          } else {
-            return 70;
-          }
+          return calculateRowHeight(rows[index], headerGroups && headerGroups.length ? headerGroups[0].headers : []);
         },
         onItemsRendered: onItemsRendered,
         overscanCount: 20
@@ -1789,20 +2008,19 @@ var Customgrid = React.memo(function (props) {
   })));
 });
 
-var Grid = React.forwardRef(function (props, ref) {
+var Grid = React.memo(function (props) {
   var title = props.title,
       gridHeight = props.gridHeight,
       gridWidth = props.gridWidth,
       columns = props.columns,
-      additionalColumn = props.additionalColumn,
+      columnToExpand = props.columnToExpand,
       fetchData = props.fetchData,
-      rowEditOverlay = props.rowEditOverlay,
-      rowEditData = props.rowEditData,
+      getRowEditOverlay = props.getRowEditOverlay,
       updateRowData = props.updateRowData,
-      deletePopUpOverLay = props.deletePopUpOverLay,
       deleteRowData = props.deleteRowData,
       selectBulkData = props.selectBulkData,
       calculateRowHeight = props.calculateRowHeight;
+  var isDesktop = window.innerWidth > 1024;
 
   var _useState = React.useState(true),
       hasNextPage = _useState[0],
@@ -1823,47 +2041,6 @@ var Grid = React.forwardRef(function (props, ref) {
   var _useState5 = React.useState([]),
       groupSortOptions = _useState5[0],
       setGroupSortOptions = _useState5[1];
-
-  var processedColumns = [];
-  columns.forEach(function (column, index) {
-    var innerCells = column.innerCells,
-        accessor = column.accessor,
-        sortValue = column.sortValue;
-    var isInnerCellsPresent = innerCells && innerCells.length > 0;
-    column.columnId = "column_" + index;
-
-    if (!column.disableSortBy) {
-      if (isInnerCellsPresent) {
-        if (sortValue) {
-          column.sortType = function (rowA, rowB) {
-            return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
-          };
-        } else {
-          column.disableSortBy = true;
-        }
-      } else if (!innerCells) {
-        column.sortType = function (rowA, rowB) {
-          return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
-        };
-      }
-    }
-
-    if (!column.disableFilters) {
-      column.filter = function (rows, id, filterValue) {
-        var searchText = filterValue ? filterValue.toLowerCase() : "";
-        return rows.filter(function (row) {
-          var original = row.original;
-          return searchColumn(column, original, searchText);
-        });
-      };
-    }
-
-    processedColumns.push(column);
-  });
-  var renderExpandedContent = additionalColumn ? additionalColumn.Cell : null;
-  var gridColumns = React.useMemo(function () {
-    return processedColumns;
-  }, []);
 
   var searchColumn = function searchColumn(column, original, searchText) {
     var isValuePresent = false;
@@ -1903,6 +2080,57 @@ var Grid = React.forwardRef(function (props, ref) {
     return isValuePresent;
   };
 
+  var updateRowInGrid = function updateRowInGrid(original, updatedRow) {
+    setItems(function (old) {
+      return old.map(function (row) {
+        if (Object.entries(row).toString() === Object.entries(original).toString()) {
+          row = updatedRow;
+        }
+
+        return row;
+      });
+    });
+
+    if (updateRowData) {
+      updateRowData(updatedRow);
+    }
+  };
+
+  var deleteRowFromGrid = function deleteRowFromGrid(original) {
+    setItems(function (old) {
+      return old.filter(function (row) {
+        return row !== original;
+      });
+    });
+
+    if (deleteRowData) {
+      deleteRowData(original);
+    }
+  };
+
+  var processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
+  var additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop);
+  var gridColumns = React.useMemo(function () {
+    return processedColumns;
+  }, []);
+  var renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
+
+  var displayExpandedContent = function displayExpandedContent(row, additionalColumn) {
+    if (row && additionalColumn) {
+      var innerCells = additionalColumn.innerCells;
+      var original = row.original;
+
+      if (original && innerCells && innerCells.length > 0) {
+        var expandedRowContent = {};
+        innerCells.forEach(function (cell) {
+          var accessor = cell.accessor;
+          expandedRowContent[accessor] = original[accessor];
+        });
+        return renderExpandedContent(expandedRowContent);
+      }
+    }
+  };
+
   var globalSearchLogic = function globalSearchLogic(rows, columns, filterValue) {
     if (filterValue && processedColumns.length > 0) {
       var searchText = filterValue.toLowerCase();
@@ -1917,6 +2145,35 @@ var Grid = React.forwardRef(function (props, ref) {
     }
 
     return rows;
+  };
+
+  var calculateDefaultRowHeight = function calculateDefaultRowHeight(row, gridColumns) {
+    var rowHeight = 50;
+
+    if (gridColumns && gridColumns.length > 0 && row) {
+      var original = row.original,
+          isExpanded = row.isExpanded;
+      var columnWithMaxWidth = [].concat(gridColumns).sort(function (a, b) {
+        return b.width - a.width;
+      })[0];
+      var id = columnWithMaxWidth.id,
+          width = columnWithMaxWidth.width,
+          totalFlexWidth = columnWithMaxWidth.totalFlexWidth;
+      var rowValue = original[id];
+
+      if (rowValue) {
+        var textLength = Object.values(rowValue).join(",").length;
+        rowHeight = rowHeight + Math.ceil(80 * textLength / totalFlexWidth);
+        var widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+        rowHeight = rowHeight + widthVariable / 1000;
+      }
+
+      if (isExpanded && additionalColumn) {
+        rowHeight = rowHeight + (additionalColumn.innerCells && additionalColumn.innerCells.length > 0 ? additionalColumn.innerCells.length * 35 : 35);
+      }
+    }
+
+    return rowHeight;
   };
 
   var compareValues = function compareValues(compareOrder, v1, v2) {
@@ -1939,61 +2196,6 @@ var Grid = React.forwardRef(function (props, ref) {
       });
       return compareResult;
     });
-  };
-
-  var getOriginalDataIndex = function getOriginalDataIndex(sortedDataIndex) {
-    var updatedData = getSortedData([].concat(items)).find(function (item, index) {
-      return index === sortedDataIndex;
-    });
-    var originalDataIndex = -1;
-    originalDataIndex = items.findIndex(function (item, index) {
-      return item === updatedData;
-    });
-    return originalDataIndex;
-  };
-
-  React.useImperativeHandle(ref, function () {
-    return {
-      updateCellInGrid: function updateCellInGrid(rowIndex, columnId, value) {
-        var originalDataIndex = getOriginalDataIndex(rowIndex);
-
-        if (originalDataIndex >= 0) {
-          setItems(function (old) {
-            return old.map(function (row, index) {
-              if (index === originalDataIndex) {
-                var _extends2;
-
-                return _extends({}, old[originalDataIndex], (_extends2 = {}, _extends2[columnId] = value, _extends2));
-              }
-
-              return row;
-            });
-          });
-        }
-      }
-    };
-  });
-
-  var updateRowInGrid = function updateRowInGrid(original, updatedRow) {
-    setItems(function (old) {
-      return old.map(function (row) {
-        if (row === original) {
-          row = updatedRow;
-        }
-
-        return row;
-      });
-    });
-    updateRowData(updatedRow);
-  };
-
-  var deleteRowFromGrid = function deleteRowFromGrid(original) {
-    setItems(function (old) {
-      return old.filter(function (row) {
-        return row !== original;
-      });
-    });
-    deleteRowData(original);
   };
 
   var doGroupSort = function doGroupSort(sortOptions) {
@@ -2043,51 +2245,39 @@ var Grid = React.forwardRef(function (props, ref) {
     });
   }, []);
   var data = getSortedData([].concat(items));
-
-  if (data && data.length > 0) {
-    return /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(Customgrid, {
-      title: title,
-      gridHeight: gridHeight,
-      gridWidth: gridWidth,
-      managableColumns: gridColumns,
-      originalColumns: gridColumns,
-      additionalColumn: additionalColumn,
-      data: data,
-      rowEditOverlay: rowEditOverlay,
-      rowEditData: rowEditData,
-      updateRowInGrid: updateRowInGrid,
-      deletePopUpOverLay: deletePopUpOverLay,
-      deleteRowFromGrid: deleteRowFromGrid,
-      globalSearchLogic: globalSearchLogic,
-      selectBulkData: selectBulkData,
-      calculateRowHeight: calculateRowHeight,
-      isExpandContentAvailable: typeof renderExpandedContent === "function",
-      renderExpandedContent: renderExpandedContent,
-      hasNextPage: hasNextPage,
-      isNextPageLoading: isNextPageLoading,
-      loadNextPage: loadNextPage,
-      doGroupSort: doGroupSort
-    }), isNextPageLoading ? /*#__PURE__*/React__default.createElement("div", {
-      id: "loader",
-      className: "background"
-    }, /*#__PURE__*/React__default.createElement("div", {
-      className: "dots container"
-    }, /*#__PURE__*/React__default.createElement("span", null), /*#__PURE__*/React__default.createElement("span", null), /*#__PURE__*/React__default.createElement("span", null))) : null);
-  } else if (isLoading) {
-    return /*#__PURE__*/React__default.createElement("h2", {
-      style: {
-        textAlign: "center",
-        marginTop: "70px"
-      }
-    }, "Initializing Grid...");
-  } else {
-    return /*#__PURE__*/React__default.createElement("h2", {
-      style: {
-        textAlign: "center",
-        marginTop: "70px"
-      }
-    }, "Invalid Data or Column Configurations");
-  }
+  return /*#__PURE__*/React__default.createElement("div", {
+    className: "grid-component-container"
+  }, data && data.length > 0 && processedColumns && processedColumns.length > 0 ? /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(Customgrid, {
+    title: title,
+    gridHeight: gridHeight,
+    gridWidth: gridWidth,
+    managableColumns: gridColumns,
+    originalColumns: gridColumns,
+    additionalColumn: additionalColumn,
+    data: data,
+    getRowEditOverlay: getRowEditOverlay,
+    updateRowInGrid: updateRowInGrid,
+    deleteRowFromGrid: deleteRowFromGrid,
+    globalSearchLogic: globalSearchLogic,
+    selectBulkData: selectBulkData,
+    calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
+    isExpandContentAvailable: typeof renderExpandedContent === "function",
+    displayExpandedContent: displayExpandedContent,
+    hasNextPage: hasNextPage,
+    isNextPageLoading: isNextPageLoading,
+    loadNextPage: loadNextPage,
+    doGroupSort: doGroupSort
+  }), isNextPageLoading ? /*#__PURE__*/React__default.createElement("div", {
+    id: "loader",
+    className: "background"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "dots container"
+  }, /*#__PURE__*/React__default.createElement("span", null), /*#__PURE__*/React__default.createElement("span", null), /*#__PURE__*/React__default.createElement("span", null))) : null, ")") : /*#__PURE__*/React__default.createElement("h2", {
+    style: {
+      textAlign: "center",
+      marginTop: "70px"
+    }
+  }, isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"));
 });
 
 module.exports = Grid;

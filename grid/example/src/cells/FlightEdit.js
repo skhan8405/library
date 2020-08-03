@@ -1,72 +1,40 @@
-import React, { memo, useState, useEffect } from "react";
-import ClickAwayListener from "react-click-away-listener";
-import getDateValue from "../utils/DateUtility";
+import React, { useState } from "react";
+import { getValueOfDate } from "../utils/DateUtility";
 
-const FlightEdit = memo(
-    ({ index, columnId, innerCells, columnValue, updateCellData, isInnerCellShown, isInnerCellsNotEmpty }) => {
-        const [value, setValue] = useState(columnValue);
-        const [oldValue] = useState(columnValue);
-        const [isEdit, setEdit] = useState(false);
+const FlightEdit = ({ rowData, getUpdatedData }) => {
+    const [updatedRowData, setUpdatedRowData] = useState(rowData);
+    const { flight } = updatedRowData;
 
-        const onFlightChange = (e) => {
-            setValue({
-                ...value,
-                flightno: e.target.value
-            });
+    const updateRowData = (updatedFlightData) => {
+        const updatedRow = {
+            ...updatedRowData,
+            flight: updatedFlightData
         };
+        setUpdatedRowData(updatedRow);
+        getUpdatedData(updatedRow);
+    };
 
-        const onDateChange = (e) => {
-            setValue({
-                ...value,
-                date: getDateValue(e.target.value)
-            });
+    const updateFlightnoValue = (e) => {
+        const updatedFlightData = {
+            ...flight,
+            flightno: e.target.value
         };
+        updateRowData(updatedFlightData);
+    };
 
-        const openEdit = (e) => {
-            setEdit(true);
+    const updateDateValue = (e) => {
+        const updatedFlightData = {
+            ...flight,
+            date: getValueOfDate(e.target.value, "cell")
         };
+        updateRowData(updatedFlightData);
+    };
 
-        const saveEdit = () => {
-            setEdit(false);
-            if (updateCellData) {
-                updateCellData(index, columnId, value);
-            }
-        };
-        const clearEdit = () => {
-            setValue(oldValue);
-            setEdit(false);
-        };
-
-        useEffect(() => {
-            setValue(columnValue);
-        }, [columnValue]);
-
-        return (
-            <ClickAwayListener onClickAway={clearEdit}>
-                <div className="flight-details content">
-                    {isInnerCellsNotEmpty(innerCells) ? (
-                        <div className="cell-edit" onClick={openEdit}>
-                            <i className="fa fa-pencil" aria-hidden="true"></i>
-                        </div>
-                    ) : null}
-                    <div>
-                        {isInnerCellShown(innerCells, "flightno") ? <strong>{value.flightno}</strong> : null}
-                        {isInnerCellShown(innerCells, "date") ? <span>{value.date}</span> : null}
-                    </div>
-                    <div className={`content-edit ${isEdit ? "open" : "close"}`}>
-                        {isInnerCellShown(innerCells, "flightno") ? (
-                            <input type="text" value={value.flightno} onChange={onFlightChange} />
-                        ) : null}
-                        {isInnerCellShown(innerCells, "date") ? (
-                            <input type="date" value={getDateValue(value.date, "calendar")} onChange={onDateChange} />
-                        ) : null}
-                        <button className="ok" onClick={saveEdit} />
-                        <button className="cancel" onClick={clearEdit} />
-                    </div>
-                </div>
-            </ClickAwayListener>
-        );
-    }
-);
-
+    return (
+        <div>
+            <input type="text" value={flight.flightno} onChange={updateFlightnoValue} />
+            <input type="date" value={getValueOfDate(flight.date, "calendar")} onChange={updateDateValue} />
+        </div>
+    );
+};
 export default FlightEdit;

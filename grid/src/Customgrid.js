@@ -16,6 +16,8 @@ import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import RowOptions from "./Functions/RowOptions";
+import RowEditOverlay from "./Functions/RowEditOverlay";
+import RowDeleteOverLay from "./Functions/RowDeleteOverLay";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
 import ExportData from "./Overlays/exportdata";
@@ -31,16 +33,14 @@ const Customgrid = memo((props) => {
         originalColumns,
         additionalColumn,
         data,
-        rowEditOverlay,
-        rowEditData,
+        getRowEditOverlay,
         updateRowInGrid,
-        deletePopUpOverLay,
         deleteRowFromGrid,
         globalSearchLogic,
         selectBulkData,
         calculateRowHeight,
         isExpandContentAvailable,
-        renderExpandedContent,
+        displayExpandedContent,
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
@@ -59,10 +59,39 @@ const Customgrid = memo((props) => {
 
     //Local state value for checking if column filter is open/closed
     const [isFilterOpen, setFilterOpen] = useState(false);
-
     //Toggle column filter state value based on UI clicks
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
+    };
+
+    //Local state value for checking if column filter is open/closed
+    const [isRowEditOverlyOpen, setIsRowEditOverlyOpen] = useState(false);
+    //Local state value to hold row data that is going to be edited
+    const [editedRowData, setEditedRowData] = useState(null);
+    //Bind the user defined row edit overlay into Grid
+    const bindRowEditOverlay = (rowValue) => {
+        setEditedRowData(rowValue);
+        setIsRowEditOverlyOpen(true);
+    };
+    //Close the row edit overlay
+    const closeRowEditOverlay = () => {
+        setEditedRowData(null);
+        setIsRowEditOverlyOpen(false);
+    };
+
+    //Local state value for checking if column filter is open/closed
+    const [isRowDeleteOverlyOpen, setIsRowDeleteOverlyOpen] = useState(false);
+    //Local state value to hold row data that is going to be deleted
+    const [deletedRowData, setDeletedRowData] = useState(null);
+    //Bind the user defined row delete overlay into Grid
+    const bindRowDeleteOverlay = (rowValue) => {
+        setDeletedRowData(rowValue);
+        setIsRowDeleteOverlyOpen(true);
+    };
+    //Close the row edit overlay
+    const closeRowDeleteOverlay = () => {
+        setDeletedRowData(null);
+        setIsRowDeleteOverlyOpen(false);
     };
 
     //Local state value for checking if group Sort Overlay is open/closed.
@@ -173,11 +202,8 @@ const Customgrid = memo((props) => {
                             <div className="action">
                                 <RowOptions
                                     row={row}
-                                    DeletePopUpOverLay={deletePopUpOverLay}
-                                    deleteRowFromGrid={deleteRowFromGrid}
-                                    RowEditOverlay={rowEditOverlay}
-                                    rowEditData={rowEditData}
-                                    updateRowInGrid={updateRowInGrid}
+                                    bindRowEditOverlay={bindRowEditOverlay}
+                                    bindRowDeleteOverlay={bindRowDeleteOverlay}
                                 />
                                 {isRowExpandEnabled ? (
                                     <span className="expander" {...row.getToggleRowExpandedProps()}>
@@ -230,14 +256,14 @@ const Customgrid = memo((props) => {
                         {/*Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region*/}
                         {isRowExpandEnabled && row.isExpanded ? (
                             <div className="expand">
-                                {renderExpandedContent ? renderExpandedContent(row, additionalColumn) : null}
+                                {displayExpandedContent ? displayExpandedContent(row, additionalColumn) : null}
                             </div>
                         ) : null}
                     </div>
                 );
             }
         },
-        [prepareRow, rows, renderExpandedContent]
+        [prepareRow, rows, displayExpandedContent]
     );
 
     //Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
@@ -246,7 +272,7 @@ const Customgrid = memo((props) => {
     //Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
     //React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
     return (
-        <div className="wrapper" style={{ width: gridWidth ? gridWidth : "100%" }}>
+        <div className="table-wrapper" style={{ width: gridWidth ? gridWidth : "100%" }}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
             <div className="table-filter">
                 <div className="results">
@@ -296,6 +322,25 @@ const Customgrid = memo((props) => {
                     </div>
                 </div>
             </div>
+
+            <div className="table-popus">
+                {isRowEditOverlyOpen ? (
+                    <RowEditOverlay
+                        row={editedRowData}
+                        getRowEditOverlay={getRowEditOverlay}
+                        closeRowEditOverlay={closeRowEditOverlay}
+                        updateRowInGrid={updateRowInGrid}
+                    />
+                ) : null}
+                {isRowDeleteOverlyOpen ? (
+                    <RowDeleteOverLay
+                        row={deletedRowData}
+                        closeRowDeleteOverlay={closeRowDeleteOverlay}
+                        deleteRowFromGrid={deleteRowFromGrid}
+                    />
+                ) : null}
+            </div>
+
             <div
                 className="tableContainer table-outer"
                 style={{ height: gridHeight ? gridHeight : "50vh", overflowX: "auto", overflowY: "hidden" }}
