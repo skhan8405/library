@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const SegmentEdit = ({ rowData, airportCodeList, rowUpdateCallBack }) => {
+const SegmentEdit = ({ rowData, DisplayTag, airportCodeList, rowUpdateCallBack }) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
     const { segment, weight } = updatedRowData;
 
@@ -54,7 +54,7 @@ const SegmentEdit = ({ rowData, airportCodeList, rowUpdateCallBack }) => {
     const { percentage, value } = weight;
     return (
         <div>
-            {from ? (
+            <DisplayTag cellKey="from">
                 <select value={from} onChange={updateFromValue}>
                     {airportCodeList.map((item, index) => {
                         return (
@@ -64,8 +64,8 @@ const SegmentEdit = ({ rowData, airportCodeList, rowUpdateCallBack }) => {
                         );
                     })}
                 </select>
-            ) : null}
-            {to ? (
+            </DisplayTag>
+            <DisplayTag cellKey="to">
                 <select value={to} onChange={updateToValue}>
                     {airportCodeList.map((item, index) => {
                         return (
@@ -75,9 +75,13 @@ const SegmentEdit = ({ rowData, airportCodeList, rowUpdateCallBack }) => {
                         );
                     })}
                 </select>
-            ) : null}
-            {percentage ? <input type="text" value={percentage} onChange={updateWeightPercentage} /> : null}
-            {value ? <input type="text" value={value} onChange={updateWeightValue} /> : null}
+            </DisplayTag>
+            <DisplayTag columnKey="weight" cellKey="percentage">
+                <input type="text" value={percentage} onChange={updateWeightPercentage} />{" "}
+            </DisplayTag>
+            <DisplayTag columnKey="weight" cellKey="value">
+                <input type="text" value={value} onChange={updateWeightValue} />{" "}
+            </DisplayTag>
         </div>
     );
 };

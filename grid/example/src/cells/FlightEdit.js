@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getValueOfDate } from "../utils/DateUtility";
 
-const FlightEdit = ({ rowData, rowUpdateCallBack }) => {
+const FlightEdit = ({ rowData, DisplayTag, rowUpdateCallBack }) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
     const { flight } = updatedRowData;
 
@@ -33,8 +33,12 @@ const FlightEdit = ({ rowData, rowUpdateCallBack }) => {
     const { flightno, date } = flight;
     return (
         <div>
-            {flightno ? <input type="text" value={flightno} onChange={updateFlightnoValue} /> : null}
-            {date ? <input type="date" value={getValueOfDate(date, "calendar")} onChange={updateDateValue} /> : null}
+            <DisplayTag cellKey="flightno">
+                <input type="text" value={flightno} onChange={updateFlightnoValue} />
+            </DisplayTag>
+            <DisplayTag cellKey="date">
+                <input type="date" value={getValueOfDate(date, "calendar")} onChange={updateDateValue} />
+            </DisplayTag>
         </div>
     );
 };

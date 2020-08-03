@@ -19,7 +19,7 @@ export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid
         //Configure Cell function (which is used by react-table component), based on the user defined function displayCell
         if (!column.Cell && column.displayCell) {
             column.Cell = (row) => {
-                return <CellDisplayAndEdit row={row} updateRowInGrid={updateRowInGrid} />;
+                return <CellDisplayAndEdit row={row} columns={columns} updateRowInGrid={updateRowInGrid} />;
             };
         }
 

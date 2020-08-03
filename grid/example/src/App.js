@@ -90,17 +90,21 @@ const App = () => {
                 }
             ],
             sortValue: "flightno",
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { flightno, date } = rowData.flight;
                 return (
                     <div className="flight-details">
-                        <strong>{flightno}</strong>
-                        <span>{getValueOfDate(date, "cell")}</span>
+                        <DisplayTag cellKey="flightno">
+                            <strong>{flightno}</strong>
+                        </DisplayTag>
+                        <DisplayTag cellKey="date">
+                            <span>{getValueOfDate(date, "cell")}</span>
+                        </DisplayTag>
                     </div>
                 );
             },
-            editCell: (rowData, rowUpdateCallBack) => {
-                return <FlightEdit rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
+            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
+                return <FlightEdit rowData={rowData} DisplayTag={DisplayTag} rowUpdateCallBack={rowUpdateCallBack} />;
             }
         },
         {
@@ -118,20 +122,31 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { from, to } = rowData.segment;
                 return (
                     <div className="segment-details">
-                        <span>{from}</span>
+                        <DisplayTag cellKey="from">
+                            <span>{from}</span>
+                        </DisplayTag>
                         <i>
                             <img src={FlightIcon} alt="segment" />
                         </i>
-                        <span>{to}</span>
+                        <DisplayTag cellKey="to">
+                            <span>{to}</span>
+                        </DisplayTag>
                     </div>
                 );
             },
-            editCell: (rowData, rowUpdateCallBack) => {
-                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
+            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
+                return (
+                    <SegmentEdit
+                        airportCodeList={airportCodeList}
+                        rowData={rowData}
+                        DisplayTag={DisplayTag}
+                        rowUpdateCallBack={rowUpdateCallBack}
+                    />
+                );
             }
         },
         {
@@ -174,7 +189,7 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = rowData.details;
                 const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
@@ -183,26 +198,39 @@ const App = () => {
                     <div className="details-wrap">
                         <ul>
                             <li>
-                                {startTime} - {endTime}
+                                <DisplayTag cellKey="startTime">{startTime}</DisplayTag>-
+                                <DisplayTag cellKey="endTime">{endTime}</DisplayTag>
                             </li>
                             <li className="divider">|</li>
                             <li>
-                                <span>{status}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>{additionalStatus}</li>
-                            <li className="divider">|</li>
-                            <li>{flightModel}</li>
-                            <li className="divider">|</li>
-                            <li>{bodyType}</li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{type}</span>
+                                <DisplayTag cellKey="status">
+                                    <span>{status}</span>
+                                </DisplayTag>
                             </li>
                             <li className="divider">|</li>
                             <li>
-                                <strong>{timeValue} </strong>
-                                <span>{timeText}</span>
+                                <DisplayTag cellKey="additionalStatus">{additionalStatus}</DisplayTag>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <DisplayTag cellKey="flightModel">{flightModel}</DisplayTag>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <DisplayTag cellKey="bodyType">{bodyType}</DisplayTag>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>
+                                    <DisplayTag cellKey="type">{type}</DisplayTag>
+                                </span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <DisplayTag cellKey="timeStatus">
+                                    <strong>{timeValue} </strong>
+                                    <span>{timeText}</span>
+                                </DisplayTag>
                             </li>
                         </ul>
                     </div>
@@ -224,7 +252,7 @@ const App = () => {
                 }
             ],
             sortValue: "percentage",
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { percentage, value } = rowData.weight;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix,
@@ -235,13 +263,15 @@ const App = () => {
                 }
                 return (
                     <div className="weight-details">
-                        <strong className="per">{percentage}</strong>
-                        {value ? (
+                        <DisplayTag cellKey="percentage">
+                            <strong className="per">{percentage}</strong>
+                        </DisplayTag>
+                        <DisplayTag cellKey="value">
                             <span>
                                 <strong>{valuePrefix}/</strong>
                                 {valueSuffix}
                             </span>
-                        ) : null}
+                        </DisplayTag>
                     </div>
                 );
             }
@@ -261,7 +291,7 @@ const App = () => {
                 }
             ],
             sortValue: "percentage",
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { percentage, value } = rowData.volume;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix,
@@ -272,13 +302,15 @@ const App = () => {
                 }
                 return (
                     <div className="weight-details">
-                        <strong className="per">{percentage}</strong>
-                        {value ? (
+                        <DisplayTag cellKey="percentage">
+                            <strong className="per">{percentage}</strong>
+                        </DisplayTag>
+                        <DisplayTag cellKey="value">
                             <span>
                                 <strong>{valuePrefix}/</strong>
                                 {valueSuffix}
                             </span>
-                        ) : null}
+                        </DisplayTag>
                     </div>
                 );
             }
@@ -298,7 +330,7 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { uldPositions } = rowData;
                 return (
                     <div className="uld-details">
@@ -306,8 +338,12 @@ const App = () => {
                             {uldPositions.map((positions, index) => {
                                 return (
                                     <li key={index}>
-                                        <span>{positions.position}</span>
-                                        <strong>{positions.value}</strong>
+                                        <DisplayTag cellKey="position">
+                                            <span>{positions.position}</span>
+                                        </DisplayTag>
+                                        <DisplayTag cellKey="value">
+                                            <strong>{positions.value}</strong>
+                                        </DisplayTag>
                                     </li>
                                 );
                             })}
@@ -330,12 +366,16 @@ const App = () => {
                     accessor: "yeild"
                 }
             ],
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { revenue, yeild } = rowData.revenue;
                 return (
                     <div className="revenue-details">
-                        <span className="large">{revenue}</span>
-                        <span>{yeild}</span>
+                        <DisplayTag cellKey="revenue">
+                            <span className="large">{revenue}</span>
+                        </DisplayTag>
+                        <DisplayTag cellKey="yeild">
+                            <span>{yeild}</span>
+                        </DisplayTag>
                     </div>
                 );
             },
@@ -372,16 +412,20 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag) => {
                 const { sr, volume } = rowData.queuedBooking;
                 return (
                     <div className="queued-details">
-                        <span>
-                            <strong>{sr}</strong>
-                        </span>
-                        <span>
-                            <strong>{volume}</strong>
-                        </span>
+                        <DisplayTag cellKey="sr">
+                            <span>
+                                <strong>{sr}</strong>
+                            </span>
+                        </DisplayTag>
+                        <DisplayTag cellKey="volume">
+                            <span>
+                                <strong>{volume}</strong>
+                            </span>
+                        </DisplayTag>
                     </div>
                 );
             }

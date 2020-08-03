@@ -17,7 +17,11 @@ const SREdit = ({ rowData, rowUpdateCallBack }) => {
         updateRowData(e.target.value);
     };
 
-    return <div>{sr ? <input type="text" value={sr} onChange={updateSrValue} /> : null}</div>;
+    return (
+        <div>
+            <input type="text" value={sr} onChange={updateSrValue} />
+        </div>
+    );
 };
 
 export default SREdit;
