@@ -1,17 +1,14 @@
-import React, { useRef } from "react";
+import React from "react";
 import Grid from "grid";
-import { isInnerCellShown, isInnerCellsNotEmpty } from "./utils/CellDisplayUtility";
+import FlightIcon from "./images/FlightIcon.png";
 import { fetchData } from "./getData";
+import { getValueOfDate } from "./utils/DateUtility";
 import FlightEdit from "./cells/FlightEdit";
-import getDateValue from "./utils/DateUtility";
-import DeletePopUpOverLay from "./cells/DeletePopUpOverlay";
-import RowEditOverlay from "./cells/RowEditOverlay";
-import SREdit from "./cells/SREdit";
+import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
+import RowEdit from "./cells/RowEdit";
 
 const App = () => {
-    const childRef = useRef();
-
     //Create an array of airports
     const airportCodeList = [
         "AAA",
@@ -98,12 +95,12 @@ const App = () => {
                 return (
                     <div className="flight-details">
                         <strong>{flightno}</strong>
-                        <span>{getDateValue(date, "cell")}</span>
+                        <span>{getValueOfDate(date, "cell")}</span>
                     </div>
                 );
             },
-            editCell: (rowData) => {
-                return <FlightEdit rowData={rowData} />;
+            editCell: (rowData, getUpdatedData) => {
+                return <FlightEdit rowData={rowData} getUpdatedData={getUpdatedData} />;
             }
         },
         {
@@ -121,25 +118,20 @@ const App = () => {
                 }
             ],
             disableSortBy: true,
-            Cell: (row) => {
-                const segmentColumn = "segment";
-                const weightColumn = "weight";
-                const { innerCells } = row.column;
-                const { index, original } = row.row;
+            displayCell: (rowData) => {
+                const { from, to } = rowData.segment;
                 return (
-                    <SegmentEdit
-                        airportCodeList={airportCodeList}
-                        index={index}
-                        segmentId={segmentColumn}
-                        segmentValue={original[segmentColumn]}
-                        weightId={weightColumn}
-                        weightValue={original[weightColumn]}
-                        innerCells={innerCells}
-                        updateCellData={updateCellData}
-                        isInnerCellShown={isInnerCellShown}
-                        isInnerCellsNotEmpty={isInnerCellsNotEmpty}
-                    />
+                    <div className="segment-details">
+                        <span>{from}</span>
+                        <i>
+                            <img src={FlightIcon} alt="segment" />
+                        </i>
+                        <span>{to}</span>
+                    </div>
                 );
+            },
+            editCell: (rowData, getUpdatedData) => {
+                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
             }
         },
         {
@@ -184,14 +176,14 @@ const App = () => {
             disableSortBy: true,
             displayCell: (rowData) => {
                 const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = rowData.details;
-                let timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
+                const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
                 return (
                     <div className="details-wrap">
                         <ul>
                             <li>
-                                {startTime} -{endTime}
+                                {startTime} - {endTime}
                             </li>
                             <li className="divider">|</li>
                             <li>
@@ -294,7 +286,7 @@ const App = () => {
         {
             Header: "ULD Positions",
             accessor: "uldPositions",
-            width: 100,
+            width: 120,
             innerCells: [
                 {
                     Header: "Position",
@@ -361,8 +353,8 @@ const App = () => {
                     </div>
                 );
             },
-            editCell: (rowData) => {
-                return <SREdit rowData={rowData} />;
+            editCell: (rowData, getUpdatedData) => {
+                return <SrEdit rowData={rowData} getUpdatedData={getUpdatedData} />;
             }
         },
         {
@@ -403,25 +395,25 @@ const App = () => {
             { Header: "Remarks", accessor: "remarks" },
             { Header: "Details", onlyInIpad: true, accessor: "details" }
         ],
-        Cell: (row, column) => {
-            const { innerCells } = column;
-            const { remarks, details } = row.original;
-            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details;
-            let timeStatusArray = timeStatus.split(" ");
+        displayCell: (rowData) => {
+            const { remarks, details } = rowData;
+            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details
+                ? details
+                : {};
+            const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
             return (
                 <div className="details-wrap">
-                    {isInnerCellShown(innerCells, "remarks") ? (
+                    {remarks ? (
                         <ul>
                             <li>{remarks}</li>
-                            <li className="divider">|</li>
                         </ul>
                     ) : null}
-                    {isInnerCellShown(innerCells, "details") ? (
+                    {details ? (
                         <ul>
                             <li>
-                                {startTime} – {endTime}
+                                {startTime} - {endTime}
                             </li>
                             <li className="divider">|</li>
                             <li>
@@ -447,6 +439,11 @@ const App = () => {
                 </div>
             );
         }
+    };
+
+    //Pass row edit overlay to the grid component
+    const getRowEditOverlay = (rowData, getUpdatedData) => {
+        return <RowEdit airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
     };
 
     //Add logic to calculate height of each row, based on the content of  or more columns
@@ -485,12 +482,6 @@ const App = () => {
         return rowHeight;
     };
 
-    //Gets called when there is a cell edit
-    const updateCellData = (rowIndex, columnId, value) => {
-        console.log(rowIndex + " " + columnId + " " + JSON.stringify(value));
-        childRef.current.updateCellInGrid(rowIndex, columnId, value);
-    };
-
     //Gets called when there is a row edit
     const updateRowData = (row) => {
         console.log("Row updated: ");
@@ -510,22 +501,17 @@ const App = () => {
 
     return (
         <Grid
-            ref={childRef}
             title="AWBs"
             gridHeight="80vh"
             gridWidth="100%"
             columns={columns}
             columnToExpand={columnToExpand}
             fetchData={fetchData}
-            rowEditOverlay={RowEditOverlay}
-            rowEditData={{
-                airportCodeList: airportCodeList
-            }}
+            getRowEditOverlay={getRowEditOverlay}
+            calculateRowHeight={calculateRowHeight}
             updateRowData={updateRowData}
-            deletePopUpOverLay={DeletePopUpOverLay}
             deleteRowData={deleteRowData}
             selectBulkData={selectBulkData}
-            calculateRowHeight={calculateRowHeight}
         />
     );
 };

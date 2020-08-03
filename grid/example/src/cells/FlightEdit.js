@@ -1,23 +1,39 @@
 import React, { useState } from "react";
-import getDateValue from "../utils/DateUtility";
+import { getValueOfDate } from "../utils/DateUtility";
 
-const FlightEdit = ({ rowData }) => {
-    const { flightno, date } = rowData.flight;
-    const [flightnoValue, setFlightnoValue] = useState(flightno);
-    const [dateValue, setDateValue] = useState(getDateValue(date, "calendar"));
+const FlightEdit = ({ rowData, getUpdatedData }) => {
+    const [updatedRowData, setUpdatedRowData] = useState(rowData);
+    const { flight } = updatedRowData;
+
+    const updateRowData = (updatedFlightData) => {
+        const updatedRow = {
+            ...updatedRowData,
+            flight: updatedFlightData
+        };
+        setUpdatedRowData(updatedRow);
+        getUpdatedData(updatedRow);
+    };
 
     const updateFlightnoValue = (e) => {
-        setFlightnoValue(e.target.value);
+        const updatedFlightData = {
+            ...flight,
+            flightno: e.target.value
+        };
+        updateRowData(updatedFlightData);
     };
 
     const updateDateValue = (e) => {
-        setDateValue(e.target.value);
+        const updatedFlightData = {
+            ...flight,
+            date: getValueOfDate(e.target.value, "cell")
+        };
+        updateRowData(updatedFlightData);
     };
 
     return (
         <div>
-            <input id="flight_flightno" type="text" value={flightnoValue} onChange={updateFlightnoValue} />
-            <input id="flight_date" type="date" value={dateValue} onChange={updateDateValue} />
+            <input type="text" value={flight.flightno} onChange={updateFlightnoValue} />
+            <input type="date" value={getValueOfDate(flight.date, "calendar")} onChange={updateDateValue} />
         </div>
     );
 };
