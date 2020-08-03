@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getValueOfDate } from "../utils/DateUtility";
 
-const RowEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
+const RowEdit = ({ rowData, airportCodeList, rowUpdateCallBack }) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
 
     const updateRowData = (updatedFlightData, updatedSegmentData, updatedWeightData, updatedSrData, updatedRemarksData) => {
@@ -24,7 +24,7 @@ const RowEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
             updatedRow.remarks = updatedRemarksData;
         }
         setUpdatedRowData(updatedRow);
-        getUpdatedData(updatedRow);
+        rowUpdateCallBack(updatedRow);
     };
 
     const updateFlightnoValue = (e) => {

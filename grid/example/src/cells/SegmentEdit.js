@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const SegmentEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
+const SegmentEdit = ({ rowData, airportCodeList, rowUpdateCallBack }) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
     const { segment, weight } = updatedRowData;
 
@@ -15,7 +15,7 @@ const SegmentEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
             updatedRow.weight = updatedWeightData;
         }
         setUpdatedRowData(updatedRow);
-        getUpdatedData(updatedRow);
+        rowUpdateCallBack(updatedRow);
     };
 
     const updateFromValue = (e) => {
@@ -50,28 +50,34 @@ const SegmentEdit = ({ rowData, airportCodeList, getUpdatedData }) => {
         updateRowData(null, updatedWeightData);
     };
 
+    const { from, to } = segment;
+    const { percentage, value } = weight;
     return (
         <div>
-            <select value={segment.from} onChange={updateFromValue}>
-                {airportCodeList.map((item, index) => {
-                    return (
-                        <option key={index} value={item}>
-                            {item}
-                        </option>
-                    );
-                })}
-            </select>
-            <select value={segment.to} onChange={updateToValue}>
-                {airportCodeList.map((item, index) => {
-                    return (
-                        <option key={index} value={item}>
-                            {item}
-                        </option>
-                    );
-                })}
-            </select>
-            <input type="text" value={weight.percentage} onChange={updateWeightPercentage} />
-            <input type="text" value={weight.value} onChange={updateWeightValue} />
+            {from ? (
+                <select value={from} onChange={updateFromValue}>
+                    {airportCodeList.map((item, index) => {
+                        return (
+                            <option key={index} value={item}>
+                                {item}
+                            </option>
+                        );
+                    })}
+                </select>
+            ) : null}
+            {to ? (
+                <select value={to} onChange={updateToValue}>
+                    {airportCodeList.map((item, index) => {
+                        return (
+                            <option key={index} value={item}>
+                                {item}
+                            </option>
+                        );
+                    })}
+                </select>
+            ) : null}
+            {percentage ? <input type="text" value={percentage} onChange={updateWeightPercentage} /> : null}
+            {value ? <input type="text" value={value} onChange={updateWeightValue} /> : null}
         </div>
     );
 };

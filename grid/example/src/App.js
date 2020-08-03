@@ -99,8 +99,8 @@ const App = () => {
                     </div>
                 );
             },
-            editCell: (rowData, getUpdatedData) => {
-                return <FlightEdit rowData={rowData} getUpdatedData={getUpdatedData} />;
+            editCell: (rowData, rowUpdateCallBack) => {
+                return <FlightEdit rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
             }
         },
         {
@@ -130,8 +130,8 @@ const App = () => {
                     </div>
                 );
             },
-            editCell: (rowData, getUpdatedData) => {
-                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
+            editCell: (rowData, rowUpdateCallBack) => {
+                return <SegmentEdit airportCodeList={airportCodeList} rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
             }
         },
         {
@@ -353,8 +353,8 @@ const App = () => {
                     </div>
                 );
             },
-            editCell: (rowData, getUpdatedData) => {
-                return <SrEdit rowData={rowData} getUpdatedData={getUpdatedData} />;
+            editCell: (rowData, rowUpdateCallBack) => {
+                return <SrEdit rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
             }
         },
         {
@@ -393,7 +393,7 @@ const App = () => {
         Header: "Remarks",
         innerCells: [
             { Header: "Remarks", accessor: "remarks" },
-            { Header: "Details", onlyInIpad: true, accessor: "details" }
+            { Header: "Details", onlyInTablet: true, accessor: "details" }
         ],
         displayCell: (rowData) => {
             const { remarks, details } = rowData;
@@ -442,8 +442,8 @@ const App = () => {
     };
 
     //Pass row edit overlay to the grid component
-    const getRowEditOverlay = (rowData, getUpdatedData) => {
-        return <RowEdit airportCodeList={airportCodeList} rowData={rowData} getUpdatedData={getUpdatedData} />;
+    const getRowEditOverlay = (rowData, rowUpdateCallBack) => {
+        return <RowEdit airportCodeList={airportCodeList} rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
     };
 
     //Add logic to calculate height of each row, based on the content of  or more columns

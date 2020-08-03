@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getValueOfDate } from "../utils/DateUtility";
 
-const FlightEdit = ({ rowData, getUpdatedData }) => {
+const FlightEdit = ({ rowData, rowUpdateCallBack }) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
     const { flight } = updatedRowData;
 
@@ -11,7 +11,7 @@ const FlightEdit = ({ rowData, getUpdatedData }) => {
             flight: updatedFlightData
         };
         setUpdatedRowData(updatedRow);
-        getUpdatedData(updatedRow);
+        rowUpdateCallBack(updatedRow);
     };
 
     const updateFlightnoValue = (e) => {
@@ -30,10 +30,11 @@ const FlightEdit = ({ rowData, getUpdatedData }) => {
         updateRowData(updatedFlightData);
     };
 
+    const { flightno, date } = flight;
     return (
         <div>
-            <input type="text" value={flight.flightno} onChange={updateFlightnoValue} />
-            <input type="date" value={getValueOfDate(flight.date, "calendar")} onChange={updateDateValue} />
+            {flightno ? <input type="text" value={flightno} onChange={updateFlightnoValue} /> : null}
+            {date ? <input type="date" value={getValueOfDate(date, "calendar")} onChange={updateDateValue} /> : null}
         </div>
     );
 };
