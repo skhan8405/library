@@ -24,12 +24,12 @@ const SavedFilters = (props) => {
   let keyValue = "";
   let savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-  if (savedFilters.length > 5) {
-    savedFilters = savedFilters.slice(
-      savedFilters.length - 5,
-      savedFilters.length
-    );
-  }
+  // if (savedFilters.length > 5) {
+  //   savedFilters = savedFilters.slice(
+  //     savedFilters.length - 5,
+  //     savedFilters.length
+  //   );
+  // }
 
   const savedFilter = savedFilters.map((filterArray, index) => {
     return (
@@ -124,7 +124,7 @@ const SavedFilters = (props) => {
           </div>
         </div> */}
         <div className="savedFilters">
-        <div className="text-muted">Saved Filters</div>
+          <div className="text-muted">Saved Filters</div>
           <ul key={keyValue} className="leftSpace">
             {savedFilter}
           </ul>

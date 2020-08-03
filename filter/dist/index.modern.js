@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useRef } from 'react';
+import React__default, { useState, useEffect, useRef } from 'react';
 import { Form, Button, Accordion } from 'react-bootstrap';
 import { Multiselect } from 'multiselect-react-dropdown';
 import { faTimes, faCheck, faStar, faAlignLeft } from '@fortawesome/free-solid-svg-icons';
@@ -20,16 +20,22 @@ function AutoComplete(props) {
   };
 
   let autoCompleteDiv = autoCompleteArr.map((item, index) => {
-    return /*#__PURE__*/React.createElement("div", {
+    let validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
+    return /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input",
       key: index
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input-title"
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__label"
-    }, /*#__PURE__*/React.createElement("span", null, item.name), /*#__PURE__*/React.createElement("span", null, "\xA0>\xA0"), /*#__PURE__*/React.createElement("span", null, item.type)), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("span", null, item.name), /*#__PURE__*/React__default.createElement("span", null, "\xA0>\xA0"), /*#__PURE__*/React__default.createElement("span", null, item.type)), /*#__PURE__*/React__default.createElement("div", {
       className: "filter__control"
-    }, /*#__PURE__*/React.createElement(Form.Check, {
+    }, /*#__PURE__*/React__default.createElement(Form.Check, {
       type: "switch",
       label: "",
       className: item.type.concat(item.name),
@@ -38,15 +44,15 @@ function AutoComplete(props) {
       onChange: e => {
         props.handleAutoCompleteEnabled(item);
       }
-    }), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+    }), /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
       icon: faTimes,
       type: "button",
       onClick: e => {
         handleClose(item);
       }
-    }))), /*#__PURE__*/React.createElement("div", {
+    }))), /*#__PURE__*/React__default.createElement("div", {
       className: "displayFlex"
-    }, /*#__PURE__*/React.createElement(Multiselect, {
+    }, /*#__PURE__*/React__default.createElement(Multiselect, {
       id: item.type.concat(item.name),
       disable: !item.enabled,
       options: item.objectArray,
@@ -57,9 +63,12 @@ function AutoComplete(props) {
       onSelect: e => {
         onSelect(e, e[e.length - 1], item);
       }
-    })));
+    })), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
-  return /*#__PURE__*/React.createElement("div", null, autoCompleteDiv);
+  return /*#__PURE__*/React__default.createElement("div", null, autoCompleteDiv);
 }
 
 function FieldComponent(props) {
@@ -73,17 +82,23 @@ function FieldComponent(props) {
   };
 
   let fieldComponentDiv = fieldComponentArr.map((item, index) => {
-    return /*#__PURE__*/React.createElement("div", {
+    let validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
+    return /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input",
       key: index
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input-title",
       key: 1
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__label"
-    }, /*#__PURE__*/React.createElement(Form.Label, null, /*#__PURE__*/React.createElement("strong", null, item.name))), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement(Form.Label, null, /*#__PURE__*/React__default.createElement("strong", null, item.name))), /*#__PURE__*/React__default.createElement("div", {
       className: "filter__control"
-    }, /*#__PURE__*/React.createElement(Form.Check, {
+    }, /*#__PURE__*/React__default.createElement(Form.Check, {
       type: "switch",
       id: item.name,
       label: "",
@@ -91,99 +106,42 @@ function FieldComponent(props) {
       onChange: e => {
         props.handleDateTimeEnabled(item);
       }
-    }), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+    }), /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
       className: "fontIcons",
       icon: faTimes,
       onClick: e => {
         handleClose(item);
       }
     }))), item.field.map((field, index) => {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         key: `${index}-${field.name}`
-      }, /*#__PURE__*/React.createElement("div", {
+      }, /*#__PURE__*/React__default.createElement("div", {
         className: "displayFlex",
         key: `${index},${field.name}`
-      }, /*#__PURE__*/React.createElement(Form.Text, null, field.column)), /*#__PURE__*/React.createElement("div", {
+      }, /*#__PURE__*/React__default.createElement(Form.Text, null, field.column)), /*#__PURE__*/React__default.createElement("div", {
         className: "filter__split",
         key: index
-      }, /*#__PURE__*/React.createElement("div", {
+      }, /*#__PURE__*/React__default.createElement("div", {
         className: "date-wrap"
-      }, /*#__PURE__*/React.createElement(Form.Control, {
+      }, /*#__PURE__*/React__default.createElement(Form.Control, {
         disabled: !item.enabled,
-        type: "date",
+        type: "datetime-local",
         value: field.value,
         className: field.name,
         onChange: e => {
           props.createDateTimeArray(item, field.column, e.target.value);
         }
-      }), /*#__PURE__*/React.createElement("span", {
+      }), /*#__PURE__*/React__default.createElement("span", {
         className: "date-button"
-      }, /*#__PURE__*/React.createElement("button", {
+      }, /*#__PURE__*/React__default.createElement("button", {
         type: "button"
-      }))), /*#__PURE__*/React.createElement("div", {
-        className: "time-wrap"
-      }, /*#__PURE__*/React.createElement("input", {
-        className: "time",
-        type: "time",
-        disabled: !item.enabled
-      }))));
-    }), /*#__PURE__*/React.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: e => {
-        props.addToday();
-      }
-    }, "Today"), /*#__PURE__*/React.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: e => {
-        props.addTomorrow();
-      }
-    }, "Tomorrow"), /*#__PURE__*/React.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: e => {
-        props.addThisWeek();
-      }
-    }, "This Week"), /*#__PURE__*/React.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: e => {
-        props.addSevenDays();
-      }
-    }, "Next 7 days"), /*#__PURE__*/React.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: e => {
-        props.addForteenDays();
-      }
-    }, "Next 14 days"), /*#__PURE__*/React.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: e => {
-        props.addThisMonth();
-      }
-    }, "This Month"), /*#__PURE__*/React.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: e => {
-        props.addThirtyDays();
-      }
-    }, "Next 30 days"), /*#__PURE__*/React.createElement("br", null), "Next", " ", /*#__PURE__*/React.createElement("input", {
-      disabled: !item.enabled,
-      type: "text",
-      onChange: e => {
-        props.nextDayChange(e.target.value);
-      }
-    }), " ", "Days", /*#__PURE__*/React.createElement("br", null), "Last", " ", /*#__PURE__*/React.createElement("input", {
-      disabled: !item.enabled,
-      type: "text",
-      onChange: e => {
-        props.lastDayChange(e.target.value);
-      }
-    }), " ", "Days");
+      })))));
+    }), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
-  return /*#__PURE__*/React.createElement("div", null, fieldComponentDiv);
+  return /*#__PURE__*/React__default.createElement("div", null, fieldComponentDiv);
 }
 
 function Condition(props) {
@@ -192,16 +150,22 @@ function Condition(props) {
     setConditionArr(props.conditionsArray);
   }, [props.conditionsArray]);
   let conditionalDiv = conditionArr.map((item, index) => {
-    return /*#__PURE__*/React.createElement("div", {
+    let validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
+    return /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input",
       key: index
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input-title"
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__label"
-    }, /*#__PURE__*/React.createElement(Form.Label, null, /*#__PURE__*/React.createElement("strong", null, item.name))), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement(Form.Label, null, /*#__PURE__*/React__default.createElement("strong", null, item.name))), /*#__PURE__*/React__default.createElement("div", {
       className: "filter__control"
-    }, /*#__PURE__*/React.createElement(Form.Check, {
+    }, /*#__PURE__*/React__default.createElement(Form.Check, {
       type: "switch",
       id: item.name,
       label: "",
@@ -209,42 +173,45 @@ function Condition(props) {
       onChange: e => {
         props.handleCondionalEnabled(item);
       }
-    }), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+    }), /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
       className: "fontIcons",
       icon: faTimes,
       onClick: e => {
         props.deleteConditionalElement(item);
       }
-    }))), /*#__PURE__*/React.createElement("div", {
+    }))), /*#__PURE__*/React__default.createElement("div", {
       onChange: e => {
         props.createConditionalArray(item, e.target.value);
       }
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "displayFlex"
-    }, /*#__PURE__*/React.createElement(Form.Group, {
+    }, /*#__PURE__*/React__default.createElement(Form.Group, {
       controlId: "exampleForm.ControlSelect1"
-    }, /*#__PURE__*/React.createElement(Form.Text, {
+    }, /*#__PURE__*/React__default.createElement(Form.Text, {
       className: "text-muted"
-    }, Object.keys(item)[3]), /*#__PURE__*/React.createElement(Form.Control, {
+    }, Object.keys(item)[3]), /*#__PURE__*/React__default.createElement(Form.Control, {
       disabled: !item.enabled,
       as: "select",
       defaultValue: item.value
     }, item.condition.map((condition, index) => {
-      return /*#__PURE__*/React.createElement("option", {
+      return /*#__PURE__*/React__default.createElement("option", {
         key: index
       }, condition.value);
-    })))), /*#__PURE__*/React.createElement("div", {
+    })))), /*#__PURE__*/React__default.createElement("div", {
       className: "displayFlex"
-    }, /*#__PURE__*/React.createElement(Form.Group, null, /*#__PURE__*/React.createElement(Form.Text, {
+    }, /*#__PURE__*/React__default.createElement(Form.Group, null, /*#__PURE__*/React__default.createElement(Form.Text, {
       className: "text-muted"
-    }, Object.keys(item)[4]), /*#__PURE__*/React.createElement(Form.Control, {
+    }, Object.keys(item)[4]), /*#__PURE__*/React__default.createElement(Form.Control, {
       disabled: !item.enabled,
       defaultValue: item.amount,
       required: true,
       type: "number"
-    })))));
+    })))), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
-  return /*#__PURE__*/React.createElement("div", null, conditionalDiv);
+  return /*#__PURE__*/React__default.createElement("div", null, conditionalDiv);
 }
 
 function TextComponents(props) {
@@ -253,17 +220,23 @@ function TextComponents(props) {
     setTextComponentArr(props.textComponentsArray);
   }, [props.textComponentsArray]);
   let textComponentDiv = textComponentArr.map((item, index) => {
-    return /*#__PURE__*/React.createElement("div", {
+    let validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
+    return /*#__PURE__*/React__default.createElement("div", {
       key: index
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input"
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input-title"
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "filter__label"
-    }, /*#__PURE__*/React.createElement("span", null, item.name)), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("span", null, item.name)), /*#__PURE__*/React__default.createElement("div", {
       className: "filter__control"
-    }, /*#__PURE__*/React.createElement(Form.Check, {
+    }, /*#__PURE__*/React__default.createElement(Form.Check, {
       type: "switch",
       label: "",
       id: item.name,
@@ -271,15 +244,15 @@ function TextComponents(props) {
       onChange: e => {
         props.handleTextComponentEnabled(item);
       }
-    }), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+    }), /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
       icon: faTimes,
       type: "button",
       onClick: e => {
         props.deleteTextComponentElement(item);
       }
-    }))), /*#__PURE__*/React.createElement("div", {
+    }))), /*#__PURE__*/React__default.createElement("div", {
       className: "displayFlex"
-    }, /*#__PURE__*/React.createElement("input", {
+    }, /*#__PURE__*/React__default.createElement("input", {
       id: item.name.concat(item.dataType),
       disabled: !item.enabled,
       type: "text",
@@ -288,25 +261,39 @@ function TextComponents(props) {
       onChange: e => {
         props.createTextComponentsArray(item, e.target.value);
       }
-    }))));
+    }))), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
-  return /*#__PURE__*/React.createElement("div", null, textComponentDiv);
+  return /*#__PURE__*/React__default.createElement("div", null, textComponentDiv);
 }
 
-const RightDrawer = forwardRef((props, ref) => {
+var saveLogo = require("./icon-save~EODvfpOb.svg");
+
+const RightDrawer = props => {
   const [showSavePopup, setShowSavePopup] = useState("none");
   const [saveFilterName, setSaveFilterName] = useState("");
   const [saveFilterWarning, setSaveFilterWarning] = useState("");
   const [warningLabel, setWarningLabel] = useState("");
+  const [applyFilterWarning, setApplyFilterWarning] = useState("");
+  const [applyfilterWarningClassName, setApplyFilterWariningClassname] = useState("");
+  const [recentFilterShow, setRecentFilterShow] = useState("");
+  useEffect(() => {
+    setApplyFilterWarning(props.emptyFilterWarning);
+    setApplyFilterWariningClassname(props.emptyFilterClassName);
+  }, [props.emptyFilterWarning, props.emptyFilterClassName]);
+  useEffect(() => {
+    setWarningLabel(props.saveWarningClassName);
+    setSaveFilterWarning(props.saveWarningLabel);
+    setShowSavePopup(props.showSavePopUp);
+  }, [props.saveWarningClassName, props.saveWarningLabel, props.showSavePopUp]);
+  useEffect(() => {
+    setRecentFilterShow(props.recentFilterShow);
+  }, [props.recentFilterShow]);
 
   const registersaveFilterName = e => {
-    setSaveFilterWarning("");
-    setWarningLabel("");
     setSaveFilterName(e.target.value);
-  };
-
-  const showPopUp = () => {
-    setShowSavePopup("");
   };
 
   const cancelSavePopup = () => {
@@ -315,13 +302,17 @@ const RightDrawer = forwardRef((props, ref) => {
     setWarningLabel("");
   };
 
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+    style: {
+      display: recentFilterShow
+    }
+  }, "Recent Filters"), /*#__PURE__*/React__default.createElement("div", {
     className: "filter__title"
-  }, "Searched Filters", /*#__PURE__*/React.createElement("span", {
+  }, "Searched Filters", /*#__PURE__*/React__default.createElement("span", {
     className: "filter-count"
-  }, props.filterCount)), /*#__PURE__*/React.createElement("div", {
+  }, props.filterCount)), /*#__PURE__*/React__default.createElement("div", {
     className: "filter__content"
-  }, /*#__PURE__*/React.createElement(AutoComplete, {
+  }, /*#__PURE__*/React__default.createElement(AutoComplete, {
     name: props.name,
     type: props.type,
     enabled: props.enabled,
@@ -331,7 +322,7 @@ const RightDrawer = forwardRef((props, ref) => {
     deleteAutoCompleteElement: props.deleteAutoCompleteElement,
     handleAutoCompleteEnabled: props.handleAutoCompleteEnabled,
     createAutoCompleteArray: props.createAutoCompleteArray
-  }), /*#__PURE__*/React.createElement(FieldComponent, {
+  }), /*#__PURE__*/React__default.createElement(FieldComponent, {
     dateTimesArray: props.dateTimesArray,
     deleteDateTimeElement: props.deleteDateTimeElement,
     handleDateTimeEnabled: props.handleDateTimeEnabled,
@@ -345,34 +336,36 @@ const RightDrawer = forwardRef((props, ref) => {
     addThirtyDays: props.addThirtyDays,
     lastDayChange: props.lastDayChange,
     nextDayChange: props.nextDayChange
-  }), /*#__PURE__*/React.createElement(Condition, {
+  }), /*#__PURE__*/React__default.createElement(Condition, {
     conditionsArray: props.conditionsArray,
     handleCondionalEnabled: props.handleCondionalEnabled,
     createConditionalArray: props.createConditionalArray,
     deleteConditionalElement: props.deleteConditionalElement
-  }), /*#__PURE__*/React.createElement(TextComponents, {
+  }), /*#__PURE__*/React__default.createElement(TextComponents, {
     textComponentsArray: props.textComponentsArray,
     deleteTextComponentElement: props.deleteTextComponentElement,
     createTextComponentsArray: props.createTextComponentsArray,
     handleTextComponentEnabled: props.handleTextComponentEnabled
-  })), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React__default.createElement("div", {
     className: "filter__btn"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "filter__save"
-  }, /*#__PURE__*/React.createElement(Button, {
+  }, /*#__PURE__*/React__default.createElement(Button, {
     className: "button-save",
     variant: ""
-  }, /*#__PURE__*/React.createElement("img", {
-    src: "../images/icon-save.svg",
-    onClick: showPopUp,
+  }, /*#__PURE__*/React__default.createElement("img", {
+    src: saveLogo,
+    onClick: props.openShowSavePopUp,
     alt: "save icon"
-  }), /*#__PURE__*/React.createElement("span", null, "SAVE"))), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React__default.createElement("span", null, "SAVE"))), /*#__PURE__*/React__default.createElement("div", {
     className: "btn-wrap"
-  }, /*#__PURE__*/React.createElement(Button, {
+  }, /*#__PURE__*/React__default.createElement("span", {
+    className: applyfilterWarningClassName
+  }, applyFilterWarning), /*#__PURE__*/React__default.createElement(Button, {
     variant: "",
     className: "reset",
     onClick: props.resetDrawer
-  }, "Reset"), /*#__PURE__*/React.createElement(Button, {
+  }, "Reset"), /*#__PURE__*/React__default.createElement(Button, {
     variant: "",
     className: "applyFilter",
     onClick: e => {
@@ -381,35 +374,32 @@ const RightDrawer = forwardRef((props, ref) => {
       props.deleteConditionalElement({});
       props.deleteDateTimeElement({});
       props.deleteTextComponentElement({});
-      props.closeDrawer();
     }
-  }, "Apply Filter")), /*#__PURE__*/React.createElement("div", {
+  }, "Apply Filter")), /*#__PURE__*/React__default.createElement("div", {
     style: {
       display: showSavePopup
     },
     className: "popup--save"
-  }, /*#__PURE__*/React.createElement("h5", null, "Save the Filter"), /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("h5", null, "Save the Filter"), /*#__PURE__*/React__default.createElement("span", {
     className: warningLabel
-  }, saveFilterWarning), /*#__PURE__*/React.createElement("label", null, "Saved Filter Name"), /*#__PURE__*/React.createElement("input", {
+  }, saveFilterWarning), /*#__PURE__*/React__default.createElement("label", null, "Saved Filter Name"), /*#__PURE__*/React__default.createElement("input", {
     className: "txt",
     value: saveFilterName,
     onChange: e => registersaveFilterName(e)
-  }), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React__default.createElement("div", {
     className: "btn-wrap"
-  }, /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     className: "button",
     onClick: e => {
       cancelSavePopup();
     }
-  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+  }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
     className: "button",
     onClick: e => {
       props.saveFilter(saveFilterName);
-      setSaveFilterName("");
-      setShowSavePopup("none");
     }
   }, "Save")))));
-});
+};
 
 let accordianArray = [];
 function LeftDrawer(props) {
@@ -503,92 +493,92 @@ function LeftDrawer(props) {
           show = accord.accordianShow;
         }
       });
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         key: index
-      }, /*#__PURE__*/React.createElement(Accordion, null, /*#__PURE__*/React.createElement(Card, null, /*#__PURE__*/React.createElement(Accordion.Toggle, {
+      }, /*#__PURE__*/React__default.createElement(Accordion, null, /*#__PURE__*/React__default.createElement(Card, null, /*#__PURE__*/React__default.createElement(Accordion.Toggle, {
         className: show,
         as: Card.Header,
         eventKey: "1",
         onClick: e => {
           handleAccordianArrow(item.name, e.target.className);
         }
-      }, item.name), /*#__PURE__*/React.createElement(Accordion.Collapse, {
+      }, item.name), /*#__PURE__*/React__default.createElement(Accordion.Collapse, {
         eventKey: "1"
-      }, /*#__PURE__*/React.createElement(Card.Body, null, /*#__PURE__*/React.createElement("ul", {
+      }, /*#__PURE__*/React__default.createElement(Card.Body, null, /*#__PURE__*/React__default.createElement("ul", {
         className: "firstAccordion",
         key: index
       }, item.types && item.types.map((type, index) => {
-        return /*#__PURE__*/React.createElement("li", {
+        return /*#__PURE__*/React__default.createElement("li", {
           onClick: e => {
-            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.options);
+            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.warning);
           },
           key: index
         }, type.name);
       })))))));
     } else {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         key: index
       });
     }
   });
   let fieldHeads = leftDrawData.map((item, index) => {
     if (item.field.length) {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         className: "fieldHeads",
         key: index
-      }, /*#__PURE__*/React.createElement("li", {
+      }, /*#__PURE__*/React__default.createElement("li", {
         onClick: e => {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
         }
       }, item.name));
     } else {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         key: index
       });
     }
   });
   let conditionHeads = leftDrawData.map((item, index) => {
     if (item.condition.length) {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         className: "conditionHeads",
         key: index
-      }, /*#__PURE__*/React.createElement("li", {
+      }, /*#__PURE__*/React__default.createElement("li", {
         onClick: e => {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
         }
       }, item.name));
     } else {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         key: index
       });
     }
   });
   let normalHeads = leftDrawData.map((item, index) => {
     if (!(item.condition.length || item.types.length || item.field.length)) {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         className: "normalHeads",
         key: index
-      }, /*#__PURE__*/React.createElement("li", {
+      }, /*#__PURE__*/React__default.createElement("li", {
         onClick: e => {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
         }
       }, item.name));
     } else {
-      return /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React__default.createElement("div", {
         key: index
       });
     }
   });
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Form.Row, null, /*#__PURE__*/React.createElement(Form.Control, {
+  return /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(Form.Row, null, /*#__PURE__*/React__default.createElement(Form.Control, {
     required: true,
     type: "text",
     placeholder: "Search a Filter",
     defaultValue: "",
     className: "customControl",
     onChange: searchFilterHandler
-  })), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React__default.createElement("div", {
     className: "leftDrawer"
-  }, /*#__PURE__*/React.createElement("div", null, accordianHeads), /*#__PURE__*/React.createElement("div", null, fieldHeads), /*#__PURE__*/React.createElement("div", null, conditionHeads), /*#__PURE__*/React.createElement("div", null, normalHeads)));
+  }, /*#__PURE__*/React__default.createElement("div", null, accordianHeads), /*#__PURE__*/React__default.createElement("div", null, fieldHeads), /*#__PURE__*/React__default.createElement("div", null, conditionHeads), /*#__PURE__*/React__default.createElement("div", null, normalHeads)));
 }
 
 const SavedFilters = props => {
@@ -611,22 +601,17 @@ const SavedFilters = props => {
   let keyValue = "";
   let savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-
-  if (savedFilters.length > 5) {
-    savedFilters = savedFilters.slice(savedFilters.length - 5, savedFilters.length);
-  }
-
   const savedFilter = savedFilters.map((filterArray, index) => {
-    return /*#__PURE__*/React.createElement("div", {
+    return /*#__PURE__*/React__default.createElement("div", {
       key: index
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+    }, /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
       style: {
         marginLeft: "-54px"
       },
       icon: faCheck
-    }), /*#__PURE__*/React.createElement("div", {
+    }), /*#__PURE__*/React__default.createElement("div", {
       style: {
         marginLeft: "15px"
       },
@@ -635,102 +620,43 @@ const SavedFilters = props => {
         props.handleListFilter();
         props.addSavedFilters(filterArray);
       }
-    }, Object.keys(filterArray)[0]), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+    }, Object.keys(filterArray)[0]), /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
       icon: faStar,
       className: "marginLeft"
     })));
   });
 
   if (showFilter) {
-    return /*#__PURE__*/React.createElement("div", {
+    return /*#__PURE__*/React__default.createElement("div", {
       className: "lists",
       ref: listRef
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "listsView"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "text-muted"
-    }, "list view"), /*#__PURE__*/React.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faCheck,
-      className: "selected"
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "leftSpace selected"
-    }, "Recently Viewed(10)"), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faCheck
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "leftSpace"
-    }, "To be called cancelled flights(12)"), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faCheck
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "leftSpace"
-    }, " Delayed Flights(10)"), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faCheck
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 7 days(10) "), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faCheck
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 10 days(10) "), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faCheck
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 20 days(10) "), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faCheck
-    }), /*#__PURE__*/React.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 30 days(10) "), /*#__PURE__*/React.createElement(FontAwesomeIcon, {
-      icon: faStar,
-      className: "marginLeft"
-    }))), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "savedFilters"
-    }, /*#__PURE__*/React.createElement("ul", {
+    }, /*#__PURE__*/React__default.createElement("div", {
+      className: "text-muted"
+    }, "Saved Filters"), /*#__PURE__*/React__default.createElement("ul", {
       key: keyValue,
       className: "leftSpace"
     }, savedFilter)));
   } else {
-    return /*#__PURE__*/React.createElement("div", null);
+    return /*#__PURE__*/React__default.createElement("div", null);
   }
 };
 
-let chips;
+let chips, chipCount;
 
 const MainFilterPanel = props => {
   const [listFilter, setListFilter] = useState(false);
   const [chipArray, setChipArray] = useState([]);
+  const [countShow, setCountShow] = useState("none");
   useEffect(() => {
     setChipArray(props.applyFilterChip.applyFilter);
+
+    if (props.applyFilterChip.applyFilter && props.applyFilterChip.applyFilter.length > 0) {
+      setCountShow("");
+    } else {
+      setCountShow("none");
+    }
   }, [props.applyFilterChip]);
 
   const handleListFilter = () => {
@@ -738,77 +664,82 @@ const MainFilterPanel = props => {
   };
 
   if (chipArray) {
+    chipCount = chipArray.length;
     chips = chipArray.map((item, index) => {
       if (item.type) {
-        return /*#__PURE__*/React.createElement("div", {
+        return /*#__PURE__*/React__default.createElement("div", {
           className: "listContent",
           key: index,
           onClick: e => {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
-        }, /*#__PURE__*/React.createElement("span", null, item.name, ":", item.type), item.value.map((value, index) => {
-          return /*#__PURE__*/React.createElement("div", {
+        }, /*#__PURE__*/React__default.createElement("span", null, item.name, ":", item.type), item.value.map((value, index) => {
+          return /*#__PURE__*/React__default.createElement("div", {
             key: index
           }, value.value);
         }));
       } else if (item.condition) {
-        return /*#__PURE__*/React.createElement("div", {
+        return /*#__PURE__*/React__default.createElement("div", {
           className: "listContent",
           key: index,
           onClick: e => {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
-        }, /*#__PURE__*/React.createElement("span", null, item.name), ":", item.condition, item.amount);
+        }, /*#__PURE__*/React__default.createElement("span", null, item.name), ":", item.condition, item.amount);
       } else if (item.fieldValue) {
-        return /*#__PURE__*/React.createElement("div", {
+        return /*#__PURE__*/React__default.createElement("div", {
           className: "listContent",
           key: index,
           onClick: e => {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
-        }, /*#__PURE__*/React.createElement("span", null, item.fieldValue), item.value);
+        }, /*#__PURE__*/React__default.createElement("span", null, item.fieldValue), item.value);
       } else {
-        return /*#__PURE__*/React.createElement("div", {
+        return /*#__PURE__*/React__default.createElement("div", {
           className: "listContent",
           key: index,
           onClick: e => {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
-        }, /*#__PURE__*/React.createElement("span", null, item.name), ":", item.value);
+        }, /*#__PURE__*/React__default.createElement("span", null, item.name), ":", item.value);
       }
     });
   } else {
-    chips = /*#__PURE__*/React.createElement("div", null);
+    chips = /*#__PURE__*/React__default.createElement("div", null);
   }
 
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "list"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "displayFlex"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "alignLeft"
-  }, /*#__PURE__*/React.createElement(FontAwesomeIcon, {
+  }, /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
     icon: faAlignLeft,
     onClick: handleListFilter
-  }), /*#__PURE__*/React.createElement(SavedFilters, {
+  }), /*#__PURE__*/React__default.createElement(SavedFilters, {
     onSelectSavedFilter: props.onSelectSavedFilter,
     showFilter: listFilter,
     handleListFilter: handleListFilter,
     addSavedFilters: props.addSavedFilters
-  }), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React__default.createElement("div", {
     className: "leftSpace"
-  }, "All flights"))), /*#__PURE__*/React.createElement("div", {
+  }, "All flights"))), /*#__PURE__*/React__default.createElement("div", {
     className: "secondList"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "displayFlex"
-  }, chips, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("span", {
+    style: {
+      display: countShow
+    },
+    className: "listContent"
+  }, "count:", chipCount), chips, /*#__PURE__*/React__default.createElement("div", {
     onClick: e => {
       props.showDrawer();
-    }
+    },
+    className: "addFilter"
   }, "+ Add Filter"))));
 };
-
-let dateFormat = require("dateformat");
 
 function useComponentVisible() {
   const [showApplyFilter, setApplyFilter] = useState(false);
@@ -841,7 +772,7 @@ function useComponentVisible() {
   };
 }
 
-function filter(props) {
+function Filter(props) {
   const [autoCompletesValueArray, setAutoCompletesValueArray] = useState([]);
   const [autoCompletesArray, setAutoCompletesArray] = useState([]);
   const [dateTimesArray, setDateTimesArray] = useState([]);
@@ -853,6 +784,12 @@ function filter(props) {
   const [applyFilterChip, setApplyFilterChip] = useState({});
   const [filterCount, setFilterCount] = useState(0);
   const [filterData, setFilterData] = useState({});
+  const [showSavePopUp, setShowSavePopUp] = useState("none");
+  const [saveWarningLabel, setSaveWarningLabel] = useState("");
+  const [saveWarningClassName, setSaveWarningClassName] = useState("");
+  const [emptyFilterWarning, setEmptyFilterWarning] = useState("");
+  const [emptyFilterClassName, setEmptyFilterClassName] = useState("");
+  const [recentFilterShow, setRecentFilterShow] = useState("none");
   useEffect(() => {
     setFilterData(props.filterData);
   }, [props.filterData]);
@@ -870,101 +807,265 @@ function filter(props) {
     setApplyFilter(false);
   };
 
+  const openShowSavePopUp = () => {
+    setShowSavePopUp("");
+  };
+
   const applyFilter = () => {
-    let applyFilter = {
-      applyFilterArray: []
-    };
-    let tempObj = {
-      applyFilter: []
-    };
+    if (filterCount > 0) {
+      setEmptyFilterClassName("");
+      setEmptyFilterWarning("");
+      let applyFilter = {
+        applyFilterArray: []
+      };
+      let tempObj = {
+        applyFilter: []
+      };
 
-    if (autoCompletesValueArray.length > 0) {
-      autoCompletesValueArray.forEach(item => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        autoComplete: autoCompletesValueArray
-      });
+      if (autoCompletesValueArray.length > 0) {
+        autoCompletesValueArray.forEach(item => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({
+          autoComplete: autoCompletesValueArray
+        });
+      }
+
+      if (dateTimesValueArray.length > 0) {
+        dateTimesValueArray.forEach(item => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({
+          dateTime: dateTimesValueArray
+        });
+      }
+
+      if (conditionsValueArray.length > 0) {
+        conditionsValueArray.forEach(item => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({
+          conditional: conditionsValueArray
+        });
+      }
+
+      if (textComponentsValueArray.length > 0) {
+        textComponentsValueArray.forEach(item => {
+          tempObj.applyFilter.push(item);
+        });
+        applyFilter.applyFilterArray.push({
+          textComponent: textComponentsValueArray
+        });
+      }
+
+      console.log(applyFilter);
+      setApplyFilterChip(tempObj);
+      tempObj = {};
+      closeDrawer();
+    } else {
+      setEmptyFilterClassName("text-danger");
+      setEmptyFilterWarning("No Filter is being selected");
     }
-
-    if (dateTimesValueArray.length > 0) {
-      dateTimesValueArray.forEach(item => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        dateTime: dateTimesValueArray
-      });
-    }
-
-    if (conditionsValueArray.length > 0) {
-      conditionsValueArray.forEach(item => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        conditional: conditionsValueArray
-      });
-    }
-
-    if (textComponentsValueArray.length > 0) {
-      textComponentsValueArray.forEach(item => {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        textComponent: textComponentsValueArray
-      });
-    }
-
-    console.log(applyFilter);
-    setApplyFilterChip(tempObj);
-    tempObj = {};
   };
 
   const saveFilter = value => {
-    let savedFilter = {
-      filter: []
-    };
+    if (value.length > 0) {
+      if (!(autoCompletesValueArray.length > 0 || dateTimesValueArray.length > 0 || conditionsValueArray.length > 0 || textComponentsValueArray.length > 0)) {
+        setShowSavePopUp("");
+        setSaveWarningClassName("text-danger");
+        setSaveWarningLabel("No filters selected or values entered");
+      } else {
+        let savedFilter = {
+          filter: []
+        };
 
-    if (autoCompletesValueArray.length > 0) {
-      savedFilter.filter.push({
-        autoComplete: autoCompletesValueArray
-      });
+        if (autoCompletesValueArray.length > 0) {
+          let autoCompleteArray = [...autoCompletesArray];
+          autoCompleteArray.forEach(item => {
+            autoCompletesValueArray.forEach(valueItem => {
+              if (valueItem.name === item.name && valueItem.type === item.type) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setAutoCompletesArray(autoCompleteArray);
+          let count = 0;
+          autoCompletesArray.forEach(item => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+
+          if (count === 0) {
+            savedFilter.filter.push({
+              autoComplete: autoCompletesValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          autoCompleteArray = [];
+        } else {
+          let autoCompleteArray = [...autoCompletesArray];
+          autoCompleteArray.forEach(item => {
+            item.validated = false;
+          });
+          setAutoCompletesArray(autoCompleteArray);
+          autoCompleteArray = [];
+        }
+
+        if (dateTimesValueArray.length > 0) {
+          let dateTimeArray = [...dateTimesArray];
+          dateTimeArray.forEach(item => {
+            dateTimesValueArray.forEach(valueItem => {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setDateTimesArray(dateTimeArray);
+          let count = 0;
+          dateTimesArray.forEach(item => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+
+          if (count === 0) {
+            savedFilter.filter.push({
+              dateTime: dateTimesValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          dateTimeArray = [];
+        } else {
+          let dateTimeArray = [...dateTimesArray];
+          dateTimeArray.forEach(item => {
+            item.validated = false;
+          });
+          setDateTimesArray(dateTimeArray);
+          dateTimeArray = [];
+        }
+
+        if (conditionsValueArray.length > 0) {
+          let conditionArray = [...conditionsArray];
+          conditionArray.forEach(item => {
+            conditionsValueArray.forEach(valueItem => {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setConditionsArray(conditionArray);
+          let count = 0;
+          conditionsArray.forEach(item => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+
+          if (count === 0) {
+            savedFilter.filter.push({
+              conditional: conditionsValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          conditionArray = [];
+        } else {
+          let conditionArray = [...conditionsArray];
+          conditionArray.forEach(item => {
+            item.validated = false;
+          });
+          setConditionsArray(conditionArray);
+          conditionArray = [];
+        }
+
+        if (textComponentsValueArray.length > 0) {
+          let textComponentArray = [...textComponentsArray];
+          textComponentArray.forEach(item => {
+            textComponentsValueArray.forEach(valueItem => {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setTextComponentsArray(textComponentArray);
+          let count = 0;
+          textComponentArray.forEach(item => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+
+          if (count === 0) {
+            savedFilter.filter.push({
+              textComponent: textComponentsValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          textComponentArray = [];
+        } else {
+          let textComponentArray = [...textComponentsArray];
+          textComponentArray.forEach(item => {
+            item.validated = false;
+          });
+          setTextComponentsArray(textComponentArray);
+          textComponentArray = [];
+        }
+
+        if (savedFilter.filter.length > 0) {
+          savedFilter[value] = savedFilter["filter"];
+          delete savedFilter.filter;
+          let savedFilters = localStorage.getItem("savedFilters");
+          savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+          savedFilters.push(savedFilter);
+          localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
+          console.log(savedFilters);
+          setShowSavePopUp("none");
+          setSaveWarningClassName("");
+          setSaveWarningLabel("");
+          resetDrawer();
+        }
+      }
+    } else {
+      setShowSavePopUp("");
+      setSaveWarningClassName("text-danger");
+      setSaveWarningLabel("Enter a valid filterName");
     }
-
-    if (dateTimesValueArray.length > 0) {
-      savedFilter.filter.push({
-        dateTime: dateTimesValueArray
-      });
-    }
-
-    if (conditionsValueArray.length > 0) {
-      savedFilter.filter.push({
-        conditional: conditionsValueArray
-      });
-    }
-
-    if (textComponentsValueArray.length > 0) {
-      savedFilter.filter.push({
-        textComponent: textComponentsValueArray
-      });
-    }
-
-    savedFilter[value] = savedFilter["filter"];
-    delete savedFilter.filter;
-    let savedFilters = localStorage.getItem("savedFilters");
-    savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-    savedFilters.push(savedFilter);
-    localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
-    console.log(savedFilters);
   };
 
-  const fromLeftToRight = (name, dataType, enabled, type, field, condition, options) => {
-    if (dataType === "AutoComplete") {
+  const fromLeftToRight = (name, dataType, enabled, type, field, condition, dataSource, warning) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    setEmptyFilterClassName("");
+    setEmptyFilterWarning("");
+
+    if (dataType === "AutoComplete" && dataSource === "Airport") {
       let value = {
         name: name,
         type: type,
         dataType: dataType,
         enabled: enabled,
-        objectArray: options
+        objectArray: []
       };
       let autoCompleteArray = [...autoCompletesArray];
 
@@ -977,7 +1078,9 @@ function filter(props) {
             type: type,
             dataType: dataType,
             enabled: enabled,
-            objectArray: options
+            objectArray: props.airportcode,
+            validated: false,
+            warning: warning
           });
         }
       } else {
@@ -986,7 +1089,9 @@ function filter(props) {
           type: type,
           dataType: dataType,
           enabled: enabled,
-          objectArray: options
+          objectArray: props.airportcode,
+          validated: false,
+          warning: warning
         });
       }
 
@@ -999,7 +1104,9 @@ function filter(props) {
         name: name,
         dataType: dataType,
         enabled: enabled,
-        field: field
+        field: field,
+        validated: false,
+        warning: warning
       };
       let dateTimeArray = [...dateTimesArray];
 
@@ -1011,7 +1118,9 @@ function filter(props) {
             name: name,
             dataType: dataType,
             enabled: enabled,
-            field: field
+            field: field,
+            validated: false,
+            warning: warning
           });
         }
       } else {
@@ -1019,7 +1128,9 @@ function filter(props) {
           name: name,
           dataType: dataType,
           enabled: enabled,
-          field: field
+          field: field,
+          validated: false,
+          warning: warning
         });
       }
 
@@ -1033,7 +1144,9 @@ function filter(props) {
         dataType: dataType,
         enabled: enabled,
         condition: condition,
-        amount: ""
+        amount: "",
+        validated: false,
+        warning: warning
       };
       let conditionArray = [...conditionsArray];
 
@@ -1046,7 +1159,9 @@ function filter(props) {
             dataType: dataType,
             enabled: enabled,
             condition: condition,
-            amount: ""
+            amount: "",
+            validated: false,
+            warning: warning
           });
         }
       } else {
@@ -1055,7 +1170,9 @@ function filter(props) {
           dataType: dataType,
           enabled: enabled,
           condition: condition,
-          amount: ""
+          amount: "",
+          validated: false,
+          warning: warning
         });
       }
 
@@ -1067,7 +1184,9 @@ function filter(props) {
       let value = {
         name: name,
         dataType: dataType,
-        enabled: enabled
+        enabled: enabled,
+        validated: false,
+        warning: warning
       };
       let textComponentArray = [...textComponentsArray];
 
@@ -1078,14 +1197,18 @@ function filter(props) {
           textComponentArray.push({
             name: name,
             dataType: dataType,
-            enabled: enabled
+            enabled: enabled,
+            validated: false,
+            warning: warning
           });
         }
       } else {
         textComponentArray.push({
           name: name,
           dataType: dataType,
-          enabled: enabled
+          enabled: enabled,
+          validated: false,
+          warning: warning
         });
       }
 
@@ -1095,6 +1218,10 @@ function filter(props) {
   };
 
   const createAutoCompleteArray = (item, valueArray) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let autoCompleteArray = [...autoCompletesArray];
     let tempObj = JSON.parse(JSON.stringify(item));
     tempObj.value = valueArray;
     let autoCompleteValueArray = [...autoCompletesValueArray];
@@ -1113,6 +1240,15 @@ function filter(props) {
       } else {
         autoCompleteValueArray[index].value = tempObj.value;
       }
+
+      autoCompleteValueArray.forEach(valueItem => {
+        autoCompleteArray.forEach(item => {
+          if (item.name === valueItem.name && item.type === valueItem.type) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       autoCompleteValueArray.push({
         name: tempObj.name,
@@ -1121,8 +1257,18 @@ function filter(props) {
         enabled: tempObj.enabled,
         value: tempObj.value
       });
+      autoCompleteValueArray.forEach(valueItem => {
+        autoCompleteArray.forEach(item => {
+          if (item.name === valueItem.name && item.type === valueItem.type) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     }
 
+    setAutoCompletesArray(autoCompleteArray);
+    autoCompleteArray = [];
     setAutoCompletesValueArray(autoCompleteValueArray);
     autoCompleteValueArray = [];
   };
@@ -1217,6 +1363,12 @@ function filter(props) {
   };
 
   const createDateTimeArray = (item, fieldName, value) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let dateTimeArray = [...dateTimesArray];
+    console.log(dateTimesArray);
+    console.log(value);
     let tempObj = JSON.parse(JSON.stringify(item));
     tempObj.fieldValue = fieldName;
     tempObj.value = value;
@@ -1236,6 +1388,15 @@ function filter(props) {
       } else {
         dateTimeValueArray[index].value = tempObj.value;
       }
+
+      dateTimeValueArray.forEach(valueItem => {
+        dateTimeArray.forEach(item => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       dateTimeValueArray.push({
         name: tempObj.name,
@@ -1244,11 +1405,19 @@ function filter(props) {
         fieldValue: tempObj.fieldValue,
         value: tempObj.value
       });
+      dateTimeValueArray.forEach(valueItem => {
+        dateTimeArray.forEach(item => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     }
 
     setDateTimesValueArray(dateTimeValueArray);
     dateTimeValueArray = [];
-    let dateTimeArray = [...dateTimesArray];
+    dateTimeArray = [...dateTimesArray];
 
     if (dateTimeArray.length > 0) {
       dateTimeArray.forEach(item => {
@@ -1264,9 +1433,37 @@ function filter(props) {
     dateTimeArray = [];
   };
 
+  const getValueOfDate = dateValue => {
+    const date = new Date(dateValue);
+    console.log(date);
+    const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "numeric",
+      seconds: "numeric"
+    });
+    const [{
+      value: month
+    },, {
+      value: day
+    },, {
+      value: year
+    },, {
+      value: hour
+    },, {
+      value: minute
+    },, {
+      value: seconds
+    }] = dateTimeFormat.formatToParts(date);
+    return `${year}-${month}-${day}${"T"}${hour}:${minute}`;
+  };
+
   const addToday = () => {
     let todayDate = new Date();
-    let dated = dateFormat(todayDate, "yyyy-mm-dd");
+    let dated = getValueOfDate(todayDate);
+    console.log(dated);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1302,8 +1499,8 @@ function filter(props) {
     let toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 1);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1338,8 +1535,8 @@ function filter(props) {
     let today = new Date();
     let fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
     let toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1375,8 +1572,8 @@ function filter(props) {
     let toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 14);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1412,8 +1609,8 @@ function filter(props) {
     let toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 7);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1450,8 +1647,8 @@ function filter(props) {
     let to = from + 6;
     let fromDate = new Date(today.setDate(from)).toUTCString();
     let toDate = new Date(today.setDate(to)).toUTCString();
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1487,8 +1684,8 @@ function filter(props) {
     let to = new Date();
     from.setDate(from.getDate() + 1);
     to.setDate(to.getDate() + 30);
-    let fromDate = dateFormat(from, "yyyy-mm-dd");
-    let toDate = dateFormat(to, "yyyy-mm-dd");
+    let fromDate = getValueOfDate(from);
+    let toDate = getValueOfDate(to);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1532,8 +1729,8 @@ function filter(props) {
       toDate.setDate(toDate.getDate() + parseInt(value));
     }
 
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1577,8 +1774,8 @@ function filter(props) {
       toDate.setDate(toDate.getDate() - 1);
     }
 
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     let dateTimeArray = [...dateTimesArray];
     let dateTimeValueArray = [...dateTimesValueArray];
 
@@ -1632,6 +1829,10 @@ function filter(props) {
   };
 
   const createConditionalArray = (item, value) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let conditionArray = [...conditionsArray];
     let valueArray = [];
     item.condition.forEach(it => {
       valueArray.push(it.value);
@@ -1648,6 +1849,15 @@ function filter(props) {
           conditionValueArray[index].amount = value;
         }
       }
+
+      conditionValueArray.forEach(valueItem => {
+        conditionArray.forEach(item => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       if (valueArray.includes(value)) {
         conditionValueArray.push({
@@ -1663,6 +1873,14 @@ function filter(props) {
           enabled: item.enabled,
           condition: item.condition[0].value,
           amount: value
+        });
+        conditionValueArray.forEach(valueItem => {
+          conditionArray.forEach(item => {
+            if (item.name === valueItem.name) {
+              item.validated = true;
+              item.warning = "";
+            }
+          });
         });
       }
     }
@@ -1685,6 +1903,10 @@ function filter(props) {
   };
 
   const createTextComponentsArray = (item, value) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let textComponentArray = [...textComponentsArray];
     let textComponentValueArray = [...textComponentsValueArray];
 
     if (textComponentValueArray.length > 0) {
@@ -1700,12 +1922,29 @@ function filter(props) {
       } else {
         textComponentValueArray[index].value = value;
       }
+
+      textComponentValueArray.forEach(valueItem => {
+        textComponentArray.forEach(item => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       textComponentValueArray.push({
         name: item.name,
         dataType: item.dataType,
         enabled: item.enabled,
         value: value
+      });
+      textComponentValueArray.forEach(valueItem => {
+        textComponentArray.forEach(item => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
       });
     }
 
@@ -1761,14 +2000,24 @@ function filter(props) {
         }
       }
     });
+    item.forEach(item => {
+      if (item.dataType === "AutoComplete") {
+        let autoCompleteArray = [...autoCompletesArray];
 
-    if (item.dataType === "AutoComplete") {
-      let autoCompleteArray = [...autoCompletesArray];
+        if (autoCompleteArray.length > 0) {
+          let index = autoCompleteArray.findIndex(x => x.name === item.name && item.type === x.type);
 
-      if (autoCompleteArray.length > 0) {
-        let index = autoCompleteArray.findIndex(x => x.name === item.name && item.type === x.type);
-
-        if (index === -1) {
+          if (index === -1) {
+            autoCompleteArray.push({
+              name: item.name,
+              dataType: item.dataType,
+              type: item.type,
+              enabled: item.enabled,
+              value: item.value,
+              objectArray: arr
+            });
+          }
+        } else {
           autoCompleteArray.push({
             name: item.name,
             dataType: item.dataType,
@@ -1778,74 +2027,72 @@ function filter(props) {
             objectArray: arr
           });
         }
-      } else {
-        autoCompleteArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          type: item.type,
-          enabled: item.enabled,
-          value: item.value,
-          objectArray: arr
-        });
-      }
 
-      setAutoCompletesArray(autoCompleteArray);
-    } else if (item.dataType === "DateTime") {
-      let dateTimeArray = [...dateTimesArray];
+        setAutoCompletesArray(autoCompleteArray);
+      } else if (item.dataType === "DateTime") {
+        let dateTimeArray = [...dateTimesArray];
 
-      if (dateTimeArray.length === 0) {
-        dateTimeArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          field: []
-        });
-        dateTimesValueArray.forEach(item => {
-          if (item.fieldValue) {
-            dateTimeArray.forEach(dt => {
-              dt.field.push({
-                column: item.fieldValue,
-                value: item.value
-              });
-            });
-          }
-        });
-      }
-
-      setDateTimesArray(dateTimeArray);
-    } else if (item.dataType === "Numeric") {
-      let conditionArray = [...conditionsArray];
-
-      if (conditionArray.length === 0) {
-        conditionArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          condition: [],
-          amount: item.amount,
-          value: item.condition
-        });
-        filterData.filter.forEach(data => {
-          if (data.dataType === "Numeric") {
-            data.condition.forEach(values => {
-              conditionArray.forEach(item => {
-                item.condition.push({
-                  value: values.value
+        if (dateTimeArray.length === 0) {
+          dateTimeArray.push({
+            name: item.name,
+            dataType: item.dataType,
+            enabled: item.enabled,
+            field: []
+          });
+          dateTimesValueArray.forEach(item => {
+            if (item.fieldValue) {
+              dateTimeArray.forEach(dt => {
+                dt.field.push({
+                  column: item.fieldValue,
+                  value: item.value
                 });
               });
+            }
+          });
+        }
+
+        setDateTimesArray(dateTimeArray);
+      } else if (item.dataType === "Numeric") {
+        let conditionArray = [...conditionsArray];
+
+        if (conditionArray.length === 0) {
+          conditionArray.push({
+            name: item.name,
+            dataType: item.dataType,
+            enabled: item.enabled,
+            condition: [],
+            amount: item.amount,
+            value: item.condition
+          });
+          filterData.filter.forEach(data => {
+            if (data.dataType === "Numeric") {
+              data.condition.forEach(values => {
+                conditionArray.forEach(item => {
+                  item.condition.push({
+                    value: values.value
+                  });
+                });
+              });
+            }
+          });
+        }
+
+        setConditionsArray(conditionArray);
+      } else {
+        let textComponentArray = [...textComponentsArray];
+
+        if (textComponentArray.length > 0) {
+          let index = textComponentArray.findIndex(x => x.name === item.name);
+
+          if (index === -1) {
+            textComponentArray.push({
+              name: item.name,
+              dataType: item.dataType,
+              enabled: item.enabled,
+              value: item.value
             });
           }
-        });
-      }
-
-      setConditionsArray(conditionArray);
-    } else {
-      let textComponentArray = [...textComponentsArray];
-
-      if (textComponentArray.length > 0) {
-        let index = textComponentArray.findIndex(x => x.name === item.name);
-
-        if (index === -1) {
+        } else {
           textComponentArray.push({
             name: item.name,
             dataType: item.dataType,
@@ -1853,18 +2100,10 @@ function filter(props) {
             value: item.value
           });
         }
-      } else {
-        textComponentArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          value: item.value
-        });
+
+        setTextComponentsArray(textComponentArray);
       }
-
-      setTextComponentsArray(textComponentArray);
-    }
-
+    });
     setApplyFilter(true);
   };
 
@@ -2024,6 +2263,7 @@ function filter(props) {
     deleteDateTimeElement({});
     deleteTextComponentElement({});
     setApplyFilterChip({});
+    setRecentFilterShow("");
   };
 
   const {
@@ -2031,21 +2271,21 @@ function filter(props) {
     showApplyFilter,
     setApplyFilter
   } = useComponentVisible();
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     ref: ref
-  }, showApplyFilter && /*#__PURE__*/React.createElement("div", {
+  }, showApplyFilter && /*#__PURE__*/React__default.createElement("div", {
     className: "filter--grid",
     ref: ref
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "filter__wrap"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "filter__list"
-  }, /*#__PURE__*/React.createElement(LeftDrawer, {
+  }, /*#__PURE__*/React__default.createElement(LeftDrawer, {
     filterData: filterData,
     fromLeftToRight: fromLeftToRight
-  })), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React__default.createElement("div", {
     className: "filter__inputwrap"
-  }, /*#__PURE__*/React.createElement(RightDrawer, {
+  }, /*#__PURE__*/React__default.createElement(RightDrawer, {
     applyFilter: applyFilter,
     saveFilter: saveFilter,
     createAutoCompleteArray: createAutoCompleteArray,
@@ -2075,8 +2315,15 @@ function filter(props) {
     handleTextComponentEnabled: handleTextComponentEnabled,
     closeDrawer: closeDrawer,
     resetDrawer: resetDrawer,
-    filterCount: filterCount
-  })))), /*#__PURE__*/React.createElement(MainFilterPanel, {
+    filterCount: filterCount,
+    saveWarningClassName: saveWarningClassName,
+    saveWarningLabel: saveWarningLabel,
+    showSavePopUp: showSavePopUp,
+    emptyFilterClassName: emptyFilterClassName,
+    emptyFilterWarning: emptyFilterWarning,
+    openShowSavePopUp: openShowSavePopUp,
+    recentFilterShow: recentFilterShow
+  })))), /*#__PURE__*/React__default.createElement(MainFilterPanel, {
     showDrawer: showDrawer,
     applyFilterChip: applyFilterChip,
     addAppliedFilters: addAppliedFilters,
@@ -2084,5 +2331,5 @@ function filter(props) {
   }));
 }
 
-export default filter;
+export default Filter;
 //# sourceMappingURL=index.modern.js.map

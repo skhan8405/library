@@ -6,17 +6,29 @@ import Condition from "../types/ConditionalComponent";
 import TextComponents from "../types/TextComponents";
 import saveLogo from "../images/icon-save.svg";
 
-const RightDrawer = forwardRef((props, ref) => {
+const RightDrawer = (props) => {
   const [showSavePopup, setShowSavePopup] = useState("none");
   const [saveFilterName, setSaveFilterName] = useState("");
   const [saveFilterWarning, setSaveFilterWarning] = useState("");
   const [warningLabel, setWarningLabel] = useState("");
-
+  const [applyFilterWarning, setApplyFilterWarning] = useState("");
+  const [
+    applyfilterWarningClassName,
+    setApplyFilterWariningClassname,
+  ] = useState("");
+  const [recentFilterShow, setRecentFilterShow] = useState("");
+  useEffect(() => {
+    setApplyFilterWarning(props.emptyFilterWarning);
+    setApplyFilterWariningClassname(props.emptyFilterClassName);
+  }, [props.emptyFilterWarning, props.emptyFilterClassName]);
   useEffect(() => {
     setWarningLabel(props.saveWarningClassName);
     setSaveFilterWarning(props.saveWarningLabel);
     setShowSavePopup(props.showSavePopUp);
   }, [props.saveWarningClassName, props.saveWarningLabel, props.showSavePopUp]);
+  useEffect(() => {
+    setRecentFilterShow(props.recentFilterShow);
+  }, [props.recentFilterShow]);
   /**
    * Method To pass the required name of the filter required to be saved
    * @param {*} e is event triggered when typing on the to-save filter name field
@@ -24,14 +36,9 @@ const RightDrawer = forwardRef((props, ref) => {
   const registersaveFilterName = (e) => {
     setSaveFilterName(e.target.value);
   };
+
   /**
-   * Method To show the save popup
-   */
-  const showPopUp = () => {
-    setShowSavePopup("");
-  };
-  /**
-   * Method To close the save popup
+   * Method To close the save popup on clicking cancel button
    */
   const cancelSavePopup = () => {
     setShowSavePopup("none");
@@ -40,6 +47,7 @@ const RightDrawer = forwardRef((props, ref) => {
   };
   return (
     <React.Fragment>
+      <div style={{ display: recentFilterShow }}>Recent Filters</div>
       <div className="filter__title">
         Searched Filters
         <span className="filter-count">{props.filterCount}</span>
@@ -87,11 +95,18 @@ const RightDrawer = forwardRef((props, ref) => {
       <div className="filter__btn">
         <div className="filter__save">
           <Button className="button-save" variant="">
-            <img src={saveLogo} onClick={showPopUp} alt="save icon" />
+            <img
+              src={saveLogo}
+              onClick={props.openShowSavePopUp}
+              alt="save icon"
+            />
             <span>SAVE</span>
           </Button>
         </div>
         <div className="btn-wrap">
+          <span className={applyfilterWarningClassName}>
+            {applyFilterWarning}
+          </span>
           <Button variant="" className="reset" onClick={props.resetDrawer}>
             Reset
           </Button>
@@ -104,7 +119,6 @@ const RightDrawer = forwardRef((props, ref) => {
               props.deleteConditionalElement({});
               props.deleteDateTimeElement({});
               props.deleteTextComponentElement({});
-              props.closeDrawer();
             }}
           >
             Apply Filter
@@ -142,6 +156,6 @@ const RightDrawer = forwardRef((props, ref) => {
       </div>
     </React.Fragment>
   );
-});
+};
 
 export default RightDrawer;

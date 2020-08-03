@@ -26,6 +26,12 @@ function AutoComplete(props) {
   };
 
   var autoCompleteDiv = autoCompleteArr.map(function (item, index) {
+    var validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
     return /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input",
       key: index
@@ -63,7 +69,10 @@ function AutoComplete(props) {
       onSelect: function onSelect(e) {
         _onSelect(e, e[e.length - 1], item);
       }
-    })));
+    })), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
   return /*#__PURE__*/React__default.createElement("div", null, autoCompleteDiv);
 }
@@ -82,6 +91,12 @@ function FieldComponent(props) {
   };
 
   var fieldComponentDiv = fieldComponentArr.map(function (item, index) {
+    var validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
     return /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input",
       key: index
@@ -119,7 +134,7 @@ function FieldComponent(props) {
         className: "date-wrap"
       }, /*#__PURE__*/React__default.createElement(reactBootstrap.Form.Control, {
         disabled: !item.enabled,
-        type: "date",
+        type: "datetime-local",
         value: field.value,
         className: field.name,
         onChange: function onChange(e) {
@@ -129,68 +144,11 @@ function FieldComponent(props) {
         className: "date-button"
       }, /*#__PURE__*/React__default.createElement("button", {
         type: "button"
-      }))), /*#__PURE__*/React__default.createElement("div", {
-        className: "time-wrap"
-      }, /*#__PURE__*/React__default.createElement("input", {
-        className: "time",
-        type: "time",
-        disabled: !item.enabled
-      }))));
-    }), /*#__PURE__*/React__default.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: function onClick(e) {
-        props.addToday();
-      }
-    }, "Today"), /*#__PURE__*/React__default.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: function onClick(e) {
-        props.addTomorrow();
-      }
-    }, "Tomorrow"), /*#__PURE__*/React__default.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: function onClick(e) {
-        props.addThisWeek();
-      }
-    }, "This Week"), /*#__PURE__*/React__default.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: function onClick(e) {
-        props.addSevenDays();
-      }
-    }, "Next 7 days"), /*#__PURE__*/React__default.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: function onClick(e) {
-        props.addForteenDays();
-      }
-    }, "Next 14 days"), /*#__PURE__*/React__default.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: function onClick(e) {
-        props.addThisMonth();
-      }
-    }, "This Month"), /*#__PURE__*/React__default.createElement("button", {
-      disabled: !item.enabled,
-      type: "button",
-      onClick: function onClick(e) {
-        props.addThirtyDays();
-      }
-    }, "Next 30 days"), /*#__PURE__*/React__default.createElement("br", null), "Next", " ", /*#__PURE__*/React__default.createElement("input", {
-      disabled: !item.enabled,
-      type: "text",
-      onChange: function onChange(e) {
-        props.nextDayChange(e.target.value);
-      }
-    }), " ", "Days", /*#__PURE__*/React__default.createElement("br", null), "Last", " ", /*#__PURE__*/React__default.createElement("input", {
-      disabled: !item.enabled,
-      type: "text",
-      onChange: function onChange(e) {
-        props.lastDayChange(e.target.value);
-      }
-    }), " ", "Days");
+      })))));
+    }), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
   return /*#__PURE__*/React__default.createElement("div", null, fieldComponentDiv);
 }
@@ -204,6 +162,12 @@ function Condition(props) {
     setConditionArr(props.conditionsArray);
   }, [props.conditionsArray]);
   var conditionalDiv = conditionArr.map(function (item, index) {
+    var validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
     return /*#__PURE__*/React__default.createElement("div", {
       className: "filter__input",
       key: index
@@ -254,7 +218,10 @@ function Condition(props) {
       defaultValue: item.amount,
       required: true,
       type: "number"
-    })))));
+    })))), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
   return /*#__PURE__*/React__default.createElement("div", null, conditionalDiv);
 }
@@ -268,6 +235,12 @@ function TextComponents(props) {
     setTextComponentArr(props.textComponentsArray);
   }, [props.textComponentsArray]);
   var textComponentDiv = textComponentArr.map(function (item, index) {
+    var validationClass = "";
+
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
+
     return /*#__PURE__*/React__default.createElement("div", {
       key: index
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -303,12 +276,17 @@ function TextComponents(props) {
       onChange: function onChange(e) {
         props.createTextComponentsArray(item, e.target.value);
       }
-    }))));
+    }))), /*#__PURE__*/React__default.createElement("span", {
+      id: "fieldWarning",
+      className: validationClass
+    }, item.warning));
   });
   return /*#__PURE__*/React__default.createElement("div", null, textComponentDiv);
 }
 
-var RightDrawer = React.forwardRef(function (props, ref) {
+var saveLogo = require("./icon-save~EODvfpOb.svg");
+
+var RightDrawer = function RightDrawer(props) {
   var _useState = React.useState("none"),
       showSavePopup = _useState[0],
       setShowSavePopup = _useState[1];
@@ -325,14 +303,33 @@ var RightDrawer = React.forwardRef(function (props, ref) {
       warningLabel = _useState4[0],
       setWarningLabel = _useState4[1];
 
-  var registersaveFilterName = function registersaveFilterName(e) {
-    setSaveFilterWarning("");
-    setWarningLabel("");
-    setSaveFilterName(e.target.value);
-  };
+  var _useState5 = React.useState(""),
+      applyFilterWarning = _useState5[0],
+      setApplyFilterWarning = _useState5[1];
 
-  var showPopUp = function showPopUp() {
-    setShowSavePopup("");
+  var _useState6 = React.useState(""),
+      applyfilterWarningClassName = _useState6[0],
+      setApplyFilterWariningClassname = _useState6[1];
+
+  var _useState7 = React.useState(""),
+      recentFilterShow = _useState7[0],
+      setRecentFilterShow = _useState7[1];
+
+  React.useEffect(function () {
+    setApplyFilterWarning(props.emptyFilterWarning);
+    setApplyFilterWariningClassname(props.emptyFilterClassName);
+  }, [props.emptyFilterWarning, props.emptyFilterClassName]);
+  React.useEffect(function () {
+    setWarningLabel(props.saveWarningClassName);
+    setSaveFilterWarning(props.saveWarningLabel);
+    setShowSavePopup(props.showSavePopUp);
+  }, [props.saveWarningClassName, props.saveWarningLabel, props.showSavePopUp]);
+  React.useEffect(function () {
+    setRecentFilterShow(props.recentFilterShow);
+  }, [props.recentFilterShow]);
+
+  var registersaveFilterName = function registersaveFilterName(e) {
+    setSaveFilterName(e.target.value);
   };
 
   var cancelSavePopup = function cancelSavePopup() {
@@ -342,6 +339,10 @@ var RightDrawer = React.forwardRef(function (props, ref) {
   };
 
   return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+    style: {
+      display: recentFilterShow
+    }
+  }, "Recent Filters"), /*#__PURE__*/React__default.createElement("div", {
     className: "filter__title"
   }, "Searched Filters", /*#__PURE__*/React__default.createElement("span", {
     className: "filter-count"
@@ -389,12 +390,14 @@ var RightDrawer = React.forwardRef(function (props, ref) {
     className: "button-save",
     variant: ""
   }, /*#__PURE__*/React__default.createElement("img", {
-    src: "../images/icon-save.svg",
-    onClick: showPopUp,
+    src: saveLogo,
+    onClick: props.openShowSavePopUp,
     alt: "save icon"
   }), /*#__PURE__*/React__default.createElement("span", null, "SAVE"))), /*#__PURE__*/React__default.createElement("div", {
     className: "btn-wrap"
-  }, /*#__PURE__*/React__default.createElement(reactBootstrap.Button, {
+  }, /*#__PURE__*/React__default.createElement("span", {
+    className: applyfilterWarningClassName
+  }, applyFilterWarning), /*#__PURE__*/React__default.createElement(reactBootstrap.Button, {
     variant: "",
     className: "reset",
     onClick: props.resetDrawer
@@ -407,7 +410,6 @@ var RightDrawer = React.forwardRef(function (props, ref) {
       props.deleteConditionalElement({});
       props.deleteDateTimeElement({});
       props.deleteTextComponentElement({});
-      props.closeDrawer();
     }
   }, "Apply Filter")), /*#__PURE__*/React__default.createElement("div", {
     style: {
@@ -433,11 +435,9 @@ var RightDrawer = React.forwardRef(function (props, ref) {
     className: "button",
     onClick: function onClick(e) {
       props.saveFilter(saveFilterName);
-      setSaveFilterName("");
-      setShowSavePopup("none");
     }
   }, "Save")))));
-});
+};
 
 var accordianArray = [];
 function LeftDrawer(props) {
@@ -563,7 +563,7 @@ function LeftDrawer(props) {
       }, item.types && item.types.map(function (type, index) {
         return /*#__PURE__*/React__default.createElement("li", {
           onClick: function onClick(e) {
-            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.options);
+            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.warning);
           },
           key: index
         }, type.name);
@@ -581,7 +581,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: function onClick(e) {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
         }
       }, item.name));
     } else {
@@ -597,7 +597,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: function onClick(e) {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
         }
       }, item.name));
     } else {
@@ -613,7 +613,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: function onClick(e) {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
         }
       }, item.name));
     } else {
@@ -657,11 +657,6 @@ var SavedFilters = function SavedFilters(props) {
   var keyValue = "";
   var savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-
-  if (savedFilters.length > 5) {
-    savedFilters = savedFilters.slice(savedFilters.length - 5, savedFilters.length);
-  }
-
   var savedFilter = savedFilters.map(function (filterArray, index) {
     return /*#__PURE__*/React__default.createElement("div", {
       key: index
@@ -692,76 +687,10 @@ var SavedFilters = function SavedFilters(props) {
       className: "lists",
       ref: listRef
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "listsView"
+      className: "savedFilters"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "text-muted"
-    }, "list view"), /*#__PURE__*/React__default.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faCheck,
-      className: "selected"
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "leftSpace selected"
-    }, "Recently Viewed(10)"), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React__default.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faCheck
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "leftSpace"
-    }, "To be called cancelled flights(12)"), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React__default.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faCheck
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "leftSpace"
-    }, " Delayed Flights(10)"), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React__default.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faCheck
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 7 days(10) "), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React__default.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faCheck
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 10 days(10) "), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React__default.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faCheck
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 20 days(10) "), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
-    })), /*#__PURE__*/React__default.createElement("div", {
-      className: "alignLeft"
-    }, /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faCheck
-    }), /*#__PURE__*/React__default.createElement("div", {
-      className: "leftSpace"
-    }, " Flights in next 30 days(10) "), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
-      icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
-    }))), /*#__PURE__*/React__default.createElement("div", {
-      className: "savedFilters"
-    }, /*#__PURE__*/React__default.createElement("ul", {
+    }, "Saved Filters"), /*#__PURE__*/React__default.createElement("ul", {
       key: keyValue,
       className: "leftSpace"
     }, savedFilter)));
@@ -770,7 +699,7 @@ var SavedFilters = function SavedFilters(props) {
   }
 };
 
-var chips;
+var chips, chipCount;
 
 var MainFilterPanel = function MainFilterPanel(props) {
   var _useState = React.useState(false),
@@ -781,8 +710,18 @@ var MainFilterPanel = function MainFilterPanel(props) {
       chipArray = _useState2[0],
       setChipArray = _useState2[1];
 
+  var _useState3 = React.useState("none"),
+      countShow = _useState3[0],
+      setCountShow = _useState3[1];
+
   React.useEffect(function () {
     setChipArray(props.applyFilterChip.applyFilter);
+
+    if (props.applyFilterChip.applyFilter && props.applyFilterChip.applyFilter.length > 0) {
+      setCountShow("");
+    } else {
+      setCountShow("none");
+    }
   }, [props.applyFilterChip]);
 
   var handleListFilter = function handleListFilter() {
@@ -790,13 +729,14 @@ var MainFilterPanel = function MainFilterPanel(props) {
   };
 
   if (chipArray) {
+    chipCount = chipArray.length;
     chips = chipArray.map(function (item, index) {
       if (item.type) {
         return /*#__PURE__*/React__default.createElement("div", {
           className: "listContent",
           key: index,
           onClick: function onClick(e) {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
         }, /*#__PURE__*/React__default.createElement("span", null, item.name, ":", item.type), item.value.map(function (value, index) {
           return /*#__PURE__*/React__default.createElement("div", {
@@ -808,7 +748,7 @@ var MainFilterPanel = function MainFilterPanel(props) {
           className: "listContent",
           key: index,
           onClick: function onClick(e) {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
         }, /*#__PURE__*/React__default.createElement("span", null, item.name), ":", item.condition, item.amount);
       } else if (item.fieldValue) {
@@ -816,7 +756,7 @@ var MainFilterPanel = function MainFilterPanel(props) {
           className: "listContent",
           key: index,
           onClick: function onClick(e) {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
         }, /*#__PURE__*/React__default.createElement("span", null, item.fieldValue), item.value);
       } else {
@@ -824,7 +764,7 @@ var MainFilterPanel = function MainFilterPanel(props) {
           className: "listContent",
           key: index,
           onClick: function onClick(e) {
-            props.addAppliedFilters(item);
+            props.addAppliedFilters(chipArray);
           }
         }, /*#__PURE__*/React__default.createElement("span", null, item.name), ":", item.value);
       }
@@ -853,14 +793,18 @@ var MainFilterPanel = function MainFilterPanel(props) {
     className: "secondList"
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "displayFlex"
-  }, chips, /*#__PURE__*/React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("span", {
+    style: {
+      display: countShow
+    },
+    className: "listContent"
+  }, "count:", chipCount), chips, /*#__PURE__*/React__default.createElement("div", {
     onClick: function onClick(e) {
       props.showDrawer();
-    }
+    },
+    className: "addFilter"
   }, "+ Add Filter"))));
 };
-
-var dateFormat = require("dateformat");
 
 function useComponentVisible() {
   var _useState = React.useState(false),
@@ -896,7 +840,7 @@ function useComponentVisible() {
   };
 }
 
-function filter(props) {
+function Filter(props) {
   var _useState2 = React.useState([]),
       autoCompletesValueArray = _useState2[0],
       setAutoCompletesValueArray = _useState2[1];
@@ -941,6 +885,30 @@ function filter(props) {
       filterData = _useState12[0],
       setFilterData = _useState12[1];
 
+  var _useState13 = React.useState("none"),
+      showSavePopUp = _useState13[0],
+      setShowSavePopUp = _useState13[1];
+
+  var _useState14 = React.useState(""),
+      saveWarningLabel = _useState14[0],
+      setSaveWarningLabel = _useState14[1];
+
+  var _useState15 = React.useState(""),
+      saveWarningClassName = _useState15[0],
+      setSaveWarningClassName = _useState15[1];
+
+  var _useState16 = React.useState(""),
+      emptyFilterWarning = _useState16[0],
+      setEmptyFilterWarning = _useState16[1];
+
+  var _useState17 = React.useState(""),
+      emptyFilterClassName = _useState17[0],
+      setEmptyFilterClassName = _useState17[1];
+
+  var _useState18 = React.useState("none"),
+      recentFilterShow = _useState18[0],
+      setRecentFilterShow = _useState18[1];
+
   React.useEffect(function () {
     setFilterData(props.filterData);
   }, [props.filterData]);
@@ -958,101 +926,277 @@ function filter(props) {
     setApplyFilter(false);
   };
 
+  var openShowSavePopUp = function openShowSavePopUp() {
+    setShowSavePopUp("");
+  };
+
   var applyFilter = function applyFilter() {
-    var applyFilter = {
-      applyFilterArray: []
-    };
-    var tempObj = {
-      applyFilter: []
-    };
+    if (filterCount > 0) {
+      setEmptyFilterClassName("");
+      setEmptyFilterWarning("");
+      var _applyFilter = {
+        applyFilterArray: []
+      };
+      var tempObj = {
+        applyFilter: []
+      };
 
-    if (autoCompletesValueArray.length > 0) {
-      autoCompletesValueArray.forEach(function (item) {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        autoComplete: autoCompletesValueArray
-      });
+      if (autoCompletesValueArray.length > 0) {
+        autoCompletesValueArray.forEach(function (item) {
+          tempObj.applyFilter.push(item);
+        });
+
+        _applyFilter.applyFilterArray.push({
+          autoComplete: autoCompletesValueArray
+        });
+      }
+
+      if (dateTimesValueArray.length > 0) {
+        dateTimesValueArray.forEach(function (item) {
+          tempObj.applyFilter.push(item);
+        });
+
+        _applyFilter.applyFilterArray.push({
+          dateTime: dateTimesValueArray
+        });
+      }
+
+      if (conditionsValueArray.length > 0) {
+        conditionsValueArray.forEach(function (item) {
+          tempObj.applyFilter.push(item);
+        });
+
+        _applyFilter.applyFilterArray.push({
+          conditional: conditionsValueArray
+        });
+      }
+
+      if (textComponentsValueArray.length > 0) {
+        textComponentsValueArray.forEach(function (item) {
+          tempObj.applyFilter.push(item);
+        });
+
+        _applyFilter.applyFilterArray.push({
+          textComponent: textComponentsValueArray
+        });
+      }
+
+      console.log(_applyFilter);
+      setApplyFilterChip(tempObj);
+      tempObj = {};
+      closeDrawer();
+    } else {
+      setEmptyFilterClassName("text-danger");
+      setEmptyFilterWarning("No Filter is being selected");
     }
-
-    if (dateTimesValueArray.length > 0) {
-      dateTimesValueArray.forEach(function (item) {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        dateTime: dateTimesValueArray
-      });
-    }
-
-    if (conditionsValueArray.length > 0) {
-      conditionsValueArray.forEach(function (item) {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        conditional: conditionsValueArray
-      });
-    }
-
-    if (textComponentsValueArray.length > 0) {
-      textComponentsValueArray.forEach(function (item) {
-        tempObj.applyFilter.push(item);
-      });
-      applyFilter.applyFilterArray.push({
-        textComponent: textComponentsValueArray
-      });
-    }
-
-    console.log(applyFilter);
-    setApplyFilterChip(tempObj);
-    tempObj = {};
   };
 
   var saveFilter = function saveFilter(value) {
-    var savedFilter = {
-      filter: []
-    };
+    if (value.length > 0) {
+      if (!(autoCompletesValueArray.length > 0 || dateTimesValueArray.length > 0 || conditionsValueArray.length > 0 || textComponentsValueArray.length > 0)) {
+        setShowSavePopUp("");
+        setSaveWarningClassName("text-danger");
+        setSaveWarningLabel("No filters selected or values entered");
+      } else {
+        var savedFilter = {
+          filter: []
+        };
 
-    if (autoCompletesValueArray.length > 0) {
-      savedFilter.filter.push({
-        autoComplete: autoCompletesValueArray
-      });
+        if (autoCompletesValueArray.length > 0) {
+          var autoCompleteArray = [].concat(autoCompletesArray);
+          autoCompleteArray.forEach(function (item) {
+            autoCompletesValueArray.forEach(function (valueItem) {
+              if (valueItem.name === item.name && valueItem.type === item.type) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setAutoCompletesArray(autoCompleteArray);
+          var count = 0;
+          autoCompletesArray.forEach(function (item) {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+
+          if (count === 0) {
+            savedFilter.filter.push({
+              autoComplete: autoCompletesValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          autoCompleteArray = [];
+        } else {
+          var _autoCompleteArray = [].concat(autoCompletesArray);
+
+          _autoCompleteArray.forEach(function (item) {
+            item.validated = false;
+          });
+
+          setAutoCompletesArray(_autoCompleteArray);
+          _autoCompleteArray = [];
+        }
+
+        if (dateTimesValueArray.length > 0) {
+          var dateTimeArray = [].concat(dateTimesArray);
+          dateTimeArray.forEach(function (item) {
+            dateTimesValueArray.forEach(function (valueItem) {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setDateTimesArray(dateTimeArray);
+          var _count = 0;
+          dateTimesArray.forEach(function (item) {
+            if (item.validated === false) {
+              _count++;
+            }
+          });
+
+          if (_count === 0) {
+            savedFilter.filter.push({
+              dateTime: dateTimesValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          dateTimeArray = [];
+        } else {
+          var _dateTimeArray = [].concat(dateTimesArray);
+
+          _dateTimeArray.forEach(function (item) {
+            item.validated = false;
+          });
+
+          setDateTimesArray(_dateTimeArray);
+          _dateTimeArray = [];
+        }
+
+        if (conditionsValueArray.length > 0) {
+          var conditionArray = [].concat(conditionsArray);
+          conditionArray.forEach(function (item) {
+            conditionsValueArray.forEach(function (valueItem) {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setConditionsArray(conditionArray);
+          var _count2 = 0;
+          conditionsArray.forEach(function (item) {
+            if (item.validated === false) {
+              _count2++;
+            }
+          });
+
+          if (_count2 === 0) {
+            savedFilter.filter.push({
+              conditional: conditionsValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          conditionArray = [];
+        } else {
+          var _conditionArray = [].concat(conditionsArray);
+
+          _conditionArray.forEach(function (item) {
+            item.validated = false;
+          });
+
+          setConditionsArray(_conditionArray);
+          _conditionArray = [];
+        }
+
+        if (textComponentsValueArray.length > 0) {
+          var textComponentArray = [].concat(textComponentsArray);
+          textComponentArray.forEach(function (item) {
+            textComponentsValueArray.forEach(function (valueItem) {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setTextComponentsArray(textComponentArray);
+          var _count3 = 0;
+          textComponentArray.forEach(function (item) {
+            if (item.validated === false) {
+              _count3++;
+            }
+          });
+
+          if (_count3 === 0) {
+            savedFilter.filter.push({
+              textComponent: textComponentsValueArray
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+
+          textComponentArray = [];
+        } else {
+          var _textComponentArray = [].concat(textComponentsArray);
+
+          _textComponentArray.forEach(function (item) {
+            item.validated = false;
+          });
+
+          setTextComponentsArray(_textComponentArray);
+          _textComponentArray = [];
+        }
+
+        if (savedFilter.filter.length > 0) {
+          savedFilter[value] = savedFilter["filter"];
+          delete savedFilter.filter;
+          var savedFilters = localStorage.getItem("savedFilters");
+          savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+          savedFilters.push(savedFilter);
+          localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
+          console.log(savedFilters);
+          setShowSavePopUp("none");
+          setSaveWarningClassName("");
+          setSaveWarningLabel("");
+          resetDrawer();
+        }
+      }
+    } else {
+      setShowSavePopUp("");
+      setSaveWarningClassName("text-danger");
+      setSaveWarningLabel("Enter a valid filterName");
     }
-
-    if (dateTimesValueArray.length > 0) {
-      savedFilter.filter.push({
-        dateTime: dateTimesValueArray
-      });
-    }
-
-    if (conditionsValueArray.length > 0) {
-      savedFilter.filter.push({
-        conditional: conditionsValueArray
-      });
-    }
-
-    if (textComponentsValueArray.length > 0) {
-      savedFilter.filter.push({
-        textComponent: textComponentsValueArray
-      });
-    }
-
-    savedFilter[value] = savedFilter["filter"];
-    delete savedFilter.filter;
-    var savedFilters = localStorage.getItem("savedFilters");
-    savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-    savedFilters.push(savedFilter);
-    localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
-    console.log(savedFilters);
   };
 
-  var fromLeftToRight = function fromLeftToRight(name, dataType, enabled, type, field, condition, options) {
-    if (dataType === "AutoComplete") {
+  var fromLeftToRight = function fromLeftToRight(name, dataType, enabled, type, field, condition, dataSource, warning) {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    setEmptyFilterClassName("");
+    setEmptyFilterWarning("");
+
+    if (dataType === "AutoComplete" && dataSource === "Airport") {
       var value = {
         name: name,
         type: type,
         dataType: dataType,
         enabled: enabled,
-        objectArray: options
+        objectArray: []
       };
       var autoCompleteArray = [].concat(autoCompletesArray);
 
@@ -1067,7 +1211,9 @@ function filter(props) {
             type: type,
             dataType: dataType,
             enabled: enabled,
-            objectArray: options
+            objectArray: props.airportcode,
+            validated: false,
+            warning: warning
           });
         }
       } else {
@@ -1076,7 +1222,9 @@ function filter(props) {
           type: type,
           dataType: dataType,
           enabled: enabled,
-          objectArray: options
+          objectArray: props.airportcode,
+          validated: false,
+          warning: warning
         });
       }
 
@@ -1089,7 +1237,9 @@ function filter(props) {
         name: name,
         dataType: dataType,
         enabled: enabled,
-        field: field
+        field: field,
+        validated: false,
+        warning: warning
       };
       var dateTimeArray = [].concat(dateTimesArray);
 
@@ -1103,7 +1253,9 @@ function filter(props) {
             name: name,
             dataType: dataType,
             enabled: enabled,
-            field: field
+            field: field,
+            validated: false,
+            warning: warning
           });
         }
       } else {
@@ -1111,7 +1263,9 @@ function filter(props) {
           name: name,
           dataType: dataType,
           enabled: enabled,
-          field: field
+          field: field,
+          validated: false,
+          warning: warning
         });
       }
 
@@ -1125,7 +1279,9 @@ function filter(props) {
         dataType: dataType,
         enabled: enabled,
         condition: condition,
-        amount: ""
+        amount: "",
+        validated: false,
+        warning: warning
       };
       var conditionArray = [].concat(conditionsArray);
 
@@ -1140,7 +1296,9 @@ function filter(props) {
             dataType: dataType,
             enabled: enabled,
             condition: condition,
-            amount: ""
+            amount: "",
+            validated: false,
+            warning: warning
           });
         }
       } else {
@@ -1149,7 +1307,9 @@ function filter(props) {
           dataType: dataType,
           enabled: enabled,
           condition: condition,
-          amount: ""
+          amount: "",
+          validated: false,
+          warning: warning
         });
       }
 
@@ -1161,7 +1321,9 @@ function filter(props) {
       var _value3 = {
         name: name,
         dataType: dataType,
-        enabled: enabled
+        enabled: enabled,
+        validated: false,
+        warning: warning
       };
       var textComponentArray = [].concat(textComponentsArray);
 
@@ -1174,14 +1336,18 @@ function filter(props) {
           textComponentArray.push({
             name: name,
             dataType: dataType,
-            enabled: enabled
+            enabled: enabled,
+            validated: false,
+            warning: warning
           });
         }
       } else {
         textComponentArray.push({
           name: name,
           dataType: dataType,
-          enabled: enabled
+          enabled: enabled,
+          validated: false,
+          warning: warning
         });
       }
 
@@ -1191,6 +1357,10 @@ function filter(props) {
   };
 
   var createAutoCompleteArray = function createAutoCompleteArray(item, valueArray) {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    var autoCompleteArray = [].concat(autoCompletesArray);
     var tempObj = JSON.parse(JSON.stringify(item));
     tempObj.value = valueArray;
     var autoCompleteValueArray = [].concat(autoCompletesValueArray);
@@ -1211,6 +1381,15 @@ function filter(props) {
       } else {
         autoCompleteValueArray[index].value = tempObj.value;
       }
+
+      autoCompleteValueArray.forEach(function (valueItem) {
+        autoCompleteArray.forEach(function (item) {
+          if (item.name === valueItem.name && item.type === valueItem.type) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       autoCompleteValueArray.push({
         name: tempObj.name,
@@ -1219,8 +1398,18 @@ function filter(props) {
         enabled: tempObj.enabled,
         value: tempObj.value
       });
+      autoCompleteValueArray.forEach(function (valueItem) {
+        autoCompleteArray.forEach(function (item) {
+          if (item.name === valueItem.name && item.type === valueItem.type) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     }
 
+    setAutoCompletesArray(autoCompleteArray);
+    autoCompleteArray = [];
     setAutoCompletesValueArray(autoCompleteValueArray);
     autoCompleteValueArray = [];
   };
@@ -1327,6 +1516,12 @@ function filter(props) {
   };
 
   var createDateTimeArray = function createDateTimeArray(item, fieldName, value) {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    var dateTimeArray = [].concat(dateTimesArray);
+    console.log(dateTimesArray);
+    console.log(value);
     var tempObj = JSON.parse(JSON.stringify(item));
     tempObj.fieldValue = fieldName;
     tempObj.value = value;
@@ -1348,6 +1543,15 @@ function filter(props) {
       } else {
         dateTimeValueArray[index].value = tempObj.value;
       }
+
+      dateTimeValueArray.forEach(function (valueItem) {
+        dateTimeArray.forEach(function (item) {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       dateTimeValueArray.push({
         name: tempObj.name,
@@ -1356,11 +1560,19 @@ function filter(props) {
         fieldValue: tempObj.fieldValue,
         value: tempObj.value
       });
+      dateTimeValueArray.forEach(function (valueItem) {
+        dateTimeArray.forEach(function (item) {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     }
 
     setDateTimesValueArray(dateTimeValueArray);
     dateTimeValueArray = [];
-    var dateTimeArray = [].concat(dateTimesArray);
+    dateTimeArray = [].concat(dateTimesArray);
 
     if (dateTimeArray.length > 0) {
       dateTimeArray.forEach(function (item) {
@@ -1376,9 +1588,32 @@ function filter(props) {
     dateTimeArray = [];
   };
 
+  var getValueOfDate = function getValueOfDate(dateValue) {
+    var date = new Date(dateValue);
+    console.log(date);
+    var dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "numeric",
+      seconds: "numeric"
+    });
+
+    var _dateTimeFormat$forma = dateTimeFormat.formatToParts(date),
+        month = _dateTimeFormat$forma[0].value,
+        day = _dateTimeFormat$forma[2].value,
+        year = _dateTimeFormat$forma[4].value,
+        hour = _dateTimeFormat$forma[6].value,
+        minute = _dateTimeFormat$forma[8].value;
+
+    return year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+  };
+
   var addToday = function addToday() {
     var todayDate = new Date();
-    var dated = dateFormat(todayDate, "yyyy-mm-dd");
+    var dated = getValueOfDate(todayDate);
+    console.log(dated);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1414,8 +1649,8 @@ function filter(props) {
     var toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 1);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1450,8 +1685,8 @@ function filter(props) {
     var today = new Date();
     var fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
     var toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1487,8 +1722,8 @@ function filter(props) {
     var toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 14);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1524,8 +1759,8 @@ function filter(props) {
     var toDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
     toDate.setDate(toDate.getDate() + 7);
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1562,8 +1797,8 @@ function filter(props) {
     var to = from + 6;
     var fromDate = new Date(today.setDate(from)).toUTCString();
     var toDate = new Date(today.setDate(to)).toUTCString();
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1599,8 +1834,8 @@ function filter(props) {
     var to = new Date();
     from.setDate(from.getDate() + 1);
     to.setDate(to.getDate() + 30);
-    var fromDate = dateFormat(from, "yyyy-mm-dd");
-    var toDate = dateFormat(to, "yyyy-mm-dd");
+    var fromDate = getValueOfDate(from);
+    var toDate = getValueOfDate(to);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1644,8 +1879,8 @@ function filter(props) {
       toDate.setDate(toDate.getDate() + parseInt(value));
     }
 
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1689,8 +1924,8 @@ function filter(props) {
       toDate.setDate(toDate.getDate() - 1);
     }
 
-    fromDate = dateFormat(fromDate, "yyyy-mm-dd");
-    toDate = dateFormat(toDate, "yyyy-mm-dd");
+    fromDate = getValueOfDate(fromDate);
+    toDate = getValueOfDate(toDate);
     var dateTimeArray = [].concat(dateTimesArray);
     var dateTimeValueArray = [].concat(dateTimesValueArray);
 
@@ -1748,6 +1983,10 @@ function filter(props) {
   };
 
   var createConditionalArray = function createConditionalArray(item, value) {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    var conditionArray = [].concat(conditionsArray);
     var valueArray = [];
     item.condition.forEach(function (it) {
       valueArray.push(it.value);
@@ -1766,6 +2005,15 @@ function filter(props) {
           conditionValueArray[index].amount = value;
         }
       }
+
+      conditionValueArray.forEach(function (valueItem) {
+        conditionArray.forEach(function (item) {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       if (valueArray.includes(value)) {
         conditionValueArray.push({
@@ -1781,6 +2029,14 @@ function filter(props) {
           enabled: item.enabled,
           condition: item.condition[0].value,
           amount: value
+        });
+        conditionValueArray.forEach(function (valueItem) {
+          conditionArray.forEach(function (item) {
+            if (item.name === valueItem.name) {
+              item.validated = true;
+              item.warning = "";
+            }
+          });
         });
       }
     }
@@ -1805,6 +2061,10 @@ function filter(props) {
   };
 
   var createTextComponentsArray = function createTextComponentsArray(item, value) {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    var textComponentArray = [].concat(textComponentsArray);
     var textComponentValueArray = [].concat(textComponentsValueArray);
 
     if (textComponentValueArray.length > 0) {
@@ -1822,12 +2082,29 @@ function filter(props) {
       } else {
         textComponentValueArray[index].value = value;
       }
+
+      textComponentValueArray.forEach(function (valueItem) {
+        textComponentArray.forEach(function (item) {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       textComponentValueArray.push({
         name: item.name,
         dataType: item.dataType,
         enabled: item.enabled,
         value: value
+      });
+      textComponentValueArray.forEach(function (valueItem) {
+        textComponentArray.forEach(function (item) {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
       });
     }
 
@@ -1891,16 +2168,26 @@ function filter(props) {
         }
       }
     });
+    item.forEach(function (item) {
+      if (item.dataType === "AutoComplete") {
+        var autoCompleteArray = [].concat(autoCompletesArray);
 
-    if (item.dataType === "AutoComplete") {
-      var autoCompleteArray = [].concat(autoCompletesArray);
+        if (autoCompleteArray.length > 0) {
+          var index = autoCompleteArray.findIndex(function (x) {
+            return x.name === item.name && item.type === x.type;
+          });
 
-      if (autoCompleteArray.length > 0) {
-        var index = autoCompleteArray.findIndex(function (x) {
-          return x.name === item.name && item.type === x.type;
-        });
-
-        if (index === -1) {
+          if (index === -1) {
+            autoCompleteArray.push({
+              name: item.name,
+              dataType: item.dataType,
+              type: item.type,
+              enabled: item.enabled,
+              value: item.value,
+              objectArray: arr
+            });
+          }
+        } else {
           autoCompleteArray.push({
             name: item.name,
             dataType: item.dataType,
@@ -1910,76 +2197,74 @@ function filter(props) {
             objectArray: arr
           });
         }
-      } else {
-        autoCompleteArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          type: item.type,
-          enabled: item.enabled,
-          value: item.value,
-          objectArray: arr
-        });
-      }
 
-      setAutoCompletesArray(autoCompleteArray);
-    } else if (item.dataType === "DateTime") {
-      var dateTimeArray = [].concat(dateTimesArray);
+        setAutoCompletesArray(autoCompleteArray);
+      } else if (item.dataType === "DateTime") {
+        var dateTimeArray = [].concat(dateTimesArray);
 
-      if (dateTimeArray.length === 0) {
-        dateTimeArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          field: []
-        });
-        dateTimesValueArray.forEach(function (item) {
-          if (item.fieldValue) {
-            dateTimeArray.forEach(function (dt) {
-              dt.field.push({
-                column: item.fieldValue,
-                value: item.value
-              });
-            });
-          }
-        });
-      }
-
-      setDateTimesArray(dateTimeArray);
-    } else if (item.dataType === "Numeric") {
-      var conditionArray = [].concat(conditionsArray);
-
-      if (conditionArray.length === 0) {
-        conditionArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          condition: [],
-          amount: item.amount,
-          value: item.condition
-        });
-        filterData.filter.forEach(function (data) {
-          if (data.dataType === "Numeric") {
-            data.condition.forEach(function (values) {
-              conditionArray.forEach(function (item) {
-                item.condition.push({
-                  value: values.value
+        if (dateTimeArray.length === 0) {
+          dateTimeArray.push({
+            name: item.name,
+            dataType: item.dataType,
+            enabled: item.enabled,
+            field: []
+          });
+          dateTimesValueArray.forEach(function (item) {
+            if (item.fieldValue) {
+              dateTimeArray.forEach(function (dt) {
+                dt.field.push({
+                  column: item.fieldValue,
+                  value: item.value
                 });
               });
+            }
+          });
+        }
+
+        setDateTimesArray(dateTimeArray);
+      } else if (item.dataType === "Numeric") {
+        var conditionArray = [].concat(conditionsArray);
+
+        if (conditionArray.length === 0) {
+          conditionArray.push({
+            name: item.name,
+            dataType: item.dataType,
+            enabled: item.enabled,
+            condition: [],
+            amount: item.amount,
+            value: item.condition
+          });
+          filterData.filter.forEach(function (data) {
+            if (data.dataType === "Numeric") {
+              data.condition.forEach(function (values) {
+                conditionArray.forEach(function (item) {
+                  item.condition.push({
+                    value: values.value
+                  });
+                });
+              });
+            }
+          });
+        }
+
+        setConditionsArray(conditionArray);
+      } else {
+        var textComponentArray = [].concat(textComponentsArray);
+
+        if (textComponentArray.length > 0) {
+          var _index8 = textComponentArray.findIndex(function (x) {
+            return x.name === item.name;
+          });
+
+          if (_index8 === -1) {
+            textComponentArray.push({
+              name: item.name,
+              dataType: item.dataType,
+              enabled: item.enabled,
+              value: item.value
             });
           }
-        });
-      }
-
-      setConditionsArray(conditionArray);
-    } else {
-      var textComponentArray = [].concat(textComponentsArray);
-
-      if (textComponentArray.length > 0) {
-        var _index8 = textComponentArray.findIndex(function (x) {
-          return x.name === item.name;
-        });
-
-        if (_index8 === -1) {
+        } else {
           textComponentArray.push({
             name: item.name,
             dataType: item.dataType,
@@ -1987,18 +2272,10 @@ function filter(props) {
             value: item.value
           });
         }
-      } else {
-        textComponentArray.push({
-          name: item.name,
-          dataType: item.dataType,
-          enabled: item.enabled,
-          value: item.value
-        });
+
+        setTextComponentsArray(textComponentArray);
       }
-
-      setTextComponentsArray(textComponentArray);
-    }
-
+    });
     setApplyFilter(true);
   };
 
@@ -2164,6 +2441,7 @@ function filter(props) {
     deleteDateTimeElement({});
     deleteTextComponentElement({});
     setApplyFilterChip({});
+    setRecentFilterShow("");
   };
 
   var _useComponentVisible = useComponentVisible(),
@@ -2215,7 +2493,14 @@ function filter(props) {
     handleTextComponentEnabled: handleTextComponentEnabled,
     closeDrawer: closeDrawer,
     resetDrawer: resetDrawer,
-    filterCount: filterCount
+    filterCount: filterCount,
+    saveWarningClassName: saveWarningClassName,
+    saveWarningLabel: saveWarningLabel,
+    showSavePopUp: showSavePopUp,
+    emptyFilterClassName: emptyFilterClassName,
+    emptyFilterWarning: emptyFilterWarning,
+    openShowSavePopUp: openShowSavePopUp,
+    recentFilterShow: recentFilterShow
   })))), /*#__PURE__*/React__default.createElement(MainFilterPanel, {
     showDrawer: showDrawer,
     applyFilterChip: applyFilterChip,
@@ -2224,5 +2509,5 @@ function filter(props) {
   }));
 }
 
-module.exports = filter;
+module.exports = Filter;
 //# sourceMappingURL=index.js.map

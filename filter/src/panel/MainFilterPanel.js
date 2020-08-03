@@ -24,7 +24,6 @@ const MainFilterPanel = (props) => {
   };
   if (chipArray) {
     chipCount = chipArray.length;
-    console.log(chipArray);
     chips = chipArray.map((item, index) => {
       if (item.type) {
         return (
@@ -111,6 +110,7 @@ const MainFilterPanel = (props) => {
             onClick={(e) => {
               props.showDrawer();
             }}
+            className="addFilter"
           >
             + Add Filter
           </div>

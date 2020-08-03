@@ -16,6 +16,10 @@ export default function FieldComponent(props) {
     props.deleteDateTimeElement(item);
   };
   let fieldComponentDiv = fieldComponentArr.map((item, index) => {
+    let validationClass = "";
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
     return (
       <div className="filter__input" key={index}>
         <div className="filter__input-title" key={1}>
@@ -168,6 +172,9 @@ export default function FieldComponent(props) {
           />{" "}
           Days
         </div> */}
+        <span id="fieldWarning" className={validationClass}>
+          {item.warning}
+        </span>
       </div>
     );
   });

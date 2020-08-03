@@ -138,7 +138,8 @@ export default function LeftDrawer(props) {
                                 type.name,
                                 item.field,
                                 item.condition,
-                                type.options
+                                type.dataSource,
+                                type.warning
                               );
                               // props.addedFilterCount();
                             }}
@@ -177,7 +178,9 @@ export default function LeftDrawer(props) {
                 item.enabled,
                 item.types,
                 item.field,
-                item.condition
+                item.condition,
+                item.dataSource,
+                item.warning
               );
               //props.addedFilterCount();
             }}
@@ -208,7 +211,9 @@ export default function LeftDrawer(props) {
                 item.enabled,
                 item.types,
                 item.field,
-                item.condition
+                item.condition,
+                item.dataSource,
+                item.warning
               );
               //props.addedFilterCount();
             }}
@@ -233,7 +238,9 @@ export default function LeftDrawer(props) {
                 item.enabled,
                 item.types,
                 item.field,
-                item.condition
+                item.condition,
+                item.dataSource,
+                item.warning
               );
               //props.addedFilterCount();
             }}
