@@ -9,5 +9,3 @@ exports[`<Sorting /> simulates  checkbox change event 3`] = `ShallowWrapper {}`;
 exports[`<Sorting /> simulates close of export click event 1`] = `ShallowWrapper {}`;
 
 exports[`<Sorting /> simulates close of sort file click event 1`] = `ShallowWrapper {}`;
-
-exports[`<Sorting /> simulates search export input field 1`] = `ShallowWrapper {}`;

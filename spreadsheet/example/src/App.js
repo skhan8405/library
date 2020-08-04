@@ -3,15 +3,11 @@ import Spreadsheet from "spreadsheet";
 import CargoData from "./data.json";
 //import { fetchData } from "./getData";
 
-const App = () => {
+const App = (props) => {
   //Get spreadsheet height value, which is a required value
   const gridHeight = "90vh";
-
-  let searchKey = "";
   //Set state value for variable to hold grid data
   const [data, setData] = useState();
-  //Set state value for variable to hold grid record status
-  const [status, setStatus] = useState("");
   const rows = CargoData;
 
   const maxLeftPinnedColumn = 5;
@@ -426,76 +422,19 @@ const App = () => {
     "ZZZ",
   ];
 
-  //Add logic for doing global search in the spreadsheet
-  const globalSearchLogic = (e, updatedRows) => {
-    searchKey = String(e.target.value).toLowerCase();
-    let filteredRows = updatedRows.filter((item) => {
-      return (
-        (item.flightno && item.flightno.toLowerCase().includes(searchKey)) ||
-        (item.date && item.date.toLowerCase().includes(searchKey)) ||
-        (item.segmentfrom &&
-          item.segmentfrom.toLowerCase().includes(searchKey)) ||
-        (item.segmentto && item.segmentto.toLowerCase().includes(searchKey)) ||
-        String(item.flightModel).includes(searchKey) ||
-        (item.bodyType && item.bodyType.toLowerCase().includes(searchKey)) ||
-        (item.type && item.type.toLowerCase().includes(searchKey)) ||
-        (item.startTime && item.startTime.toLowerCase().includes(searchKey)) ||
-        (item.endTime && item.endTime.toLowerCase().includes(searchKey)) ||
-        (item.status && item.status.toLowerCase().includes(searchKey)) ||
-        (item.additionalStatus &&
-          item.additionalStatus.toLowerCase().includes(searchKey)) ||
-        (item.timeStatus &&
-          item.timeStatus.toLowerCase().includes(searchKey)) ||
-        (item.weightpercentage &&
-          item.weightpercentage.toLowerCase().includes(searchKey)) ||
-        (item.volumevalue &&
-          item.volumevalue.toLowerCase().includes(searchKey)) ||
-        (item.uldposition1 &&
-          item.uldposition1.toLowerCase().includes(searchKey)) ||
-        (item.uldvalue1 && item.uldvalue1.toLowerCase().includes(searchKey)) ||
-        (item.uldposition2 &&
-          item.uldposition2.toLowerCase().includes(searchKey)) ||
-        (item.uldvalue2 && item.uldvalue2.toLowerCase().includes(searchKey)) ||
-        (item.uldposition3 &&
-          item.uldposition3.toLowerCase().includes(searchKey)) ||
-        (item.weightvalue &&
-          item.weightvalue.toLowerCase().includes(searchKey)) ||
-        (item.uldvalue3 && item.uldvalue3.toLowerCase().includes(searchKey)) ||
-        (item.uldposition4 &&
-          item.uldposition4.toLowerCase().includes(searchKey)) ||
-        (item.revenue && item.revenue.toLowerCase().includes(searchKey)) ||
-        (item.yeild && item.yeild.toLowerCase().includes(searchKey)) ||
-        (item.sr && item.sr.toLowerCase().includes(searchKey)) ||
-        (item.queuedBookingSR &&
-          item.queuedBookingSR.toLowerCase().includes(searchKey)) ||
-        (item.queuedBookingvolume &&
-          item.queuedBookingvolume.toLowerCase().includes(searchKey))
-      );
-    });
-    if (!filteredRows.length) {
-      setStatus("invalid");
-      setData([]);
-      // setRow("");
-    } else {
-      setData(filteredRows);
-      setStatus("");
-    }
-  };
-  const handleWarningStatus = () => {
-    setStatus("invalid");
-  };
   //Gets called when there is a cell edit
   const updateCellData = (fromRow, toRow, value, updateType) => {
     if (updateType === "CELL_UPDATE") {
       console.log(
-        "row:",
+        "Starting row:",
         fromRow,
         "updated-Value:",
         value,
         "Updation-Type:",
-        updateType
+        updateType,
+        "Ending Row:",
+        toRow
       );
-    }
     if (updateType === "CELL_DRAG") {
       console.log(
         "fromRow:",
@@ -514,10 +453,7 @@ const App = () => {
   const selectBulkData = (selectedRows) => {
     console.log("selectedRows:", selectedRows);
   };
-  const closeWarningStatus = () => {
-    setStatus("");
-    setData(rows);
-  };
+
   useEffect(() => {
     //Make API call to fetch initial set of data, uncomment below code to use API call
     // fetchData(0).then((data) => {
@@ -531,11 +467,6 @@ const App = () => {
       <div>
         <Spreadsheet
           rows={data}
-          textValue={searchKey}
-          globalSearchLogic={globalSearchLogic}
-          status={status}
-          closeWarningStatus={closeWarningStatus}
-          handleWarningStatus={handleWarningStatus}
           count={data.length}
           columns={columns}
           airportCodes={airportCodeList}

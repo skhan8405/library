@@ -108,6 +108,7 @@ describe("<Sorting />", () => {
     component.instance().clearAll();
     expect(mockClearAllSortingParams.mock.calls.length).toEqual(1);
   });
+
   it("copy", () => {
     const wrapper = shallow(<Sorting columnFieldValue={["a", "b", "c"]} />);
     wrapper.copy = jest.fn();
@@ -115,6 +116,7 @@ describe("<Sorting />", () => {
     wrapper.instance().copy(1);
     expect(wrapper.state("sortingOrderList")).not.toBeNull();
   });
+
   it("remove", () => {
     const wrapper = shallow(<Sorting columnFieldValue={["a", "b", "c"]} />);
     wrapper.copy = jest.fn();
@@ -123,6 +125,7 @@ describe("<Sorting />", () => {
     expect(wrapper.state("sortingOrderList")).not.toBeNull();
     expect(wrapper.state("errorMessage")).toBe(false);
   });
+
   it("simulates close of sort file click event", () => {
     const mockCallBack = jest.fn();
     const component = shallow(
@@ -138,11 +141,13 @@ describe("<Sorting />", () => {
     component.find({ className: "custom__ctrl" }).simulate("change");
     expect(component).toMatchSnapshot();
   });
+
   it("createColumnsArrayFromProps", () => {
     const wrapper = shallow(<Sorting columnFieldValue={["a", "b", "c"]} />);
     wrapper.createColumnsArrayFromProps = jest.fn();
     wrapper.instance().createColumnsArrayFromProps(["a", "b", "c"]);
   });
+
   it("captureSortingFeildValues", () => {
     const wrapper = shallow(
       <Sorting
@@ -176,6 +181,7 @@ describe("<Sorting />", () => {
       .captureSortingFeildValues({ target: { value: "a" } }, 0, "sortOn");
     expect(wrapper.state("sortingOrderList")).not.toBeNull();
   });
+
   it("updateTableAsPerSortCondition", () => {
     const mockfunc = jest.fn();
     const wrapper = shallow(
@@ -189,6 +195,7 @@ describe("<Sorting />", () => {
     wrapper.instance().updateTableAsPerSortCondition();
     expect(wrapper.state("errorMessage")).toBe(true);
   });
+
   it("handleReorderListOfSort", () => {
     const handleTableSortSwap = jest.fn();
     const wrapper = shallow(
@@ -200,6 +207,7 @@ describe("<Sorting />", () => {
     wrapper.instance().handleReorderListOfSort(["flight", "booking"]);
     expect(handleTableSortSwap.mock.calls.length).toEqual(1);
   });
+
   it("add", () => {
     const wrapper = shallow(<Sorting columnFieldValue={["a", "b", "c"]} />);
     wrapper.copy = jest.fn();
@@ -222,6 +230,5 @@ describe("<Sorting />", () => {
     wrapper.find(".sort__close").simulate("click");
     expect(wrapper.find(".sort__close").length).toEqual(1);
   });
-  it("sort__close div click event", () => {
-  });
+  it("sort__close div click event", () => {});
 });
