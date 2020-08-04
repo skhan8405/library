@@ -96,6 +96,7 @@ const MainFilterPanel = (props) => {
             showFilter={listFilter}
             handleListFilter={handleListFilter}
             addSavedFilters={props.addSavedFilters}
+            addingToFavourite={props.addingToFavourite}
           />
           <div className="leftSpace">All flights</div>
         </div>

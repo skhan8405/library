@@ -49,10 +49,16 @@ const RightDrawer = (props) => {
   };
   let savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+  if (savedFilters.length > 2) {
+    savedFilters = savedFilters.slice(
+      savedFilters.length - 2,
+      savedFilters.length
+    );
+  }
   const recent = savedFilters.map((filterArray, index) => {
     return (
       <div
-      className="recentFilters"
+        className="recentFilters"
         key={index}
         onClick={(e) => {
           props.addSavedFilters(filterArray);

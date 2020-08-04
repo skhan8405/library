@@ -385,6 +385,16 @@ export default function Filter(props) {
         enabled: enabled,
         objectArray: [],
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+          item.types.forEach((tip) => {
+            if (tip.name === value.type) {
+              tip.weight = 600;
+            }
+          });
+        }
+      });
       let autoCompleteArray = [...autoCompletesArray];
       if (autoCompleteArray.length > 0) {
         let index = autoCompleteArray.findIndex(
@@ -424,6 +434,11 @@ export default function Filter(props) {
         validated: false,
         warning: warning,
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let dateTimeArray = [...dateTimesArray];
       if (dateTimeArray.length > 0) {
         let index = dateTimeArray.findIndex(
@@ -462,6 +477,11 @@ export default function Filter(props) {
         validated: false,
         warning: warning,
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let conditionArray = [...conditionsArray];
       if (conditionArray.length > 0) {
         let index = conditionArray.findIndex(
@@ -500,6 +520,11 @@ export default function Filter(props) {
         validated: false,
         warning: warning,
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let textComponentArray = [...textComponentsArray];
       if (textComponentArray.length > 0) {
         let index = textComponentArray.findIndex(
@@ -590,6 +615,20 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const deleteAutoCompleteElement = (item) => {
+    filterData.filter.forEach((it) => {
+      it.types.forEach((tip) => {
+        if (tip.name === item.type && item.name === it.name) {
+          tip.weight = 400;
+        }
+      });
+    });
+    // let nameArray = [];
+    // filterData.filter.forEach((fit) => {
+    //   if (fit.types && fit.weight === 700) {
+    //     nameArray.push(fit.name);
+    //   }
+    // });
+
     let autoCompleteArray = [...autoCompletesArray];
     let index = autoCompleteArray.findIndex(
       (x) => x.name === item.name && x.type === item.type
@@ -600,6 +639,13 @@ export default function Filter(props) {
       autoCompleteArray = [];
     }
     setAutoCompletesArray(autoCompleteArray);
+    autoCompleteArray.forEach((aut) => {
+      filterData.filter.forEach((fit) => {
+        if (fit.types && fit.name !== aut.name && fit.weight === 700) {
+          fit.weight = 400;
+        }
+      });
+    });
   };
   /**
    * Method To toggle the switch to enable and disable the input fields
@@ -630,6 +676,16 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const deleteDateTimeElement = (item) => {
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        item.weight = 400;
+      }
+    });
     let dateTimeArray = [...dateTimesArray];
     let index = dateTimeArray.findIndex((x) => x.name === item.name);
     dateTimeArray.splice(index, 1);
@@ -1237,6 +1293,11 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const deleteConditionalElement = (item) => {
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     let conditionArray = [...conditionsArray];
     let index = conditionArray.findIndex(
       (x) => x.name === item.name && x.dataType === item.dataType
@@ -1350,6 +1411,11 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const deleteTextComponentElement = (item) => {
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     let textComponentArray = [...textComponentsArray];
     let index = textComponentArray.findIndex(
       (x) => x.name === item.name && x.dataType === item.dataType
@@ -1695,6 +1761,7 @@ export default function Filter(props) {
         applyFilterChip={applyFilterChip}
         addAppliedFilters={addAppliedFilters}
         addSavedFilters={addSavedFilters}
+        addingToFavourite={props.addingToFavourite}
       />
     </div>
   );

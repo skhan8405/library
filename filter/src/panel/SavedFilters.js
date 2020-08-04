@@ -30,7 +30,18 @@ const SavedFilters = (props) => {
   //     savedFilters.length
   //   );
   // }
-
+  const addToFavourite = (item) => {
+    if (item.color === "#bcbdd1") {
+      item.color = "#2680e8";
+    } else {
+      item.color = "#bcbdd1";
+    }
+    console.log(savedFilters);
+    savedFilters.map((filterArray, index) => {
+      console.log(filterArray.color);
+    });
+    props.addingToFavourite(item);
+  };
   const savedFilter = savedFilters.map((filterArray, index) => {
     return (
       <div key={index}>
@@ -51,8 +62,12 @@ const SavedFilters = (props) => {
             {Object.keys(filterArray)[0]}
           </div>
           <FontAwesomeIcon
+            style={{ color: filterArray.color }}
             icon={faStar}
             className="marginLeft"
+            onClick={(e) => {
+              addToFavourite(filterArray);
+            }}
           ></FontAwesomeIcon>
         </div>
       </div>

@@ -276,10 +276,10 @@ function TextComponents(props) {
       onChange: function onChange(e) {
         props.createTextComponentsArray(item, e.target.value);
       }
-    }))), /*#__PURE__*/React__default.createElement("span", {
+    })), /*#__PURE__*/React__default.createElement("span", {
       id: "fieldWarning",
       className: validationClass
-    }, item.warning));
+    }, item.warning)));
   });
   return /*#__PURE__*/React__default.createElement("div", null, textComponentDiv);
 }
@@ -345,6 +345,11 @@ var RightDrawer = function RightDrawer(props) {
 
   var savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+
+  if (savedFilters.length > 2) {
+    savedFilters = savedFilters.slice(savedFilters.length - 2, savedFilters.length);
+  }
+
   var recent = savedFilters.map(function (filterArray, index) {
     return /*#__PURE__*/React__default.createElement("div", {
       className: "recentFilters",
@@ -570,6 +575,9 @@ function LeftDrawer(props) {
       return /*#__PURE__*/React__default.createElement("div", {
         key: index
       }, /*#__PURE__*/React__default.createElement(reactBootstrap.Accordion, null, /*#__PURE__*/React__default.createElement(Card, null, /*#__PURE__*/React__default.createElement(reactBootstrap.Accordion.Toggle, {
+        style: {
+          fontWeight: item.weight
+        },
         className: show,
         as: Card.Header,
         eventKey: "1",
@@ -583,6 +591,9 @@ function LeftDrawer(props) {
         key: index
       }, item.types && item.types.map(function (type, index) {
         return /*#__PURE__*/React__default.createElement("li", {
+          style: {
+            fontWeight: type.weight
+          },
           onClick: function onClick(e) {
             props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.validationMessage, type.options);
           },
@@ -601,6 +612,9 @@ function LeftDrawer(props) {
         className: "fieldHeads",
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
+        style: {
+          fontWeight: item.weight
+        },
         onClick: function onClick(e) {
           props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
@@ -617,6 +631,9 @@ function LeftDrawer(props) {
         className: "conditionHeads",
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
+        style: {
+          fontWeight: item.weight
+        },
         onClick: function onClick(e) {
           props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
@@ -633,6 +650,9 @@ function LeftDrawer(props) {
         className: "normalHeads",
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
+        style: {
+          fontWeight: item.weight
+        },
         onClick: function onClick(e) {
           props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
@@ -678,6 +698,21 @@ var SavedFilters = function SavedFilters(props) {
   var keyValue = "";
   var savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+
+  var addToFavourite = function addToFavourite(item) {
+    if (item.color === "#bcbdd1") {
+      item.color = "#2680e8";
+    } else {
+      item.color = "#bcbdd1";
+    }
+
+    console.log(savedFilters);
+    savedFilters.map(function (filterArray, index) {
+      console.log(filterArray.color);
+    });
+    props.addingToFavourite(item);
+  };
+
   var savedFilter = savedFilters.map(function (filterArray, index) {
     return /*#__PURE__*/React__default.createElement("div", {
       key: index
@@ -698,8 +733,14 @@ var SavedFilters = function SavedFilters(props) {
         props.addSavedFilters(filterArray);
       }
     }, Object.keys(filterArray)[0]), /*#__PURE__*/React__default.createElement(reactFontawesome.FontAwesomeIcon, {
+      style: {
+        color: filterArray.color
+      },
       icon: freeSolidSvgIcons.faStar,
-      className: "marginLeft"
+      className: "marginLeft",
+      onClick: function onClick(e) {
+        addToFavourite(filterArray);
+      }
     })));
   });
 
@@ -807,7 +848,8 @@ var MainFilterPanel = function MainFilterPanel(props) {
     onSelectSavedFilter: props.onSelectSavedFilter,
     showFilter: listFilter,
     handleListFilter: handleListFilter,
-    addSavedFilters: props.addSavedFilters
+    addSavedFilters: props.addSavedFilters,
+    addingToFavourite: props.addingToFavourite
   }), /*#__PURE__*/React__default.createElement("div", {
     className: "leftSpace"
   }, "All flights"))), /*#__PURE__*/React__default.createElement("div", {
@@ -1251,6 +1293,16 @@ function Filter(props) {
         enabled: enabled,
         objectArray: []
       };
+      filterData.filter.forEach(function (item) {
+        if (item.name === value.name) {
+          item.weight = 700;
+          item.types.forEach(function (tip) {
+            if (tip.name === value.type) {
+              tip.weight = 600;
+            }
+          });
+        }
+      });
       var autoCompleteArray = [].concat(autoCompletesArray);
 
       if (autoCompleteArray.length > 0) {
@@ -1294,6 +1346,11 @@ function Filter(props) {
         validated: false,
         warning: warning
       };
+      filterData.filter.forEach(function (item) {
+        if (item.name === _value.name) {
+          item.weight = 700;
+        }
+      });
       var dateTimeArray = [].concat(dateTimesArray);
 
       if (dateTimeArray.length > 0) {
@@ -1336,6 +1393,11 @@ function Filter(props) {
         validated: false,
         warning: warning
       };
+      filterData.filter.forEach(function (item) {
+        if (item.name === _value2.name) {
+          item.weight = 700;
+        }
+      });
       var conditionArray = [].concat(conditionsArray);
 
       if (conditionArray.length > 0) {
@@ -1378,6 +1440,11 @@ function Filter(props) {
         validated: false,
         warning: warning
       };
+      filterData.filter.forEach(function (item) {
+        if (item.name === _value3.name) {
+          item.weight = 700;
+        }
+      });
       var textComponentArray = [].concat(textComponentsArray);
 
       if (textComponentArray.length > 0) {
@@ -1468,6 +1535,13 @@ function Filter(props) {
   };
 
   var deleteAutoCompleteElement = function deleteAutoCompleteElement(item) {
+    filterData.filter.forEach(function (it) {
+      it.types.forEach(function (tip) {
+        if (tip.name === item.type && item.name === it.name) {
+          tip.weight = 400;
+        }
+      });
+    });
     var autoCompleteArray = [].concat(autoCompletesArray);
     var index = autoCompleteArray.findIndex(function (x) {
       return x.name === item.name && x.type === item.type;
@@ -1480,6 +1554,13 @@ function Filter(props) {
     }
 
     setAutoCompletesArray(autoCompleteArray);
+    autoCompleteArray.forEach(function (aut) {
+      filterData.filter.forEach(function (fit) {
+        if (fit.types && fit.name !== aut.name && fit.weight === 700) {
+          fit.weight = 400;
+        }
+      });
+    });
   };
 
   var handleAutoCompleteEnabled = function handleAutoCompleteEnabled(item) {
@@ -1508,6 +1589,16 @@ function Filter(props) {
   };
 
   var deleteDateTimeElement = function deleteDateTimeElement(item) {
+    filterData.filter.forEach(function (it) {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
+    filterData.filter.forEach(function (it) {
+      if (it.name === item.name) {
+        item.weight = 400;
+      }
+    });
     var dateTimeArray = [].concat(dateTimesArray);
     var index = dateTimeArray.findIndex(function (x) {
       return x.name === item.name;
@@ -2099,6 +2190,11 @@ function Filter(props) {
   };
 
   var deleteConditionalElement = function deleteConditionalElement(item) {
+    filterData.filter.forEach(function (it) {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     var conditionArray = [].concat(conditionsArray);
     var index = conditionArray.findIndex(function (x) {
       return x.name === item.name && x.dataType === item.dataType;
@@ -2208,6 +2304,11 @@ function Filter(props) {
   };
 
   var deleteTextComponentElement = function deleteTextComponentElement(item) {
+    filterData.filter.forEach(function (it) {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     var textComponentArray = [].concat(textComponentsArray);
     var index = textComponentArray.findIndex(function (x) {
       return x.name === item.name && x.dataType === item.dataType;
@@ -2575,7 +2676,8 @@ function Filter(props) {
     showDrawer: showDrawer,
     applyFilterChip: applyFilterChip,
     addAppliedFilters: addAppliedFilters,
-    addSavedFilters: addSavedFilters
+    addSavedFilters: addSavedFilters,
+    addingToFavourite: props.addingToFavourite
   }));
 }
 

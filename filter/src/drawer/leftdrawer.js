@@ -107,6 +107,7 @@ export default function LeftDrawer(props) {
           <Accordion>
             <Card>
               <Accordion.Toggle
+                style={{ fontWeight: item.weight }}
                 className={show}
                 as={Card.Header}
                 eventKey="1"
@@ -123,6 +124,7 @@ export default function LeftDrawer(props) {
                       item.types.map((type, index) => {
                         return (
                           <li
+                            style={{ fontWeight: type.weight }}
                             onClick={(e) => {
                               props.fromLeftToRight(
                                 item.name,
@@ -159,13 +161,8 @@ export default function LeftDrawer(props) {
       return (
         <div className="fieldHeads" key={index}>
           <li
+            style={{ fontWeight: item.weight }}
             onClick={(e) => {
-              // props.handleFieldValue(
-              //   item.name,
-              //   item.field,
-              //   item.dataType,
-              //   item.enabled
-              // );
               props.fromLeftToRight(
                 item.name,
                 item.dataType,
@@ -193,6 +190,7 @@ export default function LeftDrawer(props) {
       return (
         <div className="conditionHeads" key={index}>
           <li
+            style={{ fontWeight: item.weight }}
             onClick={(e) => {
               props.fromLeftToRight(
                 item.name,
@@ -221,6 +219,7 @@ export default function LeftDrawer(props) {
       return (
         <div className="normalHeads" key={index}>
           <li
+            style={{ fontWeight: item.weight }}
             onClick={(e) => {
               props.fromLeftToRight(
                 item.name,

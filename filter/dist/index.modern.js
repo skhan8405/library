@@ -261,10 +261,10 @@ function TextComponents(props) {
       onChange: e => {
         props.createTextComponentsArray(item, e.target.value);
       }
-    }))), /*#__PURE__*/React__default.createElement("span", {
+    })), /*#__PURE__*/React__default.createElement("span", {
       id: "fieldWarning",
       className: validationClass
-    }, item.warning));
+    }, item.warning)));
   });
   return /*#__PURE__*/React__default.createElement("div", null, textComponentDiv);
 }
@@ -306,6 +306,11 @@ const RightDrawer = props => {
 
   let savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+
+  if (savedFilters.length > 2) {
+    savedFilters = savedFilters.slice(savedFilters.length - 2, savedFilters.length);
+  }
+
   const recent = savedFilters.map((filterArray, index) => {
     return /*#__PURE__*/React__default.createElement("div", {
       className: "recentFilters",
@@ -514,6 +519,9 @@ function LeftDrawer(props) {
       return /*#__PURE__*/React__default.createElement("div", {
         key: index
       }, /*#__PURE__*/React__default.createElement(Accordion, null, /*#__PURE__*/React__default.createElement(Card, null, /*#__PURE__*/React__default.createElement(Accordion.Toggle, {
+        style: {
+          fontWeight: item.weight
+        },
         className: show,
         as: Card.Header,
         eventKey: "1",
@@ -527,6 +535,9 @@ function LeftDrawer(props) {
         key: index
       }, item.types && item.types.map((type, index) => {
         return /*#__PURE__*/React__default.createElement("li", {
+          style: {
+            fontWeight: type.weight
+          },
           onClick: e => {
             props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.validationMessage, type.options);
           },
@@ -545,6 +556,9 @@ function LeftDrawer(props) {
         className: "fieldHeads",
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
+        style: {
+          fontWeight: item.weight
+        },
         onClick: e => {
           props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
@@ -561,6 +575,9 @@ function LeftDrawer(props) {
         className: "conditionHeads",
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
+        style: {
+          fontWeight: item.weight
+        },
         onClick: e => {
           props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
@@ -577,6 +594,9 @@ function LeftDrawer(props) {
         className: "normalHeads",
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
+        style: {
+          fontWeight: item.weight
+        },
         onClick: e => {
           props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
@@ -619,6 +639,21 @@ const SavedFilters = props => {
   let keyValue = "";
   let savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+
+  const addToFavourite = item => {
+    if (item.color === "#bcbdd1") {
+      item.color = "#2680e8";
+    } else {
+      item.color = "#bcbdd1";
+    }
+
+    console.log(savedFilters);
+    savedFilters.map((filterArray, index) => {
+      console.log(filterArray.color);
+    });
+    props.addingToFavourite(item);
+  };
+
   const savedFilter = savedFilters.map((filterArray, index) => {
     return /*#__PURE__*/React__default.createElement("div", {
       key: index
@@ -639,8 +674,14 @@ const SavedFilters = props => {
         props.addSavedFilters(filterArray);
       }
     }, Object.keys(filterArray)[0]), /*#__PURE__*/React__default.createElement(FontAwesomeIcon, {
+      style: {
+        color: filterArray.color
+      },
       icon: faStar,
-      className: "marginLeft"
+      className: "marginLeft",
+      onClick: e => {
+        addToFavourite(filterArray);
+      }
     })));
   });
 
@@ -739,7 +780,8 @@ const MainFilterPanel = props => {
     onSelectSavedFilter: props.onSelectSavedFilter,
     showFilter: listFilter,
     handleListFilter: handleListFilter,
-    addSavedFilters: props.addSavedFilters
+    addSavedFilters: props.addSavedFilters,
+    addingToFavourite: props.addingToFavourite
   }), /*#__PURE__*/React__default.createElement("div", {
     className: "leftSpace"
   }, "All flights"))), /*#__PURE__*/React__default.createElement("div", {
@@ -1099,6 +1141,16 @@ function Filter(props) {
         enabled: enabled,
         objectArray: []
       };
+      filterData.filter.forEach(item => {
+        if (item.name === value.name) {
+          item.weight = 700;
+          item.types.forEach(tip => {
+            if (tip.name === value.type) {
+              tip.weight = 600;
+            }
+          });
+        }
+      });
       let autoCompleteArray = [...autoCompletesArray];
 
       if (autoCompleteArray.length > 0) {
@@ -1140,6 +1192,11 @@ function Filter(props) {
         validated: false,
         warning: warning
       };
+      filterData.filter.forEach(item => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let dateTimeArray = [...dateTimesArray];
 
       if (dateTimeArray.length > 0) {
@@ -1180,6 +1237,11 @@ function Filter(props) {
         validated: false,
         warning: warning
       };
+      filterData.filter.forEach(item => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let conditionArray = [...conditionsArray];
 
       if (conditionArray.length > 0) {
@@ -1220,6 +1282,11 @@ function Filter(props) {
         validated: false,
         warning: warning
       };
+      filterData.filter.forEach(item => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let textComponentArray = [...textComponentsArray];
 
       if (textComponentArray.length > 0) {
@@ -1306,6 +1373,13 @@ function Filter(props) {
   };
 
   const deleteAutoCompleteElement = item => {
+    filterData.filter.forEach(it => {
+      it.types.forEach(tip => {
+        if (tip.name === item.type && item.name === it.name) {
+          tip.weight = 400;
+        }
+      });
+    });
     let autoCompleteArray = [...autoCompletesArray];
     let index = autoCompleteArray.findIndex(x => x.name === item.name && x.type === item.type);
 
@@ -1316,6 +1390,13 @@ function Filter(props) {
     }
 
     setAutoCompletesArray(autoCompleteArray);
+    autoCompleteArray.forEach(aut => {
+      filterData.filter.forEach(fit => {
+        if (fit.types && fit.name !== aut.name && fit.weight === 700) {
+          fit.weight = 400;
+        }
+      });
+    });
   };
 
   const handleAutoCompleteEnabled = item => {
@@ -1340,6 +1421,16 @@ function Filter(props) {
   };
 
   const deleteDateTimeElement = item => {
+    filterData.filter.forEach(it => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
+    filterData.filter.forEach(it => {
+      if (it.name === item.name) {
+        item.weight = 400;
+      }
+    });
     let dateTimeArray = [...dateTimesArray];
     let index = dateTimeArray.findIndex(x => x.name === item.name);
     dateTimeArray.splice(index, 1);
@@ -1922,6 +2013,11 @@ function Filter(props) {
   };
 
   const deleteConditionalElement = item => {
+    filterData.filter.forEach(it => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     let conditionArray = [...conditionsArray];
     let index = conditionArray.findIndex(x => x.name === item.name && x.dataType === item.dataType);
 
@@ -2023,6 +2119,11 @@ function Filter(props) {
   };
 
   const deleteTextComponentElement = item => {
+    filterData.filter.forEach(it => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     let textComponentArray = [...textComponentsArray];
     let index = textComponentArray.findIndex(x => x.name === item.name && x.dataType === item.dataType);
 
@@ -2378,7 +2479,8 @@ function Filter(props) {
     showDrawer: showDrawer,
     applyFilterChip: applyFilterChip,
     addAppliedFilters: addAppliedFilters,
-    addSavedFilters: addSavedFilters
+    addSavedFilters: addSavedFilters,
+    addingToFavourite: props.addingToFavourite
   }));
 }
 

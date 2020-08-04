@@ -37,11 +37,15 @@ export default function App() {
   const savedFilters = (savedFilter) => {
     console.log("savedFilter:", savedFilter);
   };
+  const addingToFavourite = (favourite) => {
+    console.log(favourite);
+  };
   return (
     <Filter
       filterData={FilterData}
       appliedFilters={appliedFilters}
       savedFilters={savedFilters}
+      addingToFavourite={addingToFavourite}
     />
   );
 }

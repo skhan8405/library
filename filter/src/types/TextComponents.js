@@ -52,10 +52,10 @@ export default function TextComponents(props) {
               }}
             ></input>
           </div>
+          <span id="fieldWarning" className={validationClass}>
+            {item.warning}
+          </span>
         </div>
-        <span id="fieldWarning" className={validationClass}>
-          {item.warning}
-        </span>
       </div>
     );
   });
