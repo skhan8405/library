@@ -9,6 +9,10 @@ export default function Condition(props) {
     setConditionArr(props.conditionsArray);
   }, [props.conditionsArray]);
   let conditionalDiv = conditionArr.map((item, index) => {
+    let validationClass = "";
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
     return (
       <div className="filter__input" key={index}>
         <div className="filter__input-title">
@@ -71,6 +75,9 @@ export default function Condition(props) {
             </Form.Group>
           </div>
         </div>
+        <span id="fieldWarning" className={validationClass}>
+          {item.warning}
+        </span>
       </div>
     );
   });

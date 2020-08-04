@@ -24,13 +24,18 @@ const SavedFilters = (props) => {
   let keyValue = "";
   let savedFilters = localStorage.getItem("savedFilters");
   savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-  if (savedFilters.length > 5) {
-    savedFilters = savedFilters.slice(
-      savedFilters.length - 5,
-      savedFilters.length
-    );
-  }
-
+  const addToFavourite = (item) => {
+    if (item.color === "#bcbdd1") {
+      item.color = "#2680e8";
+    } else {
+      item.color = "#bcbdd1";
+    }
+    console.log(savedFilters);
+    savedFilters.map((filterArray, index) => {
+      console.log(filterArray.color);
+    });
+    props.addingToFavourite(item);
+  };
   const savedFilter = savedFilters.map((filterArray, index) => {
     return (
       <div key={index}>
@@ -50,10 +55,6 @@ const SavedFilters = (props) => {
           >
             {Object.keys(filterArray)[0]}
           </div>
-          <FontAwesomeIcon
-            icon={faStar}
-            className="marginLeft"
-          ></FontAwesomeIcon>
         </div>
       </div>
     );
@@ -61,70 +62,8 @@ const SavedFilters = (props) => {
   if (showFilter) {
     return (
       <div className="lists" ref={listRef}>
-        {/* <div className="listsView">
-          <div className="text-muted">list view</div>
-          <div className="alignLeft">
-            <FontAwesomeIcon
-              icon={faCheck}
-              className="selected"
-            ></FontAwesomeIcon>
-            <div className="leftSpace selected">Recently Viewed(10)</div>
-            <FontAwesomeIcon
-              icon={faStar}
-              className="marginLeft"
-            ></FontAwesomeIcon>
-          </div>
-          <div className="alignLeft">
-            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-            <div className="leftSpace">To be called cancelled flights(12)</div>
-            <FontAwesomeIcon
-              icon={faStar}
-              className="marginLeft"
-            ></FontAwesomeIcon>
-          </div>
-          <div className="alignLeft">
-            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-            <div className="leftSpace"> Delayed Flights(10)</div>
-            <FontAwesomeIcon
-              icon={faStar}
-              className="marginLeft"
-            ></FontAwesomeIcon>
-          </div>
-          <div className="alignLeft">
-            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-            <div className="leftSpace"> Flights in next 7 days(10) </div>
-            <FontAwesomeIcon
-              icon={faStar}
-              className="marginLeft"
-            ></FontAwesomeIcon>
-          </div>
-          <div className="alignLeft">
-            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-            <div className="leftSpace"> Flights in next 10 days(10) </div>
-            <FontAwesomeIcon
-              icon={faStar}
-              className="marginLeft"
-            ></FontAwesomeIcon>
-          </div>
-          <div className="alignLeft">
-            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-            <div className="leftSpace"> Flights in next 20 days(10) </div>
-            <FontAwesomeIcon
-              icon={faStar}
-              className="marginLeft"
-            ></FontAwesomeIcon>
-          </div>
-          <div className="alignLeft">
-            <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-            <div className="leftSpace"> Flights in next 30 days(10) </div>
-            <FontAwesomeIcon
-              icon={faStar}
-              className="marginLeft"
-            ></FontAwesomeIcon>
-          </div>
-        </div> */}
         <div className="savedFilters">
-        <div className="text-muted">Saved Filters</div>
+          <div className="text-muted">Saved Filters</div>
           <ul key={keyValue} className="leftSpace">
             {savedFilter}
           </ul>

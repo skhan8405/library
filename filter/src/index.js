@@ -58,6 +58,8 @@ export default function Filter(props) {
   const [saveWarningClassName, setSaveWarningClassName] = useState("");
   const [emptyFilterWarning, setEmptyFilterWarning] = useState("");
   const [emptyFilterClassName, setEmptyFilterClassName] = useState("");
+  const [recentFilterShow, setRecentFilterShow] = useState("none");
+  const [filterShow, setFilterShow] = useState("");
 
   useEffect(() => {
     setFilterData(props.filterData);
@@ -89,17 +91,28 @@ export default function Filter(props) {
     setApplyFilter(false);
   };
   /**
+   * Method To show the save popup
+   */
+  const openShowSavePopUp = () => {
+    setShowSavePopUp("");
+  };
+  /**
    * Method which creates the array which contains the elements to be shown in the applied filter chips
    */
+
   const applyFilter = () => {
     if (filterCount > 0) {
+      setEmptyFilterClassName("");
+      setEmptyFilterWarning("");
       let applyFilter = {
         applyFilterArray: [],
       };
       let tempObj = { applyFilter: [] };
+      let obj = [];
       if (autoCompletesValueArray.length > 0) {
         autoCompletesValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({
           autoComplete: autoCompletesValueArray,
@@ -108,12 +121,14 @@ export default function Filter(props) {
       if (dateTimesValueArray.length > 0) {
         dateTimesValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({ dateTime: dateTimesValueArray });
       }
       if (conditionsValueArray.length > 0) {
         conditionsValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({
           conditional: conditionsValueArray,
@@ -122,57 +137,219 @@ export default function Filter(props) {
       if (textComponentsValueArray.length > 0) {
         textComponentsValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({
           textComponent: textComponentsValueArray,
         });
       }
-      console.log(applyFilter);
       setApplyFilterChip(tempObj);
+      obj.forEach((objec) => {
+        delete objec.dataType;
+        delete objec.enabled;
+      });
+      props.appliedFilters(obj);
       tempObj = {};
+      closeDrawer();
     } else {
       setEmptyFilterClassName("text-danger");
       setEmptyFilterWarning("No Filter is being selected");
     }
   };
   /**
-   * Method To pass the values from saved filter list to the right filter drawer
+   * Method To save the filters
    * @param {*} value is saved filter from the saved filter popup list
    */
   const saveFilter = (value) => {
+    let obj = [];
     if (value.length > 0) {
-      setShowSavePopUp("none");
-      setSaveWarningLabel("");
-      setSaveWarningClassName("");
-      let savedFilter = {
-        filter: [],
-      };
-      if (autoCompletesValueArray.length > 0) {
-        savedFilter.filter.push({ autoComplete: autoCompletesValueArray });
+      if (
+        !(
+          autoCompletesValueArray.length > 0 ||
+          dateTimesValueArray.length > 0 ||
+          conditionsValueArray.length > 0 ||
+          textComponentsValueArray.length > 0
+        )
+      ) {
+        setShowSavePopUp("");
+        setSaveWarningClassName("text-danger");
+        setSaveWarningLabel("No filters selected or values entered");
+      } else {
+        let savedFilter = {
+          filter: [],
+        };
+        if (autoCompletesValueArray.length > 0) {
+          let autoCompleteArray = [...autoCompletesArray];
+          autoCompleteArray.forEach((item) => {
+            autoCompletesValueArray.forEach((valueItem) => {
+              if (
+                valueItem.name === item.name &&
+                valueItem.type === item.type
+              ) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setAutoCompletesArray(autoCompleteArray);
+          let count = 0;
+          autoCompletesArray.forEach((item) => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+          if (count === 0) {
+            savedFilter.filter.push({ autoComplete: autoCompletesValueArray });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+          autoCompleteArray = [];
+        } else {
+          let autoCompleteArray = [...autoCompletesArray];
+          autoCompleteArray.forEach((item) => {
+            item.validated = false;
+          });
+          setAutoCompletesArray(autoCompleteArray);
+          autoCompleteArray = [];
+        }
+        if (dateTimesValueArray.length > 0) {
+          let dateTimeArray = [...dateTimesArray];
+          dateTimeArray.forEach((item) => {
+            dateTimesValueArray.forEach((valueItem) => {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setDateTimesArray(dateTimeArray);
+          let count = 0;
+          dateTimesArray.forEach((item) => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+          if (count === 0) {
+            savedFilter.filter.push({ dateTime: dateTimesValueArray });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+          dateTimeArray = [];
+        } else {
+          let dateTimeArray = [...dateTimesArray];
+          dateTimeArray.forEach((item) => {
+            item.validated = false;
+          });
+          setDateTimesArray(dateTimeArray);
+          dateTimeArray = [];
+        }
+        if (conditionsValueArray.length > 0) {
+          let conditionArray = [...conditionsArray];
+          conditionArray.forEach((item) => {
+            conditionsValueArray.forEach((valueItem) => {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setConditionsArray(conditionArray);
+          let count = 0;
+          conditionsArray.forEach((item) => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+          if (count === 0) {
+            savedFilter.filter.push({ conditional: conditionsValueArray });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+          conditionArray = [];
+        } else {
+          let conditionArray = [...conditionsArray];
+          conditionArray.forEach((item) => {
+            item.validated = false;
+          });
+          setConditionsArray(conditionArray);
+          conditionArray = [];
+        }
+        if (textComponentsValueArray.length > 0) {
+          let textComponentArray = [...textComponentsArray];
+          textComponentArray.forEach((item) => {
+            textComponentsValueArray.forEach((valueItem) => {
+              if (valueItem.name === item.name) {
+                item.validated = true;
+                item.warning = "";
+              }
+            });
+          });
+          setTextComponentsArray(textComponentArray);
+          let count = 0;
+          textComponentArray.forEach((item) => {
+            if (item.validated === false) {
+              count++;
+            }
+          });
+          if (count === 0) {
+            savedFilter.filter.push({
+              textComponent: textComponentsValueArray,
+            });
+          } else {
+            setShowSavePopUp("");
+            setSaveWarningClassName("text-danger");
+            setSaveWarningLabel("Enter values in every field");
+          }
+          textComponentArray = [];
+        } else {
+          let textComponentArray = [...textComponentsArray];
+          textComponentArray.forEach((item) => {
+            item.validated = false;
+          });
+          setTextComponentsArray(textComponentArray);
+          textComponentArray = [];
+        }
+        if (savedFilter.filter.length > 0) {
+          savedFilter[value] = savedFilter["filter"];
+          delete savedFilter.filter;
+          let savedFilters = localStorage.getItem("savedFilters");
+          savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+          savedFilters.push(savedFilter);
+          localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
+          setShowSavePopUp("none");
+          setSaveWarningClassName("");
+          setSaveWarningLabel("");
+          resetDrawer();
+        }
       }
-      if (dateTimesValueArray.length > 0) {
-        savedFilter.filter.push({ dateTime: dateTimesValueArray });
-      }
-      if (conditionsValueArray.length > 0) {
-        savedFilter.filter.push({ conditional: conditionsValueArray });
-      }
-      if (textComponentsValueArray.length > 0) {
-        savedFilter.filter.push({ textComponent: textComponentsValueArray });
-      }
-      savedFilter[value] = savedFilter["filter"];
-      delete savedFilter.filter;
-      let savedFilters = localStorage.getItem("savedFilters");
-      savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-      savedFilters.push(savedFilter);
-      localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
-      console.log(savedFilters);
-    }
-    if (value.length <= 0) {
-      console.log(value.length);
+    } else {
       setShowSavePopUp("");
       setSaveWarningClassName("text-danger");
       setSaveWarningLabel("Enter a valid filterName");
     }
+    autoCompletesValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    dateTimesValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    conditionsValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    textComponentsValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    obj.forEach((objec) => {
+      delete objec.dataType;
+      delete objec.enabled;
+    });
+    props.savedFilters(obj);
   };
   /**
    * Method To create the filter arrays for each specific type based on datatype
@@ -191,16 +368,33 @@ export default function Filter(props) {
     type,
     field,
     condition,
+    dataSource,
+    warning,
     options
   ) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    setEmptyFilterClassName("");
+    setEmptyFilterWarning("");
     if (dataType === "AutoComplete") {
       let value = {
         name: name,
         type: type,
         dataType: dataType,
         enabled: enabled,
-        objectArray: options,
+        objectArray: [],
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+          item.types.forEach((tip) => {
+            if (tip.name === value.type) {
+              tip.weight = 600;
+            }
+          });
+        }
+      });
       let autoCompleteArray = [...autoCompletesArray];
       if (autoCompleteArray.length > 0) {
         let index = autoCompleteArray.findIndex(
@@ -213,6 +407,8 @@ export default function Filter(props) {
             dataType: dataType,
             enabled: enabled,
             objectArray: options,
+            validated: false,
+            warning: warning,
           });
         }
       } else {
@@ -222,6 +418,8 @@ export default function Filter(props) {
           dataType: dataType,
           enabled: enabled,
           objectArray: options,
+          validated: false,
+          warning: warning,
         });
       }
       setAutoCompletesArray(autoCompleteArray);
@@ -233,7 +431,14 @@ export default function Filter(props) {
         dataType: dataType,
         enabled: enabled,
         field: field,
+        validated: false,
+        warning: warning,
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let dateTimeArray = [...dateTimesArray];
       if (dateTimeArray.length > 0) {
         let index = dateTimeArray.findIndex(
@@ -245,6 +450,8 @@ export default function Filter(props) {
             dataType: dataType,
             enabled: enabled,
             field: field,
+            validated: false,
+            warning: warning,
           });
         }
       } else {
@@ -253,6 +460,8 @@ export default function Filter(props) {
           dataType: dataType,
           enabled: enabled,
           field: field,
+          validated: false,
+          warning: warning,
         });
       }
       setDateTimesArray(dateTimeArray);
@@ -265,7 +474,14 @@ export default function Filter(props) {
         enabled: enabled,
         condition: condition,
         amount: "",
+        validated: false,
+        warning: warning,
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let conditionArray = [...conditionsArray];
       if (conditionArray.length > 0) {
         let index = conditionArray.findIndex(
@@ -278,6 +494,8 @@ export default function Filter(props) {
             enabled: enabled,
             condition: condition,
             amount: "",
+            validated: false,
+            warning: warning,
           });
         }
       } else {
@@ -287,6 +505,8 @@ export default function Filter(props) {
           enabled: enabled,
           condition: condition,
           amount: "",
+          validated: false,
+          warning: warning,
         });
       }
       setConditionsArray(conditionArray);
@@ -297,7 +517,14 @@ export default function Filter(props) {
         name: name,
         dataType: dataType,
         enabled: enabled,
+        validated: false,
+        warning: warning,
       };
+      filterData.filter.forEach((item) => {
+        if (item.name === value.name) {
+          item.weight = 700;
+        }
+      });
       let textComponentArray = [...textComponentsArray];
       if (textComponentArray.length > 0) {
         let index = textComponentArray.findIndex(
@@ -308,6 +535,8 @@ export default function Filter(props) {
             name: name,
             dataType: dataType,
             enabled: enabled,
+            validated: false,
+            warning: warning,
           });
         }
       } else {
@@ -315,6 +544,8 @@ export default function Filter(props) {
           name: name,
           dataType: dataType,
           enabled: enabled,
+          validated: false,
+          warning: warning,
         });
       }
       setTextComponentsArray(textComponentArray);
@@ -327,6 +558,10 @@ export default function Filter(props) {
    * @param {*} valueArray is the selected multiselect options
    */
   const createAutoCompleteArray = (item, valueArray) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let autoCompleteArray = [...autoCompletesArray];
     let tempObj = JSON.parse(JSON.stringify(item));
     tempObj.value = valueArray;
     let autoCompleteValueArray = [...autoCompletesValueArray];
@@ -345,6 +580,14 @@ export default function Filter(props) {
       } else {
         autoCompleteValueArray[index].value = tempObj.value;
       }
+      autoCompleteValueArray.forEach((valueItem) => {
+        autoCompleteArray.forEach((item) => {
+          if (item.name === valueItem.name && item.type === valueItem.type) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       autoCompleteValueArray.push({
         name: tempObj.name,
@@ -353,7 +596,17 @@ export default function Filter(props) {
         enabled: tempObj.enabled,
         value: tempObj.value,
       });
+      autoCompleteValueArray.forEach((valueItem) => {
+        autoCompleteArray.forEach((item) => {
+          if (item.name === valueItem.name && item.type === valueItem.type) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     }
+    setAutoCompletesArray(autoCompleteArray);
+    autoCompleteArray = [];
     setAutoCompletesValueArray(autoCompleteValueArray);
     autoCompleteValueArray = [];
   };
@@ -362,6 +615,20 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const deleteAutoCompleteElement = (item) => {
+    filterData.filter.forEach((it) => {
+      it.types.forEach((tip) => {
+        if (tip.name === item.type && item.name === it.name) {
+          tip.weight = 400;
+        }
+      });
+    });
+    // let nameArray = [];
+    // filterData.filter.forEach((fit) => {
+    //   if (fit.types && fit.weight === 700) {
+    //     nameArray.push(fit.name);
+    //   }
+    // });
+
     let autoCompleteArray = [...autoCompletesArray];
     let index = autoCompleteArray.findIndex(
       (x) => x.name === item.name && x.type === item.type
@@ -371,8 +638,14 @@ export default function Filter(props) {
     } else {
       autoCompleteArray = [];
     }
-
     setAutoCompletesArray(autoCompleteArray);
+    autoCompleteArray.forEach((aut) => {
+      filterData.filter.forEach((fit) => {
+        if (fit.types && fit.name !== aut.name && fit.weight === 700) {
+          fit.weight = 400;
+        }
+      });
+    });
   };
   /**
    * Method To toggle the switch to enable and disable the input fields
@@ -403,6 +676,16 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const deleteDateTimeElement = (item) => {
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        item.weight = 400;
+      }
+    });
     let dateTimeArray = [...dateTimesArray];
     let index = dateTimeArray.findIndex((x) => x.name === item.name);
     dateTimeArray.splice(index, 1);
@@ -464,6 +747,11 @@ export default function Filter(props) {
    * @param {*} value is value of the field
    */
   const createDateTimeArray = (item, fieldName, value) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let dateTimeArray = [...dateTimesArray];
+    console.log(dateTimesArray);
     console.log(value);
     let tempObj = JSON.parse(JSON.stringify(item));
     tempObj.fieldValue = fieldName;
@@ -484,6 +772,14 @@ export default function Filter(props) {
       } else {
         dateTimeValueArray[index].value = tempObj.value;
       }
+      dateTimeValueArray.forEach((valueItem) => {
+        dateTimeArray.forEach((item) => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       dateTimeValueArray.push({
         name: tempObj.name,
@@ -492,10 +788,18 @@ export default function Filter(props) {
         fieldValue: tempObj.fieldValue,
         value: tempObj.value,
       });
+      dateTimeValueArray.forEach((valueItem) => {
+        dateTimeArray.forEach((item) => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     }
     setDateTimesValueArray(dateTimeValueArray);
     dateTimeValueArray = [];
-    let dateTimeArray = [...dateTimesArray];
+    dateTimeArray = [...dateTimesArray];
     if (dateTimeArray.length > 0) {
       dateTimeArray.forEach((item) => {
         item.field.forEach((fieldArray) => {
@@ -927,6 +1231,10 @@ export default function Filter(props) {
    * @param {*} value is value of the input field
    */
   const createConditionalArray = (item, value) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let conditionArray = [...conditionsArray];
     let valueArray = [];
     item.condition.forEach((it) => {
       valueArray.push(it.value);
@@ -943,6 +1251,14 @@ export default function Filter(props) {
           conditionValueArray[index].amount = value;
         }
       }
+      conditionValueArray.forEach((valueItem) => {
+        conditionArray.forEach((item) => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       if (valueArray.includes(value)) {
         conditionValueArray.push({
@@ -959,6 +1275,14 @@ export default function Filter(props) {
           condition: item.condition[0].value,
           amount: value,
         });
+        conditionValueArray.forEach((valueItem) => {
+          conditionArray.forEach((item) => {
+            if (item.name === valueItem.name) {
+              item.validated = true;
+              item.warning = "";
+            }
+          });
+        });
       }
     }
     setConditionsValueArray(conditionValueArray);
@@ -969,6 +1293,11 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const deleteConditionalElement = (item) => {
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     let conditionArray = [...conditionsArray];
     let index = conditionArray.findIndex(
       (x) => x.name === item.name && x.dataType === item.dataType
@@ -986,6 +1315,10 @@ export default function Filter(props) {
    * @param {*} value is value of the input field
    */
   const createTextComponentsArray = (item, value) => {
+    setShowSavePopUp("none");
+    setSaveWarningLabel("");
+    setSaveWarningClassName("");
+    let textComponentArray = [...textComponentsArray];
     let textComponentValueArray = [...textComponentsValueArray];
     if (textComponentValueArray.length > 0) {
       let index = textComponentValueArray.findIndex(
@@ -1001,12 +1334,28 @@ export default function Filter(props) {
       } else {
         textComponentValueArray[index].value = value;
       }
+      textComponentValueArray.forEach((valueItem) => {
+        textComponentArray.forEach((item) => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
+      });
     } else {
       textComponentValueArray.push({
         name: item.name,
         dataType: item.dataType,
         enabled: item.enabled,
         value: value,
+      });
+      textComponentValueArray.forEach((valueItem) => {
+        textComponentArray.forEach((item) => {
+          if (item.name === valueItem.name) {
+            item.validated = true;
+            item.warning = "";
+          }
+        });
       });
     }
     setTextComponentsValueArray(textComponentValueArray);
@@ -1040,10 +1389,33 @@ export default function Filter(props) {
     textComponentValueArray = [];
   };
   /**
+   * Method To return the specific options array for autoComplete element
+   * @param {*} name is the name of the filter
+   * @param {*} typeName is the type of the filter
+   */
+  const returnOptions = (name, typeName) => {
+    let options = [];
+    filterData.filter.forEach((item) => {
+      if (item.name === name) {
+        item.types.forEach((type) => {
+          if (type.name === typeName) {
+            options = [...type.options];
+          }
+        });
+      }
+    });
+    return options;
+  };
+  /**
    * Method To delete the specific element from filter array upon clicking close
    * @param {*} item is the specific filter element object
    */
   const deleteTextComponentElement = (item) => {
+    filterData.filter.forEach((it) => {
+      if (it.name === item.name) {
+        it.weight = 400;
+      }
+    });
     let textComponentArray = [...textComponentsArray];
     let index = textComponentArray.findIndex(
       (x) => x.name === item.name && x.dataType === item.dataType
@@ -1057,27 +1429,22 @@ export default function Filter(props) {
   };
   /**
    * Method To map the applied filters to drawer on clicking the chips
-   * @param {*} item is the specific filter element object
+   * @param {*} items is the  filter element array
    */
-  const addAppliedFilters = (item) => {
-    let arr = [];
-    filterData.filter.forEach((fil) => {
-      if (fil.types.length) {
-        let index = fil.types.findIndex(
-          (x) => x.name === item.type && fil.name === item.name
-        );
-        if (index !== -1) {
-          arr = fil.types[index].options;
-        }
-      }
-    });
-    item.forEach((item) => {
+  const addAppliedFilters = (items) => {
+    let autoComplete = [];
+    let dateTime = [];
+    let condition = [];
+    let text = [];
+    items.forEach((item) => {
       if (item.dataType === "AutoComplete") {
-        let autoCompleteArray = [...autoCompletesArray];
+        let autoCompleteArray = [...autoComplete];
+        let options = returnOptions(item.name, item.type);
         if (autoCompleteArray.length > 0) {
           let index = autoCompleteArray.findIndex(
             (x) => x.name === item.name && item.type === x.type
           );
+
           if (index === -1) {
             autoCompleteArray.push({
               name: item.name,
@@ -1085,7 +1452,7 @@ export default function Filter(props) {
               type: item.type,
               enabled: item.enabled,
               value: item.value,
-              objectArray: arr,
+              objectArray: options,
             });
           }
         } else {
@@ -1095,12 +1462,12 @@ export default function Filter(props) {
             type: item.type,
             enabled: item.enabled,
             value: item.value,
-            objectArray: arr,
+            objectArray: options,
           });
         }
-        setAutoCompletesArray(autoCompleteArray);
+        autoComplete = autoCompleteArray;
       } else if (item.dataType === "DateTime") {
-        let dateTimeArray = [...dateTimesArray];
+        let dateTimeArray = [...dateTime];
         if (dateTimeArray.length === 0) {
           dateTimeArray.push({
             name: item.name,
@@ -1119,9 +1486,9 @@ export default function Filter(props) {
             }
           });
         }
-        setDateTimesArray(dateTimeArray);
+        dateTime = dateTimeArray;
       } else if (item.dataType === "Numeric") {
-        let conditionArray = [...conditionsArray];
+        let conditionArray = [...condition];
         if (conditionArray.length === 0) {
           conditionArray.push({
             name: item.name,
@@ -1141,7 +1508,7 @@ export default function Filter(props) {
             }
           });
         }
-        setConditionsArray(conditionArray);
+        condition = conditionArray;
       } else {
         let textComponentArray = [...textComponentsArray];
         if (textComponentArray.length > 0) {
@@ -1162,8 +1529,12 @@ export default function Filter(props) {
             value: item.value,
           });
         }
-        setTextComponentsArray(textComponentArray);
+        text = textComponentArray;
       }
+      setAutoCompletesArray(autoComplete);
+      setDateTimesArray(dateTime);
+      setConditionsArray(condition);
+      setTextComponentsArray(text);
     });
     setApplyFilter(true);
   };
@@ -1172,6 +1543,8 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const addSavedFilters = (item) => {
+    setFilterShow("");
+    setRecentFilterShow("none");
     let autoComplete = [];
     let condition = [];
     let text = [];
@@ -1321,6 +1694,8 @@ export default function Filter(props) {
     deleteDateTimeElement({});
     deleteTextComponentElement({});
     setApplyFilterChip({});
+    setRecentFilterShow("");
+    setFilterShow("none");
   };
   const { ref, showApplyFilter, setApplyFilter } = useComponentVisible(true);
   return (
@@ -1371,6 +1746,10 @@ export default function Filter(props) {
                 showSavePopUp={showSavePopUp}
                 emptyFilterClassName={emptyFilterClassName}
                 emptyFilterWarning={emptyFilterWarning}
+                openShowSavePopUp={openShowSavePopUp}
+                recentFilterShow={recentFilterShow}
+                filterShow={filterShow}
+                addSavedFilters={addSavedFilters}
               />
             </div>
           </div>
@@ -1382,6 +1761,7 @@ export default function Filter(props) {
         applyFilterChip={applyFilterChip}
         addAppliedFilters={addAppliedFilters}
         addSavedFilters={addSavedFilters}
+        addingToFavourite={props.addingToFavourite}
       />
     </div>
   );

@@ -10,6 +10,10 @@ export default function TextComponents(props) {
   }, [props.textComponentsArray]);
 
   let textComponentDiv = textComponentArr.map((item, index) => {
+    let validationClass = "";
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
     return (
       <div key={index}>
         <div className="filter__input">
@@ -48,6 +52,9 @@ export default function TextComponents(props) {
               }}
             ></input>
           </div>
+          <span id="fieldWarning" className={validationClass}>
+            {item.warning}
+          </span>
         </div>
       </div>
     );

@@ -27,6 +27,10 @@ export default function AutoComplete(props) {
     props.createAutoCompleteArray(item, selectedList);
   };
   let autoCompleteDiv = autoCompleteArr.map((item, index) => {
+    let validationClass = "";
+    if (item.validated === false) {
+      validationClass = "text-danger";
+    }
     return (
       <div className="filter__input" key={index}>
         <div className="filter__input-title">
@@ -69,6 +73,7 @@ export default function AutoComplete(props) {
             }}
           />
         </div>
+        <span id="fieldWarning" className={validationClass}>{item.warning}</span>
       </div>
     );
   });

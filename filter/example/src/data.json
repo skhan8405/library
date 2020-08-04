@@ -7,71 +7,36 @@
           "name": "Airport",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "Airport Group",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "AirportGroup",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "City",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "City Group",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "Country",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         }
       ],
       "field": [],
@@ -84,71 +49,36 @@
           "name": "Airport",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "Airport Group",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "City",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "City Group",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         },
         {
           "name": "Country",
           "dataType": "AutoComplete",
           "enabled": true,
-          "options": [
-            { "key": "AAA", "value": "AAA" },
-            { "key": "AAB", "value": "AAB" },
-            { "key": "ABA", "value": "ABA" },
-            { "key": "ABB", "value": "ABB" },
-            { "key": "BBA", "value": "BBA" },
-            { "key": "BAA", "value": "BAA" },
-            { "key": "BBB", "value": "BBB" }
-          ]
+          "dataSource": "Airport",
+          "validationMessage": "This field is required*"
         }
       ],
       "field": [],
@@ -169,7 +99,8 @@
         }
       ],
       "types": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Booking Profile",
@@ -177,7 +108,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Flight Group",
@@ -185,7 +117,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Flight No",
@@ -193,7 +126,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Revenue",
@@ -226,13 +160,11 @@
         },
         {
           "value": "starts with"
-        },
-        {
-          "value": "in between"
         }
       ],
       "types": [],
-      "field": []
+      "field": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Yeild",
@@ -240,7 +172,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Service Recovery",
@@ -248,7 +181,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Queued Bookings",
@@ -256,7 +190,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Weight",
@@ -264,7 +199,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Volume",
@@ -272,7 +208,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Aircraft",
@@ -280,7 +217,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Aircraft Classification",
@@ -288,7 +226,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Flight Type",
@@ -296,7 +235,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Flight Status",
@@ -304,7 +244,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Segment Status",
@@ -312,7 +253,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     },
     {
       "name": "Milestone Status",
@@ -320,7 +262,8 @@
       "dataType": "Text",
       "types": [],
       "field": [],
-      "condition": []
+      "condition": [],
+      "validationMessage": "This field is required*"
     }
   ]
 }
