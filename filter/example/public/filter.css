@@ -1,3 +1,6 @@
+.recentFilters {
+  cursor: pointer;
+}
 .text-danger {
   font-size: small;
 }

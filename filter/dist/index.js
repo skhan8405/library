@@ -311,9 +311,13 @@ var RightDrawer = function RightDrawer(props) {
       applyfilterWarningClassName = _useState6[0],
       setApplyFilterWariningClassname = _useState6[1];
 
-  var _useState7 = React.useState(""),
+  var _useState7 = React.useState("none"),
       recentFilterShow = _useState7[0],
       setRecentFilterShow = _useState7[1];
+
+  var _useState8 = React.useState(""),
+      filterShow = _useState8[0],
+      setFilterShow = _useState8[1];
 
   React.useEffect(function () {
     setApplyFilterWarning(props.emptyFilterWarning);
@@ -326,7 +330,8 @@ var RightDrawer = function RightDrawer(props) {
   }, [props.saveWarningClassName, props.saveWarningLabel, props.showSavePopUp]);
   React.useEffect(function () {
     setRecentFilterShow(props.recentFilterShow);
-  }, [props.recentFilterShow]);
+    setFilterShow(props.filterShow);
+  }, [props.recentFilterShow, props.filterShow]);
 
   var registersaveFilterName = function registersaveFilterName(e) {
     setSaveFilterName(e.target.value);
@@ -338,11 +343,27 @@ var RightDrawer = function RightDrawer(props) {
     setWarningLabel("");
   };
 
+  var savedFilters = localStorage.getItem("savedFilters");
+  savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+  var recent = savedFilters.map(function (filterArray, index) {
+    return /*#__PURE__*/React__default.createElement("div", {
+      className: "recentFilters",
+      key: index,
+      onClick: function onClick(e) {
+        props.addSavedFilters(filterArray);
+      }
+    }, Object.keys(filterArray)[0]);
+  });
   return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
     style: {
       display: recentFilterShow
+    },
+    className: "filter__content"
+  }, /*#__PURE__*/React__default.createElement("div", null, "Recent Filters"), recent), /*#__PURE__*/React__default.createElement("div", {
+    style: {
+      display: filterShow
     }
-  }, "Recent Filters"), /*#__PURE__*/React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "filter__title"
   }, "Searched Filters", /*#__PURE__*/React__default.createElement("span", {
     className: "filter-count"
@@ -436,7 +457,7 @@ var RightDrawer = function RightDrawer(props) {
     onClick: function onClick(e) {
       props.saveFilter(saveFilterName);
     }
-  }, "Save")))));
+  }, "Save"))))));
 };
 
 var accordianArray = [];
@@ -909,6 +930,10 @@ function Filter(props) {
       recentFilterShow = _useState18[0],
       setRecentFilterShow = _useState18[1];
 
+  var _useState19 = React.useState(""),
+      filterShow = _useState19[0],
+      setFilterShow = _useState19[1];
+
   React.useEffect(function () {
     setFilterData(props.filterData);
   }, [props.filterData]);
@@ -940,10 +965,12 @@ function Filter(props) {
       var tempObj = {
         applyFilter: []
       };
+      var obj = [];
 
       if (autoCompletesValueArray.length > 0) {
         autoCompletesValueArray.forEach(function (item) {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
 
         _applyFilter.applyFilterArray.push({
@@ -954,6 +981,7 @@ function Filter(props) {
       if (dateTimesValueArray.length > 0) {
         dateTimesValueArray.forEach(function (item) {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
 
         _applyFilter.applyFilterArray.push({
@@ -964,6 +992,7 @@ function Filter(props) {
       if (conditionsValueArray.length > 0) {
         conditionsValueArray.forEach(function (item) {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
 
         _applyFilter.applyFilterArray.push({
@@ -974,6 +1003,7 @@ function Filter(props) {
       if (textComponentsValueArray.length > 0) {
         textComponentsValueArray.forEach(function (item) {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
 
         _applyFilter.applyFilterArray.push({
@@ -981,8 +1011,12 @@ function Filter(props) {
         });
       }
 
-      console.log(_applyFilter);
       setApplyFilterChip(tempObj);
+      obj.forEach(function (objec) {
+        delete objec.dataType;
+        delete objec.enabled;
+      });
+      props.appliedFilters(obj);
       tempObj = {};
       closeDrawer();
     } else {
@@ -992,6 +1026,8 @@ function Filter(props) {
   };
 
   var saveFilter = function saveFilter(value) {
+    var obj = [];
+
     if (value.length > 0) {
       if (!(autoCompletesValueArray.length > 0 || dateTimesValueArray.length > 0 || conditionsValueArray.length > 0 || textComponentsValueArray.length > 0)) {
         setShowSavePopUp("");
@@ -1169,7 +1205,6 @@ function Filter(props) {
           savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
           savedFilters.push(savedFilter);
           localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
-          console.log(savedFilters);
           setShowSavePopUp("none");
           setSaveWarningClassName("");
           setSaveWarningLabel("");
@@ -1181,6 +1216,24 @@ function Filter(props) {
       setSaveWarningClassName("text-danger");
       setSaveWarningLabel("Enter a valid filterName");
     }
+
+    autoCompletesValueArray.forEach(function (item) {
+      obj.push(Object.assign({}, item));
+    });
+    dateTimesValueArray.forEach(function (item) {
+      obj.push(Object.assign({}, item));
+    });
+    conditionsValueArray.forEach(function (item) {
+      obj.push(Object.assign({}, item));
+    });
+    textComponentsValueArray.forEach(function (item) {
+      obj.push(Object.assign({}, item));
+    });
+    obj.forEach(function (objec) {
+      delete objec.dataType;
+      delete objec.enabled;
+    });
+    props.savedFilters(obj);
   };
 
   var fromLeftToRight = function fromLeftToRight(name, dataType, enabled, type, field, condition, dataSource, warning, options) {
@@ -2169,10 +2222,14 @@ function Filter(props) {
     setTextComponentsArray(textComponentArray);
   };
 
-  var addAppliedFilters = function addAppliedFilters(item) {
-    item.forEach(function (item) {
+  var addAppliedFilters = function addAppliedFilters(items) {
+    var autoComplete = [];
+    var dateTime = [];
+    var condition = [];
+    var text = [];
+    items.forEach(function (item) {
       if (item.dataType === "AutoComplete") {
-        var autoCompleteArray = [].concat(autoCompletesArray);
+        var autoCompleteArray = [].concat(autoComplete);
         var options = returnOptions(item.name, item.type);
 
         if (autoCompleteArray.length > 0) {
@@ -2201,9 +2258,9 @@ function Filter(props) {
           });
         }
 
-        setAutoCompletesArray(autoCompleteArray);
+        autoComplete = autoCompleteArray;
       } else if (item.dataType === "DateTime") {
-        var dateTimeArray = [].concat(dateTimesArray);
+        var dateTimeArray = [].concat(dateTime);
 
         if (dateTimeArray.length === 0) {
           dateTimeArray.push({
@@ -2224,9 +2281,9 @@ function Filter(props) {
           });
         }
 
-        setDateTimesArray(dateTimeArray);
+        dateTime = dateTimeArray;
       } else if (item.dataType === "Numeric") {
-        var conditionArray = [].concat(conditionsArray);
+        var conditionArray = [].concat(condition);
 
         if (conditionArray.length === 0) {
           conditionArray.push({
@@ -2250,7 +2307,7 @@ function Filter(props) {
           });
         }
 
-        setConditionsArray(conditionArray);
+        condition = conditionArray;
       } else {
         var textComponentArray = [].concat(textComponentsArray);
 
@@ -2276,13 +2333,20 @@ function Filter(props) {
           });
         }
 
-        setTextComponentsArray(textComponentArray);
+        text = textComponentArray;
       }
+
+      setAutoCompletesArray(autoComplete);
+      setDateTimesArray(dateTime);
+      setConditionsArray(condition);
+      setTextComponentsArray(text);
     });
     setApplyFilter(true);
   };
 
   var addSavedFilters = function addSavedFilters(item) {
+    setFilterShow("");
+    setRecentFilterShow("none");
     var autoComplete = [];
     var condition = [];
     var text = [];
@@ -2445,6 +2509,7 @@ function Filter(props) {
     deleteTextComponentElement({});
     setApplyFilterChip({});
     setRecentFilterShow("");
+    setFilterShow("none");
   };
 
   var _useComponentVisible = useComponentVisible(),
@@ -2503,7 +2568,9 @@ function Filter(props) {
     emptyFilterClassName: emptyFilterClassName,
     emptyFilterWarning: emptyFilterWarning,
     openShowSavePopUp: openShowSavePopUp,
-    recentFilterShow: recentFilterShow
+    recentFilterShow: recentFilterShow,
+    filterShow: filterShow,
+    addSavedFilters: addSavedFilters
   })))), /*#__PURE__*/React__default.createElement(MainFilterPanel, {
     showDrawer: showDrawer,
     applyFilterChip: applyFilterChip,

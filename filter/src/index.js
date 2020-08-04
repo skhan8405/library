@@ -59,6 +59,7 @@ export default function Filter(props) {
   const [emptyFilterWarning, setEmptyFilterWarning] = useState("");
   const [emptyFilterClassName, setEmptyFilterClassName] = useState("");
   const [recentFilterShow, setRecentFilterShow] = useState("none");
+  const [filterShow, setFilterShow] = useState("");
 
   useEffect(() => {
     setFilterData(props.filterData);
@@ -107,9 +108,11 @@ export default function Filter(props) {
         applyFilterArray: [],
       };
       let tempObj = { applyFilter: [] };
+      let obj = [];
       if (autoCompletesValueArray.length > 0) {
         autoCompletesValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({
           autoComplete: autoCompletesValueArray,
@@ -118,12 +121,14 @@ export default function Filter(props) {
       if (dateTimesValueArray.length > 0) {
         dateTimesValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({ dateTime: dateTimesValueArray });
       }
       if (conditionsValueArray.length > 0) {
         conditionsValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({
           conditional: conditionsValueArray,
@@ -132,13 +137,18 @@ export default function Filter(props) {
       if (textComponentsValueArray.length > 0) {
         textComponentsValueArray.forEach((item) => {
           tempObj.applyFilter.push(item);
+          obj.push(Object.assign({}, item));
         });
         applyFilter.applyFilterArray.push({
           textComponent: textComponentsValueArray,
         });
       }
-      console.log(applyFilter);
       setApplyFilterChip(tempObj);
+      obj.forEach((objec) => {
+        delete objec.dataType;
+        delete objec.enabled;
+      });
+      props.appliedFilters(obj);
       tempObj = {};
       closeDrawer();
     } else {
@@ -151,6 +161,7 @@ export default function Filter(props) {
    * @param {*} value is saved filter from the saved filter popup list
    */
   const saveFilter = (value) => {
+    let obj = [];
     if (value.length > 0) {
       if (
         !(
@@ -311,7 +322,6 @@ export default function Filter(props) {
           savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
           savedFilters.push(savedFilter);
           localStorage.setItem("savedFilters", JSON.stringify(savedFilters));
-          console.log(savedFilters);
           setShowSavePopUp("none");
           setSaveWarningClassName("");
           setSaveWarningLabel("");
@@ -323,6 +333,23 @@ export default function Filter(props) {
       setSaveWarningClassName("text-danger");
       setSaveWarningLabel("Enter a valid filterName");
     }
+    autoCompletesValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    dateTimesValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    conditionsValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    textComponentsValueArray.forEach((item) => {
+      obj.push(Object.assign({}, item));
+    });
+    obj.forEach((objec) => {
+      delete objec.dataType;
+      delete objec.enabled;
+    });
+    props.savedFilters(obj);
   };
   /**
    * Method To create the filter arrays for each specific type based on datatype
@@ -572,7 +599,6 @@ export default function Filter(props) {
     } else {
       autoCompleteArray = [];
     }
-
     setAutoCompletesArray(autoCompleteArray);
   };
   /**
@@ -1337,17 +1363,22 @@ export default function Filter(props) {
   };
   /**
    * Method To map the applied filters to drawer on clicking the chips
-   * @param {*} item is the specific filter element object
+   * @param {*} items is the  filter element array
    */
-  const addAppliedFilters = (item) => {
-    item.forEach((item) => {
+  const addAppliedFilters = (items) => {
+    let autoComplete = [];
+    let dateTime = [];
+    let condition = [];
+    let text = [];
+    items.forEach((item) => {
       if (item.dataType === "AutoComplete") {
-        let autoCompleteArray = [...autoCompletesArray];
+        let autoCompleteArray = [...autoComplete];
         let options = returnOptions(item.name, item.type);
         if (autoCompleteArray.length > 0) {
           let index = autoCompleteArray.findIndex(
             (x) => x.name === item.name && item.type === x.type
           );
+
           if (index === -1) {
             autoCompleteArray.push({
               name: item.name,
@@ -1368,9 +1399,9 @@ export default function Filter(props) {
             objectArray: options,
           });
         }
-        setAutoCompletesArray(autoCompleteArray);
+        autoComplete = autoCompleteArray;
       } else if (item.dataType === "DateTime") {
-        let dateTimeArray = [...dateTimesArray];
+        let dateTimeArray = [...dateTime];
         if (dateTimeArray.length === 0) {
           dateTimeArray.push({
             name: item.name,
@@ -1389,9 +1420,9 @@ export default function Filter(props) {
             }
           });
         }
-        setDateTimesArray(dateTimeArray);
+        dateTime = dateTimeArray;
       } else if (item.dataType === "Numeric") {
-        let conditionArray = [...conditionsArray];
+        let conditionArray = [...condition];
         if (conditionArray.length === 0) {
           conditionArray.push({
             name: item.name,
@@ -1411,7 +1442,7 @@ export default function Filter(props) {
             }
           });
         }
-        setConditionsArray(conditionArray);
+        condition = conditionArray;
       } else {
         let textComponentArray = [...textComponentsArray];
         if (textComponentArray.length > 0) {
@@ -1432,8 +1463,12 @@ export default function Filter(props) {
             value: item.value,
           });
         }
-        setTextComponentsArray(textComponentArray);
+        text = textComponentArray;
       }
+      setAutoCompletesArray(autoComplete);
+      setDateTimesArray(dateTime);
+      setConditionsArray(condition);
+      setTextComponentsArray(text);
     });
     setApplyFilter(true);
   };
@@ -1442,6 +1477,8 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const addSavedFilters = (item) => {
+    setFilterShow("");
+    setRecentFilterShow("none");
     let autoComplete = [];
     let condition = [];
     let text = [];
@@ -1592,6 +1629,7 @@ export default function Filter(props) {
     deleteTextComponentElement({});
     setApplyFilterChip({});
     setRecentFilterShow("");
+    setFilterShow("none");
   };
   const { ref, showApplyFilter, setApplyFilter } = useComponentVisible(true);
   return (
@@ -1644,6 +1682,8 @@ export default function Filter(props) {
                 emptyFilterWarning={emptyFilterWarning}
                 openShowSavePopUp={openShowSavePopUp}
                 recentFilterShow={recentFilterShow}
+                filterShow={filterShow}
+                addSavedFilters={addSavedFilters}
               />
             </div>
           </div>

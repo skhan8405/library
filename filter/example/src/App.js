@@ -31,5 +31,17 @@ export default function App() {
       }
     }
   });
-  return <Filter filterData={FilterData} />;
+  const appliedFilters = (appliedFilter) => {
+    console.log("appliedFilter:", appliedFilter);
+  };
+  const savedFilters = (savedFilter) => {
+    console.log("savedFilter:", savedFilter);
+  };
+  return (
+    <Filter
+      filterData={FilterData}
+      appliedFilters={appliedFilters}
+      savedFilters={savedFilters}
+    />
+  );
 }

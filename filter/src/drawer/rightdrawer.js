@@ -16,7 +16,8 @@ const RightDrawer = (props) => {
     applyfilterWarningClassName,
     setApplyFilterWariningClassname,
   ] = useState("");
-  const [recentFilterShow, setRecentFilterShow] = useState("");
+  const [recentFilterShow, setRecentFilterShow] = useState("none");
+  const [filterShow, setFilterShow] = useState("");
   useEffect(() => {
     setApplyFilterWarning(props.emptyFilterWarning);
     setApplyFilterWariningClassname(props.emptyFilterClassName);
@@ -28,7 +29,8 @@ const RightDrawer = (props) => {
   }, [props.saveWarningClassName, props.saveWarningLabel, props.showSavePopUp]);
   useEffect(() => {
     setRecentFilterShow(props.recentFilterShow);
-  }, [props.recentFilterShow]);
+    setFilterShow(props.filterShow);
+  }, [props.recentFilterShow, props.filterShow]);
   /**
    * Method To pass the required name of the filter required to be saved
    * @param {*} e is event triggered when typing on the to-save filter name field
@@ -45,112 +47,133 @@ const RightDrawer = (props) => {
     setSaveFilterWarning("");
     setWarningLabel("");
   };
+  let savedFilters = localStorage.getItem("savedFilters");
+  savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
+  const recent = savedFilters.map((filterArray, index) => {
+    return (
+      <div
+      className="recentFilters"
+        key={index}
+        onClick={(e) => {
+          props.addSavedFilters(filterArray);
+        }}
+      >
+        {Object.keys(filterArray)[0]}
+      </div>
+    );
+  });
   return (
     <React.Fragment>
-      <div style={{ display: recentFilterShow }}>Recent Filters</div>
-      <div className="filter__title">
-        Searched Filters
-        <span className="filter-count">{props.filterCount}</span>
+      <div style={{ display: recentFilterShow }} className="filter__content">
+        <div>Recent Filters</div>
+        {recent}
       </div>
-      <div className="filter__content">
-        <AutoComplete
-          name={props.name}
-          type={props.type}
-          enabled={props.enabled}
-          dataType={props.dataType}
-          options={props.options}
-          autoCompleteArray={props.autoCompleteArray}
-          deleteAutoCompleteElement={props.deleteAutoCompleteElement}
-          handleAutoCompleteEnabled={props.handleAutoCompleteEnabled}
-          createAutoCompleteArray={props.createAutoCompleteArray}
-        />
-        <FieldComponent
-          dateTimesArray={props.dateTimesArray}
-          deleteDateTimeElement={props.deleteDateTimeElement}
-          handleDateTimeEnabled={props.handleDateTimeEnabled}
-          createDateTimeArray={props.createDateTimeArray}
-          addToday={props.addToday}
-          addTomorrow={props.addTomorrow}
-          addThisMonth={props.addThisMonth}
-          addForteenDays={props.addForteenDays}
-          addSevenDays={props.addSevenDays}
-          addThisWeek={props.addThisWeek}
-          addThirtyDays={props.addThirtyDays}
-          lastDayChange={props.lastDayChange}
-          nextDayChange={props.nextDayChange}
-        />
-        <Condition
-          conditionsArray={props.conditionsArray}
-          handleCondionalEnabled={props.handleCondionalEnabled}
-          createConditionalArray={props.createConditionalArray}
-          deleteConditionalElement={props.deleteConditionalElement}
-        />
-        <TextComponents
-          textComponentsArray={props.textComponentsArray}
-          deleteTextComponentElement={props.deleteTextComponentElement}
-          createTextComponentsArray={props.createTextComponentsArray}
-          handleTextComponentEnabled={props.handleTextComponentEnabled}
-        />
-      </div>
-      <div className="filter__btn">
-        <div className="filter__save">
-          <Button className="button-save" variant="">
-            <img
-              src={saveLogo}
-              onClick={props.openShowSavePopUp}
-              alt="save icon"
-            />
-            <span>SAVE</span>
-          </Button>
+
+      <div style={{ display: filterShow }}>
+        <div className="filter__title">
+          Searched Filters
+          <span className="filter-count">{props.filterCount}</span>
         </div>
-        <div className="btn-wrap">
-          <span className={applyfilterWarningClassName}>
-            {applyFilterWarning}
-          </span>
-          <Button variant="" className="reset" onClick={props.resetDrawer}>
-            Reset
-          </Button>
-          <Button
-            variant=""
-            className="applyFilter"
-            onClick={(e) => {
-              props.applyFilter();
-              props.deleteAutoCompleteElement({});
-              props.deleteConditionalElement({});
-              props.deleteDateTimeElement({});
-              props.deleteTextComponentElement({});
-            }}
-          >
-            Apply Filter
-          </Button>
-        </div>
-        <div style={{ display: showSavePopup }} className="popup--save">
-          <h5>Save the Filter</h5>
-          <span className={warningLabel}>{saveFilterWarning}</span>
-          <label>Saved Filter Name</label>
-          <input
-            className="txt"
-            value={saveFilterName}
-            onChange={(e) => registersaveFilterName(e)}
+        <div className="filter__content">
+          <AutoComplete
+            name={props.name}
+            type={props.type}
+            enabled={props.enabled}
+            dataType={props.dataType}
+            options={props.options}
+            autoCompleteArray={props.autoCompleteArray}
+            deleteAutoCompleteElement={props.deleteAutoCompleteElement}
+            handleAutoCompleteEnabled={props.handleAutoCompleteEnabled}
+            createAutoCompleteArray={props.createAutoCompleteArray}
           />
+          <FieldComponent
+            dateTimesArray={props.dateTimesArray}
+            deleteDateTimeElement={props.deleteDateTimeElement}
+            handleDateTimeEnabled={props.handleDateTimeEnabled}
+            createDateTimeArray={props.createDateTimeArray}
+            addToday={props.addToday}
+            addTomorrow={props.addTomorrow}
+            addThisMonth={props.addThisMonth}
+            addForteenDays={props.addForteenDays}
+            addSevenDays={props.addSevenDays}
+            addThisWeek={props.addThisWeek}
+            addThirtyDays={props.addThirtyDays}
+            lastDayChange={props.lastDayChange}
+            nextDayChange={props.nextDayChange}
+          />
+          <Condition
+            conditionsArray={props.conditionsArray}
+            handleCondionalEnabled={props.handleCondionalEnabled}
+            createConditionalArray={props.createConditionalArray}
+            deleteConditionalElement={props.deleteConditionalElement}
+          />
+          <TextComponents
+            textComponentsArray={props.textComponentsArray}
+            deleteTextComponentElement={props.deleteTextComponentElement}
+            createTextComponentsArray={props.createTextComponentsArray}
+            handleTextComponentEnabled={props.handleTextComponentEnabled}
+          />
+        </div>
+        <div className="filter__btn">
+          <div className="filter__save">
+            <Button className="button-save" variant="">
+              <img
+                src={saveLogo}
+                onClick={props.openShowSavePopUp}
+                alt="save icon"
+              />
+              <span>SAVE</span>
+            </Button>
+          </div>
           <div className="btn-wrap">
-            <button
-              className="button"
+            <span className={applyfilterWarningClassName}>
+              {applyFilterWarning}
+            </span>
+            <Button variant="" className="reset" onClick={props.resetDrawer}>
+              Reset
+            </Button>
+            <Button
+              variant=""
+              className="applyFilter"
               onClick={(e) => {
-                cancelSavePopup();
+                props.applyFilter();
+                props.deleteAutoCompleteElement({});
+                props.deleteConditionalElement({});
+                props.deleteDateTimeElement({});
+                props.deleteTextComponentElement({});
               }}
             >
-              Cancel
-            </button>
-            <button
-              className="button"
-              onClick={(e) => {
-                props.saveFilter(saveFilterName);
-                // setSaveFilterName("");
-              }}
-            >
-              Save
-            </button>
+              Apply Filter
+            </Button>
+          </div>
+          <div style={{ display: showSavePopup }} className="popup--save">
+            <h5>Save the Filter</h5>
+            <span className={warningLabel}>{saveFilterWarning}</span>
+            <label>Saved Filter Name</label>
+            <input
+              className="txt"
+              value={saveFilterName}
+              onChange={(e) => registersaveFilterName(e)}
+            />
+            <div className="btn-wrap">
+              <button
+                className="button"
+                onClick={(e) => {
+                  cancelSavePopup();
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="button"
+                onClick={(e) => {
+                  props.saveFilter(saveFilterName);
+                  // setSaveFilterName("");
+                }}
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </div>
