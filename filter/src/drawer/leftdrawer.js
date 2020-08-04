@@ -124,13 +124,6 @@ export default function LeftDrawer(props) {
                         return (
                           <li
                             onClick={(e) => {
-                              // props.handleAutoCompleteValue(
-                              //   item.name,
-                              //   type.name,
-                              //   type.dataType,
-                              //   type.enabled,
-                              //   type.options
-                              // );
                               props.fromLeftToRight(
                                 item.name,
                                 type.dataType,
@@ -139,7 +132,8 @@ export default function LeftDrawer(props) {
                                 item.field,
                                 item.condition,
                                 type.dataSource,
-                                type.warning
+                                type.validationMessage,
+                                type.options
                               );
                               // props.addedFilterCount();
                             }}
@@ -180,7 +174,8 @@ export default function LeftDrawer(props) {
                 item.field,
                 item.condition,
                 item.dataSource,
-                item.warning
+                item.validationMessage,
+                item.options
               );
               //props.addedFilterCount();
             }}
@@ -199,12 +194,6 @@ export default function LeftDrawer(props) {
         <div className="conditionHeads" key={index}>
           <li
             onClick={(e) => {
-              // props.handleConditionalValue(
-              //   item.name,
-              //   item.condition,
-              //   item.dataType,
-              //   item.enabled
-              // );
               props.fromLeftToRight(
                 item.name,
                 item.dataType,
@@ -213,7 +202,8 @@ export default function LeftDrawer(props) {
                 item.field,
                 item.condition,
                 item.dataSource,
-                item.warning
+                item.validationMessage,
+                item.options
               );
               //props.addedFilterCount();
             }}
@@ -240,7 +230,8 @@ export default function LeftDrawer(props) {
                 item.field,
                 item.condition,
                 item.dataSource,
-                item.warning
+                item.validationMessage,
+                item.options
               );
               //props.addedFilterCount();
             }}

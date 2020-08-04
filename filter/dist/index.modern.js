@@ -510,7 +510,7 @@ function LeftDrawer(props) {
       }, item.types && item.types.map((type, index) => {
         return /*#__PURE__*/React__default.createElement("li", {
           onClick: e => {
-            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.warning);
+            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.validationMessage, type.options);
           },
           key: index
         }, type.name);
@@ -528,7 +528,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: e => {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
       }, item.name));
     } else {
@@ -544,7 +544,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: e => {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
       }, item.name));
     } else {
@@ -560,7 +560,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: e => {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
       }, item.name));
     } else {
@@ -1052,14 +1052,14 @@ function Filter(props) {
     }
   };
 
-  const fromLeftToRight = (name, dataType, enabled, type, field, condition, dataSource, warning) => {
+  const fromLeftToRight = (name, dataType, enabled, type, field, condition, dataSource, warning, options) => {
     setShowSavePopUp("none");
     setSaveWarningLabel("");
     setSaveWarningClassName("");
     setEmptyFilterClassName("");
     setEmptyFilterWarning("");
 
-    if (dataType === "AutoComplete" && dataSource === "Airport") {
+    if (dataType === "AutoComplete") {
       let value = {
         name: name,
         type: type,
@@ -1078,7 +1078,7 @@ function Filter(props) {
             type: type,
             dataType: dataType,
             enabled: enabled,
-            objectArray: props.airportcode,
+            objectArray: options,
             validated: false,
             warning: warning
           });
@@ -1089,7 +1089,7 @@ function Filter(props) {
           type: type,
           dataType: dataType,
           enabled: enabled,
-          objectArray: props.airportcode,
+          objectArray: options,
           validated: false,
           warning: warning
         });
@@ -1976,6 +1976,20 @@ function Filter(props) {
     textComponentValueArray = [];
   };
 
+  const returnOptions = (name, typeName) => {
+    let options = [];
+    filterData.filter.forEach(item => {
+      if (item.name === name) {
+        item.types.forEach(type => {
+          if (type.name === typeName) {
+            options = [...type.options];
+          }
+        });
+      }
+    });
+    return options;
+  };
+
   const deleteTextComponentElement = item => {
     let textComponentArray = [...textComponentsArray];
     let index = textComponentArray.findIndex(x => x.name === item.name && x.dataType === item.dataType);
@@ -1990,19 +2004,10 @@ function Filter(props) {
   };
 
   const addAppliedFilters = item => {
-    let arr = [];
-    filterData.filter.forEach(fil => {
-      if (fil.types.length) {
-        let index = fil.types.findIndex(x => x.name === item.type && fil.name === item.name);
-
-        if (index !== -1) {
-          arr = fil.types[index].options;
-        }
-      }
-    });
     item.forEach(item => {
       if (item.dataType === "AutoComplete") {
         let autoCompleteArray = [...autoCompletesArray];
+        let options = returnOptions(item.name, item.type);
 
         if (autoCompleteArray.length > 0) {
           let index = autoCompleteArray.findIndex(x => x.name === item.name && item.type === x.type);
@@ -2014,7 +2019,7 @@ function Filter(props) {
               type: item.type,
               enabled: item.enabled,
               value: item.value,
-              objectArray: arr
+              objectArray: options
             });
           }
         } else {
@@ -2024,7 +2029,7 @@ function Filter(props) {
             type: item.type,
             enabled: item.enabled,
             value: item.value,
-            objectArray: arr
+            objectArray: options
           });
         }
 

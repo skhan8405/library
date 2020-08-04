@@ -563,7 +563,7 @@ function LeftDrawer(props) {
       }, item.types && item.types.map(function (type, index) {
         return /*#__PURE__*/React__default.createElement("li", {
           onClick: function onClick(e) {
-            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.warning);
+            props.fromLeftToRight(item.name, type.dataType, type.enabled, type.name, item.field, item.condition, type.dataSource, type.validationMessage, type.options);
           },
           key: index
         }, type.name);
@@ -581,7 +581,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: function onClick(e) {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
       }, item.name));
     } else {
@@ -597,7 +597,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: function onClick(e) {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
       }, item.name));
     } else {
@@ -613,7 +613,7 @@ function LeftDrawer(props) {
         key: index
       }, /*#__PURE__*/React__default.createElement("li", {
         onClick: function onClick(e) {
-          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.warning);
+          props.fromLeftToRight(item.name, item.dataType, item.enabled, item.types, item.field, item.condition, item.dataSource, item.validationMessage, item.options);
         }
       }, item.name));
     } else {
@@ -1183,14 +1183,14 @@ function Filter(props) {
     }
   };
 
-  var fromLeftToRight = function fromLeftToRight(name, dataType, enabled, type, field, condition, dataSource, warning) {
+  var fromLeftToRight = function fromLeftToRight(name, dataType, enabled, type, field, condition, dataSource, warning, options) {
     setShowSavePopUp("none");
     setSaveWarningLabel("");
     setSaveWarningClassName("");
     setEmptyFilterClassName("");
     setEmptyFilterWarning("");
 
-    if (dataType === "AutoComplete" && dataSource === "Airport") {
+    if (dataType === "AutoComplete") {
       var value = {
         name: name,
         type: type,
@@ -1211,7 +1211,7 @@ function Filter(props) {
             type: type,
             dataType: dataType,
             enabled: enabled,
-            objectArray: props.airportcode,
+            objectArray: options,
             validated: false,
             warning: warning
           });
@@ -1222,7 +1222,7 @@ function Filter(props) {
           type: type,
           dataType: dataType,
           enabled: enabled,
-          objectArray: props.airportcode,
+          objectArray: options,
           validated: false,
           warning: warning
         });
@@ -2140,6 +2140,20 @@ function Filter(props) {
     textComponentValueArray = [];
   };
 
+  var returnOptions = function returnOptions(name, typeName) {
+    var options = [];
+    filterData.filter.forEach(function (item) {
+      if (item.name === name) {
+        item.types.forEach(function (type) {
+          if (type.name === typeName) {
+            options = [].concat(type.options);
+          }
+        });
+      }
+    });
+    return options;
+  };
+
   var deleteTextComponentElement = function deleteTextComponentElement(item) {
     var textComponentArray = [].concat(textComponentsArray);
     var index = textComponentArray.findIndex(function (x) {
@@ -2156,21 +2170,10 @@ function Filter(props) {
   };
 
   var addAppliedFilters = function addAppliedFilters(item) {
-    var arr = [];
-    filterData.filter.forEach(function (fil) {
-      if (fil.types.length) {
-        var index = fil.types.findIndex(function (x) {
-          return x.name === item.type && fil.name === item.name;
-        });
-
-        if (index !== -1) {
-          arr = fil.types[index].options;
-        }
-      }
-    });
     item.forEach(function (item) {
       if (item.dataType === "AutoComplete") {
         var autoCompleteArray = [].concat(autoCompletesArray);
+        var options = returnOptions(item.name, item.type);
 
         if (autoCompleteArray.length > 0) {
           var index = autoCompleteArray.findIndex(function (x) {
@@ -2184,7 +2187,7 @@ function Filter(props) {
               type: item.type,
               enabled: item.enabled,
               value: item.value,
-              objectArray: arr
+              objectArray: options
             });
           }
         } else {
@@ -2194,7 +2197,7 @@ function Filter(props) {
             type: item.type,
             enabled: item.enabled,
             value: item.value,
-            objectArray: arr
+            objectArray: options
           });
         }
 

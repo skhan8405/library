@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import Filter from "filter";
 import FilterData from "./data.json";
-let data = {};
 export default function App() {
   const airport = [
     { key: "AAA", value: "AAA" },
@@ -21,32 +20,16 @@ export default function App() {
     { key: "BAA", value: "BAA" },
     { key: "BBB", value: "BBB" },
   ];
-  FilterData.filter.map((item) => {
+  FilterData.filter.forEach((item) => {
     if (item.types) {
-      return item.types.map((typeItem) => {
-        if (typeItem.dataSource === "Airport") {
-          return (typeItem = {
-            name: typeItem.name,
-            dataType: typeItem.dataType,
-            enabled: typeItem.enabled,
-            dataSource: typeItem.dataSource,
-            validationMessage: typeItem.validationMessage,
-            options: airport,
-          });
-        } else if (typeItem.dataSource === "AirportGroup") {
-          return (typeItem = {
-            name: typeItem.name,
-            dataType: typeItem.dataType,
-            enabled: typeItem.enabled,
-            dataSource: typeItem.dataSource,
-            validationMessage: typeItem.validationMessage,
-            options: airportGroup,
-          });
+      for (let i in item.types) {
+        if (item.types[i].dataSource === "Airport") {
+          item.types[i].options = airport;
+        } else {
+          item.types[i].options = airportGroup;
         }
-      });
+      }
     }
   });
-  data.filter = FilterData.filter;
-  console.log(FilterData);
   return <Filter filterData={FilterData} />;
 }

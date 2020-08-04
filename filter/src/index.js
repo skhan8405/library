@@ -342,14 +342,15 @@ export default function Filter(props) {
     field,
     condition,
     dataSource,
-    warning
+    warning,
+    options
   ) => {
     setShowSavePopUp("none");
     setSaveWarningLabel("");
     setSaveWarningClassName("");
     setEmptyFilterClassName("");
     setEmptyFilterWarning("");
-    if (dataType === "AutoComplete" && dataSource === "Airport") {
+    if (dataType === "AutoComplete") {
       let value = {
         name: name,
         type: type,
@@ -368,7 +369,7 @@ export default function Filter(props) {
             type: type,
             dataType: dataType,
             enabled: enabled,
-            objectArray: props.airportcode,
+            objectArray: options,
             validated: false,
             warning: warning,
           });
@@ -379,7 +380,7 @@ export default function Filter(props) {
           type: type,
           dataType: dataType,
           enabled: enabled,
-          objectArray: props.airportcode,
+          objectArray: options,
           validated: false,
           warning: warning,
         });
@@ -1301,6 +1302,24 @@ export default function Filter(props) {
     textComponentValueArray = [];
   };
   /**
+   * Method To return the specific options array for autoComplete element
+   * @param {*} name is the name of the filter
+   * @param {*} typeName is the type of the filter
+   */
+  const returnOptions = (name, typeName) => {
+    let options = [];
+    filterData.filter.forEach((item) => {
+      if (item.name === name) {
+        item.types.forEach((type) => {
+          if (type.name === typeName) {
+            options = [...type.options];
+          }
+        });
+      }
+    });
+    return options;
+  };
+  /**
    * Method To delete the specific element from filter array upon clicking close
    * @param {*} item is the specific filter element object
    */
@@ -1321,20 +1340,10 @@ export default function Filter(props) {
    * @param {*} item is the specific filter element object
    */
   const addAppliedFilters = (item) => {
-    let arr = [];
-    filterData.filter.forEach((fil) => {
-      if (fil.types.length) {
-        let index = fil.types.findIndex(
-          (x) => x.name === item.type && fil.name === item.name
-        );
-        if (index !== -1) {
-          arr = fil.types[index].options;
-        }
-      }
-    });
     item.forEach((item) => {
       if (item.dataType === "AutoComplete") {
         let autoCompleteArray = [...autoCompletesArray];
+        let options = returnOptions(item.name, item.type);
         if (autoCompleteArray.length > 0) {
           let index = autoCompleteArray.findIndex(
             (x) => x.name === item.name && item.type === x.type
@@ -1346,7 +1355,7 @@ export default function Filter(props) {
               type: item.type,
               enabled: item.enabled,
               value: item.value,
-              objectArray: arr,
+              objectArray: options,
             });
           }
         } else {
@@ -1356,7 +1365,7 @@ export default function Filter(props) {
             type: item.type,
             enabled: item.enabled,
             value: item.value,
-            objectArray: arr,
+            objectArray: options,
           });
         }
         setAutoCompletesArray(autoCompleteArray);
