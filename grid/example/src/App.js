@@ -486,8 +486,15 @@ const App = () => {
     };
 
     //Pass row edit overlay to the grid component
-    const getRowEditOverlay = (rowData, rowUpdateCallBack) => {
-        return <RowEdit airportCodeList={airportCodeList} rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
+    const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
+        return (
+            <RowEdit
+                airportCodeList={airportCodeList}
+                DisplayTag={DisplayTag}
+                rowData={rowData}
+                rowUpdateCallBack={rowUpdateCallBack}
+            />
+        );
     };
 
     //Add logic to calculate height of each row, based on the content of  or more columns
