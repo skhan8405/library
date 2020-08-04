@@ -61,14 +61,6 @@ const SavedFilters = (props) => {
           >
             {Object.keys(filterArray)[0]}
           </div>
-          <FontAwesomeIcon
-            style={{ color: filterArray.color }}
-            icon={faStar}
-            className="marginLeft"
-            onClick={(e) => {
-              addToFavourite(filterArray);
-            }}
-          ></FontAwesomeIcon>
         </div>
       </div>
     );
