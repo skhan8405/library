@@ -4,7 +4,7 @@ import CellDisplayAndEdit from "../Functions/CellDisplayAndEdit";
 export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
     //Remove iPad only columns from desktop and vice-versa
     const filteredColumns = columns.filter((column) => {
-        return isDesktop ? !column.onlyInIpad : !column.onlyInDesktop;
+        return isDesktop ? !column.onlyInTablet : !column.onlyInDesktop;
     });
 
     let modifiedColumns = [];
@@ -19,7 +19,7 @@ export const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid
         //Configure Cell function (which is used by react-table component), based on the user defined function displayCell
         if (!column.Cell && column.displayCell) {
             column.Cell = (row) => {
-                return <CellDisplayAndEdit row={row} updateRowInGrid={updateRowInGrid} />;
+                return <CellDisplayAndEdit row={row} columns={columns} updateRowInGrid={updateRowInGrid} />;
             };
         }
 
@@ -70,7 +70,7 @@ export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
     //Remove iPad only columns from desktop and vice-versa
     if (isInnerCellsPresent) {
         additionalColumn.innerCells = innerCells.filter((cell) => {
-            return isDesktop ? !cell.onlyInIpad : !cell.onlyInDesktop;
+            return isDesktop ? !cell.onlyInTablet : !cell.onlyInDesktop;
         });
     }
     return additionalColumn;
