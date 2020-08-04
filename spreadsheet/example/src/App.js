@@ -435,6 +435,7 @@ const App = (props) => {
         "Ending Row:",
         toRow
       );
+    }
     if (updateType === "CELL_DRAG") {
       console.log(
         "fromRow:",
