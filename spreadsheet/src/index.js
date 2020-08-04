@@ -12,6 +12,7 @@ import {
   faColumns,
   faShareAlt,
   faSortDown,
+  faSave,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ErrorMessage from "./common/ErrorMessage";
@@ -108,7 +109,7 @@ class Spreadsheet extends Component {
   // };
 
   // rowGetter = (i) => {
-	// console.log(i)
+  // console.log(i)
   //   const { rows } = this.state;
   //   return rows[i];
   // };
@@ -158,26 +159,14 @@ class Spreadsheet extends Component {
   //   });
   // };
 
-  handleWarningStatus = () => {
-    this.setState({ warningStatus: "invalid" });
-  };
-
-  closeWarningStatus = () => {
-    this.setState({ warningStatus: "" });
-  };
-
   UNSAFE_componentWillReceiveProps(props) {
     this.setState({
       rows: props.rows,
-    });
-    this.setState({
       status: props.status,
-    });
-    this.setState({
       textValue: props.textValue,
+      count: props.count,
+      warningStatus: props.status,
     });
-    this.setState({ count: props.count });
-    this.setState({ warningStatus: props.status });
   }
 
   /**
@@ -389,7 +378,6 @@ class Spreadsheet extends Component {
     inComingColumnsHeaderList,
     pinnedColumnsList
   ) => {
-    // let pinnedReorder = false;
     let existingColumnsHeaderList = this.props.columns;
     existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
       return inComingColumnsHeaderList.includes(item.name);
@@ -550,7 +538,7 @@ class Spreadsheet extends Component {
 
   clearAllSortingParams = () => {
     this.setState({
-    rows: JSON.parse(JSON.stringify(this.props.rows))
+      rows: JSON.parse(JSON.stringify(this.props.rows)),
     });
   };
 
@@ -653,6 +641,30 @@ class Spreadsheet extends Component {
       });
   };
 
+  globalSearchLogic = (e, updatedRows) => {
+    let searchKey = String(e.target.value).toLowerCase();
+    let filteredRows = updatedRows.filter((item) => {
+      return Object.values(item).toString().toLowerCase().includes(searchKey);
+    });
+    if (!filteredRows.length) {
+      this.setState({ warningStatus: "invalid", rows: [] });
+    } else {
+      this.setState({ warningStatus: "", rows: filteredRows });
+    }
+  };
+
+  handleWarningStatus = () => {
+    this.setState({ warningStatus: "invalid" });
+  };
+
+  closeWarningStatus = () => {
+    this.setState({ warningStatus: "", rows: this.props.rows });
+  };
+
+  save = () => {
+    console.log("save");
+  };
+
   render() {
     return (
       <div>
@@ -668,10 +680,13 @@ class Spreadsheet extends Component {
               placeholder="Search"
               onChange={(e) => {
                 this.handleSearchValue(e.target.value);
-                this.props.globalSearchLogic(e, this.state.tempRows);
+                this.globalSearchLogic(e, this.state.tempRows);
               }}
               value={this.state.searchValue}
             />
+          </div>
+          <div className="filterIcons" onClick={this.save}>
+            <FontAwesomeIcon title="Group Sort" icon={faSave} />
           </div>
           <div className="filterIcons" onClick={this.sortingPanel}>
             <FontAwesomeIcon title="Group Sort" icon={faSortAmountDown} />
@@ -696,7 +711,6 @@ class Spreadsheet extends Component {
           className="errorDiv"
           status={this.state.warningStatus}
           closeWarningStatus={() => {
-            this.props.closeWarningStatus();
             this.closeWarningStatus();
           }}
           clearSearchValue={this.clearSearchValue}
@@ -731,6 +745,9 @@ class Spreadsheet extends Component {
           onGridSort={(sortColumn, sortDirection) =>
             this.sortRows(this.state.filteringRows, sortColumn, sortDirection)
           }
+          globalSearch={this.globalSearchLogic}
+          handleWarningStatus={this.handleWarningStatus}
+          closeWarningStatus={this.closeWarningStatus}
           // cellRangeSelection={{
           //   onComplete: this.setSelection,
           // }}

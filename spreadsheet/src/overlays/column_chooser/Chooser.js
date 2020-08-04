@@ -16,6 +16,10 @@ class ColumnReordering extends React.Component {
       leftPinnedColumList: this.props.existingPinnedHeadersList,
       isAllSelected: true,
       maxLeftPinnedColumn: this.props.maxLeftPinnedColumn,
+      chooserDate: {
+        column: "",
+        pinLeft: false,
+      },
     };
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
