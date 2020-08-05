@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { shallow, mount } from "enzyme";
+import ReactTestUtils from "react-dom/test-utils";
 import ExportData from "../../../../src/overlays/export_data/ExportData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";

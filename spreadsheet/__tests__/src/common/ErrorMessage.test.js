@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import ErrorMessage from "../../../src/common/ErrorMessage";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
@@ -18,56 +18,48 @@ afterEach(() => {
   container = null;
 });
 
-test('ErrorMessage test',  () => {
-
+test("ErrorMessage test", () => {
   act(() => {
-    render(<ErrorMessage
-      className="errorDiv"
-      status="invalid"
-    />, container);
+    render(<ErrorMessage className="errorDiv" status="invalid" />, container);
   });
 
   const component = document.querySelector("[role=alert]");
 
-  expect(component.innerHTML).toEqual('No Records found!');
-
+  expect(component.innerHTML).toEqual("No Records found!");
 });
 
-test('ErrorMessage on-close test',  () => {
+test("ErrorMessage on-close test", () => {
+  // mock callback
+  const mockCloseWarningStatus = jest.fn();
+  const mockClearSearchValue = jest.fn();
 
-    // mock callback
-    const mockCloseWarningStatus = jest.fn();
-    const mockClearSearchValue = jest.fn();
-
-    act(() => {
-      render(<ErrorMessage
+  act(() => {
+    render(
+      <ErrorMessage
         className="errorDiv"
         status="invalid"
         closeWarningStatus={mockCloseWarningStatus}
         clearSearchValue={mockClearSearchValue}
-      />, container);
-    });
+      />,
+      container
+    );
+  });
 
-    const component = document.querySelector("[class=notification-close]").firstChild;
-
-    act(() => {
-      component.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    });
-
-    expect(mockCloseWarningStatus.mock.calls.length).toBe(1);
-    expect(mockClearSearchValue.mock.calls.length).toBe(1);
-});
-
-
-test('ErrorMessage no error test',  () => {
+  const component = document.querySelector("[class=notification-close]")
+    .firstChild;
 
   act(() => {
-    render(<ErrorMessage
-      className="errorDiv"
-      status="valid"
-    />, container);
+    component.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  });
+
+  expect(mockCloseWarningStatus.mock.calls.length).toBe(1);
+  expect(mockClearSearchValue.mock.calls.length).toBe(1);
+});
+
+test("ErrorMessage no error test", () => {
+  act(() => {
+    render(<ErrorMessage className="errorDiv" status="valid" />, container);
   });
 
   expect(container.innerHTML).toEqual("<div></div>");
-
 });
