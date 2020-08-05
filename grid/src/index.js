@@ -318,7 +318,6 @@ const Grid = memo((props) => {
                             </div>
                         </div>
                     ) : null}
-                    )
                 </div>
             ) : (
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
