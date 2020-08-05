@@ -59,7 +59,6 @@ class ColumnReordering extends React.Component {
   selectAllToColumnReOrderList = () => {
     this.resetColumnReorderList();
     var existingColumnReorderEntityList = this.state.columnReorderEntityList;
-    console.log(existingColumnReorderEntityList);
     var isExistingAllSelect = this.state.isAllSelected;
     if (!isExistingAllSelect) {
       existingColumnReorderEntityList = this.props.columns.map(
@@ -169,6 +168,7 @@ class ColumnReordering extends React.Component {
             <div className="column__wrap">
               <div className="column__checkbox">
                 <input
+                  role="check1"
                   type="checkbox"
                   id={"checkBoxToPinLeft_" + item}
                   checked={this.state.leftPinnedColumList.includes(item)}
