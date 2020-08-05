@@ -622,13 +622,6 @@ export default function Filter(props) {
         }
       });
     });
-    // let nameArray = [];
-    // filterData.filter.forEach((fit) => {
-    //   if (fit.types && fit.weight === 700) {
-    //     nameArray.push(fit.name);
-    //   }
-    // });
-
     let autoCompleteArray = [...autoCompletesArray];
     let index = autoCompleteArray.findIndex(
       (x) => x.name === item.name && x.type === item.type
