@@ -1,17 +1,35 @@
 import React from 'react';
 import ErrorMessage from "../../../src/common/ErrorMessage";
-import {shallow, mount} from 'enzyme';
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
+
+let container = null;
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement("div");
+  // container *must* be attached to document so events work correctly.
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
 
 test('ErrorMessage test',  () => {
 
-    const component = shallow(
-        <ErrorMessage
-          className="errorDiv"
-          status="invalid"
-        />
-    );
+  act(() => {
+    render(<ErrorMessage
+      className="errorDiv"
+      status="invalid"
+    />, container);
+  });
 
-    expect(component.text()).toEqual('No Records found!<FontAwesomeIcon />');
+  const component = document.querySelector("[role=alert]");
+
+  expect(component.innerHTML).toEqual('No Records found!');
 
 });
 
@@ -21,16 +39,20 @@ test('ErrorMessage on-close test',  () => {
     const mockCloseWarningStatus = jest.fn();
     const mockClearSearchValue = jest.fn();
 
-    const component = mount(
-        <ErrorMessage
-          className="errorDiv"
-          status="invalid"
-          closeWarningStatus={mockCloseWarningStatus}
-          clearSearchValue={mockClearSearchValue}
-        />
-    );
+    act(() => {
+      render(<ErrorMessage
+        className="errorDiv"
+        status="invalid"
+        closeWarningStatus={mockCloseWarningStatus}
+        clearSearchValue={mockClearSearchValue}
+      />, container);
+    });
 
-    component.find('FontAwesomeIcon').simulate('click');
+    const component = document.querySelector("[class=notification-close]").firstChild;
+
+    act(() => {
+      component.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
 
     expect(mockCloseWarningStatus.mock.calls.length).toBe(1);
     expect(mockClearSearchValue.mock.calls.length).toBe(1);
@@ -39,12 +61,13 @@ test('ErrorMessage on-close test',  () => {
 
 test('ErrorMessage no error test',  () => {
 
-    const component = shallow(
-        <ErrorMessage
-          className="errorDiv"
-          status="valid"
-        />
-    );
+  act(() => {
+    render(<ErrorMessage
+      className="errorDiv"
+      status="valid"
+    />, container);
+  });
 
-    expect(component.text()).toEqual('');
+  expect(container.innerHTML).toEqual("<div></div>");
+
 });
