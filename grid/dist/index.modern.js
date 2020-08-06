@@ -16,7 +16,7 @@ import 'jspdf-autotable';
 import { saveAs } from 'file-saver';
 import { utils, write } from 'xlsx';
 import '!style-loader!css-loader!sass-loader!./styles/exportdata.scss';
-import '!style-loader!css-loader!sass-loader!./styles/main.css';
+import '!style-loader!css-loader!sass-loader!./styles/main.scss';
 
 const CellDisplayAndEdit = /*#__PURE__*/memo(({
   row,

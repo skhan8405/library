@@ -20,7 +20,7 @@ require('jspdf-autotable');
 var FileSaver = require('file-saver');
 var XLSX = require('xlsx');
 require('!style-loader!css-loader!sass-loader!./styles/exportdata.scss');
-require('!style-loader!css-loader!sass-loader!./styles/main.css');
+require('!style-loader!css-loader!sass-loader!./styles/main.scss');
 
 function _extends() {
   _extends = Object.assign || function (target) {

@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useState, useEffect, Fragment } from "react";
 import { extractColumns, extractAdditionalColumn } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
-import "!style-loader!css-loader!sass-loader!./styles/main.css";
+import "!style-loader!css-loader!sass-loader!./styles/main.scss";
 
 const Grid = memo((props) => {
     const {
