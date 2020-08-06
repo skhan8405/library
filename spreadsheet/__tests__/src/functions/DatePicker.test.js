@@ -17,18 +17,7 @@ afterEach(() => {
 
 test("DatePicker", () => {
   const props = {
-    column: {
-      key: "date",
-      name: "Date",
-      draggable: false,
-      editor: "DatePicker",
-      formulaApplicable: false,
-      sortable: true,
-      resizable: true,
-      filterable: true,
-      width: 150,
-      filterType: "autoCompleteFilter",
-    },
+    column: "date",
   };
   act(() => {
     ReactDOM.render(<DatePicker {...props} />, container);
