@@ -30,57 +30,6 @@ let swapSortList = [];
 const { AutoCompleteFilter, NumericFilter } = Filters;
 
 class Spreadsheet extends Component {
-    {
-      return true;
-    }
-    return false;
-  }
-  loadMoreRows = (from, newRowsCount) => {    
-    return new Promise(resolve => {
-      let hasFilter = Object.keys(this.state.junk).length > 0;
-      let to = from + newRowsCount;
-      if(this.isSubset() && this.state.subDataSet.length > 0){
-        to = to < this.state.subDataSet.length? to : this.state.subDataSet.length
-        resolve(this.state.subDataSet.slice(from, to))
-      } else {
-        resolve(this.state.dataSet.slice(from, to));
-      }
-    });
-  }
-  handleScroll= async (event) => {
-    if (!this.isAtBottom(event)) 
-      return;
-    let newRows = await this.loadMoreRows(this.state.pageIndex * this.state.pageRowCount, this.state.pageRowCount);
-    if (newRows && newRows.length > 0) {
-      let length = this.state.rows.length + newRows.length;
-      this.setState({
-        rows: [...this.state.rows, ...newRows],
-        count: length,
-        pageIndex: this.state.pageIndex + 1
-      })
-    }
-  } 
-  componentDidUpdate() {
-    //Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
-    const resizeEvent = document.createEvent("HTMLEvents");
-    resizeEvent.initEvent("resize", true, false);
-    window.dispatchEvent(resizeEvent);
-  }
-  // updateRows = (startIdx, newRows) => {
-  //   this.setState((state) => {
-  //     const rows = state.rows.slice();
-  //     for (let i = 0; i < newRows.length; i++) {
-  //       if (startIdx + i < rows.length) {
-  //         rows[startIdx + i] = {
-  //           ...rows[startIdx + i],
-  //           ...newRows[i],
-  //         };
-  //       }
-  //       this.state.columns
-  //         .slice(topLeft.colIdx - 1, botRight.colIdx)
-  //         .map((col) => this.rowGetter(rowIdx)[col.key])
-  //         .join("\t")
-  //     )
     constructor(props) {
         super(props);
         const airportCodes = [];
