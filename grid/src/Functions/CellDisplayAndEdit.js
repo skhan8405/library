@@ -1,7 +1,7 @@
 import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import DisplayTag from "./DisplayTag";
-import { ColumnStructureContext } from "../Utilities/ColumnContext";
+import { ColumnsStructureContext } from "../Utilities/ColumnsContext";
 
 const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
     const { column } = row;
@@ -36,7 +36,7 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
         const cellDisplayContent = column.displayCell(originalRowValue, DisplayTag);
         const cellEditContent = column.editCell ? column.editCell(originalRowValue, DisplayTag, getUpdatedRowValue) : null;
         return (
-            <ColumnStructureContext.Provider value={{ columns: columns, column: column }}>
+            <ColumnsStructureContext.Provider value={{ columns: columns, column: column }}>
                 <ClickAwayListener onClickAway={closeEdit}>
                     <div className={`table-cell--content table-cell--content__${id}`}>
                         {cellEditContent ? (
@@ -54,7 +54,7 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
                         ) : null}
                     </div>
                 </ClickAwayListener>
-            </ColumnStructureContext.Provider>
+            </ColumnsStructureContext.Provider>
         );
     }
 });

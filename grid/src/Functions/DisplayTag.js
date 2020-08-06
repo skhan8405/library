@@ -1,8 +1,8 @@
 import React, { useContext, Fragment } from "react";
-import { ColumnStructureContext } from "../Utilities/ColumnContext";
+import { ColumnsStructureContext } from "../Utilities/ColumnsContext";
 
 const DisplayTag = (props) => {
-    const contextVallues = useContext(ColumnStructureContext);
+    const contextVallues = useContext(ColumnsStructureContext);
     const { column, columns } = contextVallues;
     const { cellKey, columnKey } = props;
 
