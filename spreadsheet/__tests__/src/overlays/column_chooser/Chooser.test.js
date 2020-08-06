@@ -4,7 +4,7 @@ import ColumnReordering from "../../../../src/overlays/column_chooser/Chooser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import ReactTestUtils, { act } from "react-dom/test-utils";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, getByRole } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { DndProvider } from "react-dnd";
 import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
@@ -86,26 +86,78 @@ test("chooser", () => {
   });
 });
 describe("chooser", () => {
-  test("renderscolumnList", () => {
-    const mockcolumnArray = jest.fn();
-    const mockHandleReorderList = jest.fn();
-    const wrapper = render(
-      <DndProvider backend="backend" options={{ enableMouseEvents: true }}>
-        <ColumnsList
-          columnsArray={mockcolumnArray}
-          handleReorderList={mockHandleReorderList}
-        />
-      </DndProvider>
-    );
-  });
+  const props = {
+    closeColumnReOrdering: jest.fn(),
+    columns: [
+      {
+        key: "flightno",
+        name: "FlightNo",
+        draggable: false,
+        editor: "Text",
+        formulaApplicable: false,
+        sortable: true,
+        resizable: true,
+        filterable: true,
+        width: 150,
+        filterType: "autoCompleteFilter",
+      },
+      {
+        key: "date",
+        name: "Date",
+        draggable: false,
+        editor: "DatePicker",
+        formulaApplicable: false,
+        sortable: true,
+        resizable: true,
+        filterable: true,
+        width: 150,
+        filterType: "autoCompleteFilter",
+      },
+      {
+        key: "segmentfrom",
+        name: "Segment From",
+        draggable: false,
+        editor: "DropDown",
+        formulaApplicable: false,
+        sortable: true,
+        resizable: true,
+        filterable: true,
+        width: 150,
+        filterType: "autoCompleteFilter",
+      },
+    ],
+    headerKeys: ["FlightNo", "Date", "Segment From"],
+    existingPinnedHeadersList: ["FlightNo", "Date", "Segment From"],
+    maxLeftPinnedColumn: 5,
+    updateTableAsPerRowChooser: jest.fn(),
+    handleheaderNameList: jest.fn(),
+  };
+  // test("renderscolumnList", () => {
+  //   const mockcolumnArray = jest.fn();
+  //   const mockHandleReorderList = jest.fn();
+  //   const wrapper = render(
+  //     <DndProvider backend="backend" options={{ enableMouseEvents: true }}>
+  //       <ColumnsList
+  //         columnsArray={mockcolumnArray}
+  //         handleReorderList={mockHandleReorderList}
+  //       />
+  //     </DndProvider>
+  //   );
+  // });
   test("triggers onChange event", () => {
+    let component = ReactDOM.render(<ColumnReordering {...props} />, container);
     screen.debug();
-
-    fireEvent.change(screen.getByRole("check1", input), {
-      target: { value: ["FlightNo", "Date", "Segment From"] },
+    const element = screen.getByTestId("checkboxFlightNo");
+    fireEvent.change(screen.getByTestId("checkboxFlightNo"), {
+      target: { value: "FlightNo" },
     });
+    // screen.debug();
 
-    screen.debug();
+    // fireEvent.change(screen.getByRole("check1", input), {
+    //   target: { value: ["FlightNo", "Date", "Segment From"] },
+    // });
+
+    // screen.debug();
   });
 });
 

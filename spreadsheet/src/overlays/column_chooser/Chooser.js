@@ -168,7 +168,7 @@ class ColumnReordering extends React.Component {
             <div className="column__wrap">
               <div className="column__checkbox">
                 <input
-                  role="check1"
+                  data-testid={"checkbox" + item}
                   type="checkbox"
                   id={"checkBoxToPinLeft_" + item}
                   checked={this.state.leftPinnedColumList.includes(item)}
