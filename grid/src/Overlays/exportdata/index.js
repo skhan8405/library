@@ -4,6 +4,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+import "!style-loader!css-loader!sass-loader!./styles/exportdata.scss";
 
 const ExportData = memo((props) => {
     const {

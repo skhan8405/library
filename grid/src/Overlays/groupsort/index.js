@@ -5,6 +5,7 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import ClickAwayListener from "react-click-away-listener";
 import SortingList from "./sortingList";
+import "!style-loader!css-loader!sass-loader!./styles/groupsort.scss";
 
 const GroupSort = memo((props) => {
     const { isGroupSortOverLayOpen, toggleGroupSortOverLay, applyGroupSort, originalColumns } = props;
