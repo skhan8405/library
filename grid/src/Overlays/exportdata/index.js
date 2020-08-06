@@ -39,33 +39,36 @@ const ExportData = memo((props) => {
         if (managedColumns.length > 0 && downloadTypes.length > 0) {
             rows.forEach((rowDetails) => {
                 let row = rowDetails.original;
-                const keys = Object.getOwnPropertyNames(row);
                 let filteredColumnVal = {};
                 let rowFilteredValues = [];
-                keys.forEach(function (key) {
-                    managedColumns.forEach((columnName) => {
-                        if (
-                            columnName.accessor === key ||
-                            (columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key))
-                        ) {
-                            let columnValue = "";
-                            if (typeof row[key] === "object") {
-                                if (row[key].length === undefined)
-                                    columnValue = Object.values(row[key]).toString().replace(",", " | ");
-                                if (row[key].length > 0) {
-                                    let arrObj = "";
-                                    row[key].forEach((item, index) => {
-                                        arrObj = index != 0 ? arrObj + " | " + Object.values(item) : Object.values(item);
+                managedColumns.forEach((columnName) => {
+                    const { Header, accessor, innerCells } = columnName;
+                    const accessorRowValue = row[accessor];
+                    let columnValue = "";
+                    if (accessor && accessorRowValue) {
+                        if (innerCells && innerCells.length > 0 && typeof accessorRowValue === "object") {
+                            innerCells.forEach((cell) => {
+                                const innerCellAccessor = cell.accessor;
+                                const innerCellHeader = cell.Header;
+                                const innerCellAccessorValue = accessorRowValue[innerCellAccessor];
+                                if (accessorRowValue.length > 0) {
+                                    accessorRowValue.forEach((item, index) => {
+                                        columnValue = item[innerCellAccessor].toString();
+                                        filteredColumnVal[Header + " - " + innerCellHeader + "_" + index] = columnValue;
+                                        rowFilteredValues.push(columnValue);
                                     });
-                                    columnValue = arrObj;
+                                } else if (innerCellAccessorValue) {
+                                    columnValue = innerCellAccessorValue;
+                                    filteredColumnVal[Header + " - " + innerCellHeader] = columnValue;
+                                    rowFilteredValues.push(columnValue);
                                 }
-                            } else {
-                                columnValue = row[key];
-                            }
-                            filteredColumnVal[key] = columnValue;
+                            });
+                        } else {
+                            columnValue = accessorRowValue;
+                            filteredColumnVal[Header] = columnValue;
                             rowFilteredValues.push(columnValue);
                         }
-                    });
+                    }
                 });
                 filteredRow.push(filteredColumnVal);
                 filteredRowValues.push(rowFilteredValues);
