@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from "react-dom/test-utils";
-import { shallow, mount } from 'enzyme';
+import ReactTestUtils, { act } from "react-dom/test-utils";
 import ColumnsList, { findColumn } from "../../../../src/overlays/column_chooser/columnsList";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";

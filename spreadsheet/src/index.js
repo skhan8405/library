@@ -37,14 +37,21 @@ class Spreadsheet extends Component {
     this.props.airportCodes.forEach((item) => {
       airportCodes.push({ id: item, value: item });
     });
+    const dataSetVar = JSON.parse(JSON.stringify(this.props.dataSet))
     this.state = {
       warningStatus: "",
       height: 680,
       displayNoRows: "none",
       searchIconDisplay: "",
       searchValue: "",
+      sortColumn: "",
+      sortDirection:"NONE",
       filter: {},
-      rows: JSON.parse(JSON.stringify(this.props.rows)),
+      pageRowCount: this.props.pageSize,
+      pageIndex:1,
+      dataSet: dataSetVar,
+      subDataSet: [],
+      rows: dataSetVar? dataSetVar.slice(0,500):[],
       selectedIndexes: [],
       junk: {},
       topLeft: {},
@@ -85,6 +92,45 @@ class Spreadsheet extends Component {
       return item.formulaApplicable;
     });
   }
+  
+  isAtBottom = (event) => {
+    const target = event.target;// as HTMLDivElement;
+    var isbtm = target.clientHeight + target.scrollTop >= target.scrollHeight-10;
+    return isbtm;
+  }
+  isSubset(){
+    if(Object.keys(this.state.junk).length > 0 || this.state.sortDirection != "NONE" 
+      || this.state.searchValue != "")
+    {
+      return true;
+    }
+    return false;
+  }
+  loadMoreRows = (from, newRowsCount) => {    
+    return new Promise(resolve => {
+      let hasFilter = Object.keys(this.state.junk).length > 0;
+      let to = from + newRowsCount;
+      if(this.isSubset() && this.state.subDataSet.length > 0){
+        to = to < this.state.subDataSet.length? to : this.state.subDataSet.length
+        resolve(this.state.subDataSet.slice(from, to))
+      } else {
+        resolve(this.state.dataSet.slice(from, to));
+      }
+    });
+  }
+  handleScroll= async (event) => {
+    if (!this.isAtBottom(event)) 
+      return;
+    let newRows = await this.loadMoreRows(this.state.pageIndex * this.state.pageRowCount, this.state.pageRowCount);
+    if (newRows && newRows.length > 0) {
+      let length = this.state.rows.length + newRows.length;
+      this.setState({
+        rows: [...this.state.rows, ...newRows],
+        count: length,
+        pageIndex: this.state.pageIndex + 1
+      })
+    }
+  } 
   componentDidUpdate() {
     //Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
     const resizeEvent = document.createEvent("HTMLEvents");
@@ -266,11 +312,16 @@ class Spreadsheet extends Component {
     });
   };
 
+  setStateAsync(stateObj){
+    return new Promise(resolve => {
+      this.setState(stateObj, resolve);
+    });
+  }
   /**
    * Method To filter the multiple columns
    * @param {*} value is the  incoming filtering event
    */
-  handleFilterChange = (value) => {
+  handleFilterChange = async (value) => {
     let junk = this.state.junk;
     if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
       junk[value.column.key] = value;
@@ -278,18 +329,97 @@ class Spreadsheet extends Component {
       delete junk[value.column.key];
     }
     this.setState({ junk });
-    const data = this.getrows(this.state.filteringRows, this.state.junk);
-    this.setState({
-      rows: data,
-      tempRows: data,
+    let hasFilter = Object.keys(junk).length > 0;
+    const firstPage = this.state.dataSet.slice(0, this.state.pageRowCount);
+    let data = this.getrows(firstPage, this.state.junk);
+    await this.setStateAsync({
+      rows: data
+      ,tempRows: data,
       count: data.length,
+      subDataSet: hasFilter? data : [],
+      pageIndex: hasFilter? this.state.pageIndex: 1
     });
+    if (hasFilter) {
+      let rowsRemaining = this.state.dataSet.slice(this.state.pageRowCount, this.state.dataSet.length);
+      this.getSlicedRows(this.state.junk, rowsRemaining, data);
+    } else {
+      let rowsRemaining = this.state.dataSet;//.slice(this.state.pageRowCount, this.state.dataSet.length);
+      if (this.state.searchValue != "") {
+        let searchKey = String(this.state.searchValue).toLowerCase();
+        rowsRemaining = rowsRemaining.filter((item) => {
+          return Object.values(item).toString().toLowerCase().includes(searchKey);
+        });
+      }
+
+      if (this.state.sortDirection != "NONE" && this.state.sortColumn != "") {
+        rowsRemaining = this.sortFilteredRows(rowsRemaining, this.state.sortColumn, this.state.sortDirection);
+        let rw = rowsRemaining.slice(0, this.state.pageIndex * this.state.pageRowCount);
+        await this.setStateAsync({
+          subDataSet: rowsRemaining,
+          rows: rw,
+          tempRows: rw,
+          count: rw.length,
+        });
+        data = rw;
+      }
+    }
     if (data.length === 0) {
       this.handleWarningStatus();
     } else {
-      this.closeWarningStatus();
+      this.closeWarningStatus(data);
     }
   };
+  
+  getSlicedRows = async (filters, rowsToSplit, firstResult ) => {
+    let data = [];
+    if(rowsToSplit.length > 0){
+      var chunks = [];           
+      while (rowsToSplit.length) {
+        chunks.push(rowsToSplit.splice(0, 500));
+      }
+      let index = 0;
+      chunks.forEach(async (arr,i) => {
+        this.getRowsAsync(arr, filters).then(async (dt)=>{          
+          index++;      
+          data = [...data, ...dt];          
+          if(index == chunks.length){
+            let dtSet = [...firstResult, ...data];
+            if (this.state.searchValue != "") {
+              let searchKey = String(this.state.searchValue).toLowerCase();
+              dtSet = dtSet.filter((item) => {
+                return Object.values(item).toString().toLowerCase().includes(searchKey);
+              });
+            }
+      
+            if(this.state.sortDirection != "NONE" && this.state.sortColumn != ""){
+              dtSet = this.sortFilteredRows(dtSet, this.state.sortColumn, this.state.sortDirection);
+            }
+            let rw = dtSet.slice(0,this.state.pageIndex * this.state.pageRowCount);
+            await this.setStateAsync({
+              subDataSet: dtSet,
+              rows: rw,
+              tempRows: rw,
+              count: rw.length,
+            });
+            if (dtSet.length === 0) {
+              this.handleWarningStatus();
+            } else {
+              this.closeWarningStatus(rw);
+            }
+          }
+        });
+      });
+    }
+  }
+  getRowsAsync = async (rows, filters) => {
+    if (Object.keys(filters).length <= 0) {
+      filters = {};
+    }
+    selectors.getRows({ rows: [], filters: {} });
+    return await selectors.getRows({ rows: rows, filters: filters });
+  };
+
+
   getrows = (rows, filters) => {
     if (Object.keys(filters).length <= 0) {
       filters = {};
@@ -326,12 +456,34 @@ class Spreadsheet extends Component {
         return a[sortColumn] < b[sortColumn] ? 1 : -1;
       }
     };
+    let hasFilter = Object.keys(this.state.junk).length > 0;
+    let dtRows = [];
+    if (hasFilter) {
+      dtRows = this.state.subDataSet;
+    } else {
+      dtRows = this.state.dataSet;
+    }
+    let result = [...dtRows].sort(comparer);
     this.setState({
-      rows: [...data].sort(comparer),
+      rows: result.slice(0, this.state.pageIndex * this.state.pageRowCount),
+      subDataSet: result,
       selectedIndexes: [],
+      sortColumn: sortDirection === "NONE" ? "" : sortColumn,
+      sortDirection: sortDirection
     });
     return sortDirection === "NONE" ? data : this.state.rows;
   };
+  sortFilteredRows = (data, sortColumn, sortDirection) => {
+    this.setState({ selectedIndexes: [] });
+    const comparer = (a, b) => {
+      if (sortDirection === "ASC") {
+        return a[sortColumn] > b[sortColumn] ? 1 : -1;
+      } else if (sortDirection === "DESC") {
+        return a[sortColumn] < b[sortColumn] ? 1 : -1;
+      }
+    };
+    return sortDirection === "NONE" ? data : [...data].sort(comparer);;
+  }
   /**
    * Method To swap the columns
    * @param {*} source is source column
@@ -641,6 +793,41 @@ class Spreadsheet extends Component {
       });
   };
 
+  getSearchRecords(e){
+    let searchKey = String(e.target.value).toLowerCase();
+    let hasFilter = Object.keys(this.state.junk).length > 0;
+    let isSorted = this.state.sortDirection != "NONE" && this.state.sortColumn != "";
+    let rowsToSearch = [];
+    // Remove search key
+    if (this.state.searchValue.startsWith(searchKey) || searchKey == "") {
+      if (hasFilter) {
+        let rowsToSplit = [...this.state.dataSet];
+        var chunks = [];
+        while (rowsToSplit.length) {
+          chunks.push(rowsToSplit.splice(0, 500));
+        }
+        let index = 0;
+        chunks.forEach((arr, i) => {
+          let dt = this.getrows(arr, this.state.junk);
+          rowsToSearch = [...rowsToSearch, ...dt];
+        })
+      } else {
+        rowsToSearch = [...this.state.dataSet];
+      }
+      if (isSorted) {
+        return this.sortFilteredRows(rowsToSearch, this.state.sortColumn, this.state.sortDirection);
+      }
+      return rowsToSearch;
+    } 
+    // Set search key
+    else{
+      if(hasFilter || isSorted || searchKey.length > 1)
+        return this.state.subDataSet; 
+      else
+      return this.state.dataSet;
+    }
+  }
+
   globalSearchLogic = (e, updatedRows) => {
     let searchKey = String(e.target.value).toLowerCase();
     let filteredRows = updatedRows.filter((item) => {
@@ -649,7 +836,11 @@ class Spreadsheet extends Component {
     if (!filteredRows.length) {
       this.setState({ warningStatus: "invalid", rows: [] });
     } else {
-      this.setState({ warningStatus: "", rows: filteredRows });
+      let rowSlice = filteredRows.slice(0, this.state.pageIndex * this.state.pageRowCount);
+      this.setState({ warningStatus: "", 
+        rows: rowSlice,
+        subDataSet: filteredRows,
+        count: rowSlice.length, });
     }
   };
 
@@ -657,8 +848,8 @@ class Spreadsheet extends Component {
     this.setState({ warningStatus: "invalid" });
   };
 
-  closeWarningStatus = () => {
-    this.setState({ warningStatus: "", rows: this.props.rows });
+  closeWarningStatus = (rVal=this.props.rows) => {
+    this.setState({ warningStatus: "", rows: rVal });
   };
 
   save = () => {
@@ -667,7 +858,7 @@ class Spreadsheet extends Component {
 
   render() {
     return (
-      <div>
+      <div onScroll={this.handleScroll}>
         <div className="parentDiv">
           <div className="totalCount">
             Showing <strong> {this.state.count} </strong> records
@@ -680,7 +871,8 @@ class Spreadsheet extends Component {
               placeholder="Search"
               onChange={(e) => {
                 this.handleSearchValue(e.target.value);
-                this.globalSearchLogic(e, this.state.tempRows);
+                let srchRows = this.getSearchRecords(e);
+                this.globalSearchLogic(e, srchRows);
               }}
               value={this.state.searchValue}
             />
