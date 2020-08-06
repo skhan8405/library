@@ -9,7 +9,9 @@ const App = (props) => {
   //Set state value for variable to hold grid data
   const [data, setData] = useState();
   const rows = CargoData;
-
+  
+  // Spreadsheet page size
+  const pageSize = 500;
   const maxLeftPinnedColumn = 5;
   //Configure columns and its related featues such as editor(Text/DropDown), FormulaApplicable(True/False)
   //Editable, Draggable, sortable, resizable, filterable, default width
@@ -467,8 +469,10 @@ const App = (props) => {
     return (
       <div>
         <Spreadsheet
-          rows={data}
-          count={data.length}
+          rows={data.slice(0, pageSize)}
+          dataSet={data}
+          pageSize={pageSize}
+          count={pageSize}
           columns={columns}
           airportCodes={airportCodeList}
           gridHeight={gridHeight}

@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useState, useEffect, Fragment } from "react";
 import { extractColumns, extractAdditionalColumn } from "./Utilities/Columns";
 import Customgrid from "./Customgrid";
+import "!style-loader!css-loader!sass-loader!./styles/main.scss";
 
 const Grid = memo((props) => {
     const {
@@ -318,7 +319,6 @@ const Grid = memo((props) => {
                             </div>
                         </div>
                     ) : null}
-                    )
                 </div>
             ) : (
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>

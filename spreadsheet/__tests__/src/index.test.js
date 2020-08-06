@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { act } from "react-dom/test-utils";
 
-import { shallow, mount } from "enzyme";
+import ReactTestUtils from "react-dom/test-utils";
 import renderer from "react-test-renderer";
 import Spreadsheet from "../../src/index";
 import { applyFormula } from "../../src/utilities/utils";

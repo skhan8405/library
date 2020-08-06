@@ -5,6 +5,7 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
+import "!style-loader!css-loader!sass-loader!./styles/columnreorder.scss";
 
 const ColumnReordering = memo((props) => {
     const { isManageColumnOpen, toggleManageColumns, originalColumns, isExpandContentAvailable, additionalColumn } = props;
