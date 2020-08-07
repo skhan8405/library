@@ -114,7 +114,6 @@ const Grid = memo((props) => {
     //#region - Check if data is hidden or not and display data in rendered section
     //A custom tag created to be used by developer to bind data into the expanded component (if data chooser is selected)
     const DisplayTag = (props) => {
-        console.log(additionalColumn);
         const { cellKey } = props;
         if (additionalColumn && cellKey) {
             if (checkInnerCells(additionalColumn, cellKey)) {
