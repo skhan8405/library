@@ -33,19 +33,24 @@ const ExportData = memo((props) => {
         isDownload = true;
         let filteredRow = [];
         let filteredRowValues = [];
+        let filteredRowHeader = [];
 
         setWarning("");
 
         if (managedColumns.length > 0 && downloadTypes.length > 0) {
-            rows.forEach((rowDetails) => {
+            let rowLength = rows.length;
+            rows.forEach((rowDetails ,index) => {
                 let row = rowDetails.original;
                 let filteredColumnVal = {};
                 let rowFilteredValues = [];
+                let rowFilteredHeader = [];
                 managedColumns.forEach((columnName) => {
                     const { Header, accessor, innerCells } = columnName;
                     const accessorRowValue = row[accessor];
                     let columnValue = "";
-                    if (accessor && accessorRowValue) {
+                    let columnHeader = "";
+                    // if (accessor && accessorRowValue>=0) {
+                        if (accessor) {
                         if (innerCells && innerCells.length > 0 && typeof accessorRowValue === "object") {
                             innerCells.forEach((cell) => {
                                 const innerCellAccessor = cell.accessor;
@@ -54,29 +59,37 @@ const ExportData = memo((props) => {
                                 if (accessorRowValue.length > 0) {
                                     accessorRowValue.forEach((item, index) => {
                                         columnValue = item[innerCellAccessor].toString();
-                                        filteredColumnVal[Header + " - " + innerCellHeader + "_" + index] = columnValue;
+                                        columnHeader = Header + " - " + innerCellHeader + "_" + index;
+                                        filteredColumnVal[columnHeader] = columnValue;
                                         rowFilteredValues.push(columnValue);
+                                        rowFilteredHeader.push(columnHeader);
                                     });
                                 } else if (innerCellAccessorValue) {
                                     columnValue = innerCellAccessorValue;
-                                    filteredColumnVal[Header + " - " + innerCellHeader] = columnValue;
+                                    columnHeader = Header + " - " + innerCellHeader;
+                                    filteredColumnVal[columnHeader] = columnValue;
                                     rowFilteredValues.push(columnValue);
+                                    rowFilteredHeader.push(columnHeader);
                                 }
                             });
                         } else {
                             columnValue = accessorRowValue;
-                            filteredColumnVal[Header] = columnValue;
+                            columnHeader = Header;
+                            filteredColumnVal[columnHeader] = columnValue;
                             rowFilteredValues.push(columnValue);
+                            rowFilteredHeader.push(columnHeader);
                         }
                     }
                 });
                 filteredRow.push(filteredColumnVal);
                 filteredRowValues.push(rowFilteredValues);
+                if(rowLength == index+1)
+                filteredRowHeader.push(rowFilteredHeader);
             });
 
             downloadTypes.map((item) => {
                 if (item === "pdf") {
-                    downloadPDF(filteredRowValues);
+                    downloadPDF(filteredRowValues, filteredRowHeader);
                 } else if (item === "excel") {
                     downloadXLSFile(filteredRow);
                 } else {
@@ -94,27 +107,28 @@ const ExportData = memo((props) => {
         }
     };
 
-    const downloadPDF = (rowFilteredValues) => {
+    const downloadPDF = (rowFilteredValues, rowFilteredHeader) => {
         const unit = "pt";
-        const size = "A4"; // Use A1, A2, A3 or A4
+        const size = "A3"; // Use A1, A2, A3 or A4
         const orientation = "landscape"; // portrait or landscape
 
-        const marginLeft = 300;
+        const marginLeft = 30;
         const doc = new jsPDF(orientation, unit, size);
 
         doc.setFontSize(15);
-
         const title = "iCargo Neo Report";
-        const headers = [
-            managedColumns.map((column) => {
-                return column.Header;
-            })
-        ];
 
         let content = {
             startY: 50,
-            head: headers,
-            body: rowFilteredValues
+            head: rowFilteredHeader,
+            body: rowFilteredValues,
+            tableWidth: 'wrap',//'auto'|'wrap'|'number'
+            headStyles: { fillColor: [102, 102, 255] },
+            styles: { fontSize: 8, overflowX: 'visible', overflowY: 'visible' },
+            theme: "grid",//'striped'|'grid'|'plain'|'css'
+            overflow: 'visible',//'linebreak'|'ellipsize'|'visible'|'hidden'
+            cellWidth: 'auto',
+            margin: {top: 15, right: 30, bottom: 10, left: 30},
         };
 
         doc.text(title, marginLeft, 40);
