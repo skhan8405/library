@@ -1,6 +1,6 @@
 import React, { useContext, Fragment } from "react";
 import { CellDisplayAndEditContext } from "../Utilities/TagsContext";
-import { checkInnerCells } from "../Utilities/Columns";
+import { checkInnerCells } from "../Utilities/TagUtilities";
 
 const CellDisplayAndEditTag = (props) => {
     const contextVallues = useContext(CellDisplayAndEditContext);

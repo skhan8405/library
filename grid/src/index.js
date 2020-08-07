@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useState, useEffect, Fragment } from "react";
-import { extractColumns, extractAdditionalColumn } from "./Utilities/Columns";
+import { extractColumns, extractAdditionalColumn } from "./Utilities/ColumnsUtilities";
 import Customgrid from "./Customgrid";
 import "!style-loader!css-loader!sass-loader!./styles/main.scss";
 

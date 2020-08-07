@@ -1,6 +1,6 @@
 import React, { useContext, Fragment } from "react";
 import { RowEditContext } from "../Utilities/TagsContext";
-import { checkInnerCells } from "../Utilities/Columns";
+import { checkInnerCells } from "../Utilities/TagUtilities";
 
 const RowEditTag = (props) => {
     const contextVallues = useContext(RowEditContext);
