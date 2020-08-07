@@ -678,6 +678,7 @@ class Spreadsheet extends Component {
             filterVal = {};
         }
         selectors.getRows({ rows: [], filters: {} });
+        // eslint-disable-next-line object-shorthand
         return selectors.getRows({ rows: rows, filters: filterVal });
     };
 
@@ -687,6 +688,7 @@ class Spreadsheet extends Component {
             filterVal = {};
         }
         selectors.getRows({ rows: [], filters: {} });
+        // eslint-disable-next-line object-shorthand
         return selectors.getRows({ rows: rows, filters: filterVal });
     };
 
@@ -1101,6 +1103,7 @@ let sortBy;
 
         // preprocess sorting options
         for (let i = 0; i < nFields; i++) {
+            // eslint-disable-next-line prefer-rest-params
             field = arguments[i];
             if (typeof field === "string") {
                 name = field;

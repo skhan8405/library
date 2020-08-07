@@ -1,5 +1,5 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import PropTypes from "prop-types";
@@ -48,7 +48,7 @@ const ColumnsList = (props) => {
     }, [props.columnsArray]);
 
     return (
-        <>
+        <Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
                 {columns.map((column) => (
                     <ColumnItem
@@ -60,7 +60,7 @@ const ColumnsList = (props) => {
                     />
                 ))}
             </div>
-        </>
+        </Fragment>
     );
 };
 

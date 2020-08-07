@@ -1,5 +1,5 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import PropTypes from "prop-types";
@@ -49,7 +49,7 @@ const SortingList = (props) => {
     }, [props.sortsArray]);
 
     return (
-        <>
+        <Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
                 {cards.map((card) => (
                     <Card
@@ -61,7 +61,7 @@ const SortingList = (props) => {
                     />
                 ))}
             </div>
-        </>
+        </Fragment>
     );
 };
 

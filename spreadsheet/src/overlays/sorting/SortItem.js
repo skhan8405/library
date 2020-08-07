@@ -16,6 +16,7 @@ const Card = ({ id, text, moveCard, findCard }) => {
             isDragging: monitor.isDragging()
         }),
         end: (dropResult, monitor) => {
+            // eslint-disable-next-line no-shadow
             const { id: droppedId, originalIndex } = monitor.getItem();
             const didDrop = monitor.didDrop();
             if (!didDrop) {
