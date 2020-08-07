@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -400,18 +401,42 @@ class Spreadsheet extends Component {
     };
 
     clearAllSortingParams = () => {
+        const hasSingleSortkey =
+            this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
+
+        let dataRows = this.getFilterResult([...this.state.dataSet]);
+        if (this.state.searchValue !== "") {
+            const searchKey = String(this.state.searchValue).toLowerCase();
+            dataRows = dataRows.filter((item) => {
+                return Object.values(item)
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchKey);
+            });
+        }
+        if (hasSingleSortkey) {
+            dataRows = this.getSingleSortResult(dataRows);
+        }
         this.setState({
-            rows: JSON.parse(JSON.stringify(this.props.rows))
+            rows: dataRows.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            ),
+            subDataSet: dataRows
         });
     };
 
     // Export Data Logic
     exportColumnData = () => {
+        let exportData = this.state.dataSet;
+        if (this.isSubset()) {
+            exportData = this.state.subDataSet;
+        }
         this.setState({ selectedIndexes: [] });
         this.setState({
             exportComponent: (
                 <ExportData
-                    rows={this.state.rows}
+                    rows={exportData}
                     columnsList={this.state.columns}
                     closeExport={this.closeExport}
                 />
@@ -425,17 +450,17 @@ class Spreadsheet extends Component {
         });
     };
 
-    // handleColumnResize = (idx, width) => {
-    //   let columnArray = [...this.state.columns];
-    //   columnArray.forEach((item) => {
-    //     if (item.name === this.state.columns[idx - 1].name) {
-    //       item.width = width;
-    //     }
-    //   });
-    //   this.setState({ columns: columnArray });
-    // };
     setTableAsPerSortingParams = (tableSortList) => {
-        const existingRows = this.state.rows;
+        const hasFilter = Object.keys(this.state.junk).length > 0;
+        const hasSearchKey =
+            String(this.state.searchValue).toLowerCase() !== "";
+        const hasSingleSortkey =
+            this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
+        let existingRows = [...this.state.dataSet];
+        if (hasFilter || hasSearchKey || hasSingleSortkey) {
+            existingRows = [...this.state.subDataSet];
+        }
+
         let sortingOrderNameList = [];
         tableSortList.forEach((item) => {
             let nameOfItem = "";
@@ -491,11 +516,73 @@ class Spreadsheet extends Component {
         // eslint-disable-next-line no-use-before-define
         existingRows.sort(sortBy(...sortingOrderNameList));
         this.setState({
-            rows: existingRows,
+            rows: existingRows.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            ),
+            subDataSet: existingRows,
             sortingParamsObjectList: tableSortList
         });
 
         this.closeSorting();
+    };
+
+    // Group sort - while updating conditions like search, filter or sorting; copy of setTableAsPerSortingParams.
+    groupSort = (tableSortList, existingRows) => {
+        let sortingOrderNameList = [];
+        tableSortList.forEach((item) => {
+            let nameOfItem = "";
+            Object.keys(this.state.rows[0]).forEach((rowItem) => {
+                if (
+                    rowItem.toLowerCase() ===
+                    this.toCamelCase(item.sortBy).toLowerCase()
+                ) {
+                    nameOfItem = rowItem;
+                }
+            });
+            const typeOfItem = this.state.rows[0][item.sortBy === nameOfItem];
+            if (typeof typeOfItem === "number") {
+                sortingOrderNameList.push({
+                    name: nameOfItem,
+                    primer: parseInt,
+                    reverse: item.order !== "Ascending"
+                });
+            } else {
+                sortingOrderNameList.push({
+                    name: nameOfItem,
+                    reverse: item.order !== "Ascending"
+                });
+            }
+        });
+
+        if (swapSortList.length > 0) {
+            const existingSortingOrderSwapList = this.state
+                .sortingOrderSwapList;
+            swapSortList.forEach((item, index) => {
+                const stringOfItemIndex = `${item}${index}`;
+                if (
+                    item !== index &&
+                    !existingSortingOrderSwapList.includes(
+                        stringOfItemIndex.split("").reverse().join("")
+                    )
+                ) {
+                    existingSortingOrderSwapList.push(stringOfItemIndex);
+                    sortingOrderNameList = this.arrayMove(
+                        sortingOrderNameList,
+                        item,
+                        index
+                    );
+                    // eslint-disable-next-line no-param-reassign
+                    tableSortList = this.arrayMove(tableSortList, item, index);
+                }
+                this.setState({
+                    sortingOrderSwapList: existingSortingOrderSwapList
+                });
+            });
+        }
+
+        // eslint-disable-next-line no-use-before-define
+        return existingRows.sort(sortBy(...sortingOrderNameList));
     };
 
     toCamelCase = (str) => {
@@ -520,37 +607,34 @@ class Spreadsheet extends Component {
     getSearchRecords(e) {
         const searchKey = String(e.target.value).toLowerCase();
         const hasFilter = Object.keys(this.state.junk).length > 0;
-        const isSorted =
+        const hasSingleSortkey =
             this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
+        const hasGropSortKeys =
+            this.state.sortingParamsObjectList &&
+            this.state.sortingParamsObjectList.length > 0;
         let rowsToSearch = [];
         // Remove search key
         if (this.state.searchValue.startsWith(searchKey) || searchKey === "") {
-            if (hasFilter) {
-                const rowsToSplit = [...this.state.dataSet];
-                const chunks = [];
-                while (rowsToSplit.length) {
-                    chunks.push(rowsToSplit.splice(0, 500));
-                }
-                // const index = 0;
-                chunks.forEach((arr) => {
-                    const dt = this.getrows(arr, this.state.junk);
-                    rowsToSearch = [...rowsToSearch, ...dt];
-                });
-            } else {
-                rowsToSearch = [...this.state.dataSet];
+            rowsToSearch = this.getFilterResult([...this.state.dataSet]);
+            if (hasSingleSortkey) {
+                rowsToSearch = this.getSingleSortResult(rowsToSearch);
             }
-            if (isSorted) {
-                return this.sortFilteredRows(
-                    rowsToSearch,
-                    this.state.sortColumn,
-                    this.state.sortDirection
+            if (hasGropSortKeys) {
+                rowsToSearch = this.groupSort(
+                    this.state.sortingParamsObjectList,
+                    rowsToSearch
                 );
             }
             return rowsToSearch;
         }
         // Set search key
 
-        if (hasFilter || isSorted || searchKey.length > 1)
+        if (
+            hasFilter ||
+            hasSingleSortkey ||
+            searchKey.length > 1 ||
+            hasGropSortKeys
+        )
             return this.state.subDataSet;
         return this.state.dataSet;
     }
@@ -563,18 +647,28 @@ class Spreadsheet extends Component {
         swapList = reordered;
     };
 
-    sortFilteredRows = (data, sortColumn, sortDirection) => {
-        this.setState({ selectedIndexes: [] });
-        const comparer = (a, b) => {
-            if (sortDirection === "ASC") {
-                return a[sortColumn] > b[sortColumn] ? 1 : -1;
-            }
-            if (sortDirection === "DESC") {
-                return a[sortColumn] < b[sortColumn] ? 1 : -1;
-            }
-            return 0;
-        };
-        return sortDirection === "NONE" ? data : [...data].sort(comparer);
+    getSingleSortResult = (data) => {
+        if (
+            this.state.sortDirection !== "NONE" &&
+            this.state.sortColumn !== ""
+        ) {
+            // eslint-disable-next-line prefer-destructuring
+            const sortColumn = this.state.sortColumn;
+            // eslint-disable-next-line prefer-destructuring
+            const sortDirection = this.state.sortDirection;
+            this.setState({ selectedIndexes: [] });
+            const comparer = (a, b) => {
+                if (sortDirection === "ASC") {
+                    return a[sortColumn] > b[sortColumn] ? 1 : -1;
+                }
+                if (sortDirection === "DESC") {
+                    return a[sortColumn] < b[sortColumn] ? 1 : -1;
+                }
+                return 0;
+            };
+            return sortDirection === "NONE" ? data : [...data].sort(comparer);
+        }
+        return data;
     };
 
     /**
@@ -585,6 +679,7 @@ class Spreadsheet extends Component {
      */
     sortRows = (data, sortColumn, sortDirection) => {
         this.setState({ selectedIndexes: [] });
+        // eslint-disable-next-line consistent-return
         const comparer = (a, b) => {
             if (sortDirection === "ASC") {
                 return a[sortColumn] > b[sortColumn] ? 1 : -1;
@@ -592,11 +687,15 @@ class Spreadsheet extends Component {
             if (sortDirection === "DESC") {
                 return a[sortColumn] < b[sortColumn] ? 1 : -1;
             }
-            return 0;
         };
         const hasFilter = Object.keys(this.state.junk).length > 0;
+        const hasSearchKey =
+            String(this.state.searchValue).toLowerCase() !== "";
+        const hasGropSortKeys =
+            this.state.sortingParamsObjectList &&
+            this.state.sortingParamsObjectList.length > 0;
         let dtRows = [];
-        if (hasFilter) {
+        if (hasFilter || hasSearchKey || hasGropSortKeys) {
             dtRows = this.state.subDataSet;
         } else {
             dtRows = this.state.dataSet;
@@ -641,14 +740,14 @@ class Spreadsheet extends Component {
                             });
                         }
 
+                        dtSet = this.getSingleSortResult(dtSet);
                         if (
-                            this.state.sortDirection !== "NONE" &&
-                            this.state.sortColumn !== ""
+                            this.state.sortingParamsObjectList &&
+                            this.state.sortingParamsObjectList.length > 0
                         ) {
-                            dtSet = this.sortFilteredRows(
-                                dtSet,
-                                this.state.sortColumn,
-                                this.state.sortDirection
+                            dtSet = this.groupSort(
+                                this.state.sortingParamsObjectList,
+                                dtSet
                             );
                         }
                         const rw = dtSet.slice(
@@ -832,28 +931,29 @@ class Spreadsheet extends Component {
                         .includes(searchKey);
                 });
             }
+            rowsRemaining = this.getSingleSortResult(rowsRemaining);
 
             if (
-                this.state.sortDirection !== "NONE" &&
-                this.state.sortColumn !== ""
+                this.state.sortingParamsObjectList &&
+                this.state.sortingParamsObjectList.length > 0
             ) {
-                rowsRemaining = this.sortFilteredRows(
-                    rowsRemaining,
-                    this.state.sortColumn,
-                    this.state.sortDirection
+                rowsRemaining = this.groupSort(
+                    this.state.sortingParamsObjectList,
+                    rowsRemaining
                 );
-                const rw = rowsRemaining.slice(
-                    0,
-                    this.state.pageIndex * this.state.pageRowCount
-                );
-                await this.setStateAsync({
-                    subDataSet: rowsRemaining,
-                    rows: rw,
-                    tempRows: rw,
-                    count: rw.length
-                });
-                data = rw;
             }
+
+            const rw = rowsRemaining.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            );
+            await this.setStateAsync({
+                subDataSet: rowsRemaining,
+                rows: rw,
+                tempRows: rw,
+                count: rw.length
+            });
+            data = rw;
         }
         if (data.length === 0) {
             this.handleWarningStatus();
@@ -873,7 +973,9 @@ class Spreadsheet extends Component {
         if (
             Object.keys(this.state.junk).length > 0 ||
             this.state.sortDirection !== "NONE" ||
-            this.state.searchValue !== ""
+            this.state.searchValue !== "" ||
+            (this.state.sortingParamsObjectList &&
+                this.state.sortingParamsObjectList.length > 0)
         ) {
             return true;
         }
@@ -924,7 +1026,7 @@ class Spreadsheet extends Component {
                 .includes(searchKey);
         });
         if (!filteredRows.length) {
-            this.setState({ warningStatus: "invalid", rows: [] });
+            this.setState({ warningStatus: "invalid", rows: [], count: 0 });
         } else {
             const rowSlice = filteredRows.slice(
                 0,
@@ -943,14 +1045,92 @@ class Spreadsheet extends Component {
         this.setState({ warningStatus: "invalid" });
     };
 
-    closeWarningStatus = (rVal = this.props.rows) => {
-        this.setState({ warningStatus: "", rows: rVal });
+    closeWarningStatus = (val) => {
+        let rVal = val;
+        if (!rVal) {
+            const hasSingleSortkey =
+                this.state.sortDirection !== "NONE" &&
+                this.state.sortColumn !== "";
+            const hasGropSortKeys =
+                this.state.sortingParamsObjectList &&
+                this.state.sortingParamsObjectList.length > 0;
+
+            let dataRows = this.getFilterResult([...this.state.dataSet]);
+            if (hasSingleSortkey) {
+                dataRows = this.getSingleSortResult(dataRows);
+            }
+            if (hasGropSortKeys) {
+                dataRows = this.groupSort(
+                    this.state.sortingParamsObjectList,
+                    dataRows
+                );
+            }
+            rVal = dataRows.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            );
+        }
+        this.setState({ warningStatus: "", rows: rVal, count: rVal.length });
     };
 
     save = () => {
         console.log("save");
     };
 
+    clearAllFilters = () => {
+        const hasSingleSortkey =
+            this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
+        const hasGropSortKeys =
+            this.state.sortingParamsObjectList &&
+            this.state.sortingParamsObjectList.length > 0;
+
+        let dtSet = this.getSearchResult(this.state.dataSet);
+        if (hasSingleSortkey) {
+            dtSet = this.getSingleSortResult(dtSet);
+        }
+        if (hasGropSortKeys) {
+            dtSet = this.groupSort(this.state.sortingParamsObjectList, dtSet);
+        }
+        const rVal = dtSet.slice(
+            0,
+            this.state.pageIndex * this.state.pageRowCount
+        );
+        this.setState({
+            rows: rVal,
+            count: rVal.length,
+            subDataSet: dtSet
+        });
+    };
+    getSearchResult = (data) => {
+        let dtSet = data;
+        const searchKey = String(this.state.searchValue).toLowerCase();
+        if (searchKey !== "") {
+            dtSet = dtSet.filter((item) => {
+                return Object.values(item)
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchKey);
+            });
+        }
+        return dtSet;
+    };
+    getFilterResult = (data) => {
+        let dataRows = [];
+        if (Object.keys(this.state.junk).length > 0) {
+            const rowsToSplit = [...data];
+            const chunks = [];
+            while (rowsToSplit.length) {
+                chunks.push(rowsToSplit.splice(0, 500));
+            }
+            chunks.forEach((arr) => {
+                const dt = this.getrows(arr, this.state.junk);
+                dataRows = [...dataRows, ...dt];
+            });
+        } else {
+            dataRows = [...data];
+        }
+        return dataRows;
+    };
     render() {
         return (
             <div onScroll={this.handleScroll}>
@@ -1033,6 +1213,7 @@ class Spreadsheet extends Component {
                     enableCellSelect
                     onClearFilters={() => {
                         this.setState({ junk: {} });
+                        this.clearAllFilters();
                     }}
                     onColumnResize={(idx, width) =>
                         console.log(
