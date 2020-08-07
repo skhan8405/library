@@ -2,7 +2,7 @@ import React, { useContext, Fragment } from "react";
 import { CellDisplayAndEditContext } from "../Utilities/TagsContext";
 import { checkInnerCells } from "../Utilities/Columns";
 
-const DisplayTag = (props) => {
+const CellDisplayAndEditTag = (props) => {
     const contextVallues = useContext(CellDisplayAndEditContext);
     const { column, columns } = contextVallues;
     const { cellKey, columnKey } = props;
@@ -20,4 +20,4 @@ const DisplayTag = (props) => {
     return null;
 };
 
-export default DisplayTag;
+export default CellDisplayAndEditTag;
