@@ -38,8 +38,8 @@ const ExportData = memo((props) => {
         setWarning("");
 
         if (managedColumns.length > 0 && downloadTypes.length > 0) {
-            let rowLength = rows.length;
-            rows.forEach((rowDetails ,index) => {
+            const rowLength = rows && rows.length > 0 ? rows.length : 0;
+            rows.forEach((rowDetails, index) => {
                 let row = rowDetails.original;
                 let filteredColumnVal = {};
                 let rowFilteredValues = [];
@@ -49,8 +49,7 @@ const ExportData = memo((props) => {
                     const accessorRowValue = row[accessor];
                     let columnValue = "";
                     let columnHeader = "";
-                    // if (accessor && accessorRowValue>=0) {
-                        if (accessor) {
+                    if (accessor) {
                         if (innerCells && innerCells.length > 0 && typeof accessorRowValue === "object") {
                             innerCells.forEach((cell) => {
                                 const innerCellAccessor = cell.accessor;
@@ -83,8 +82,7 @@ const ExportData = memo((props) => {
                 });
                 filteredRow.push(filteredColumnVal);
                 filteredRowValues.push(rowFilteredValues);
-                if(rowLength == index+1)
-                filteredRowHeader.push(rowFilteredHeader);
+                if (rowLength === index + 1) filteredRowHeader.push(rowFilteredHeader);
             });
 
             downloadTypes.map((item) => {
@@ -109,7 +107,7 @@ const ExportData = memo((props) => {
 
     const downloadPDF = (rowFilteredValues, rowFilteredHeader) => {
         const unit = "pt";
-        const size = "A3"; // Use A1, A2, A3 or A4
+        const size = "A4"; // Use A1, A2, A3 or A4
         const orientation = "landscape"; // portrait or landscape
 
         const marginLeft = 30;
@@ -122,13 +120,13 @@ const ExportData = memo((props) => {
             startY: 50,
             head: rowFilteredHeader,
             body: rowFilteredValues,
-            tableWidth: 'wrap',//'auto'|'wrap'|'number'
+            tableWidth: "wrap", //'auto'|'wrap'|'number'
             headStyles: { fillColor: [102, 102, 255] },
-            styles: { fontSize: 8, overflowX: 'visible', overflowY: 'visible' },
-            theme: "grid",//'striped'|'grid'|'plain'|'css'
-            overflow: 'visible',//'linebreak'|'ellipsize'|'visible'|'hidden'
-            cellWidth: 'auto',
-            margin: {top: 15, right: 30, bottom: 10, left: 30},
+            styles: { fontSize: 12, overflowX: "visible", overflowY: "visible" },
+            theme: "grid", //'striped'|'grid'|'plain'|'css'
+            overflow: "visible", //'linebreak'|'ellipsize'|'visible'|'hidden'
+            cellWidth: "auto",
+            margin: { top: 15, right: 30, bottom: 10, left: 30 }
         };
 
         doc.text(title, marginLeft, 40);
