@@ -1,12 +1,21 @@
+/* eslint-disable react/destructuring-assignment */
 import React, { useState } from "react";
 import { useDrop } from "react-dnd";
-import Card from "./SortItem";
 import update from "immutability-helper";
-import { ItemTypes } from "./ItemTypes";
 import PropTypes from "prop-types";
+import Card from "./SortItem";
+import { ItemTypes } from "./ItemTypes";
 
 const SortingList = (props) => {
     const [cards, setCards] = useState([...props.sortsArray]);
+
+    const findCard = (id) => {
+        const card = cards.filter((c) => `${c.id}` === id)[0];
+        return {
+            card,
+            index: cards.indexOf(card)
+        };
+    };
 
     const moveCard = (id, atIndex) => {
         const { card, index } = findCard(id);
@@ -19,7 +28,7 @@ const SortingList = (props) => {
             })
         );
 
-        let values = [];
+        const values = [];
         let temp = [];
         temp = update(cards, {
             $splice: [
@@ -33,14 +42,6 @@ const SortingList = (props) => {
         props.handleReorderListOfSort(values);
     };
 
-    const findCard = (id) => {
-        const card = cards.filter((c) => `${c.id}` === id)[0];
-        return {
-            card,
-            index: cards.indexOf(card)
-        };
-    };
-
     const [, drop] = useDrop({ accept: ItemTypes.CARD });
 
     React.useEffect(() => {
@@ -48,7 +49,7 @@ const SortingList = (props) => {
     }, [props.sortsArray]);
 
     return (
-        <React.Fragment>
+        <>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
                 {cards.map((card) => (
                     <Card
@@ -60,7 +61,7 @@ const SortingList = (props) => {
                     />
                 ))}
             </div>
-        </React.Fragment>
+        </>
     );
 };
 

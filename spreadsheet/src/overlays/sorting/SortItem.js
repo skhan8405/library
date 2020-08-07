@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
 import PropTypes from "prop-types";
+import { ItemTypes } from "./ItemTypes";
 
 const style = {
     cursor: "move"

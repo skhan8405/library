@@ -1,11 +1,16 @@
-import React from "react";
+/* eslint-disable react/destructuring-assignment */
+/* eslint no-unused-expressions: ["error", {"allowTernary": true }] */
+/* eslint-disable react/no-access-state-in-setstate */
+/* eslint-disable no-loop-func */
+/* eslint-disable no-else-return */
 
+import React from "react";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faAlignJustify } from "@fortawesome/free-solid-svg-icons";
-import ColumnsList from "./columnsList";
 import PropTypes from "prop-types";
+import ColumnsList from "./columnsList";
 
 class ColumnReordering extends React.Component {
     constructor(props) {
@@ -15,15 +20,12 @@ class ColumnReordering extends React.Component {
             columnSelectList: this.props.columns.map((item) => item.name),
             leftPinnedColumList: this.props.existingPinnedHeadersList,
             isAllSelected: true,
-            maxLeftPinnedColumn: this.props.maxLeftPinnedColumn,
-            chooserDate: {
-                column: "",
-                pinLeft: false
-            }
+            maxLeftPinnedColumn: this.props.maxLeftPinnedColumn
         };
         this.setWrapperRef = this.setWrapperRef.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
     }
+
     componentDidMount() {
         document.addEventListener("mousedown", this.handleClickOutside);
     }
@@ -34,12 +36,6 @@ class ColumnReordering extends React.Component {
 
     setWrapperRef(node) {
         this.wrapperRef = node;
-    }
-
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-            this.props.closeColumnReOrdering();
-        }
     }
 
     /**
@@ -60,9 +56,9 @@ class ColumnReordering extends React.Component {
      */
     selectAllToColumnReOrderList = () => {
         this.resetColumnReorderList();
-        var existingColumnReorderEntityList = this.state
+        let existingColumnReorderEntityList = this.state
             .columnReorderEntityList;
-        var isExistingAllSelect = this.state.isAllSelected;
+        let isExistingAllSelect = this.state.isAllSelected;
         if (!isExistingAllSelect) {
             existingColumnReorderEntityList = this.props.columns.map(
                 (item) => item.name
@@ -84,11 +80,11 @@ class ColumnReordering extends React.Component {
      * @param {String} typeToBeAdded
      */
     addToColumnReorderEntityList = (typeToBeAdded) => {
-        var existingColumnReorderEntityList = this.state
+        let existingColumnReorderEntityList = this.state
             .columnReorderEntityList;
-        var existingLeftPinnedList = this.state.leftPinnedColumList;
+        let existingLeftPinnedList = this.state.leftPinnedColumList;
         if (!existingColumnReorderEntityList.includes(typeToBeAdded)) {
-            var indexOfInsertion = this.state.columnSelectList.findIndex(
+            let indexOfInsertion = this.state.columnSelectList.findIndex(
                 (item) => item === typeToBeAdded
             );
             while (indexOfInsertion > 0) {
@@ -109,13 +105,13 @@ class ColumnReordering extends React.Component {
                                     indexOfInsertion - 1
                                 ]
                         );
-                        indexOfInsertion = indexOfInsertion + 1;
+                        indexOfInsertion += 1;
                         break;
                     } else {
-                        indexOfInsertion = indexOfInsertion - 1;
+                        indexOfInsertion -= 1;
                     }
                 } else {
-                    indexOfInsertion = indexOfInsertion - 1;
+                    indexOfInsertion -= 1;
                 }
             }
             existingColumnReorderEntityList.splice(
@@ -127,6 +123,7 @@ class ColumnReordering extends React.Component {
             existingColumnReorderEntityList = existingColumnReorderEntityList.filter(
                 (item) => {
                     if (item !== typeToBeAdded) return item;
+                    else return "";
                 }
             );
             if (existingLeftPinnedList.includes(typeToBeAdded)) {
@@ -147,8 +144,8 @@ class ColumnReordering extends React.Component {
      * @param {Event} e
      */
     filterColumnReorderList = (e) => {
-        var searchKey = String(e.target.value).toLowerCase();
-        var existingList = this.props.columns.map((item) => item.name);
+        const searchKey = String(e.target.value).toLowerCase();
+        const existingList = this.props.columns.map((item) => item.name);
         let filtererdColumnReorderList = [];
         if (searchKey.length > 0) {
             filtererdColumnReorderList = existingList.filter((item) => {
@@ -171,17 +168,15 @@ class ColumnReordering extends React.Component {
                 text: (
                     <div className="column__reorder" key={item}>
                         <div className="">
-                            <FontAwesomeIcon
-                                icon={faAlignJustify}
-                            ></FontAwesomeIcon>
+                            <FontAwesomeIcon icon={faAlignJustify} />
                         </div>
                         <div className="column__reorder__name">{item}</div>
                         <div className="column__wrap">
                             <div className="column__checkbox">
                                 <input
-                                    data-testid={"checkbox" + item}
+                                    role="button"
                                     type="checkbox"
-                                    id={"checkBoxToPinLeft_" + item}
+                                    id={`checkBoxToPinLeft_${item}`}
                                     checked={this.state.leftPinnedColumList.includes(
                                         item
                                     )}
@@ -190,17 +185,15 @@ class ColumnReordering extends React.Component {
                                             this.state.leftPinnedColumList
                                                 .length <=
                                         0
-                                            ? this.state.leftPinnedColumList.includes(
+                                            ? !this.state.leftPinnedColumList.includes(
                                                   item
                                               )
-                                                ? false
-                                                : true
                                             : false
                                     }
                                     onChange={() =>
                                         this.reArrangeLeftPinnedColumn(item)
                                     }
-                                ></input>
+                                />
                             </div>
                             <div className="column__txt">Pin Left</div>
                         </div>
@@ -215,8 +208,8 @@ class ColumnReordering extends React.Component {
      * @param {String} columHeaderName
      */
     reArrangeLeftPinnedColumn = (columHeaderName) => {
-        var existingLeftPinnedList = this.state.leftPinnedColumList;
-        var existingColumnReorderEntityList = this.state
+        let existingLeftPinnedList = this.state.leftPinnedColumList;
+        let existingColumnReorderEntityList = this.state
             .columnReorderEntityList;
         if (!existingLeftPinnedList.includes(columHeaderName)) {
             existingLeftPinnedList.unshift(columHeaderName);
@@ -229,11 +222,12 @@ class ColumnReordering extends React.Component {
             leftPinnedColumList: existingLeftPinnedList
         });
 
-        existingLeftPinnedList.map((item) => {
+        existingLeftPinnedList.forEach((item) => {
             existingColumnReorderEntityList = existingColumnReorderEntityList.filter(
                 (subItem) => subItem !== item
             );
             existingColumnReorderEntityList.unshift(item);
+            return null;
         });
         this.setState({
             columnReorderEntityList: existingColumnReorderEntityList
@@ -243,6 +237,12 @@ class ColumnReordering extends React.Component {
     handleReorderList = (reordered) => {
         this.props.handleheaderNameList(reordered);
     };
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+            this.props.closeColumnReOrdering();
+        }
+    }
 
     render() {
         return (
@@ -261,7 +261,7 @@ class ColumnReordering extends React.Component {
                                     placeholder="Search column"
                                     className="custom__ctrl"
                                     onChange={this.filterColumnReorderList}
-                                ></input>
+                                />
                             </div>
                             <div className="column__wrap column__headertxt">
                                 <div className="column__checkbox">
@@ -286,10 +286,7 @@ class ColumnReordering extends React.Component {
                                         <div className="column__checkbox">
                                             <input
                                                 type="checkbox"
-                                                id={
-                                                    "checkboxtoselectreorder_" +
-                                                    item
-                                                }
+                                                id={`checkboxtoselectreorder_${item}`}
                                                 checked={this.state.columnReorderEntityList.includes(
                                                     item
                                                 )}
@@ -298,7 +295,7 @@ class ColumnReordering extends React.Component {
                                                         item
                                                     )
                                                 }
-                                            ></input>
+                                            />
                                         </div>
                                         <div className="column__txt">
                                             {item}
@@ -320,7 +317,7 @@ class ColumnReordering extends React.Component {
                                     onClick={() =>
                                         this.props.closeColumnReOrdering()
                                     }
-                                ></FontAwesomeIcon>
+                                />
                             </div>
                         </div>
                         <div className="column__header">
@@ -365,6 +362,7 @@ class ColumnReordering extends React.Component {
                         <div className="column__footer">
                             <div className="column__btns">
                                 <button
+                                    type="button"
                                     className="btns"
                                     onClick={() =>
                                         this.resetColumnReorderList()
@@ -373,6 +371,7 @@ class ColumnReordering extends React.Component {
                                     Reset
                                 </button>
                                 <button
+                                    type="button"
                                     className="btns"
                                     onClick={() =>
                                         this.props.closeColumnReOrdering()
@@ -381,6 +380,7 @@ class ColumnReordering extends React.Component {
                                     Cancel
                                 </button>
                                 <button
+                                    type="button"
                                     className="btns btns__save"
                                     onClick={() =>
                                         this.props.updateTableAsPerRowChooser(

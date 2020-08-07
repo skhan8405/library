@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
 import PropTypes from "prop-types";
+import { ItemTypes } from "./ItemTypes";
 
 const style = {
     cursor: "move"
@@ -16,6 +16,7 @@ const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
             isDragging: monitor.isDragging()
         }),
         end: (dropResult, monitor) => {
+            // eslint-disable-next-line no-shadow
             const { id: droppedId, originalIndex } = monitor.getItem();
             const didDrop = monitor.didDrop();
             if (!didDrop) {
