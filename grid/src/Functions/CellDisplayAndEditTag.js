@@ -1,8 +1,8 @@
 import React, { useContext, Fragment } from "react";
-import { ColumnsStructureContext } from "../Utilities/ColumnsContext";
+import { CellDisplayAndEditContext } from "../Utilities/TagsContext";
 
 const DisplayTag = (props) => {
-    const contextVallues = useContext(ColumnsStructureContext);
+    const contextVallues = useContext(CellDisplayAndEditContext);
     const { column, columns } = contextVallues;
     const { cellKey, columnKey } = props;
 

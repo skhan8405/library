@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { RowEditContext } from "../Utilities/ColumnsContext";
+import { RowEditContext } from "../Utilities/TagsContext";
 import RowEditTag from "./RowEditTag";
 import ClickAwayListener from "react-click-away-listener";
 

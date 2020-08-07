@@ -1,7 +1,7 @@
 import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
-import DisplayTag from "./DisplayTag";
-import { ColumnsStructureContext } from "../Utilities/ColumnsContext";
+import CellDisplayAndEditTag from "./CellDisplayAndEditTag";
+import { CellDisplayAndEditContext } from "../Utilities/TagsContext";
 
 const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
     const { column } = row;
@@ -33,10 +33,12 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
         };
 
         const originalRowValue = { ...row.row.original };
-        const cellDisplayContent = column.displayCell(originalRowValue, DisplayTag);
-        const cellEditContent = column.editCell ? column.editCell(originalRowValue, DisplayTag, getUpdatedRowValue) : null;
+        const cellDisplayContent = column.displayCell(originalRowValue, CellDisplayAndEditTag);
+        const cellEditContent = column.editCell
+            ? column.editCell(originalRowValue, CellDisplayAndEditTag, getUpdatedRowValue)
+            : null;
         return (
-            <ColumnsStructureContext.Provider value={{ columns: columns, column: column }}>
+            <CellDisplayAndEditContext.Provider value={{ columns: columns, column: column }}>
                 <ClickAwayListener onClickAway={closeEdit}>
                     <div className={`table-cell--content table-cell--content__${id}`}>
                         {cellEditContent ? (
@@ -54,7 +56,7 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
                         ) : null}
                     </div>
                 </ClickAwayListener>
-            </ColumnsStructureContext.Provider>
+            </CellDisplayAndEditContext.Provider>
         );
     }
 });
