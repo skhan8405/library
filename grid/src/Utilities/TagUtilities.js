@@ -1,5 +1,3 @@
-import React from "react";
-
 export const checkInnerCells = (column, cellKey) => {
     if (column) {
         const { innerCells } = column;

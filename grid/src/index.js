@@ -1,5 +1,7 @@
-import React, { memo, useMemo, useState, useEffect, Fragment } from "react";
+import React, { memo, useMemo, useState, useEffect } from "react";
 import { extractColumns, extractAdditionalColumn } from "./Utilities/ColumnsUtilities";
+import { AdditionalColumnContext } from "./Utilities/TagsContext";
+import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
 import "!style-loader!css-loader!sass-loader!./styles/main.scss";
 
@@ -112,36 +114,16 @@ const Grid = memo((props) => {
     let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
     //#region - Check if data is hidden or not and display data in rendered section
-    //A custom tag created to be used by developer to bind data into the expanded component (if data chooser is selected)
-    const DisplayTag = (props) => {
-        const { cellKey } = props;
-        if (additionalColumn && cellKey) {
-            if (checkInnerCells(additionalColumn, cellKey)) {
-                return <Fragment> {props.children}</Fragment>;
-            }
-        }
-        return null;
-    };
-    //Check if data to be bind is
-    const checkInnerCells = (column, cellKey) => {
-        if (column) {
-            const { innerCells } = column;
-            if (innerCells) {
-                const innerCellData = innerCells.find((cell) => {
-                    return cell.accessor === cellKey;
-                });
-                if (innerCellData) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
+
     //Process data to be rendered to expanded view and return that data to the render function
     const displayExpandedContent = (row) => {
         const { original } = row;
         if (original) {
-            return renderExpandedContent(original, DisplayTag);
+            return (
+                <AdditionalColumnContext.Provider value={{ additionalColumn: additionalColumn }}>
+                    {renderExpandedContent(original, AdditionalColumnTag)}
+                </AdditionalColumnContext.Provider>
+            );
         }
     };
     //#endregion
