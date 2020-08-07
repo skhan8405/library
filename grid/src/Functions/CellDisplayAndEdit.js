@@ -64,11 +64,8 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
                         {isEditOpen ? (
                             <div className="table-cell--content-edit">
                                 {cellEditContent}
-                                <button className="ok" onClick={saveEdit} />
-                                <button
-                                    className="cancel"
-                                    onClick={closeEdit}
-                                />
+                                <button className="ok" data-testid="ok" onClick={saveEdit} />
+                            <button className="cancel" data-testid="cancel" onClick={closeEdit} />
                             </div>
                         ) : null}
                     </div>
