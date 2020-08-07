@@ -1,5 +1,8 @@
 import React, { memo, useMemo, useState, useEffect } from "react";
-import { extractColumns, extractAdditionalColumn } from "./Utilities/ColumnsUtilities";
+import {
+    extractColumns,
+    extractAdditionalColumn
+} from "./Utilities/ColumnsUtilities";
 import { AdditionalColumnContext } from "./Utilities/TagsContext";
 import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
@@ -52,7 +55,13 @@ const Grid = memo((props) => {
                 rowAccessorValue.map((value) => {
                     innerCells.map((cell) => {
                         const dataAccessor = value[cell.accessor];
-                        if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                        if (
+                            dataAccessor &&
+                            dataAccessor
+                                .toString()
+                                .toLowerCase()
+                                .includes(searchText)
+                        ) {
                             isValuePresent = true;
                         }
                     });
@@ -61,7 +70,13 @@ const Grid = memo((props) => {
                 //If cell value is an object, loop through inner cells and check if searched text is present
                 innerCells.map((cell) => {
                     const dataAccessor = original[accessor][cell.accessor];
-                    if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+                    if (
+                        dataAccessor &&
+                        dataAccessor
+                            .toString()
+                            .toLowerCase()
+                            .includes(searchText)
+                    ) {
                         isValuePresent = true;
                     }
                 });
@@ -69,7 +84,10 @@ const Grid = memo((props) => {
         } else {
             //If cell value is not an object or array, convert it to text and check if searched text is present
             const dataAccessor = original[accessor];
-            if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
+            if (
+                dataAccessor &&
+                dataAccessor.toString().toLowerCase().includes(searchText)
+            ) {
                 isValuePresent = true;
             }
         }
@@ -80,7 +98,10 @@ const Grid = memo((props) => {
     const updateRowInGrid = (original, updatedRow) => {
         setItems((old) =>
             old.map((row) => {
-                if (Object.entries(row).toString() === Object.entries(original).toString()) {
+                if (
+                    Object.entries(row).toString() ===
+                    Object.entries(original).toString()
+                ) {
                     row = updatedRow;
                 }
                 return row;
@@ -104,14 +125,25 @@ const Grid = memo((props) => {
     };
 
     //Extract/add and modify required data from user configured columns and expand columns
-    let processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
-    let additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop, updateRowInGrid);
+    let processedColumns = extractColumns(
+        columns,
+        searchColumn,
+        isDesktop,
+        updateRowInGrid
+    );
+    let additionalColumn = extractAdditionalColumn(
+        columnToExpand,
+        isDesktop,
+        updateRowInGrid
+    );
 
     //Create memoized column, to be used by grid component
     const gridColumns = useMemo(() => processedColumns, []);
 
     //Local variable for keeping the expanded row rendering method
-    let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
+    let renderExpandedContent = additionalColumn
+        ? additionalColumn.displayCell
+        : null;
 
     //#region - Check if data is hidden or not and display data in rendered section
 
@@ -120,7 +152,9 @@ const Grid = memo((props) => {
         const { original } = row;
         if (original) {
             return (
-                <AdditionalColumnContext.Provider value={{ additionalColumn: additionalColumn }}>
+                <AdditionalColumnContext.Provider
+                    value={{ additionalColumn: additionalColumn }}
+                >
                     {renderExpandedContent(original, AdditionalColumnTag)}
                 </AdditionalColumnContext.Provider>
             );
@@ -143,7 +177,9 @@ const Grid = memo((props) => {
                 //Loop through all column values for each row
                 processedColumns.map((column) => {
                     //Do search for each column
-                    returnValue = returnValue || searchColumn(column, original, searchText);
+                    returnValue =
+                        returnValue ||
+                        searchColumn(column, original, searchText);
                 });
                 return returnValue;
             });
@@ -171,8 +207,12 @@ const Grid = memo((props) => {
                 //Find the length of text of data in that column
                 const textLength = Object.values(rowValue).join(",").length;
                 //This is a formula that was created for the test data used.
-                rowHeight = rowHeight + Math.ceil((80 * textLength) / totalFlexWidth);
-                const widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+                rowHeight =
+                    rowHeight + Math.ceil((80 * textLength) / totalFlexWidth);
+                const widthVariable =
+                    totalFlexWidth > width
+                        ? totalFlexWidth - width
+                        : width - totalFlexWidth;
                 rowHeight = rowHeight + widthVariable / 1000;
             }
             //Add logic to increase row height if row is expanded
@@ -180,7 +220,8 @@ const Grid = memo((props) => {
                 //Increase height based on the number of inner cells in additional columns
                 rowHeight =
                     rowHeight +
-                    (additionalColumn.innerCells && additionalColumn.innerCells.length > 0
+                    (additionalColumn.innerCells &&
+                    additionalColumn.innerCells.length > 0
                         ? additionalColumn.innerCells.length * 35
                         : 35);
             }
@@ -206,7 +247,11 @@ const Grid = memo((props) => {
                 const newResult =
                     sortOn === "value"
                         ? compareValues(order, x[sortBy], y[sortBy])
-                        : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
+                        : compareValues(
+                              order,
+                              x[sortBy][sortOn],
+                              y[sortBy][sortOn]
+                          );
                 compareResult = compareResult || newResult;
             });
             return compareResult;
@@ -264,7 +309,10 @@ const Grid = memo((props) => {
 
     return (
         <div className="grid-component-container">
-            {data && data.length > 0 && processedColumns && processedColumns.length > 0 ? (
+            {data &&
+            data.length > 0 &&
+            processedColumns &&
+            processedColumns.length > 0 ? (
                 <div>
                     <Customgrid
                         title={title}
@@ -280,11 +328,14 @@ const Grid = memo((props) => {
                         globalSearchLogic={globalSearchLogic}
                         selectBulkData={selectBulkData}
                         calculateRowHeight={
-                            calculateRowHeight && typeof calculateRowHeight === "function"
+                            calculateRowHeight &&
+                            typeof calculateRowHeight === "function"
                                 ? calculateRowHeight
                                 : calculateDefaultRowHeight
                         }
-                        isExpandContentAvailable={typeof renderExpandedContent === "function"}
+                        isExpandContentAvailable={
+                            typeof renderExpandedContent === "function"
+                        }
                         displayExpandedContent={displayExpandedContent}
                         hasNextPage={hasNextPage}
                         isNextPageLoading={isNextPageLoading}
@@ -303,7 +354,9 @@ const Grid = memo((props) => {
                 </div>
             ) : (
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    {isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"}
+                    {isLoading
+                        ? "Initializing Grid..."
+                        : "Invalid Data or Column Configurations"}
                 </h2>
             )}
         </div>

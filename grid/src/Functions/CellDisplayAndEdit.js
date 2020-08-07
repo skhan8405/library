@@ -33,17 +33,31 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
         };
 
         const originalRowValue = { ...row.row.original };
-        const cellDisplayContent = column.displayCell(originalRowValue, CellDisplayAndEditTag);
+        const cellDisplayContent = column.displayCell(
+            originalRowValue,
+            CellDisplayAndEditTag
+        );
         const cellEditContent = column.editCell
-            ? column.editCell(originalRowValue, CellDisplayAndEditTag, getUpdatedRowValue)
+            ? column.editCell(
+                  originalRowValue,
+                  CellDisplayAndEditTag,
+                  getUpdatedRowValue
+              )
             : null;
         return (
-            <CellDisplayAndEditContext.Provider value={{ columns: columns, column: column }}>
+            <CellDisplayAndEditContext.Provider
+                value={{ columns: columns, column: column }}
+            >
                 <ClickAwayListener onClickAway={closeEdit}>
-                    <div className={`table-cell--content table-cell--content__${id}`}>
+                    <div
+                        className={`table-cell--content table-cell--content__${id}`}
+                    >
                         {cellEditContent ? (
                             <div className="cell-edit" onClick={openEdit}>
-                                <i className="fa fa-pencil" aria-hidden="true"></i>
+                                <i
+                                    className="fa fa-pencil"
+                                    aria-hidden="true"
+                                ></i>
                             </div>
                         ) : null}
                         {cellDisplayContent}
@@ -51,7 +65,10 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
                             <div className="table-cell--content-edit">
                                 {cellEditContent}
                                 <button className="ok" onClick={saveEdit} />
-                                <button className="cancel" onClick={closeEdit} />
+                                <button
+                                    className="cancel"
+                                    onClick={closeEdit}
+                                />
                             </div>
                         ) : null}
                     </div>

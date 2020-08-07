@@ -4,7 +4,15 @@ import RowEditTag from "./RowEditTag";
 import ClickAwayListener from "react-click-away-listener";
 
 const RowEditOverLay = memo(
-    ({ row, columns, isRowExpandEnabled, additionalColumn, getRowEditOverlay, closeRowEditOverlay, updateRowInGrid }) => {
+    ({
+        row,
+        columns,
+        isRowExpandEnabled,
+        additionalColumn,
+        getRowEditOverlay,
+        closeRowEditOverlay,
+        updateRowInGrid
+    }) => {
         const [editedRowValue, setEditedRowValue] = useState(null);
 
         const getUpdatedRowValue = (value) => {
@@ -21,19 +29,33 @@ const RowEditOverLay = memo(
         };
 
         const originalRowValue = { ...row };
-        const rowEditContent = getRowEditOverlay(originalRowValue, RowEditTag, getUpdatedRowValue);
+        const rowEditContent = getRowEditOverlay(
+            originalRowValue,
+            RowEditTag,
+            getUpdatedRowValue
+        );
         return (
             <RowEditContext.Provider
-                value={{ columns: columns, additionalColumn: additionalColumn, isRowExpandEnabled: isRowExpandEnabled }}
+                value={{
+                    columns: columns,
+                    additionalColumn: additionalColumn,
+                    isRowExpandEnabled: isRowExpandEnabled
+                }}
             >
                 <ClickAwayListener onClickAway={closeRowEditOverlay}>
                     <div className="row-option-action-overlay">
                         {rowEditContent}
                         <div className="cancel-save-buttons">
-                            <button className="save-Button" onClick={saveRowEdit}>
+                            <button
+                                className="save-Button"
+                                onClick={saveRowEdit}
+                            >
                                 Save
                             </button>
-                            <button className="cancel-Button" onClick={closeRowEditOverlay}>
+                            <button
+                                className="cancel-Button"
+                                onClick={closeRowEditOverlay}
+                            >
                                 Cancel
                             </button>
                         </div>

@@ -8,7 +8,9 @@ const CellDisplayAndEditTag = (props) => {
     const { cellKey, columnKey } = props;
 
     if (columns && columnKey) {
-        const selectedColumn = columns.find((col) => col.accessor === columnKey);
+        const selectedColumn = columns.find(
+            (col) => col.accessor === columnKey
+        );
         if (checkInnerCells(selectedColumn, cellKey)) {
             return <Fragment> {props.children}</Fragment>;
         }
