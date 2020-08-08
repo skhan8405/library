@@ -352,9 +352,13 @@ const Grid = memo((props) => {
                 </div>
             ) : (
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    {isLoading
-                        ? "Initializing Grid..."
-                        : "Invalid Data or Column Configurations"}
+                    {isLoading ? (
+                        "Initializing Grid..."
+                    ) : (
+                        <span className="error">
+                            Invalid Data or Column Configurations
+                        </span>
+                    )}
                 </h2>
             )}
         </div>

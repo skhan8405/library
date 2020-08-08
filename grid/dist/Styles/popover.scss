@@ -169,8 +169,8 @@
             border-right: 1px solid #eee;
             .column__body {
                 padding: 10px;
-                margin-bottom: 50px;
-                height: 405px;
+                margin-bottom: 10px;
+                height: 440px;
                 overflow-y: auto;
                 overflow-x: hidden;
             }
@@ -316,8 +316,8 @@
             }
             .export__body {
                 padding: 10px;
-                padding-bottom: 50px;
-                height: 410px;
+                padding-bottom: 10px;
+                height: 440px;
                 overflow-y: auto;
                 overflow-x: hidden;
                 border-right: #eff1f6 solid 1px;
@@ -410,7 +410,7 @@
                 width: 66%;
                 display: flex;
                 @media only screen and (max-width: 1024px) {
-                    width: 60.5%;
+                    width: 61.5%;
                 }
             }
             .export__btns {
