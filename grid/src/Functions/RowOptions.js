@@ -1,5 +1,6 @@
 import React, { useState, memo } from "react";
 import ClickAwayListener from "react-click-away-listener";
+import PropTypes from "prop-types";
 import RowDelete from "../Images/RowDelete.svg";
 import RowEdit from "../Images/RowEdit.svg";
 import RowPin from "../Images/RowPin.png";
@@ -32,18 +33,22 @@ const RowOptions = memo(({ row, bindRowEditOverlay, bindRowDeleteOverlay }) => {
             <div className="row-options-wrap">
                 <span
                     className="icon-row-options"
+                    role="presentation"
                     onClick={openRowOptionsOverlay}
                 >
-                    <i></i>
-                    <i></i>
-                    <i></i>
+                    <i />
+                    <i />
+                    <i />
                 </span>
                 {isRowOptionsOpen ? (
                     <ClickAwayListener onClickAway={closeRowOptionsOverlay}>
                         <div className="row-options-overlay">
                             <ul>
                                 <li>
-                                    <span onClick={openRowEditOverlay}>
+                                    <span
+                                        role="presentation"
+                                        onClick={openRowEditOverlay}
+                                    >
                                         <i>
                                             <img src={RowEdit} alt="cargo" />
                                         </i>
@@ -64,7 +69,10 @@ const RowOptions = memo(({ row, bindRowEditOverlay, bindRowDeleteOverlay }) => {
                                     </span>
                                 </li>
                                 <li>
-                                    <span onClick={openDeleteOverlay}>
+                                    <span
+                                        role="presentation"
+                                        onClick={openDeleteOverlay}
+                                    >
                                         <i>
                                             <img src={RowDelete} alt="cargo" />
                                         </i>
@@ -73,10 +81,11 @@ const RowOptions = memo(({ row, bindRowEditOverlay, bindRowDeleteOverlay }) => {
                                 </li>
                             </ul>
                             <span
+                                role="presentation"
                                 className="close"
                                 onClick={closeRowOptionsOverlay}
                             >
-                                <i className="fa fa-close"></i>
+                                <i className="fa fa-close" />
                             </span>
                         </div>
                     </ClickAwayListener>
@@ -85,5 +94,11 @@ const RowOptions = memo(({ row, bindRowEditOverlay, bindRowDeleteOverlay }) => {
         </div>
     );
 });
+
+RowOptions.propTypes = {
+    row: PropTypes.any,
+    bindRowEditOverlay: PropTypes.any,
+    bindRowDeleteOverlay: PropTypes.any
+};
 
 export default RowOptions;

@@ -2,6 +2,7 @@ import React, { memo, useState } from "react";
 import { RowEditContext } from "../Utilities/TagsContext";
 import RowEditTag from "./RowEditTag";
 import ClickAwayListener from "react-click-away-listener";
+import PropTypes from "prop-types";
 
 const RowEditOverLay = memo(
     ({
@@ -47,12 +48,14 @@ const RowEditOverLay = memo(
                         {rowEditContent}
                         <div className="cancel-save-buttons">
                             <button
+                                type="button"
                                 className="save-Button"
                                 onClick={saveRowEdit}
                             >
                                 Save
                             </button>
                             <button
+                                type="button"
                                 className="cancel-Button"
                                 onClick={closeRowEditOverlay}
                             >
@@ -65,5 +68,18 @@ const RowEditOverLay = memo(
         );
     }
 );
+
+RowEditOverLay.propTypes = {
+    row: PropTypes.any,
+    columns: PropTypes.any,
+    isRowExpandEnabled: PropTypes.any,
+    additionalColumn: PropTypes.any,
+    getRowEditOverlay: PropTypes.any,
+    closeRowEditOverlay: PropTypes.any,
+    updateRowInGrid: PropTypes.any,
+    cellKey: PropTypes.any,
+    columnKey: PropTypes.any,
+    children: PropTypes.any
+};
 
 export default RowEditOverLay;

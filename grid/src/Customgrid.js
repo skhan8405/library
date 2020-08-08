@@ -19,6 +19,7 @@ import {
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
+import PropTypes from "prop-types";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
@@ -54,63 +55,61 @@ const Customgrid = memo((props) => {
         doGroupSort
     } = props;
 
-    //Local state value for holding columns configuration
+    // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
-    //Local state value for holding the boolean value to check if row expand is available
+    // Local state value for holding the boolean value to check if row expand is available
     const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(
         isExpandContentAvailable
     );
 
-    //Variables used for handling infinite loading
+    // Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
     const loadMoreItems = isNextPageLoading
         ? () => {}
-        : loadNextPage
-        ? loadNextPage
-        : () => {};
+        : loadNextPage || (() => {});
     const isItemLoaded = (index) => !hasNextPage || index < data.length;
 
-    //Local state value for checking if column filter is open/closed
+    // Local state value for checking if column filter is open/closed
     const [isFilterOpen, setFilterOpen] = useState(false);
-    //Toggle column filter state value based on UI clicks
+    // Toggle column filter state value based on UI clicks
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
     };
 
-    //Local state value for checking if column filter is open/closed
+    // Local state value for checking if column filter is open/closed
     const [isRowEditOverlyOpen, setIsRowEditOverlyOpen] = useState(false);
-    //Local state value to hold row data that is going to be edited
+    // Local state value to hold row data that is going to be edited
     const [editedRowData, setEditedRowData] = useState(null);
-    //Bind the user defined row edit overlay into Grid
+    // Bind the user defined row edit overlay into Grid
     const bindRowEditOverlay = (rowValue) => {
         setEditedRowData(rowValue);
         setIsRowEditOverlyOpen(true);
     };
-    //Close the row edit overlay
+    // Close the row edit overlay
     const closeRowEditOverlay = () => {
         setEditedRowData(null);
         setIsRowEditOverlyOpen(false);
     };
 
-    //Local state value for checking if column filter is open/closed
+    // Local state value for checking if column filter is open/closed
     const [isRowDeleteOverlyOpen, setIsRowDeleteOverlyOpen] = useState(false);
-    //Local state value to hold row data that is going to be deleted
+    // Local state value to hold row data that is going to be deleted
     const [deletedRowData, setDeletedRowData] = useState(null);
-    //Bind the user defined row delete overlay into Grid
+    // Bind the user defined row delete overlay into Grid
     const bindRowDeleteOverlay = (rowValue) => {
         setDeletedRowData(rowValue);
         setIsRowDeleteOverlyOpen(true);
     };
-    //Close the row edit overlay
+    // Close the row edit overlay
     const closeRowDeleteOverlay = () => {
         setDeletedRowData(null);
         setIsRowDeleteOverlyOpen(false);
     };
 
-    //Local state value for checking if group Sort Overlay is open/closed.
+    // Local state value for checking if group Sort Overlay is open/closed.
     const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
 
-    //Toggle group Sort state value based on UI clicks
+    // Toggle group Sort state value based on UI clicks
     const toggleGroupSortOverLay = () => {
         setGroupSortOverLay(!isGroupSortOverLayOpen);
     };
@@ -119,31 +118,29 @@ const Customgrid = memo((props) => {
         doGroupSort(sortOptions);
     };
 
-    //Local state value for hiding/unhiding column management overlay
+    // Local state value for hiding/unhiding column management overlay
     const [isManageColumnOpen, setManageColumnOpen] = useState(false);
 
-    //Toggle column manage overlay show/hide state value based on UI clicks
+    // Toggle column manage overlay show/hide state value based on UI clicks
     const toggleManageColumns = () => {
         setManageColumnOpen(!isManageColumnOpen);
     };
 
-    //Callback method from column manage overlay to update the column structure of the grid
+    // Callback method from column manage overlay to update the column structure of the grid
     const updateColumnStructure = (newColumnStructure, remarksColumn) => {
         setColumns([...newColumnStructure]);
-        setIsRowExpandEnabled(
-            remarksColumn && remarksColumn.length > 0 ? true : false
-        );
+        setIsRowExpandEnabled(!!(remarksColumn && remarksColumn.length > 0));
     };
 
-    //Local state value for hiding/unhiding export data overlay
+    // Local state value for hiding/unhiding export data overlay
     const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
 
-    //Toggle export overlay show/hide state value based on UI clicks
+    // Toggle export overlay show/hide state value based on UI clicks
     const toggleExportDataOverlay = () => {
         setIsExportOverlayOpen(!isExportOverlayOpen);
     };
 
-    //Column filter added for all columns by default
+    // Column filter added for all columns by default
     const defaultColumn = useMemo(
         () => ({
             Filter: DefaultColumnFilter
@@ -151,7 +148,7 @@ const Customgrid = memo((props) => {
         []
     );
 
-    //Initialize react-table instance with the values received through properties
+    // Initialize react-table instance with the values received through properties
     const {
         getTableProps,
         getTableBodyProps,
@@ -166,16 +163,19 @@ const Customgrid = memo((props) => {
             columns,
             data,
             defaultColumn,
-            globalFilter: (rows, columns, filterValue) => {
-                //Call global search function defined in application, if it is present
+            globalFilter: (rowsToFilter, columnsToFilter, filterValue) => {
+                // Call global search function defined in application, if it is present
                 if (
                     globalSearchLogic &&
                     typeof globalSearchLogic === "function"
                 ) {
-                    return globalSearchLogic(rows, columns, filterValue);
-                } else {
-                    return rows;
+                    return globalSearchLogic(
+                        rowsToFilter,
+                        columnsToFilter,
+                        filterValue
+                    );
                 }
+                return rowsToFilter;
             },
             autoResetFilters: false,
             autoResetGlobalFilter: false,
@@ -191,8 +191,8 @@ const Customgrid = memo((props) => {
         useFlexLayout,
         useResizeColumns,
         (hooks) => {
-            //Add checkbox for all rows in grid, with different properties for header row and body rows
-            hooks.allColumns.push((columns) => [
+            // Add checkbox for all rows in grid, with different properties for header row and body rows
+            hooks.allColumns.push((hookColumns) => [
                 {
                     id: "selection",
                     columnId: "column_custom_0",
@@ -202,14 +202,25 @@ const Customgrid = memo((props) => {
                     minWidth: 35,
                     width: 35,
                     maxWidth: 35,
-                    Header: ({ getToggleAllRowsSelectedProps }) => (
-                        <RowSelector {...getToggleAllRowsSelectedProps()} />
-                    ),
+                    Header: ({ getToggleAllRowsSelectedProps }) => {
+                        const headerSelectProps = {
+                            ...getToggleAllRowsSelectedProps()
+                        };
+                        return (
+                            <RowSelector
+                                checked={headerSelectProps.checked}
+                                indeterminate={headerSelectProps.indeterminate}
+                                onChange={headerSelectProps.onChange}
+                                style={headerSelectProps.style}
+                                title={headerSelectProps.title}
+                            />
+                        );
+                    },
                     Cell: ({ row }) => (
                         <RowSelector {...row.getToggleRowSelectedProps()} />
                     )
                 },
-                ...columns,
+                ...hookColumns,
                 {
                     id: "custom",
                     columnId: "column_custom_1",
@@ -236,12 +247,12 @@ const Customgrid = memo((props) => {
                                             <i
                                                 className="fa fa-angle-up"
                                                 aria-hidden="true"
-                                            ></i>
+                                            />
                                         ) : (
                                             <i
                                                 className="fa fa-angle-down"
                                                 aria-hidden="true"
-                                            ></i>
+                                            />
                                         )}
                                     </span>
                                 ) : null}
@@ -253,21 +264,21 @@ const Customgrid = memo((props) => {
         }
     );
 
-    //Export selected row data and pass it to the callback method
+    // Export selected row data and pass it to the callback method
     const bulkSelector = () => {
         if (selectBulkData) {
             selectBulkData(selectedFlatRows);
         }
     };
 
-    //This code is to handle the row height calculation while expanding a row or resizing a column
+    // This code is to handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
 
-    //Render each row and cells in each row, using attributes from react window list.
+    // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
             if (isItemLoaded(index)) {
@@ -290,7 +301,7 @@ const Customgrid = memo((props) => {
                                 );
                             })}
                         </div>
-                        {/*Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region*/}
+                        {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
                         {isRowExpandEnabled && row.isExpanded ? (
                             <div className="expand">
                                 {displayExpandedContent
@@ -301,20 +312,18 @@ const Customgrid = memo((props) => {
                     </div>
                 );
             }
+            return null; // Added due to lint error expected to return a value in arrow function
         },
         [prepareRow, rows, displayExpandedContent]
     );
 
-    //Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
-    //Use properties and methods provided by react-table
-    //Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
-    //Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
-    //React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
+    // Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
+    // Use properties and methods provided by react-table
+    // Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
+    // Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
+    // React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
     return (
-        <div
-            className="table-wrapper"
-            style={{ width: gridWidth ? gridWidth : "100%" }}
-        >
+        <div className="table-wrapper" style={{ width: gridWidth || "100%" }}>
             <link
                 rel="stylesheet"
                 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -322,7 +331,7 @@ const Customgrid = memo((props) => {
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
                     <strong>{rows.length}</strong>
-                    <span> {title ? title : "Rows"}</span>
+                        <span> {title || "Rows"}</span>
                 </div>
                 <div className="neo-grid-header__utilities">
                     <ColumnReordering
@@ -353,39 +362,44 @@ const Customgrid = memo((props) => {
                     />
                     <div
                         className="utilities-icon keyword-search"
+                        role="presentation"
                         onClick={toggleColumnFilter}
                     >
-                        <i className="fa fa-filter" aria-hidden="true"></i>
+                        <i className="fa fa-filter" aria-hidden="true" />
                     </div>
                     <div
                         className="utilities-icon bulk-select"
+                        role="presentation"
                         onClick={bulkSelector}
                     >
                         <i
                             className="fa fa-pencil-square-o"
                             aria-hidden="true"
-                        ></i>
+                        />
                     </div>
                     <div
                         className="utilities-icon bulk-select"
+                        role="presentation"
                         onClick={toggleGroupSortOverLay}
                     >
                         <i
                             className="fa fa-sort-amount-desc"
                             aria-hidden="true"
-                        ></i>
+                        />
                     </div>
                     <div
                         className="utilities-icon manage-columns"
+                        role="presentation"
                         onClick={toggleManageColumns}
                     >
-                        <i className="fa fa-columns" aria-hidden="true"></i>
+                        <i className="fa fa-columns" aria-hidden="true" />
                     </div>
                     <div
                         className="utilities-icon manage-columns"
+                        role="presentation"
                         onClick={toggleExportDataOverlay}
                     >
-                        <i className="fa fa-share-alt" aria-hidden="true"></i>
+                        <i className="fa fa-share-alt" aria-hidden="true" />
                     </div>
                 </div>
             </div>
@@ -414,7 +428,7 @@ const Customgrid = memo((props) => {
             <div
                 className="tableContainer table-outer neo-grid"
                 style={{
-                    height: gridHeight ? gridHeight : "50vh",
+                    height: gridHeight || "50vh",
                     overflowX: "auto",
                     overflowY: "hidden"
                 }}
@@ -443,12 +457,12 @@ const Customgrid = memo((props) => {
                                                                 <i
                                                                     className="fa fa-sort-desc"
                                                                     aria-hidden="true"
-                                                                ></i>
+                                                                />
                                                             ) : (
                                                                 <i
                                                                     className="fa fa-sort-asc"
                                                                     aria-hidden="true"
-                                                                ></i>
+                                                                />
                                                             )
                                                         ) : (
                                                             ""
@@ -519,5 +533,29 @@ const Customgrid = memo((props) => {
         </div>
     );
 });
+
+Customgrid.propTypes = {
+    title: PropTypes.any,
+    gridHeight: PropTypes.any,
+    gridWidth: PropTypes.any,
+    managableColumns: PropTypes.any,
+    originalColumns: PropTypes.any,
+    data: PropTypes.any,
+    getRowEditOverlay: PropTypes.any,
+    updateRowInGrid: PropTypes.any,
+    deleteRowFromGrid: PropTypes.any,
+    globalSearchLogic: PropTypes.any,
+    selectBulkData: PropTypes.any,
+    calculateRowHeight: PropTypes.any,
+    isExpandContentAvailable: PropTypes.any,
+    displayExpandedContent: PropTypes.any,
+    hasNextPage: PropTypes.any,
+    isNextPageLoading: PropTypes.any,
+    loadNextPage: PropTypes.any,
+    doGroupSort: PropTypes.any,
+    getToggleAllRowsSelectedProps: PropTypes.any,
+    row: PropTypes.any,
+    additionalColumn: PropTypes.any
+};
 
 export default Customgrid;

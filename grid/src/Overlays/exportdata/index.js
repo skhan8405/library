@@ -1,5 +1,6 @@
 import React, { memo, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
+import PropTypes from "prop-types";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as FileSaver from "file-saver";
@@ -135,7 +136,7 @@ const ExportData = memo((props) => {
         doc.setFontSize(15);
         const title = "iCargo Neo Report";
 
-        let content = {
+        const content = {
             startY: 50,
             head: rowFilteredHeader,
             body: rowFilteredValues,
@@ -186,7 +187,7 @@ const ExportData = memo((props) => {
     const filterColumnsList = (event) => {
         let { value } = event ? event.target : "";
         value = value ? value.toLowerCase() : "";
-        if (value != "") {
+        if (value !== "") {
             setSearchedColumns(
                 originalColumns
                     .filter((column) => {
@@ -206,12 +207,11 @@ const ExportData = memo((props) => {
     const isCheckboxSelected = (header) => {
         if (header === "Select All") {
             return managedColumns.length === searchedColumns.length;
-        } else {
-            const selectedColumn = managedColumns.filter((column) => {
-                return column.Header === header;
-            });
-            return selectedColumn && selectedColumn.length > 0;
         }
+        const selectedColumn = managedColumns.filter((column) => {
+            return column.Header === header;
+        });
+        return selectedColumn && selectedColumn.length > 0;
     };
 
     const selectAllColumns = (event) => {
@@ -226,16 +226,16 @@ const ExportData = memo((props) => {
         const { currentTarget } = event;
         const { checked, value } = currentTarget;
 
-        //If column checkbox is checked
+        // If column checkbox is checked
         if (checked) {
-            //Find the index of selected column from original column array and also find the user selected column
+            // Find the index of selected column from original column array and also find the user selected column
             let indexOfColumnToAdd = updatedColumns.findIndex((column) => {
                 return column.Header === value;
             });
             const itemToAdd = updatedColumns[indexOfColumnToAdd];
 
-            //Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
-            //Find index of that previous column and push the new column to add in that position
+            // Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
+            // Find index of that previous column and push the new column to add in that position
             let prevItemIndex = -1;
             while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
                 prevItemIndex = managedColumns.findIndex((column) => {
@@ -244,10 +244,10 @@ const ExportData = memo((props) => {
                         updatedColumns[indexOfColumnToAdd - 1].Header
                     );
                 });
-                indexOfColumnToAdd = indexOfColumnToAdd - 1;
+                indexOfColumnToAdd -= 1;
             }
 
-            const newColumnsList = managedColumns.slice(0); //Copying state value
+            const newColumnsList = managedColumns.slice(0); // Copying state value
             newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
             setManagedColumns(newColumnsList);
         } else {
@@ -290,7 +290,7 @@ const ExportData = memo((props) => {
                                         placeholder="Search column"
                                         className="custom__ctrl"
                                         onChange={filterColumnsList}
-                                    ></input>
+                                    />
                                 </div>
                                 <div className="export__wrap export__headertxt">
                                     <div className="export__checkbox">
@@ -323,7 +323,7 @@ const ExportData = memo((props) => {
                                                     onChange={
                                                         selectSingleColumn
                                                     }
-                                                ></input>
+                                                />
                                             </div>
                                             <div className="export__txt">
                                                 {column.Header}
@@ -335,13 +335,13 @@ const ExportData = memo((props) => {
                         </div>
                         <div className="export__settings">
                             <div className="export__header">
-                                <div className="export__headerTxt"></div>
+                                <div className="export__headerTxt" />
                                 <div className="export__close">
                                     <i
                                         className="fa fa-times"
                                         aria-hidden="true"
                                         onClick={toggleExportDataOverlay}
-                                    ></i>
+                                    />
                                 </div>
                             </div>
                             <div className="export__as">Export As</div>
@@ -356,13 +356,13 @@ const ExportData = memo((props) => {
                                                 "pdf"
                                             )}
                                             onChange={changeDownloadType}
-                                        ></input>
+                                        />
                                     </div>
                                     <div className="export__file">
                                         <i
                                             className="fa fa-file-pdf-o"
                                             aria-hidden="true"
-                                        ></i>
+                                        />
                                         <br />
                                         <strong>PDF</strong>
                                     </div>
@@ -377,13 +377,13 @@ const ExportData = memo((props) => {
                                                 "excel"
                                             )}
                                             onChange={changeDownloadType}
-                                        ></input>
+                                        />
                                     </div>
                                     <div className="export__file">
                                         <i
                                             className="fa fa-file-excel-o"
                                             aria-hidden="true"
-                                        ></i>
+                                        />
                                         <br />
                                         <strong>Excel</strong>
                                     </div>
@@ -398,13 +398,13 @@ const ExportData = memo((props) => {
                                                 "csv"
                                             )}
                                             onChange={changeDownloadType}
-                                        ></input>
+                                        />
                                     </div>
                                     <div className="export__file">
                                         <i
                                             className="fa fa-file-text-o"
                                             aria-hidden="true"
-                                        ></i>
+                                        />
                                         <br />
                                         <strong>CSV</strong>
                                     </div>
@@ -425,12 +425,14 @@ const ExportData = memo((props) => {
                             <div className="export__footer">
                                 <div className="export__btns">
                                     <button
+                                        type="button"
                                         className="btns"
                                         onClick={toggleExportDataOverlay}
                                     >
                                         Cancel
                                     </button>
                                     <button
+                                        type="button"
                                         className="btns btns__save"
                                         onClick={exportRowData}
                                     >
@@ -443,9 +445,17 @@ const ExportData = memo((props) => {
                 </div>
             </ClickAwayListener>
         );
-    } else {
-        return <div></div>;
     }
+    return <div />;
 });
+
+ExportData.propTypes = {
+    isExportOverlayOpen: PropTypes.any,
+    toggleExportDataOverlay: PropTypes.any,
+    rows: PropTypes.any,
+    originalColumns: PropTypes.any,
+    isExpandContentAvailable: PropTypes.any,
+    additionalColumn: PropTypes.any
+};
 
 export default ExportData;
