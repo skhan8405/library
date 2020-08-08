@@ -266,10 +266,10 @@ const ColumnReordering = memo((props) => {
         if (managedColumns && managedColumns.length > 0) {
             setSearchedColumns(concatedOriginalColumns);
             props.updateColumnStructure(managedColumns, remarksColumnToManage);
+            toggleManageColumns();
         } else {
             setIsErrorDisplayed(true);
         }
-        toggleManageColumns();
     };
 
     const resetInnerCells = (columnList) => {
@@ -290,6 +290,7 @@ const ColumnReordering = memo((props) => {
         setRemarksColumnToManage(
             resetInnerCells(getRemarksColumnIfAvailable())
         );
+        setIsErrorDisplayed(false);
         props.updateColumnStructure(
             originalColumns,
             getRemarksColumnIfAvailable()
