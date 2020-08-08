@@ -1,5 +1,6 @@
 import React, { memo, useState } from "react";
 import { useAsyncDebounce } from "react-table";
+import IconSearch from "../Images/icon-search.svg";
 import PropTypes from "prop-types";
 
 const GlobalFilter = memo(({ globalFilter, setGlobalFilter }) => {
