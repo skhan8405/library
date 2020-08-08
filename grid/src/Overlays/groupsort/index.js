@@ -119,67 +119,65 @@ const GroupSort = memo((props) => {
                         <div className="neo-popover__title">
                             <h2>Sort</h2>
                             <div className="neo-popover__close">
-                                    <i
-                                        className="fa fa-times"
-                                        aria-hidden="true"
-                                        onClick={toggleGroupSortOverLay}
-                                    />
-                                </div>
+                                <i
+                                    className="fa fa-times"
+                                    aria-hidden="true"
+                                    onClick={toggleGroupSortOverLay}
+                                />
                             </div>
+                        </div>
                         <div className="neo-popover__content">
-                                <DndProvider
-                                    backend={MultiBackend}
-                                    options={HTML5toTouch}
+                            <DndProvider
+                                backend={MultiBackend}
+                                options={HTML5toTouch}
+                            >
+                                <SortingList
+                                    sortOptions={sortOptions}
+                                    originalColumns={originalColumns}
+                                    updateSortingOptions={updateSortingOptions}
+                                    updateSingleSortingOption={
+                                        updateSingleSortingOption
+                                    }
+                                    copySortOption={copySortOption}
+                                    deleteSortOption={deleteSortOption}
+                                />
+                            </DndProvider>
+                        </div>
+                        <div className="sort-warning">
+                            {isErrorDisplayed ? (
+                                <span>Duplicate sort options found.</span>
+                            ) : null}
+                        </div>
+                        <div className="sort__new">
+                            <div
+                                className="sort__section"
+                                role="presentation"
+                                onClick={addSortingOptions}
+                            >
+                                <span>+</span>
+                                <div className="sort__txt">New Sort</div>
+                            </div>
+                        </div>
+                        <div className="sort__footer">
+                            <div className="sort__btns">
+                                <button
+                                    type="button"
+                                    className="btns"
+                                    onClick={clearSortingOptions}
                                 >
-                                    <SortingList
-                                        sortOptions={sortOptions}
-                                        originalColumns={originalColumns}
-                                        updateSortingOptions={
-                                            updateSortingOptions
-                                        }
-                                        updateSingleSortingOption={
-                                            updateSingleSortingOption
-                                        }
-                                        copySortOption={copySortOption}
-                                        deleteSortOption={deleteSortOption}
-                                    />
-                                </DndProvider>
-                            </div>
-                            <div className="sort-warning">
-                                {isErrorDisplayed ? (
-                                    <span>Duplicate sort options found.</span>
-                                ) : null}
-                            </div>
-                            <div className="sort__new">
-                                <div
-                                    className="sort__section"
-                                    role="presentation"
-                                    onClick={addSortingOptions}
+                                    Clear All
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btns btns__save"
+                                    onClick={applySort}
                                 >
-                                    <span>+</span>
-                                    <div className="sort__txt">New Sort</div>
-                                </div>
-                            </div>
-                            <div className="sort__footer">
-                                <div className="sort__btns">
-                                    <button
-                                        type="button"
-                                        className="btns"
-                                        onClick={clearSortingOptions}
-                                    >
-                                        Clear All
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btns btns__save"
-                                        onClick={applySort}
-                                    >
-                                        Ok
-                                    </button>
-                                </div>
+                                    Ok
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
             </ClickAwayListener>
         );
     }
