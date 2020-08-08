@@ -1,10 +1,21 @@
 import React, { useState } from "react";
 import { getValueOfDate } from "../utils/DateUtility";
 
-const RowEdit = ({ rowData, DisplayTag, airportCodeList, rowUpdateCallBack }) => {
+const RowEdit = ({
+    rowData,
+    DisplayTag,
+    airportCodeList,
+    rowUpdateCallBack
+}) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
 
-    const updateRowData = (updatedFlightData, updatedSegmentData, updatedWeightData, updatedSrData, updatedRemarksData) => {
+    const updateRowData = (
+        updatedFlightData,
+        updatedSegmentData,
+        updatedWeightData,
+        updatedSrData,
+        updatedRemarksData
+    ) => {
         const updatedRow = {
             ...updatedRowData
         };
@@ -92,13 +103,21 @@ const RowEdit = ({ rowData, DisplayTag, airportCodeList, rowUpdateCallBack }) =>
                     <DisplayTag columnKey="flight" cellKey="flightno">
                         <div className="edit-flight-no">
                             <label>FlightNo</label>
-                            <input type="text" value={flight.flightno} onChange={updateFlightnoValue} />
+                            <input
+                                type="text"
+                                value={flight.flightno}
+                                onChange={updateFlightnoValue}
+                            />
                         </div>
                     </DisplayTag>
                     <DisplayTag columnKey="flight" cellKey="date">
                         <div className="edit-flight-date">
                             <label>Date</label>
-                            <input type="date" value={getValueOfDate(flight.date, "calendar")} onChange={updateDateValue} />
+                            <input
+                                type="date"
+                                value={getValueOfDate(flight.date, "calendar")}
+                                onChange={updateDateValue}
+                            />
                         </div>
                     </DisplayTag>
                 </div>
@@ -106,7 +125,10 @@ const RowEdit = ({ rowData, DisplayTag, airportCodeList, rowUpdateCallBack }) =>
                     <DisplayTag columnKey="segment" cellKey="from">
                         <div>
                             <label>Segment From</label>
-                            <select value={segment.from} onChange={updateFromValue}>
+                            <select
+                                value={segment.from}
+                                onChange={updateFromValue}
+                            >
                                 {airportCodeList.map((item, index) => {
                                     return (
                                         <option key={index} value={item}>
@@ -136,27 +158,43 @@ const RowEdit = ({ rowData, DisplayTag, airportCodeList, rowUpdateCallBack }) =>
                     <DisplayTag columnKey="weight" cellKey="percentage">
                         <div className="edit-weight-percentage">
                             <label>Weight Percentage</label>
-                            <input type="text" value={weight.percentage} onChange={updateWeightPercentage} />
+                            <input
+                                type="text"
+                                value={weight.percentage}
+                                onChange={updateWeightPercentage}
+                            />
                         </div>
                     </DisplayTag>
                     <DisplayTag columnKey="weight" cellKey="value">
                         <div className="edit-weight-value">
                             <label>Weight Value</label>
-                            <input type="text" value={weight.value} onChange={updateWeightValue} />
+                            <input
+                                type="text"
+                                value={weight.value}
+                                onChange={updateWeightValue}
+                            />
                         </div>
                     </DisplayTag>
                 </div>
                 <div className="edit-sr">
                     <DisplayTag columnKey="sr" cellKey="sr">
                         <label>SR</label>
-                        <input type="text" value={sr} onChange={updateSrValue} />
+                        <input
+                            type="text"
+                            value={sr}
+                            onChange={updateSrValue}
+                        />
                     </DisplayTag>
                 </div>
             </div>
             <div className="remarks-edit">
                 <DisplayTag columnKey="remarks" cellKey="remarks">
                     <label>Remarks</label>
-                    <textarea rows="4" value={remarks} onChange={updateRemarksValue}></textarea>
+                    <textarea
+                        rows="4"
+                        value={remarks}
+                        onChange={updateRemarksValue}
+                    ></textarea>
                 </DisplayTag>
             </div>
         </>
