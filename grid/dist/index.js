@@ -3626,7 +3626,9 @@ var Grid = /*#__PURE__*/React.memo(function (props) {
       textAlign: "center",
       marginTop: "70px"
     }
-  }, isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"));
+  }, isLoading ? "Initializing Grid..." : /*#__PURE__*/React__default.createElement("span", {
+    className: "error"
+  }, "Invalid Data or Column Configurations")));
 });
 Grid.propTypes = {
   title: propTypes.any,
