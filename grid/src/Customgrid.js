@@ -331,7 +331,7 @@ const Customgrid = memo((props) => {
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
                     <strong>{rows.length}</strong>
-                        <span> {title || "Rows"}</span>
+                    <span>{title || "Rows"}</span>
                 </div>
                 <div className="neo-grid-header__utilities">
                     <ColumnReordering
@@ -406,22 +406,26 @@ const Customgrid = memo((props) => {
 
             <div className="table-popus">
                 {isRowEditOverlyOpen ? (
-                    <RowEditOverlay
-                        row={editedRowData}
-                        columns={columns}
-                        isRowExpandEnabled={isRowExpandEnabled}
-                        additionalColumn={additionalColumn}
-                        getRowEditOverlay={getRowEditOverlay}
-                        closeRowEditOverlay={closeRowEditOverlay}
-                        updateRowInGrid={updateRowInGrid}
-                    />
+                    <div className="overlay">
+                        <RowEditOverlay
+                            row={editedRowData}
+                            columns={columns}
+                            isRowExpandEnabled={isRowExpandEnabled}
+                            additionalColumn={additionalColumn}
+                            getRowEditOverlay={getRowEditOverlay}
+                            closeRowEditOverlay={closeRowEditOverlay}
+                            updateRowInGrid={updateRowInGrid}
+                        />
+                    </div>
                 ) : null}
                 {isRowDeleteOverlyOpen ? (
-                    <RowDeleteOverLay
-                        row={deletedRowData}
-                        closeRowDeleteOverlay={closeRowDeleteOverlay}
-                        deleteRowFromGrid={deleteRowFromGrid}
-                    />
+                    <div className="overlay">
+                        <RowDeleteOverLay
+                            row={deletedRowData}
+                            closeRowDeleteOverlay={closeRowDeleteOverlay}
+                            deleteRowFromGrid={deleteRowFromGrid}
+                        />
+                    </div>
                 ) : null}
             </div>
 

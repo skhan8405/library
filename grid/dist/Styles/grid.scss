@@ -3,14 +3,14 @@
     @return #{$remSize}rem;
 }
 
-.neo-grid{
+.neo-grid {
     .table {
         border-top: 1px solid #d2d5de;
     }
     .table-row {
         border-bottom: 1px solid #d2d5de;
         flex-wrap: wrap;
-        &:last-child{
+        &:last-child {
             margin-bottom: 50px;
         }
     }
@@ -21,7 +21,7 @@
     .table-cell {
         padding: 0.8em 1.2em;
         position: relative;
-        &:hover{
+        &:hover {
             .cell-edit {
                 display: block;
             }
@@ -31,7 +31,7 @@
             color: #204d6f;
             vertical-align: top;
             font-weight: bold;
-            &:hover{
+            &:hover {
                 border-left: 1px solid #d2d5de;
                 border-right: 1px solid #d2d5de;
             }
@@ -39,7 +39,7 @@
                 padding: 0;
                 width: 53px !important;
             }
-            fa {
+            .fa {
                 margin-left: 5px;
             }
             .txt-wrap {
@@ -62,8 +62,8 @@
         height: 100%;
         margin-right: 5px;
     }
-    .expander{
-        .fa{
+    .expander {
+        .fa {
             font-size: 22px;
             color: #999999;
         }
@@ -119,14 +119,14 @@
         li {
             margin-bottom: 13px;
             cursor: pointer;
-            &:last-child{
+            &:last-child {
                 margin: 0;
             }
-            i{
+            i {
                 width: 14px;
                 display: inline-block;
             }
-            span{
+            span {
                 margin-left: 8px;
                 padding-right: 5px;
             }
@@ -152,7 +152,7 @@
             right: 0;
         }
     }
-    .table-cell--content{
+    .table-cell--content {
         a {
             font-size: 2em;
             color: #333;
@@ -170,7 +170,8 @@
         width: auto;
         white-space: nowrap;
         box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.35);
-        input, select{
+        input,
+        select {
             display: inline-block;
             height: 23px;
             width: 120px;
@@ -180,7 +181,7 @@
             font-size: 12px;
             margin-right: 5px;
         }
-        select{
+        select {
             height: 29px;
         }
         .ok {
@@ -192,7 +193,7 @@
             margin: 0 5px;
             position: relative;
             cursor: pointer;
-            &:before{
+            &:before {
                 font-family: FontAwesome;
                 position: absolute;
                 content: "\f00c";
@@ -222,53 +223,4 @@
             }
         }
     }
-    .row-option-action-overlay {
-        background-color: #fff;
-        width: 890px;
-        box-shadow: 0px 0px 7px -1px rgba(0, 0, 0, 0.3);
-        padding: 20px 20px 20px 020px;
-        z-index: 99;
-        position: absolute;
-        .delete {
-            width: auto;
-            height: auto;
-            padding: 50px;
-        }
-        label {
-            margin-bottom: 5px;
-            display: block;
-        }
-        input, select, textarea{
-            width: 100%;
-            border-radius: 2px;
-            border: #d3d3d3 solid 1px;
-            font-size: 12px;
-            padding: 5px;
-        }
-        select{
-            margin: 0 0 10px;
-        }
-        button {
-            background: #169bd5;
-            color: #fff;
-            width: 98px;
-            height: 33px;
-            border: none;
-            border-radius: 3px;
-            margin: 0 5px;
-            cursor: pointer;
-            &.cancel-Button {
-                background: #fff;
-                color: #169bd5;
-                border: #169bd5 1px solid;
-            }
-        }
-        .cancel-save-buttons {
-            margin: 10px 10px;
-            padding-top: 15px;
-            display: flex;
-            justify-content: flex-end;
-        }
-    }
 }
-

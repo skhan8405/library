@@ -43,25 +43,26 @@ const RowEditOverLay = memo(
                     isRowExpandEnabled: isRowExpandEnabled
                 }}
             >
-                <ClickAwayListener onClickAway={closeRowEditOverlay}>
-                    <div className="row-option-action-overlay">
-                        {rowEditContent}
-                        <div className="cancel-save-buttons">
-                            <button
-                                type="button"
-                                className="save-Button"
-                                onClick={saveRowEdit}
-                            >
-                                Save
-                            </button>
-                            <button
-                                type="button"
-                                className="cancel-Button"
-                                onClick={closeRowEditOverlay}
-                            >
-                                Cancel
-                            </button>
-                        </div>
+                <ClickAwayListener
+                    className="row-option-action-overlay"
+                    onClickAway={closeRowEditOverlay}
+                >
+                    {rowEditContent}
+                    <div className="cancel-save-buttons">
+                        <button
+                            type="button"
+                            className="save-Button"
+                            onClick={saveRowEdit}
+                        >
+                            Save
+                        </button>
+                        <button
+                            type="button"
+                            className="cancel-Button"
+                            onClick={closeRowEditOverlay}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </ClickAwayListener>
             </RowEditContext.Provider>

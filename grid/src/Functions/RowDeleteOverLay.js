@@ -12,24 +12,25 @@ const RowDeleteOverLay = memo(
         };
 
         return (
-            <ClickAwayListener onClickAway={closeRowDeleteOverlay}>
-                <div className="row-option-action-overlay delete">
-                    <div className="cancel-save-buttons-delete">
-                        <button
-                            type="button"
-                            className="delete-Button"
-                            onClick={deleteRow}
-                        >
-                            Delete
-                        </button>
-                        <button
-                            type="button"
-                            className="cancel-Button"
-                            onClick={closeRowDeleteOverlay}
-                        >
-                            Cancel
-                        </button>
-                    </div>
+            <ClickAwayListener
+                className="row-option-action-overlay delete"
+                onClickAway={closeRowDeleteOverlay}
+            >
+                <div className="cancel-save-buttons-delete">
+                    <button
+                        type="button"
+                        className="delete-Button"
+                        onClick={deleteRow}
+                    >
+                        Delete
+                    </button>
+                    <button
+                        type="button"
+                        className="cancel-Button"
+                        onClick={closeRowDeleteOverlay}
+                    >
+                        Cancel
+                    </button>
                 </div>
             </ClickAwayListener>
         );
