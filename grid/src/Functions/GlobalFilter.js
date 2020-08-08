@@ -1,5 +1,6 @@
 import React, { memo, useState } from "react";
 import { useAsyncDebounce } from "react-table";
+import IconSearch from "../Images/icon-search.svg";
 
 const GlobalFilter = memo(({ globalFilter, setGlobalFilter }) => {
     const [value, setValue] = useState(globalFilter);
@@ -20,7 +21,9 @@ const GlobalFilter = memo(({ globalFilter, setGlobalFilter }) => {
                 className="txt"
                 placeholder="Search"
             />
-            <i className="fa fa-search fa-6" aria-hidden="true"></i>
+            <i>
+                <img src={IconSearch} />
+            </i>
         </div>
     );
 });

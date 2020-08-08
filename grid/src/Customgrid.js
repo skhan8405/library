@@ -319,14 +319,12 @@ const Customgrid = memo((props) => {
                 rel="stylesheet"
                 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
             />
-            <div className="table-filter">
-                <div className="results">
-                    <div className="name">
-                        <strong>{rows.length}</strong>
-                        <span> {title ? title : "Rows"}</span>
-                    </div>
+            <div className="neo-grid-header">
+                <div className="neo-grid-header__results">
+                    <strong>{rows.length}</strong>
+                    <span> {title ? title : "Rows"}</span>
                 </div>
-                <div className="filter-utilities">
+                <div className="neo-grid-header__utilities">
                     <ColumnReordering
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
@@ -354,13 +352,13 @@ const Customgrid = memo((props) => {
                         additionalColumn={[additionalColumn]}
                     />
                     <div
-                        className="filter-icon keyword-search"
+                        className="utilities-icon keyword-search"
                         onClick={toggleColumnFilter}
                     >
                         <i className="fa fa-filter" aria-hidden="true"></i>
                     </div>
                     <div
-                        className="filter-icon bulk-select"
+                        className="utilities-icon bulk-select"
                         onClick={bulkSelector}
                     >
                         <i
@@ -369,7 +367,7 @@ const Customgrid = memo((props) => {
                         ></i>
                     </div>
                     <div
-                        className="filter-icon bulk-select"
+                        className="utilities-icon bulk-select"
                         onClick={toggleGroupSortOverLay}
                     >
                         <i
@@ -378,13 +376,13 @@ const Customgrid = memo((props) => {
                         ></i>
                     </div>
                     <div
-                        className="filter-icon manage-columns"
+                        className="utilities-icon manage-columns"
                         onClick={toggleManageColumns}
                     >
                         <i className="fa fa-columns" aria-hidden="true"></i>
                     </div>
                     <div
-                        className="filter-icon manage-columns"
+                        className="utilities-icon manage-columns"
                         onClick={toggleExportDataOverlay}
                     >
                         <i className="fa fa-share-alt" aria-hidden="true"></i>
@@ -414,7 +412,7 @@ const Customgrid = memo((props) => {
             </div>
 
             <div
-                className="tableContainer table-outer"
+                className="tableContainer table-outer neo-grid"
                 style={{
                     height: gridHeight ? gridHeight : "50vh",
                     overflowX: "auto",

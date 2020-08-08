@@ -5,7 +5,6 @@ import { TouchBackend } from "react-dnd-touch-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
-import "!style-loader!css-loader!sass-loader!./styles/columnreorder.scss";
 
 const ColumnReordering = memo((props) => {
     const {
@@ -300,8 +299,8 @@ const ColumnReordering = memo((props) => {
     if (isManageColumnOpen) {
         return (
             <ClickAwayListener onClickAway={toggleManageColumns}>
-                <div className="columns--grid">
-                    <div className="column__grid">
+                <div className="neo-popover neo-popover--column columns--grid">
+                    <div className="neo-popover__column column__grid">
                         <div className="column__chooser">
                             <div className="column__header">
                                 <div className="">

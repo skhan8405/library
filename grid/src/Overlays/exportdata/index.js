@@ -4,7 +4,6 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-import "!style-loader!css-loader!sass-loader!./styles/exportdata.scss";
 
 const ExportData = memo((props) => {
     const {
@@ -276,8 +275,8 @@ const ExportData = memo((props) => {
     if (isExportOverlayOpen) {
         return (
             <ClickAwayListener onClickAway={toggleExportDataOverlay}>
-                <div className="exports--grid">
-                    <div className="export__grid">
+                <div className="neo-popover neo-popover--exports exports--grid">
+                    <div className="neo-popover__export export__grid">
                         <div className="export__chooser">
                             <div className="export__header">
                                 <div className="">

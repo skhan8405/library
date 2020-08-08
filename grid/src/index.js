@@ -6,7 +6,7 @@ import {
 import { AdditionalColumnContext } from "./Utilities/TagsContext";
 import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
-import "!style-loader!css-loader!sass-loader!./styles/main.scss";
+import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const Grid = memo((props) => {
     const {

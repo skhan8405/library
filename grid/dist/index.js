@@ -13,14 +13,11 @@ var reactDndTouchBackend = require('react-dnd-touch-backend');
 var MultiBackend = require('react-dnd-multi-backend');
 var MultiBackend__default = _interopDefault(MultiBackend);
 var update = _interopDefault(require('immutability-helper'));
-require('!style-loader!css-loader!sass-loader!./styles/columnreorder.scss');
-require('!style-loader!css-loader!sass-loader!./styles/groupsort.scss');
 var jsPDF = _interopDefault(require('jspdf'));
 require('jspdf-autotable');
 var FileSaver = require('file-saver');
 var XLSX = require('xlsx');
-require('!style-loader!css-loader!sass-loader!./styles/exportdata.scss');
-require('!style-loader!css-loader!sass-loader!./styles/main.scss');
+require('!style-loader!css-loader!sass-loader!./Styles/main.scss');
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -54,6 +51,52 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 
   return target;
 }
+
+var CellDisplayAndEditContext = /*#__PURE__*/React.createContext({});
+var RowEditContext = /*#__PURE__*/React.createContext({});
+var AdditionalColumnContext = /*#__PURE__*/React.createContext({});
+
+var checkInnerCells = function checkInnerCells(column, cellKey) {
+  if (column) {
+    var innerCells = column.innerCells;
+
+    if (innerCells) {
+      var innerCellData = innerCells.find(function (cell) {
+        return cell.accessor === cellKey;
+      });
+
+      if (innerCellData) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+var CellDisplayAndEditTag = function CellDisplayAndEditTag(props) {
+  var contextVallues = React.useContext(CellDisplayAndEditContext);
+  var column = contextVallues.column,
+      columns = contextVallues.columns;
+  var cellKey = props.cellKey,
+      columnKey = props.columnKey;
+
+  if (columns && columnKey) {
+    var selectedColumn = columns.find(function (col) {
+      return col.accessor === columnKey;
+    });
+
+    if (checkInnerCells(selectedColumn, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
+    }
+  } else if (cellKey) {
+    if (checkInnerCells(column, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
+    }
+  }
+
+  return null;
+};
 
 var CellDisplayAndEdit = /*#__PURE__*/React.memo(function (_ref) {
   var row = _ref.row,
@@ -94,50 +137,16 @@ var CellDisplayAndEdit = /*#__PURE__*/React.memo(function (_ref) {
       closeEdit();
     };
 
-    var DisplayTag = function DisplayTag(props) {
-      var cellKey = props.cellKey,
-          columnKey = props.columnKey;
-
-      if (columns && columnKey) {
-        var selectedColumn = columns.find(function (col) {
-          return col.accessor === columnKey;
-        });
-
-        if (checkInnerCells(selectedColumn, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
-        }
-      } else if (cellKey) {
-        if (checkInnerCells(column, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
-        }
-      }
-
-      return null;
-    };
-
-    var checkInnerCells = function checkInnerCells(column, cellKey) {
-      if (column) {
-        var innerCells = column.innerCells;
-
-        if (innerCells) {
-          var innerCellData = innerCells.find(function (cell) {
-            return cell.accessor === cellKey;
-          });
-
-          if (innerCellData) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    };
-
     var originalRowValue = _extends({}, row.row.original);
 
-    var cellDisplayContent = column.displayCell(originalRowValue, DisplayTag);
-    var cellEditContent = column.editCell ? column.editCell(originalRowValue, DisplayTag, getUpdatedRowValue) : null;
-    return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+    var cellDisplayContent = column.displayCell(originalRowValue, CellDisplayAndEditTag);
+    var cellEditContent = column.editCell ? column.editCell(originalRowValue, CellDisplayAndEditTag, getUpdatedRowValue) : null;
+    return /*#__PURE__*/React__default.createElement(CellDisplayAndEditContext.Provider, {
+      value: {
+        columns: columns,
+        column: column
+      }
+    }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: closeEdit
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "table-cell--content table-cell--content__" + id
@@ -155,7 +164,7 @@ var CellDisplayAndEdit = /*#__PURE__*/React.memo(function (_ref) {
     }), /*#__PURE__*/React__default.createElement("button", {
       className: "cancel",
       onClick: closeEdit
-    })) : null));
+    })) : null)));
   }
 });
 
@@ -225,6 +234,21 @@ var extractAdditionalColumn = function extractAdditionalColumn(additionalColumn,
   return additionalColumn;
 };
 
+var AdditionalColumnTag = function AdditionalColumnTag(props) {
+  console.log("Inside additional tag");
+  var contextVallues = React.useContext(AdditionalColumnContext);
+  var additionalColumn = contextVallues.additionalColumn;
+  var cellKey = props.cellKey;
+
+  if (additionalColumn && cellKey) {
+    if (checkInnerCells(additionalColumn, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
+    }
+  }
+
+  return null;
+};
+
 var RowSelector = /*#__PURE__*/React.memo( /*#__PURE__*/React.forwardRef(function (_ref, ref) {
   var indeterminate = _ref.indeterminate,
       rest = _objectWithoutPropertiesLoose(_ref, ["indeterminate"]);
@@ -267,6 +291,8 @@ var DefaultColumnFilter = /*#__PURE__*/React.memo(function (_ref) {
   });
 });
 
+var IconSearch = require("./icon-search~PApihVHT.svg");
+
 var GlobalFilter = /*#__PURE__*/React.memo(function (_ref) {
   var globalFilter = _ref.globalFilter,
       setGlobalFilter = _ref.setGlobalFilter;
@@ -291,10 +317,9 @@ var GlobalFilter = /*#__PURE__*/React.memo(function (_ref) {
     },
     className: "txt",
     placeholder: "Search"
-  }), /*#__PURE__*/React__default.createElement("i", {
-    className: "fa fa-search fa-6",
-    "aria-hidden": "true"
-  }));
+  }), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
+    src: IconSearch
+  })));
 });
 
 var RowDelete = require("./RowDelete~RKolkpAF.svg");
@@ -363,6 +388,33 @@ var RowOptions = /*#__PURE__*/React.memo(function (_ref) {
   })))) : null));
 });
 
+var RowEditTag = function RowEditTag(props) {
+  var contextVallues = React.useContext(RowEditContext);
+  var columns = contextVallues.columns,
+      additionalColumn = contextVallues.additionalColumn,
+      isRowExpandEnabled = contextVallues.isRowExpandEnabled;
+  var cellKey = props.cellKey,
+      columnKey = props.columnKey;
+
+  if (columns && columnKey) {
+    var selectedColumn = columns.find(function (col) {
+      return col.accessor === columnKey;
+    });
+
+    if (selectedColumn && cellKey) {
+      if (checkInnerCells(selectedColumn, cellKey)) {
+        return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
+      }
+    } else if (!selectedColumn && isRowExpandEnabled && additionalColumn) {
+      if (checkInnerCells(additionalColumn, columnKey)) {
+        return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
+      }
+    }
+  }
+
+  return null;
+};
+
 var RowEditOverLay = /*#__PURE__*/React.memo(function (_ref) {
   var row = _ref.row,
       columns = _ref.columns,
@@ -390,51 +442,16 @@ var RowEditOverLay = /*#__PURE__*/React.memo(function (_ref) {
     closeRowEditOverlay();
   };
 
-  var DisplayTag = function DisplayTag(props) {
-    var cellKey = props.cellKey,
-        columnKey = props.columnKey;
-
-    if (columns && columnKey) {
-      var selectedColumn = columns.find(function (col) {
-        return col.accessor === columnKey;
-      });
-
-      if (selectedColumn && cellKey) {
-        if (checkInnerCells(selectedColumn, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
-        }
-      } else if (!selectedColumn && isRowExpandEnabled && additionalColumn) {
-        if (checkInnerCells(additionalColumn, columnKey)) {
-          return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
-        }
-      }
-    }
-
-    return null;
-  };
-
-  var checkInnerCells = function checkInnerCells(column, cellKey) {
-    if (column) {
-      var innerCells = column.innerCells;
-
-      if (innerCells) {
-        var innerCellData = innerCells.find(function (cell) {
-          return cell.accessor === cellKey;
-        });
-
-        if (innerCellData) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
   var originalRowValue = _extends({}, row);
 
-  var rowEditContent = getRowEditOverlay(originalRowValue, DisplayTag, getUpdatedRowValue);
-  return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+  var rowEditContent = getRowEditOverlay(originalRowValue, RowEditTag, getUpdatedRowValue);
+  return /*#__PURE__*/React__default.createElement(RowEditContext.Provider, {
+    value: {
+      columns: columns,
+      additionalColumn: additionalColumn,
+      isRowExpandEnabled: isRowExpandEnabled
+    }
+  }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
     onClickAway: closeRowEditOverlay
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "row-option-action-overlay"
@@ -446,7 +463,7 @@ var RowEditOverLay = /*#__PURE__*/React.memo(function (_ref) {
   }, "Save"), /*#__PURE__*/React__default.createElement("button", {
     className: "cancel-Button",
     onClick: closeRowEditOverlay
-  }, "Cancel"))));
+  }, "Cancel")))));
 });
 
 var RowDeleteOverLay = /*#__PURE__*/React.memo(function (_ref) {
@@ -829,11 +846,10 @@ var ColumnReordering = /*#__PURE__*/React.memo(function (props) {
     if (managedColumns && managedColumns.length > 0) {
       setSearchedColumns(concatedOriginalColumns);
       props.updateColumnStructure(managedColumns, remarksColumnToManage);
+      toggleManageColumns();
     } else {
       setIsErrorDisplayed(true);
     }
-
-    toggleManageColumns();
   };
 
   var resetInnerCells = function resetInnerCells(columnList) {
@@ -851,6 +867,7 @@ var ColumnReordering = /*#__PURE__*/React.memo(function (props) {
     setManagedColumns(resetInnerCells(originalColumns));
     setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
     setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
+    setIsErrorDisplayed(false);
     props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
   };
 
@@ -858,9 +875,9 @@ var ColumnReordering = /*#__PURE__*/React.memo(function (props) {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleManageColumns
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "columns--grid"
+      className: "neo-popover neo-popover--column columns--grid"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "column__grid"
+      className: "neo-popover__column column__grid"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__chooser"
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -1282,23 +1299,19 @@ var GroupSort = /*#__PURE__*/React.memo(function (props) {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleGroupSortOverLay
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sorts--grid"
+      className: "neo-popover"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__grid"
+      className: "neo-popover__sort"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__settings"
-    }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__header"
-    }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__headerTxt"
-    }, "Sort"), /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__close"
+      className: "neo-popover__title"
+    }, /*#__PURE__*/React__default.createElement("h2", null, "Sort"), /*#__PURE__*/React__default.createElement("div", {
+      className: "neo-popover__close"
     }, /*#__PURE__*/React__default.createElement("i", {
       className: "fa fa-times",
       "aria-hidden": "true",
       onClick: toggleGroupSortOverLay
     }))), /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__body"
+      className: "neo-popover__content"
     }, /*#__PURE__*/React__default.createElement(reactDnd.DndProvider, {
       backend: MultiBackend__default,
       options: HTML5toTouch
@@ -1329,7 +1342,7 @@ var GroupSort = /*#__PURE__*/React.memo(function (props) {
     }, "Clear All"), /*#__PURE__*/React__default.createElement("button", {
       className: "btns btns__save",
       onClick: applySort
-    }, "Ok")))))));
+    }, "Ok"))))));
   } else {
     return /*#__PURE__*/React__default.createElement("div", null);
   }
@@ -1371,44 +1384,63 @@ var ExportData = /*#__PURE__*/React.memo(function (props) {
     isDownload = true;
     var filteredRow = [];
     var filteredRowValues = [];
+    var filteredRowHeader = [];
     setWarning("");
 
     if (managedColumns.length > 0 && downloadTypes.length > 0) {
-      rows.forEach(function (rowDetails) {
+      var rowLength = rows && rows.length > 0 ? rows.length : 0;
+      rows.forEach(function (rowDetails, index) {
         var row = rowDetails.original;
-        var keys = Object.getOwnPropertyNames(row);
         var filteredColumnVal = {};
         var rowFilteredValues = [];
-        keys.forEach(function (key) {
-          managedColumns.forEach(function (columnName) {
-            if (columnName.accessor === key || columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key)) {
-              var columnValue = "";
+        var rowFilteredHeader = [];
+        managedColumns.forEach(function (columnName) {
+          var Header = columnName.Header,
+              accessor = columnName.accessor,
+              innerCells = columnName.innerCells;
+          var accessorRowValue = row[accessor];
+          var columnValue = "";
+          var columnHeader = "";
 
-              if (typeof row[key] === "object") {
-                if (row[key].length === undefined) columnValue = Object.values(row[key]).toString().replace(",", " | ");
+          if (accessor) {
+            if (innerCells && innerCells.length > 0 && typeof accessorRowValue === "object") {
+              innerCells.forEach(function (cell) {
+                var innerCellAccessor = cell.accessor;
+                var innerCellHeader = cell.Header;
+                var innerCellAccessorValue = accessorRowValue[innerCellAccessor];
 
-                if (row[key].length > 0) {
-                  var arrObj = "";
-                  row[key].forEach(function (item, index) {
-                    arrObj = index != 0 ? arrObj + " | " + Object.values(item) : Object.values(item);
+                if (accessorRowValue.length > 0) {
+                  accessorRowValue.forEach(function (item, index) {
+                    columnValue = item[innerCellAccessor].toString();
+                    columnHeader = Header + " - " + innerCellHeader + "_" + index;
+                    filteredColumnVal[columnHeader] = columnValue;
+                    rowFilteredValues.push(columnValue);
+                    rowFilteredHeader.push(columnHeader);
                   });
-                  columnValue = arrObj;
+                } else if (innerCellAccessorValue) {
+                  columnValue = innerCellAccessorValue;
+                  columnHeader = Header + " - " + innerCellHeader;
+                  filteredColumnVal[columnHeader] = columnValue;
+                  rowFilteredValues.push(columnValue);
+                  rowFilteredHeader.push(columnHeader);
                 }
-              } else {
-                columnValue = row[key];
-              }
-
-              filteredColumnVal[key] = columnValue;
+              });
+            } else {
+              columnValue = accessorRowValue;
+              columnHeader = Header;
+              filteredColumnVal[columnHeader] = columnValue;
               rowFilteredValues.push(columnValue);
+              rowFilteredHeader.push(columnHeader);
             }
-          });
+          }
         });
         filteredRow.push(filteredColumnVal);
         filteredRowValues.push(rowFilteredValues);
+        if (rowLength === index + 1) filteredRowHeader.push(rowFilteredHeader);
       });
       downloadTypes.map(function (item) {
         if (item === "pdf") {
-          downloadPDF(filteredRowValues);
+          downloadPDF(filteredRowValues, filteredRowHeader);
         } else if (item === "excel") {
           downloadXLSFile(filteredRow);
         } else {
@@ -1426,21 +1458,36 @@ var ExportData = /*#__PURE__*/React.memo(function (props) {
     }
   };
 
-  var downloadPDF = function downloadPDF(rowFilteredValues) {
+  var downloadPDF = function downloadPDF(rowFilteredValues, rowFilteredHeader) {
     var unit = "pt";
     var size = "A4";
     var orientation = "landscape";
-    var marginLeft = 300;
+    var marginLeft = 30;
     var doc = new jsPDF(orientation, unit, size);
     doc.setFontSize(15);
     var title = "iCargo Neo Report";
-    var headers = [managedColumns.map(function (column) {
-      return column.Header;
-    })];
     var content = {
       startY: 50,
-      head: headers,
-      body: rowFilteredValues
+      head: rowFilteredHeader,
+      body: rowFilteredValues,
+      tableWidth: "wrap",
+      headStyles: {
+        fillColor: [102, 102, 255]
+      },
+      styles: {
+        fontSize: 12,
+        overflowX: "visible",
+        overflowY: "visible"
+      },
+      theme: "grid",
+      overflow: "visible",
+      cellWidth: "auto",
+      margin: {
+        top: 15,
+        right: 30,
+        bottom: 10,
+        left: 30
+      }
     };
     doc.text(title, marginLeft, 40);
     doc.autoTable(content);
@@ -1575,9 +1622,9 @@ var ExportData = /*#__PURE__*/React.memo(function (props) {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleExportDataOverlay
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "exports--grid"
+      className: "neo-popover neo-popover--exports exports--grid"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "export__grid"
+      className: "neo-popover__export export__grid"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "export__chooser"
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -1937,13 +1984,11 @@ var Customgrid = /*#__PURE__*/React.memo(function (props) {
     rel: "stylesheet",
     href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
   }), /*#__PURE__*/React__default.createElement("div", {
-    className: "table-filter"
+    className: "neo-grid-header"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: "results"
-  }, /*#__PURE__*/React__default.createElement("div", {
-    className: "name"
-  }, /*#__PURE__*/React__default.createElement("strong", null, rows.length), /*#__PURE__*/React__default.createElement("span", null, " ", title ? title : "Rows"))), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-utilities"
+    className: "neo-grid-header__results"
+  }, /*#__PURE__*/React__default.createElement("strong", null, rows.length), /*#__PURE__*/React__default.createElement("span", null, " ", title ? title : "Rows")), /*#__PURE__*/React__default.createElement("div", {
+    className: "neo-grid-header__utilities"
   }, /*#__PURE__*/React__default.createElement(ColumnReordering, {
     isManageColumnOpen: isManageColumnOpen,
     toggleManageColumns: toggleManageColumns,
@@ -1967,31 +2012,31 @@ var Customgrid = /*#__PURE__*/React.memo(function (props) {
     isExpandContentAvailable: isExpandContentAvailable,
     additionalColumn: [additionalColumn]
   }), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon keyword-search",
+    className: "utilities-icon keyword-search",
     onClick: toggleColumnFilter
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-filter",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon bulk-select",
+    className: "utilities-icon bulk-select",
     onClick: bulkSelector
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-pencil-square-o",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon bulk-select",
+    className: "utilities-icon bulk-select",
     onClick: toggleGroupSortOverLay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-sort-amount-desc",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon manage-columns",
+    className: "utilities-icon manage-columns",
     onClick: toggleManageColumns
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-columns",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon manage-columns",
+    className: "utilities-icon manage-columns",
     onClick: toggleExportDataOverlay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-share-alt",
@@ -2011,7 +2056,7 @@ var Customgrid = /*#__PURE__*/React.memo(function (props) {
     closeRowDeleteOverlay: closeRowDeleteOverlay,
     deleteRowFromGrid: deleteRowFromGrid
   }) : null), /*#__PURE__*/React__default.createElement("div", {
-    className: "tableContainer table-outer",
+    className: "tableContainer table-outer neo-grid",
     style: {
       height: gridHeight ? gridHeight : "50vh",
       overflowX: "auto",
@@ -2181,42 +2226,15 @@ var Grid = /*#__PURE__*/React.memo(function (props) {
   }, []);
   var renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
-  var DisplayTag = function DisplayTag(props) {
-    console.log(additionalColumn);
-    var cellKey = props.cellKey;
-
-    if (additionalColumn && cellKey) {
-      if (checkInnerCells(additionalColumn, cellKey)) {
-        return /*#__PURE__*/React__default.createElement(React.Fragment, null, " ", props.children);
-      }
-    }
-
-    return null;
-  };
-
-  var checkInnerCells = function checkInnerCells(column, cellKey) {
-    if (column) {
-      var innerCells = column.innerCells;
-
-      if (innerCells) {
-        var innerCellData = innerCells.find(function (cell) {
-          return cell.accessor === cellKey;
-        });
-
-        if (innerCellData) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
   var displayExpandedContent = function displayExpandedContent(row) {
     var original = row.original;
 
     if (original) {
-      return renderExpandedContent(original, DisplayTag);
+      return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
+        value: {
+          additionalColumn: additionalColumn
+        }
+      }, renderExpandedContent(original, AdditionalColumnTag));
     }
   };
 

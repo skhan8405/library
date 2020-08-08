@@ -1,4 +1,4 @@
-import React__default, { memo, useState, Fragment, forwardRef, useRef, useEffect, useMemo, useCallback, createRef } from 'react';
+import React__default, { createContext, useContext, Fragment, memo, useState, forwardRef, useRef, useEffect, useMemo, useCallback, createRef } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { useAsyncDebounce, useTable, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns } from 'react-table';
 import { VariableSizeList } from 'react-window';
@@ -9,14 +9,61 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import MultiBackend, { TouchTransition } from 'react-dnd-multi-backend';
 import update from 'immutability-helper';
-import '!style-loader!css-loader!sass-loader!./styles/columnreorder.scss';
-import '!style-loader!css-loader!sass-loader!./styles/groupsort.scss';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { saveAs } from 'file-saver';
 import { utils, write } from 'xlsx';
-import '!style-loader!css-loader!sass-loader!./styles/exportdata.scss';
-import '!style-loader!css-loader!sass-loader!./styles/main.scss';
+import '!style-loader!css-loader!sass-loader!./Styles/main.scss';
+
+const CellDisplayAndEditContext = /*#__PURE__*/createContext({});
+const RowEditContext = /*#__PURE__*/createContext({});
+const AdditionalColumnContext = /*#__PURE__*/createContext({});
+
+const checkInnerCells = (column, cellKey) => {
+  if (column) {
+    const {
+      innerCells
+    } = column;
+
+    if (innerCells) {
+      const innerCellData = innerCells.find(cell => {
+        return cell.accessor === cellKey;
+      });
+
+      if (innerCellData) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+const CellDisplayAndEditTag = props => {
+  const contextVallues = useContext(CellDisplayAndEditContext);
+  const {
+    column,
+    columns
+  } = contextVallues;
+  const {
+    cellKey,
+    columnKey
+  } = props;
+
+  if (columns && columnKey) {
+    const selectedColumn = columns.find(col => col.accessor === columnKey);
+
+    if (checkInnerCells(selectedColumn, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
+    }
+  } else if (cellKey) {
+    if (checkInnerCells(column, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
+    }
+  }
+
+  return null;
+};
 
 const CellDisplayAndEdit = /*#__PURE__*/memo(({
   row,
@@ -56,52 +103,16 @@ const CellDisplayAndEdit = /*#__PURE__*/memo(({
       closeEdit();
     };
 
-    const DisplayTag = props => {
-      const {
-        cellKey,
-        columnKey
-      } = props;
-
-      if (columns && columnKey) {
-        const selectedColumn = columns.find(col => col.accessor === columnKey);
-
-        if (checkInnerCells(selectedColumn, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      } else if (cellKey) {
-        if (checkInnerCells(column, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      }
-
-      return null;
-    };
-
-    const checkInnerCells = (column, cellKey) => {
-      if (column) {
-        const {
-          innerCells
-        } = column;
-
-        if (innerCells) {
-          const innerCellData = innerCells.find(cell => {
-            return cell.accessor === cellKey;
-          });
-
-          if (innerCellData) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    };
-
     const originalRowValue = { ...row.row.original
     };
-    const cellDisplayContent = column.displayCell(originalRowValue, DisplayTag);
-    const cellEditContent = column.editCell ? column.editCell(originalRowValue, DisplayTag, getUpdatedRowValue) : null;
-    return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+    const cellDisplayContent = column.displayCell(originalRowValue, CellDisplayAndEditTag);
+    const cellEditContent = column.editCell ? column.editCell(originalRowValue, CellDisplayAndEditTag, getUpdatedRowValue) : null;
+    return /*#__PURE__*/React__default.createElement(CellDisplayAndEditContext.Provider, {
+      value: {
+        columns: columns,
+        column: column
+      }
+    }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: closeEdit
     }, /*#__PURE__*/React__default.createElement("div", {
       className: `table-cell--content table-cell--content__${id}`
@@ -119,7 +130,7 @@ const CellDisplayAndEdit = /*#__PURE__*/memo(({
     }), /*#__PURE__*/React__default.createElement("button", {
       className: "cancel",
       onClick: closeEdit
-    })) : null));
+    })) : null)));
   }
 });
 
@@ -195,6 +206,25 @@ const extractAdditionalColumn = (additionalColumn, isDesktop) => {
   return additionalColumn;
 };
 
+const AdditionalColumnTag = props => {
+  console.log("Inside additional tag");
+  const contextVallues = useContext(AdditionalColumnContext);
+  const {
+    additionalColumn
+  } = contextVallues;
+  const {
+    cellKey
+  } = props;
+
+  if (additionalColumn && cellKey) {
+    if (checkInnerCells(additionalColumn, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
+    }
+  }
+
+  return null;
+};
+
 const RowSelector = /*#__PURE__*/memo( /*#__PURE__*/forwardRef(({
   indeterminate,
   ...rest
@@ -236,6 +266,8 @@ const DefaultColumnFilter = /*#__PURE__*/memo(({
   });
 });
 
+var IconSearch = require("./icon-search~PApihVHT.svg");
+
 const GlobalFilter = /*#__PURE__*/memo(({
   globalFilter,
   setGlobalFilter
@@ -255,10 +287,9 @@ const GlobalFilter = /*#__PURE__*/memo(({
     },
     className: "txt",
     placeholder: "Search"
-  }), /*#__PURE__*/React__default.createElement("i", {
-    className: "fa fa-search fa-6",
-    "aria-hidden": "true"
-  }));
+  }), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
+    src: IconSearch
+  })));
 });
 
 var RowDelete = require("./RowDelete~RKolkpAF.svg");
@@ -327,6 +358,35 @@ const RowOptions = /*#__PURE__*/memo(({
   })))) : null));
 });
 
+const RowEditTag = props => {
+  const contextVallues = useContext(RowEditContext);
+  const {
+    columns,
+    additionalColumn,
+    isRowExpandEnabled
+  } = contextVallues;
+  const {
+    cellKey,
+    columnKey
+  } = props;
+
+  if (columns && columnKey) {
+    const selectedColumn = columns.find(col => col.accessor === columnKey);
+
+    if (selectedColumn && cellKey) {
+      if (checkInnerCells(selectedColumn, cellKey)) {
+        return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
+      }
+    } else if (!selectedColumn && isRowExpandEnabled && additionalColumn) {
+      if (checkInnerCells(additionalColumn, columnKey)) {
+        return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
+      }
+    }
+  }
+
+  return null;
+};
+
 const RowEditOverLay = /*#__PURE__*/memo(({
   row,
   columns,
@@ -352,53 +412,16 @@ const RowEditOverLay = /*#__PURE__*/memo(({
     closeRowEditOverlay();
   };
 
-  const DisplayTag = props => {
-    const {
-      cellKey,
-      columnKey
-    } = props;
-
-    if (columns && columnKey) {
-      const selectedColumn = columns.find(col => col.accessor === columnKey);
-
-      if (selectedColumn && cellKey) {
-        if (checkInnerCells(selectedColumn, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      } else if (!selectedColumn && isRowExpandEnabled && additionalColumn) {
-        if (checkInnerCells(additionalColumn, columnKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      }
-    }
-
-    return null;
-  };
-
-  const checkInnerCells = (column, cellKey) => {
-    if (column) {
-      const {
-        innerCells
-      } = column;
-
-      if (innerCells) {
-        const innerCellData = innerCells.find(cell => {
-          return cell.accessor === cellKey;
-        });
-
-        if (innerCellData) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
   const originalRowValue = { ...row
   };
-  const rowEditContent = getRowEditOverlay(originalRowValue, DisplayTag, getUpdatedRowValue);
-  return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+  const rowEditContent = getRowEditOverlay(originalRowValue, RowEditTag, getUpdatedRowValue);
+  return /*#__PURE__*/React__default.createElement(RowEditContext.Provider, {
+    value: {
+      columns: columns,
+      additionalColumn: additionalColumn,
+      isRowExpandEnabled: isRowExpandEnabled
+    }
+  }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
     onClickAway: closeRowEditOverlay
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "row-option-action-overlay"
@@ -410,7 +433,7 @@ const RowEditOverLay = /*#__PURE__*/memo(({
   }, "Save"), /*#__PURE__*/React__default.createElement("button", {
     className: "cancel-Button",
     onClick: closeRowEditOverlay
-  }, "Cancel"))));
+  }, "Cancel")))));
 });
 
 const RowDeleteOverLay = /*#__PURE__*/memo(({
@@ -785,11 +808,10 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     if (managedColumns && managedColumns.length > 0) {
       setSearchedColumns(concatedOriginalColumns);
       props.updateColumnStructure(managedColumns, remarksColumnToManage);
+      toggleManageColumns();
     } else {
       setIsErrorDisplayed(true);
     }
-
-    toggleManageColumns();
   };
 
   const resetInnerCells = columnList => {
@@ -807,6 +829,7 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     setManagedColumns(resetInnerCells(originalColumns));
     setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
     setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
+    setIsErrorDisplayed(false);
     props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
   };
 
@@ -814,9 +837,9 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleManageColumns
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "columns--grid"
+      className: "neo-popover neo-popover--column columns--grid"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "column__grid"
+      className: "neo-popover__column column__grid"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__chooser"
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -1221,23 +1244,19 @@ const GroupSort = /*#__PURE__*/memo(props => {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleGroupSortOverLay
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sorts--grid"
+      className: "neo-popover"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__grid"
+      className: "neo-popover__sort"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__settings"
-    }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__header"
-    }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__headerTxt"
-    }, "Sort"), /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__close"
+      className: "neo-popover__title"
+    }, /*#__PURE__*/React__default.createElement("h2", null, "Sort"), /*#__PURE__*/React__default.createElement("div", {
+      className: "neo-popover__close"
     }, /*#__PURE__*/React__default.createElement("i", {
       className: "fa fa-times",
       "aria-hidden": "true",
       onClick: toggleGroupSortOverLay
     }))), /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__body"
+      className: "neo-popover__content"
     }, /*#__PURE__*/React__default.createElement(DndProvider, {
       backend: MultiBackend,
       options: HTML5toTouch
@@ -1268,7 +1287,7 @@ const GroupSort = /*#__PURE__*/memo(props => {
     }, "Clear All"), /*#__PURE__*/React__default.createElement("button", {
       className: "btns btns__save",
       onClick: applySort
-    }, "Ok")))))));
+    }, "Ok"))))));
   } else {
     return /*#__PURE__*/React__default.createElement("div", null);
   }
@@ -1299,44 +1318,65 @@ const ExportData = /*#__PURE__*/memo(props => {
     isDownload = true;
     let filteredRow = [];
     let filteredRowValues = [];
+    let filteredRowHeader = [];
     setWarning("");
 
     if (managedColumns.length > 0 && downloadTypes.length > 0) {
-      rows.forEach(rowDetails => {
+      const rowLength = rows && rows.length > 0 ? rows.length : 0;
+      rows.forEach((rowDetails, index) => {
         let row = rowDetails.original;
-        const keys = Object.getOwnPropertyNames(row);
         let filteredColumnVal = {};
         let rowFilteredValues = [];
-        keys.forEach(function (key) {
-          managedColumns.forEach(columnName => {
-            if (columnName.accessor === key || columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key)) {
-              let columnValue = "";
+        let rowFilteredHeader = [];
+        managedColumns.forEach(columnName => {
+          const {
+            Header,
+            accessor,
+            innerCells
+          } = columnName;
+          const accessorRowValue = row[accessor];
+          let columnValue = "";
+          let columnHeader = "";
 
-              if (typeof row[key] === "object") {
-                if (row[key].length === undefined) columnValue = Object.values(row[key]).toString().replace(",", " | ");
+          if (accessor) {
+            if (innerCells && innerCells.length > 0 && typeof accessorRowValue === "object") {
+              innerCells.forEach(cell => {
+                const innerCellAccessor = cell.accessor;
+                const innerCellHeader = cell.Header;
+                const innerCellAccessorValue = accessorRowValue[innerCellAccessor];
 
-                if (row[key].length > 0) {
-                  let arrObj = "";
-                  row[key].forEach((item, index) => {
-                    arrObj = index != 0 ? arrObj + " | " + Object.values(item) : Object.values(item);
+                if (accessorRowValue.length > 0) {
+                  accessorRowValue.forEach((item, index) => {
+                    columnValue = item[innerCellAccessor].toString();
+                    columnHeader = Header + " - " + innerCellHeader + "_" + index;
+                    filteredColumnVal[columnHeader] = columnValue;
+                    rowFilteredValues.push(columnValue);
+                    rowFilteredHeader.push(columnHeader);
                   });
-                  columnValue = arrObj;
+                } else if (innerCellAccessorValue) {
+                  columnValue = innerCellAccessorValue;
+                  columnHeader = Header + " - " + innerCellHeader;
+                  filteredColumnVal[columnHeader] = columnValue;
+                  rowFilteredValues.push(columnValue);
+                  rowFilteredHeader.push(columnHeader);
                 }
-              } else {
-                columnValue = row[key];
-              }
-
-              filteredColumnVal[key] = columnValue;
+              });
+            } else {
+              columnValue = accessorRowValue;
+              columnHeader = Header;
+              filteredColumnVal[columnHeader] = columnValue;
               rowFilteredValues.push(columnValue);
+              rowFilteredHeader.push(columnHeader);
             }
-          });
+          }
         });
         filteredRow.push(filteredColumnVal);
         filteredRowValues.push(rowFilteredValues);
+        if (rowLength === index + 1) filteredRowHeader.push(rowFilteredHeader);
       });
       downloadTypes.map(item => {
         if (item === "pdf") {
-          downloadPDF(filteredRowValues);
+          downloadPDF(filteredRowValues, filteredRowHeader);
         } else if (item === "excel") {
           downloadXLSFile(filteredRow);
         } else {
@@ -1354,21 +1394,36 @@ const ExportData = /*#__PURE__*/memo(props => {
     }
   };
 
-  const downloadPDF = rowFilteredValues => {
+  const downloadPDF = (rowFilteredValues, rowFilteredHeader) => {
     const unit = "pt";
     const size = "A4";
     const orientation = "landscape";
-    const marginLeft = 300;
+    const marginLeft = 30;
     const doc = new jsPDF(orientation, unit, size);
     doc.setFontSize(15);
     const title = "iCargo Neo Report";
-    const headers = [managedColumns.map(column => {
-      return column.Header;
-    })];
     let content = {
       startY: 50,
-      head: headers,
-      body: rowFilteredValues
+      head: rowFilteredHeader,
+      body: rowFilteredValues,
+      tableWidth: "wrap",
+      headStyles: {
+        fillColor: [102, 102, 255]
+      },
+      styles: {
+        fontSize: 12,
+        overflowX: "visible",
+        overflowY: "visible"
+      },
+      theme: "grid",
+      overflow: "visible",
+      cellWidth: "auto",
+      margin: {
+        top: 15,
+        right: 30,
+        bottom: 10,
+        left: 30
+      }
     };
     doc.text(title, marginLeft, 40);
     doc.autoTable(content);
@@ -1506,9 +1561,9 @@ const ExportData = /*#__PURE__*/memo(props => {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleExportDataOverlay
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "exports--grid"
+      className: "neo-popover neo-popover--exports exports--grid"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "export__grid"
+      className: "neo-popover__export export__grid"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "export__chooser"
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -1838,13 +1893,11 @@ const Customgrid = /*#__PURE__*/memo(props => {
     rel: "stylesheet",
     href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
   }), /*#__PURE__*/React__default.createElement("div", {
-    className: "table-filter"
+    className: "neo-grid-header"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: "results"
-  }, /*#__PURE__*/React__default.createElement("div", {
-    className: "name"
-  }, /*#__PURE__*/React__default.createElement("strong", null, rows.length), /*#__PURE__*/React__default.createElement("span", null, " ", title ? title : "Rows"))), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-utilities"
+    className: "neo-grid-header__results"
+  }, /*#__PURE__*/React__default.createElement("strong", null, rows.length), /*#__PURE__*/React__default.createElement("span", null, " ", title ? title : "Rows")), /*#__PURE__*/React__default.createElement("div", {
+    className: "neo-grid-header__utilities"
   }, /*#__PURE__*/React__default.createElement(ColumnReordering, {
     isManageColumnOpen: isManageColumnOpen,
     toggleManageColumns: toggleManageColumns,
@@ -1868,31 +1921,31 @@ const Customgrid = /*#__PURE__*/memo(props => {
     isExpandContentAvailable: isExpandContentAvailable,
     additionalColumn: [additionalColumn]
   }), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon keyword-search",
+    className: "utilities-icon keyword-search",
     onClick: toggleColumnFilter
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-filter",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon bulk-select",
+    className: "utilities-icon bulk-select",
     onClick: bulkSelector
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-pencil-square-o",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon bulk-select",
+    className: "utilities-icon bulk-select",
     onClick: toggleGroupSortOverLay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-sort-amount-desc",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon manage-columns",
+    className: "utilities-icon manage-columns",
     onClick: toggleManageColumns
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-columns",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon manage-columns",
+    className: "utilities-icon manage-columns",
     onClick: toggleExportDataOverlay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-share-alt",
@@ -1912,7 +1965,7 @@ const Customgrid = /*#__PURE__*/memo(props => {
     closeRowDeleteOverlay: closeRowDeleteOverlay,
     deleteRowFromGrid: deleteRowFromGrid
   }) : null), /*#__PURE__*/React__default.createElement("div", {
-    className: "tableContainer table-outer",
+    className: "tableContainer table-outer neo-grid",
     style: {
       height: gridHeight ? gridHeight : "50vh",
       overflowX: "auto",
@@ -2058,48 +2111,17 @@ const Grid = /*#__PURE__*/memo(props => {
   const gridColumns = useMemo(() => processedColumns, []);
   let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
-  const DisplayTag = props => {
-    console.log(additionalColumn);
-    const {
-      cellKey
-    } = props;
-
-    if (additionalColumn && cellKey) {
-      if (checkInnerCells(additionalColumn, cellKey)) {
-        return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-      }
-    }
-
-    return null;
-  };
-
-  const checkInnerCells = (column, cellKey) => {
-    if (column) {
-      const {
-        innerCells
-      } = column;
-
-      if (innerCells) {
-        const innerCellData = innerCells.find(cell => {
-          return cell.accessor === cellKey;
-        });
-
-        if (innerCellData) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
   const displayExpandedContent = row => {
     const {
       original
     } = row;
 
     if (original) {
-      return renderExpandedContent(original, DisplayTag);
+      return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
+        value: {
+          additionalColumn: additionalColumn
+        }
+      }, renderExpandedContent(original, AdditionalColumnTag));
     }
   };
 
