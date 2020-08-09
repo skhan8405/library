@@ -1206,11 +1206,13 @@ const CellDisplayAndEdit = /*#__PURE__*/memo(({
       type: "button",
       "aria-label": "Mute volume",
       className: "ok",
+      "data-testid": "ok",
       onClick: saveEdit
     }), /*#__PURE__*/React__default.createElement("button", {
       type: "button",
       "aria-label": "Mute volume",
       className: "cancel",
+      "data-testid": "cancel",
       onClick: closeEdit
     })) : null)));
   }
@@ -1238,6 +1240,7 @@ const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
     const isInnerCellsPresent = innerCells && innerCells.length > 0;
     const elem = column;
     elem.columnId = `column_${index}`;
+    elem.displayInExpandedRegion = false;
 
     if (!elem.Cell && elem.displayCell) {
       elem.Cell = row => {
@@ -1288,6 +1291,7 @@ const extractAdditionalColumn = (additionalColumn, isDesktop) => {
   const isInnerCellsPresent = innerCells && innerCells.length > 0;
   const element = additionalColumn;
   element.columnId = `ExpandColumn`;
+  element.displayInExpandedRegion = true;
 
   if (isInnerCellsPresent) {
     element.innerCells = innerCells.filter(cell => {
@@ -1401,12 +1405,15 @@ var RowPin = require("./RowPin~qQRdvcXq.png");
 
 const RowOptions = /*#__PURE__*/memo(({
   row,
+  rowActions,
+  rowActionCallback,
   bindRowEditOverlay,
   bindRowDeleteOverlay
 }) => {
   const {
     original
   } = row;
+  const isAdditionalRowOptionsPresent = rowActions && rowActions.length > 0 && typeof rowActionCallback === "function";
   const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
 
   const openRowOptionsOverlay = () => {
@@ -1425,6 +1432,10 @@ const RowOptions = /*#__PURE__*/memo(({
   const openDeleteOverlay = () => {
     bindRowDeleteOverlay(original);
     closeRowOptionsOverlay();
+  };
+
+  const additionalActionClicked = actionValue => {
+    return rowActionCallback(original, actionValue);
   };
 
   return /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("div", {
@@ -1454,7 +1465,20 @@ const RowOptions = /*#__PURE__*/memo(({
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
     src: RowDelete,
     alt: "cargo"
-  })), /*#__PURE__*/React__default.createElement("span", null, "Delete")))), /*#__PURE__*/React__default.createElement("span", {
+  })), /*#__PURE__*/React__default.createElement("span", null, "Delete"))), isAdditionalRowOptionsPresent ? rowActions.map(action => {
+    const {
+      value,
+      label
+    } = action;
+    return /*#__PURE__*/React__default.createElement("li", {
+      key: value
+    }, /*#__PURE__*/React__default.createElement("span", {
+      role: "presentation",
+      onClick: () => {
+        return additionalActionClicked(value);
+      }
+    }, /*#__PURE__*/React__default.createElement("span", null, label)));
+  }) : null), /*#__PURE__*/React__default.createElement("span", {
     role: "presentation",
     className: "close",
     onClick: closeRowOptionsOverlay
@@ -2489,6 +2513,8 @@ const ExportData = /*#__PURE__*/memo(props => {
     toggleExportDataOverlay,
     rows,
     originalColumns,
+    columns,
+    isRowExpandEnabled,
     isExpandContentAvailable,
     additionalColumn
   } = props;
@@ -2497,8 +2523,13 @@ const ExportData = /*#__PURE__*/memo(props => {
     return isExpandContentAvailable ? additionalColumn : [];
   };
 
+  const getRemarksColumnIfSelectedByUser = () => {
+    return isRowExpandEnabled ? additionalColumn : [];
+  };
+
   const updatedColumns = [...originalColumns].concat(getRemarksColumnIfAvailable());
-  const [managedColumns, setManagedColumns] = useState(updatedColumns);
+  const updatedColumnsPerUserSelection = [...columns].concat(getRemarksColumnIfSelectedByUser());
+  const [managedColumns, setManagedColumns] = useState(updatedColumnsPerUserSelection);
   const [searchedColumns, setSearchedColumns] = useState(updatedColumns);
   const [downloadTypes, setDownloadTypes] = useState([]);
   const [warning, setWarning] = useState("");
@@ -2522,15 +2553,17 @@ const ExportData = /*#__PURE__*/memo(props => {
           const {
             Header,
             accessor,
-            innerCells
+            originalInnerCells,
+            displayInExpandedRegion
           } = columnName;
+          const isInnerCellsPresent = originalInnerCells && originalInnerCells.length > 0;
           const accessorRowValue = row[accessor];
           let columnValue = "";
           let columnHeader = "";
 
           if (accessor) {
-            if (innerCells && innerCells.length > 0 && typeof accessorRowValue === "object") {
-              innerCells.forEach(cell => {
+            if (isInnerCellsPresent && typeof accessorRowValue === "object") {
+              originalInnerCells.forEach(cell => {
                 const innerCellAccessor = cell.accessor;
                 const innerCellHeader = cell.Header;
                 const innerCellAccessorValue = accessorRowValue[innerCellAccessor];
@@ -2558,6 +2591,31 @@ const ExportData = /*#__PURE__*/memo(props => {
               rowFilteredValues.push(columnValue);
               rowFilteredHeader.push(columnHeader);
             }
+          } else if (displayInExpandedRegion && isInnerCellsPresent) {
+            originalInnerCells.forEach(expandedCell => {
+              const expandedCellAccessor = expandedCell.accessor;
+              const expandedCellHeader = expandedCell.Header;
+              const expandedCellValue = row[expandedCellAccessor];
+              let formattedValue = expandedCellValue;
+
+              if (typeof expandedCellValue === "object") {
+                if (expandedCellValue.length > 0) {
+                  const newValues = [];
+                  expandedCellValue.forEach(cellValue => {
+                    newValues.push(Object.values(cellValue).join("--"));
+                  });
+                  formattedValue = newValues.join("||");
+                } else {
+                  formattedValue = Object.values(expandedCellValue).join("||");
+                }
+              }
+
+              columnValue = formattedValue;
+              columnHeader = expandedCellHeader;
+              filteredColumnVal[columnHeader] = columnValue;
+              rowFilteredValues.push(columnValue);
+              rowFilteredHeader.push(columnHeader);
+            });
           }
         });
         filteredRow.push(filteredColumnVal);
@@ -2747,6 +2805,10 @@ const ExportData = /*#__PURE__*/memo(props => {
     }
   };
 
+  useEffect(() => {
+    setManagedColumns(updatedColumnsPerUserSelection);
+  }, [columns, isRowExpandEnabled]);
+
   if (isExportOverlayOpen) {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleExportDataOverlay
@@ -2905,6 +2967,8 @@ const Customgrid = /*#__PURE__*/memo(props => {
     calculateRowHeight,
     isExpandContentAvailable,
     displayExpandedContent,
+    rowActions,
+    rowActionCallback,
     hasNextPage,
     isNextPageLoading,
     loadNextPage,
@@ -3046,6 +3110,8 @@ const Customgrid = /*#__PURE__*/memo(props => {
           className: "action"
         }, /*#__PURE__*/React__default.createElement(RowOptions, {
           row: row,
+          rowActions: rowActions,
+          rowActionCallback: rowActionCallback,
           bindRowEditOverlay: bindRowEditOverlay,
           bindRowDeleteOverlay: bindRowDeleteOverlay
         }), isRowExpandEnabled ? /*#__PURE__*/React__default.createElement("span", Object.assign({
@@ -3130,6 +3196,8 @@ const Customgrid = /*#__PURE__*/memo(props => {
     toggleExportDataOverlay: toggleExportDataOverlay,
     rows: rows,
     originalColumns: originalColumns,
+    columns: columns,
+    isRowExpandEnabled: isRowExpandEnabled,
     isExpandContentAvailable: isExpandContentAvailable,
     additionalColumn: [additionalColumn]
   }), /*#__PURE__*/React__default.createElement("div", {
@@ -3272,6 +3340,8 @@ const Grid = /*#__PURE__*/memo(props => {
     gridWidth,
     columns,
     columnToExpand,
+    rowActions,
+    rowActionCallback,
     fetchData,
     getRowEditOverlay,
     updateRowData,
@@ -3507,6 +3577,8 @@ const Grid = /*#__PURE__*/memo(props => {
     calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
     isExpandContentAvailable: typeof renderExpandedContent === "function",
     displayExpandedContent: displayExpandedContent,
+    rowActions: rowActions,
+    rowActionCallback: rowActionCallback,
     hasNextPage: hasNextPage,
     isNextPageLoading: isNextPageLoading,
     loadNextPage: loadNextPage,
