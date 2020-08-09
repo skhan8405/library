@@ -74,6 +74,7 @@ const ExportData = memo((props) => {
                     const accessorRowValue = row[accessor];
                     let columnValue = "";
                     let columnHeader = "";
+                    //For grid columns (not the one in expanded section)
                     if (accessor) {
                         if (
                             isInnerCellsPresent &&
@@ -120,17 +121,29 @@ const ExportData = memo((props) => {
                             rowFilteredHeader.push(columnHeader);
                         }
                     } else if (displayInExpandedRegion && isInnerCellsPresent) {
+                        //For column in the expanded section
                         console.log("Inside");
                         originalInnerCells.forEach((expandedCell) => {
                             const expandedCellAccessor = expandedCell.accessor;
                             const expandedCellHeader = expandedCell.Header;
-                            let expandedCellValue = row[expandedCellAccessor];
+                            const expandedCellValue = row[expandedCellAccessor];
+                            let formattedValue = expandedCellValue;
                             if (typeof expandedCellValue === "object") {
-                                expandedCellValue = Object.values(
-                                    expandedCellValue
-                                ).join("||");
+                                if (expandedCellValue.length > 0) {
+                                    const newValues = [];
+                                    expandedCellValue.forEach((cellValue) => {
+                                        newValues.push(
+                                            Object.values(cellValue).join("--")
+                                        );
+                                    });
+                                    formattedValue = newValues.join("||");
+                                } else {
+                                    formattedValue = Object.values(
+                                        expandedCellValue
+                                    ).join("||");
+                                }
                             }
-                            columnValue = expandedCellValue;
+                            columnValue = formattedValue;
                             columnHeader = expandedCellHeader;
                             filteredColumnVal[columnHeader] = columnValue;
                             rowFilteredValues.push(columnValue);
