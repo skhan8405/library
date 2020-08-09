@@ -16,6 +16,8 @@ const Grid = memo((props) => {
         gridWidth,
         columns,
         columnToExpand,
+        rowActions,
+        rowActionCallback,
         fetchData,
         getRowEditOverlay,
         updateRowData,
@@ -335,6 +337,8 @@ const Grid = memo((props) => {
                             typeof renderExpandedContent === "function"
                         }
                         displayExpandedContent={displayExpandedContent}
+                        rowActions={rowActions}
+                        rowActionCallback={rowActionCallback}
                         hasNextPage={hasNextPage}
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}

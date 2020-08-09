@@ -49,6 +49,8 @@ const Customgrid = memo((props) => {
         calculateRowHeight,
         isExpandContentAvailable,
         displayExpandedContent,
+        rowActions,
+        rowActionCallback,
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
@@ -235,6 +237,8 @@ const Customgrid = memo((props) => {
                             <div className="action">
                                 <RowOptions
                                     row={row}
+                                    rowActions={rowActions}
+                                    rowActionCallback={rowActionCallback}
                                     bindRowEditOverlay={bindRowEditOverlay}
                                     bindRowDeleteOverlay={bindRowDeleteOverlay}
                                 />
