@@ -72,13 +72,15 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
                                 <button
                                     type="button"
                                     aria-label="Mute volume"
-                                    className="ok" data-testid="ok" 
+                                    className="ok"
+                                    data-testid="ok"
                                     onClick={saveEdit}
                                 />
                                 <button
                                     type="button"
                                     aria-label="Mute volume"
-                                    className="cancel" data-testid="cancel"
+                                    className="cancel"
+                                    data-testid="cancel"
                                     onClick={closeEdit}
                                 />
                             </div>
