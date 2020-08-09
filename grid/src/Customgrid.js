@@ -361,6 +361,8 @@ const Customgrid = memo((props) => {
                         toggleExportDataOverlay={toggleExportDataOverlay}
                         rows={rows}
                         originalColumns={originalColumns}
+                        columns={columns} //Updated columns structure from manage columns overlay
+                        isRowExpandEnabled={isRowExpandEnabled} //Updated additional column structure from manage columns overlay
                         isExpandContentAvailable={isExpandContentAvailable}
                         additionalColumn={[additionalColumn]}
                     />

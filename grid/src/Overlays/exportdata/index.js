@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import PropTypes from "prop-types";
 import jsPDF from "jspdf";
@@ -12,19 +12,35 @@ const ExportData = memo((props) => {
         toggleExportDataOverlay,
         rows,
         originalColumns,
+        columns,
+        isRowExpandEnabled,
         isExpandContentAvailable,
         additionalColumn
     } = props;
 
+    //Check if row expand is configured by developer
     const getRemarksColumnIfAvailable = () => {
         return isExpandContentAvailable ? additionalColumn : [];
     };
 
+    //Check if row expand is set visible from manage overlay
+    const getRemarksColumnIfSelectedByUser = () => {
+        return isRowExpandEnabled ? additionalColumn : [];
+    };
+
+    //Full list of columns + expand column
     const updatedColumns = [...originalColumns].concat(
         getRemarksColumnIfAvailable()
     );
 
-    const [managedColumns, setManagedColumns] = useState(updatedColumns);
+    //List of columns + expand based on user selection from manage overlay
+    const updatedColumnsPerUserSelection = [...columns].concat(
+        getRemarksColumnIfSelectedByUser()
+    );
+
+    const [managedColumns, setManagedColumns] = useState(
+        updatedColumnsPerUserSelection
+    );
     const [searchedColumns, setSearchedColumns] = useState(updatedColumns);
     const [downloadTypes, setDownloadTypes] = useState([]);
     const [warning, setWarning] = useState("");
@@ -47,17 +63,23 @@ const ExportData = memo((props) => {
                 let rowFilteredValues = [];
                 let rowFilteredHeader = [];
                 managedColumns.forEach((columnName) => {
-                    const { Header, accessor, innerCells } = columnName;
+                    const {
+                        Header,
+                        accessor,
+                        originalInnerCells,
+                        displayInExpandedRegion
+                    } = columnName;
+                    const isInnerCellsPresent =
+                        originalInnerCells && originalInnerCells.length > 0;
                     const accessorRowValue = row[accessor];
                     let columnValue = "";
                     let columnHeader = "";
                     if (accessor) {
                         if (
-                            innerCells &&
-                            innerCells.length > 0 &&
+                            isInnerCellsPresent &&
                             typeof accessorRowValue === "object"
                         ) {
-                            innerCells.forEach((cell) => {
+                            originalInnerCells.forEach((cell) => {
                                 const innerCellAccessor = cell.accessor;
                                 const innerCellHeader = cell.Header;
                                 const innerCellAccessorValue =
@@ -97,6 +119,23 @@ const ExportData = memo((props) => {
                             rowFilteredValues.push(columnValue);
                             rowFilteredHeader.push(columnHeader);
                         }
+                    } else if (displayInExpandedRegion && isInnerCellsPresent) {
+                        console.log("Inside");
+                        originalInnerCells.forEach((expandedCell) => {
+                            const expandedCellAccessor = expandedCell.accessor;
+                            const expandedCellHeader = expandedCell.Header;
+                            let expandedCellValue = row[expandedCellAccessor];
+                            if (typeof expandedCellValue === "object") {
+                                expandedCellValue = Object.values(
+                                    expandedCellValue
+                                ).join("||");
+                            }
+                            columnValue = expandedCellValue;
+                            columnHeader = expandedCellHeader;
+                            filteredColumnVal[columnHeader] = columnValue;
+                            rowFilteredValues.push(columnValue);
+                            rowFilteredHeader.push(columnHeader);
+                        });
                     }
                 });
                 filteredRow.push(filteredColumnVal);
@@ -271,6 +310,10 @@ const ExportData = memo((props) => {
             );
         }
     };
+
+    useEffect(() => {
+        setManagedColumns(updatedColumnsPerUserSelection);
+    }, [columns, isRowExpandEnabled]);
 
     if (isExportOverlayOpen) {
         return (
