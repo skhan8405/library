@@ -1,4 +1,4 @@
-import React__default, { memo, useState, Fragment, forwardRef, useRef, useEffect, useMemo, useCallback, createRef } from 'react';
+import React__default, { createContext, useContext, Fragment as Fragment$1, memo, useState, forwardRef, useRef, useEffect, useMemo, useCallback, createRef } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { useAsyncDebounce, useTable, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns } from 'react-table';
 import { VariableSizeList } from 'react-window';
@@ -9,14 +9,1138 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import MultiBackend, { TouchTransition } from 'react-dnd-multi-backend';
 import update from 'immutability-helper';
-import '!style-loader!css-loader!sass-loader!./styles/columnreorder.scss';
-import '!style-loader!css-loader!sass-loader!./styles/groupsort.scss';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { saveAs } from 'file-saver';
 import { utils, write } from 'xlsx';
-import '!style-loader!css-loader!sass-loader!./styles/exportdata.scss';
-import '!style-loader!css-loader!sass-loader!./styles/main.scss';
+import '!style-loader!css-loader!sass-loader!./Styles/main.scss';
+
+const CellDisplayAndEditContext = /*#__PURE__*/createContext({});
+const RowEditContext = /*#__PURE__*/createContext({});
+const AdditionalColumnContext = /*#__PURE__*/createContext({});
+
+const checkInnerCells = (column, cellKey) => {
+  if (column) {
+    const {
+      innerCells
+    } = column;
+
+    if (innerCells) {
+      const innerCellData = innerCells.find(cell => {
+        return cell.accessor === cellKey;
+      });
+
+      if (innerCellData) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+const CellDisplayAndEditTag = props => {
+  const contextVallues = useContext(CellDisplayAndEditContext);
+  const {
+    column,
+    columns
+  } = contextVallues;
+  const {
+    cellKey,
+    columnKey
+  } = props;
+
+  if (columns && columnKey) {
+    const selectedColumn = columns.find(col => col.accessor === columnKey);
+
+    if (checkInnerCells(selectedColumn, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(Fragment$1, null, " ", props.children);
+    }
+  } else if (cellKey) {
+    if (checkInnerCells(column, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(Fragment$1, null, " ", props.children);
+    }
+  }
+
+  return null;
+};
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+/** @license React v16.13.1
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var b="function"===typeof Symbol&&Symbol.for,c=b?Symbol.for("react.element"):60103,d=b?Symbol.for("react.portal"):60106,e=b?Symbol.for("react.fragment"):60107,f=b?Symbol.for("react.strict_mode"):60108,g=b?Symbol.for("react.profiler"):60114,h=b?Symbol.for("react.provider"):60109,k=b?Symbol.for("react.context"):60110,l=b?Symbol.for("react.async_mode"):60111,m=b?Symbol.for("react.concurrent_mode"):60111,n=b?Symbol.for("react.forward_ref"):60112,p=b?Symbol.for("react.suspense"):60113,q=b?
+Symbol.for("react.suspense_list"):60120,r=b?Symbol.for("react.memo"):60115,t=b?Symbol.for("react.lazy"):60116,v=b?Symbol.for("react.block"):60121,w=b?Symbol.for("react.fundamental"):60117,x=b?Symbol.for("react.responder"):60118,y=b?Symbol.for("react.scope"):60119;
+function z(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case t:case r:case h:return a;default:return u}}case d:return u}}}function A(a){return z(a)===m}var AsyncMode=l;var ConcurrentMode=m;var ContextConsumer=k;var ContextProvider=h;var Element=c;var ForwardRef=n;var Fragment=e;var Lazy=t;var Memo=r;var Portal=d;
+var Profiler=g;var StrictMode=f;var Suspense=p;var isAsyncMode=function(a){return A(a)||z(a)===l};var isConcurrentMode=A;var isContextConsumer=function(a){return z(a)===k};var isContextProvider=function(a){return z(a)===h};var isElement=function(a){return "object"===typeof a&&null!==a&&a.$$typeof===c};var isForwardRef=function(a){return z(a)===n};var isFragment=function(a){return z(a)===e};var isLazy=function(a){return z(a)===t};
+var isMemo=function(a){return z(a)===r};var isPortal=function(a){return z(a)===d};var isProfiler=function(a){return z(a)===g};var isStrictMode=function(a){return z(a)===f};var isSuspense=function(a){return z(a)===p};
+var isValidElementType=function(a){return "string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===w||a.$$typeof===x||a.$$typeof===y||a.$$typeof===v)};var typeOf=z;
+
+var reactIs_production_min = {
+	AsyncMode: AsyncMode,
+	ConcurrentMode: ConcurrentMode,
+	ContextConsumer: ContextConsumer,
+	ContextProvider: ContextProvider,
+	Element: Element,
+	ForwardRef: ForwardRef,
+	Fragment: Fragment,
+	Lazy: Lazy,
+	Memo: Memo,
+	Portal: Portal,
+	Profiler: Profiler,
+	StrictMode: StrictMode,
+	Suspense: Suspense,
+	isAsyncMode: isAsyncMode,
+	isConcurrentMode: isConcurrentMode,
+	isContextConsumer: isContextConsumer,
+	isContextProvider: isContextProvider,
+	isElement: isElement,
+	isForwardRef: isForwardRef,
+	isFragment: isFragment,
+	isLazy: isLazy,
+	isMemo: isMemo,
+	isPortal: isPortal,
+	isProfiler: isProfiler,
+	isStrictMode: isStrictMode,
+	isSuspense: isSuspense,
+	isValidElementType: isValidElementType,
+	typeOf: typeOf
+};
+
+var reactIs_development = createCommonjsModule(function (module, exports) {
+
+
+
+if (process.env.NODE_ENV !== "production") {
+  (function() {
+
+// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+// nor polyfill, then a plain number is used for performance.
+var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
+var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
+var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
+var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
+var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
+var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
+var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+// (unstable) APIs that have been removed. Can we remove the symbols?
+
+var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
+var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
+var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
+var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
+var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
+var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
+var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
+var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
+var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
+var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
+var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
+
+function isValidElementType(type) {
+  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+}
+
+function typeOf(object) {
+  if (typeof object === 'object' && object !== null) {
+    var $$typeof = object.$$typeof;
+
+    switch ($$typeof) {
+      case REACT_ELEMENT_TYPE:
+        var type = object.type;
+
+        switch (type) {
+          case REACT_ASYNC_MODE_TYPE:
+          case REACT_CONCURRENT_MODE_TYPE:
+          case REACT_FRAGMENT_TYPE:
+          case REACT_PROFILER_TYPE:
+          case REACT_STRICT_MODE_TYPE:
+          case REACT_SUSPENSE_TYPE:
+            return type;
+
+          default:
+            var $$typeofType = type && type.$$typeof;
+
+            switch ($$typeofType) {
+              case REACT_CONTEXT_TYPE:
+              case REACT_FORWARD_REF_TYPE:
+              case REACT_LAZY_TYPE:
+              case REACT_MEMO_TYPE:
+              case REACT_PROVIDER_TYPE:
+                return $$typeofType;
+
+              default:
+                return $$typeof;
+            }
+
+        }
+
+      case REACT_PORTAL_TYPE:
+        return $$typeof;
+    }
+  }
+
+  return undefined;
+} // AsyncMode is deprecated along with isAsyncMode
+
+var AsyncMode = REACT_ASYNC_MODE_TYPE;
+var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+var ContextConsumer = REACT_CONTEXT_TYPE;
+var ContextProvider = REACT_PROVIDER_TYPE;
+var Element = REACT_ELEMENT_TYPE;
+var ForwardRef = REACT_FORWARD_REF_TYPE;
+var Fragment = REACT_FRAGMENT_TYPE;
+var Lazy = REACT_LAZY_TYPE;
+var Memo = REACT_MEMO_TYPE;
+var Portal = REACT_PORTAL_TYPE;
+var Profiler = REACT_PROFILER_TYPE;
+var StrictMode = REACT_STRICT_MODE_TYPE;
+var Suspense = REACT_SUSPENSE_TYPE;
+var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+
+function isAsyncMode(object) {
+  {
+    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+    }
+  }
+
+  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+}
+function isConcurrentMode(object) {
+  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+}
+function isContextConsumer(object) {
+  return typeOf(object) === REACT_CONTEXT_TYPE;
+}
+function isContextProvider(object) {
+  return typeOf(object) === REACT_PROVIDER_TYPE;
+}
+function isElement(object) {
+  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+}
+function isForwardRef(object) {
+  return typeOf(object) === REACT_FORWARD_REF_TYPE;
+}
+function isFragment(object) {
+  return typeOf(object) === REACT_FRAGMENT_TYPE;
+}
+function isLazy(object) {
+  return typeOf(object) === REACT_LAZY_TYPE;
+}
+function isMemo(object) {
+  return typeOf(object) === REACT_MEMO_TYPE;
+}
+function isPortal(object) {
+  return typeOf(object) === REACT_PORTAL_TYPE;
+}
+function isProfiler(object) {
+  return typeOf(object) === REACT_PROFILER_TYPE;
+}
+function isStrictMode(object) {
+  return typeOf(object) === REACT_STRICT_MODE_TYPE;
+}
+function isSuspense(object) {
+  return typeOf(object) === REACT_SUSPENSE_TYPE;
+}
+
+exports.AsyncMode = AsyncMode;
+exports.ConcurrentMode = ConcurrentMode;
+exports.ContextConsumer = ContextConsumer;
+exports.ContextProvider = ContextProvider;
+exports.Element = Element;
+exports.ForwardRef = ForwardRef;
+exports.Fragment = Fragment;
+exports.Lazy = Lazy;
+exports.Memo = Memo;
+exports.Portal = Portal;
+exports.Profiler = Profiler;
+exports.StrictMode = StrictMode;
+exports.Suspense = Suspense;
+exports.isAsyncMode = isAsyncMode;
+exports.isConcurrentMode = isConcurrentMode;
+exports.isContextConsumer = isContextConsumer;
+exports.isContextProvider = isContextProvider;
+exports.isElement = isElement;
+exports.isForwardRef = isForwardRef;
+exports.isFragment = isFragment;
+exports.isLazy = isLazy;
+exports.isMemo = isMemo;
+exports.isPortal = isPortal;
+exports.isProfiler = isProfiler;
+exports.isStrictMode = isStrictMode;
+exports.isSuspense = isSuspense;
+exports.isValidElementType = isValidElementType;
+exports.typeOf = typeOf;
+  })();
+}
+});
+
+var reactIs = createCommonjsModule(function (module) {
+
+if (process.env.NODE_ENV === 'production') {
+  module.exports = reactIs_production_min;
+} else {
+  module.exports = reactIs_development;
+}
+});
+
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+var ReactPropTypesSecret_1 = ReactPropTypesSecret;
+
+var printWarning = function() {};
+
+if (process.env.NODE_ENV !== 'production') {
+  var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
+  var loggedTypeFailures = {};
+  var has = Function.call.bind(Object.prototype.hasOwnProperty);
+
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (process.env.NODE_ENV !== 'production') {
+    for (var typeSpecName in typeSpecs) {
+      if (has(typeSpecs, typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          if (typeof typeSpecs[typeSpecName] !== 'function') {
+            var err = Error(
+              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
+            );
+            err.name = 'Invariant Violation';
+            throw err;
+          }
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1);
+        } catch (ex) {
+          error = ex;
+        }
+        if (error && !(error instanceof Error)) {
+          printWarning(
+            (componentName || 'React class') + ': type specification of ' +
+            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
+            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
+            'You may have forgotten to pass an argument to the type checker ' +
+            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
+            'shape all require an argument).'
+          );
+        }
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          printWarning(
+            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Resets warning cache when testing.
+ *
+ * @private
+ */
+checkPropTypes.resetWarningCache = function() {
+  if (process.env.NODE_ENV !== 'production') {
+    loggedTypeFailures = {};
+  }
+};
+
+var checkPropTypes_1 = checkPropTypes;
+
+var has$1 = Function.call.bind(Object.prototype.hasOwnProperty);
+var printWarning$1 = function() {};
+
+if (process.env.NODE_ENV !== 'production') {
+  printWarning$1 = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+function emptyFunctionThatReturnsNull() {
+  return null;
+}
+
+var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+  var ANONYMOUS = '<<anonymous>>';
+
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    elementType: createElementTypeTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker,
+  };
+
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+  /*eslint-disable no-self-compare*/
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+  function PropTypeError(message) {
+    this.message = message;
+    this.stack = '';
+  }
+  // Make `instanceof Error` still work for returned errors.
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if (process.env.NODE_ENV !== 'production') {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret_1) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          var err = new Error(
+            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+            'Use `PropTypes.checkPropTypes()` to call them. ' +
+            'Read more at http://fb.me/use-check-prop-types'
+          );
+          err.name = 'Invariant Violation';
+          throw err;
+        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+          if (
+            !manualPropTypeCallCache[cacheKey] &&
+            // Avoid spamming the console because they are often not actionable except for lib authors
+            manualPropTypeWarningCount < 3
+          ) {
+            printWarning$1(
+              'You are manually calling a React.PropTypes validation ' +
+              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
+              'and will throw in the standalone `prop-types` package. ' +
+              'You may be seeing this warning due to a third-party PropTypes ' +
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
+            );
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!reactIs.isValidElementType(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      if (process.env.NODE_ENV !== 'production') {
+        if (arguments.length > 1) {
+          printWarning$1(
+            'Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' +
+            'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).'
+          );
+        } else {
+          printWarning$1('Invalid argument supplied to oneOf, expected an array.');
+        }
+      }
+      return emptyFunctionThatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
+        var type = getPreciseType(value);
+        if (type === 'symbol') {
+          return String(value);
+        }
+        return value;
+      });
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+      for (var key in propValue) {
+        if (has$1(propValue, key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+      process.env.NODE_ENV !== 'production' ? printWarning$1('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunctionThatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+      if (typeof checker !== 'function') {
+        printWarning$1(
+          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
+        );
+        return emptyFunctionThatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1) == null) {
+          return null;
+        }
+      }
+
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          continue;
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      // We need to check all keys in case some are required but missing from
+      // props.
+      var allKeys = objectAssign({}, props[propName], shapeTypes);
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          return new PropTypeError(
+            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+          );
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+      case 'boolean':
+        return !propValue;
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    }
+
+    // falsy value can't be a Symbol
+    if (!propValue) {
+      return false;
+    }
+
+    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    }
+
+    // Fallback for non-spec compliant Symbols which are polyfilled.
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Equivalent of `typeof` but with special handling for array and regexp.
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+    return propType;
+  }
+
+  // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+    var propType = getPropType(propValue);
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+    return propType;
+  }
+
+  // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+      default:
+        return type;
+    }
+  }
+
+  // Returns class name of the object, if any.
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes_1;
+  ReactPropTypes.resetWarningCache = checkPropTypes_1.resetWarningCache;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+function emptyFunction() {}
+function emptyFunctionWithReset() {}
+emptyFunctionWithReset.resetWarningCache = emptyFunction;
+
+var factoryWithThrowingShims = function() {
+  function shim(props, propName, componentName, location, propFullName, secret) {
+    if (secret === ReactPropTypesSecret_1) {
+      // It is still safe when called from React.
+      return;
+    }
+    var err = new Error(
+      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+      'Use PropTypes.checkPropTypes() to call them. ' +
+      'Read more at http://fb.me/use-check-prop-types'
+    );
+    err.name = 'Invariant Violation';
+    throw err;
+  }  shim.isRequired = shim;
+  function getShim() {
+    return shim;
+  }  // Important!
+  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+  var ReactPropTypes = {
+    array: shim,
+    bool: shim,
+    func: shim,
+    number: shim,
+    object: shim,
+    string: shim,
+    symbol: shim,
+
+    any: shim,
+    arrayOf: getShim,
+    element: shim,
+    elementType: shim,
+    instanceOf: getShim,
+    node: shim,
+    objectOf: getShim,
+    oneOf: getShim,
+    oneOfType: getShim,
+    shape: getShim,
+    exact: getShim,
+
+    checkPropTypes: emptyFunctionWithReset,
+    resetWarningCache: emptyFunction
+  };
+
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+var propTypes = createCommonjsModule(function (module) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (process.env.NODE_ENV !== 'production') {
+  var ReactIs = reactIs;
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = factoryWithTypeCheckers(ReactIs.isElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = factoryWithThrowingShims();
+}
+});
 
 const CellDisplayAndEdit = /*#__PURE__*/memo(({
   row,
@@ -56,57 +1180,22 @@ const CellDisplayAndEdit = /*#__PURE__*/memo(({
       closeEdit();
     };
 
-    const DisplayTag = props => {
-      const {
-        cellKey,
-        columnKey
-      } = props;
-
-      if (columns && columnKey) {
-        const selectedColumn = columns.find(col => col.accessor === columnKey);
-
-        if (checkInnerCells(selectedColumn, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      } else if (cellKey) {
-        if (checkInnerCells(column, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      }
-
-      return null;
-    };
-
-    const checkInnerCells = (column, cellKey) => {
-      if (column) {
-        const {
-          innerCells
-        } = column;
-
-        if (innerCells) {
-          const innerCellData = innerCells.find(cell => {
-            return cell.accessor === cellKey;
-          });
-
-          if (innerCellData) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    };
-
     const originalRowValue = { ...row.row.original
     };
-    const cellDisplayContent = column.displayCell(originalRowValue, DisplayTag);
-    const cellEditContent = column.editCell ? column.editCell(originalRowValue, DisplayTag, getUpdatedRowValue) : null;
-    return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+    const cellDisplayContent = column.displayCell(originalRowValue, CellDisplayAndEditTag);
+    const cellEditContent = column.editCell ? column.editCell(originalRowValue, CellDisplayAndEditTag, getUpdatedRowValue) : null;
+    return /*#__PURE__*/React__default.createElement(CellDisplayAndEditContext.Provider, {
+      value: {
+        columns: columns,
+        column: column
+      }
+    }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: closeEdit
     }, /*#__PURE__*/React__default.createElement("div", {
       className: `table-cell--content table-cell--content__${id}`
     }, cellEditContent ? /*#__PURE__*/React__default.createElement("div", {
       className: "cell-edit",
+      role: "presentation",
       onClick: openEdit
     }, /*#__PURE__*/React__default.createElement("i", {
       className: "fa fa-pencil",
@@ -114,14 +1203,26 @@ const CellDisplayAndEdit = /*#__PURE__*/memo(({
     })) : null, cellDisplayContent, isEditOpen ? /*#__PURE__*/React__default.createElement("div", {
       className: "table-cell--content-edit"
     }, cellEditContent, /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
+      "aria-label": "Mute volume",
       className: "ok",
       onClick: saveEdit
     }), /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
+      "aria-label": "Mute volume",
       className: "cancel",
       onClick: closeEdit
-    })) : null));
+    })) : null)));
   }
 });
+CellDisplayAndEdit.propTypes = {
+  row: propTypes.any,
+  columns: propTypes.any,
+  updateRowInGrid: propTypes.any,
+  cellKey: propTypes.any,
+  columnKey: propTypes.any,
+  children: propTypes.any
+};
 
 const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
   const filteredColumns = columns.filter(column => {
@@ -195,6 +1296,25 @@ const extractAdditionalColumn = (additionalColumn, isDesktop) => {
   return additionalColumn;
 };
 
+const AdditionalColumnTag = props => {
+  console.log("Inside additional tag");
+  const contextVallues = useContext(AdditionalColumnContext);
+  const {
+    additionalColumn
+  } = contextVallues;
+  const {
+    cellKey
+  } = props;
+
+  if (additionalColumn && cellKey) {
+    if (checkInnerCells(additionalColumn, cellKey)) {
+      return /*#__PURE__*/React__default.createElement(Fragment$1, null, " ", props.children);
+    }
+  }
+
+  return null;
+};
+
 const RowSelector = /*#__PURE__*/memo( /*#__PURE__*/forwardRef(({
   indeterminate,
   ...rest
@@ -219,6 +1339,9 @@ const RowSelector = /*#__PURE__*/memo( /*#__PURE__*/forwardRef(({
     ref: resolvedRef
   }, rest)));
 }));
+RowSelector.propTypes = {
+  indeterminate: propTypes.any
+};
 
 const DefaultColumnFilter = /*#__PURE__*/memo(({
   column: {
@@ -235,6 +1358,11 @@ const DefaultColumnFilter = /*#__PURE__*/memo(({
     placeholder: "Search"
   });
 });
+DefaultColumnFilter.propTypes = {
+  column: propTypes.any
+};
+
+var IconSearch = require("./icon-search~PApihVHT.svg");
 
 const GlobalFilter = /*#__PURE__*/memo(({
   globalFilter,
@@ -255,11 +1383,14 @@ const GlobalFilter = /*#__PURE__*/memo(({
     },
     className: "txt",
     placeholder: "Search"
-  }), /*#__PURE__*/React__default.createElement("i", {
-    className: "fa fa-search fa-6",
-    "aria-hidden": "true"
-  }));
+  }), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
+    src: IconSearch
+  })));
 });
+GlobalFilter.propTypes = {
+  globalFilter: propTypes.any,
+  setGlobalFilter: propTypes.any
+};
 
 var RowDelete = require("./RowDelete~RKolkpAF.svg");
 
@@ -299,12 +1430,14 @@ const RowOptions = /*#__PURE__*/memo(({
     className: "row-options-wrap"
   }, /*#__PURE__*/React__default.createElement("span", {
     className: "icon-row-options",
+    role: "presentation",
     onClick: openRowOptionsOverlay
   }, /*#__PURE__*/React__default.createElement("i", null), /*#__PURE__*/React__default.createElement("i", null), /*#__PURE__*/React__default.createElement("i", null)), isRowOptionsOpen ? /*#__PURE__*/React__default.createElement(ClickAwayListener, {
     onClickAway: closeRowOptionsOverlay
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "row-options-overlay"
   }, /*#__PURE__*/React__default.createElement("ul", null, /*#__PURE__*/React__default.createElement("li", null, /*#__PURE__*/React__default.createElement("span", {
+    role: "presentation",
     onClick: openRowEditOverlay
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
     src: RowEdit,
@@ -315,17 +1448,53 @@ const RowOptions = /*#__PURE__*/memo(({
     width: "15",
     height: "15"
   })), /*#__PURE__*/React__default.createElement("span", null, "Pin This row"))), /*#__PURE__*/React__default.createElement("li", null, /*#__PURE__*/React__default.createElement("span", {
+    role: "presentation",
     onClick: openDeleteOverlay
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
     src: RowDelete,
     alt: "cargo"
   })), /*#__PURE__*/React__default.createElement("span", null, "Delete")))), /*#__PURE__*/React__default.createElement("span", {
+    role: "presentation",
     className: "close",
     onClick: closeRowOptionsOverlay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-close"
   })))) : null));
 });
+RowOptions.propTypes = {
+  row: propTypes.any,
+  bindRowEditOverlay: propTypes.any,
+  bindRowDeleteOverlay: propTypes.any
+};
+
+const RowEditTag = props => {
+  const contextVallues = useContext(RowEditContext);
+  const {
+    columns,
+    additionalColumn,
+    isRowExpandEnabled
+  } = contextVallues;
+  const {
+    cellKey,
+    columnKey
+  } = props;
+
+  if (columns && columnKey) {
+    const selectedColumn = columns.find(col => col.accessor === columnKey);
+
+    if (selectedColumn && cellKey) {
+      if (checkInnerCells(selectedColumn, cellKey)) {
+        return /*#__PURE__*/React__default.createElement(Fragment$1, null, " ", props.children);
+      }
+    } else if (!selectedColumn && isRowExpandEnabled && additionalColumn) {
+      if (checkInnerCells(additionalColumn, columnKey)) {
+        return /*#__PURE__*/React__default.createElement(Fragment$1, null, " ", props.children);
+      }
+    }
+  }
+
+  return null;
+};
 
 const RowEditOverLay = /*#__PURE__*/memo(({
   row,
@@ -352,66 +1521,42 @@ const RowEditOverLay = /*#__PURE__*/memo(({
     closeRowEditOverlay();
   };
 
-  const DisplayTag = props => {
-    const {
-      cellKey,
-      columnKey
-    } = props;
-
-    if (columns && columnKey) {
-      const selectedColumn = columns.find(col => col.accessor === columnKey);
-
-      if (selectedColumn && cellKey) {
-        if (checkInnerCells(selectedColumn, cellKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      } else if (!selectedColumn && isRowExpandEnabled && additionalColumn) {
-        if (checkInnerCells(additionalColumn, columnKey)) {
-          return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-        }
-      }
-    }
-
-    return null;
-  };
-
-  const checkInnerCells = (column, cellKey) => {
-    if (column) {
-      const {
-        innerCells
-      } = column;
-
-      if (innerCells) {
-        const innerCellData = innerCells.find(cell => {
-          return cell.accessor === cellKey;
-        });
-
-        if (innerCellData) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
   const originalRowValue = { ...row
   };
-  const rowEditContent = getRowEditOverlay(originalRowValue, DisplayTag, getUpdatedRowValue);
-  return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+  const rowEditContent = getRowEditOverlay(originalRowValue, RowEditTag, getUpdatedRowValue);
+  return /*#__PURE__*/React__default.createElement(RowEditContext.Provider, {
+    value: {
+      columns: columns,
+      additionalColumn: additionalColumn,
+      isRowExpandEnabled: isRowExpandEnabled
+    }
+  }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+    className: "row-option-action-overlay",
     onClickAway: closeRowEditOverlay
-  }, /*#__PURE__*/React__default.createElement("div", {
-    className: "row-option-action-overlay"
   }, rowEditContent, /*#__PURE__*/React__default.createElement("div", {
     className: "cancel-save-buttons"
   }, /*#__PURE__*/React__default.createElement("button", {
+    type: "button",
     className: "save-Button",
     onClick: saveRowEdit
   }, "Save"), /*#__PURE__*/React__default.createElement("button", {
+    type: "button",
     className: "cancel-Button",
     onClick: closeRowEditOverlay
   }, "Cancel"))));
 });
+RowEditOverLay.propTypes = {
+  row: propTypes.any,
+  columns: propTypes.any,
+  isRowExpandEnabled: propTypes.any,
+  additionalColumn: propTypes.any,
+  getRowEditOverlay: propTypes.any,
+  closeRowEditOverlay: propTypes.any,
+  updateRowInGrid: propTypes.any,
+  cellKey: propTypes.any,
+  columnKey: propTypes.any,
+  children: propTypes.any
+};
 
 const RowDeleteOverLay = /*#__PURE__*/memo(({
   row,
@@ -427,19 +1572,25 @@ const RowDeleteOverLay = /*#__PURE__*/memo(({
   };
 
   return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
+    className: "row-option-action-overlay delete",
     onClickAway: closeRowDeleteOverlay
-  }, /*#__PURE__*/React__default.createElement("div", {
-    className: "row-option-action-overlay delete"
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "cancel-save-buttons-delete"
   }, /*#__PURE__*/React__default.createElement("button", {
+    type: "button",
     className: "delete-Button",
     onClick: deleteRow
   }, "Delete"), /*#__PURE__*/React__default.createElement("button", {
+    type: "button",
     className: "cancel-Button",
     onClick: closeRowDeleteOverlay
-  }, "Cancel"))));
+  }, "Cancel")));
 });
+RowDeleteOverLay.propTypes = {
+  row: propTypes.any,
+  closeRowDeleteOverlay: propTypes.any,
+  deleteRowFromGrid: propTypes.any
+};
 
 const ItemTypes = {
   COLUMN: "column"
@@ -532,6 +1683,16 @@ const ColumnItem = ({
   }) : null)));
 };
 
+ColumnItem.propTypes = {
+  id: propTypes.any,
+  Header: propTypes.any,
+  moveColumn: propTypes.any,
+  findColumn: propTypes.any,
+  originalInnerCells: propTypes.any,
+  isInnerCellSelected: propTypes.any,
+  selectInnerCells: propTypes.any
+};
+
 const ColumnsList = props => {
   const {
     updateColumnsInState,
@@ -539,6 +1700,14 @@ const ColumnsList = props => {
     isInnerCellSelected,
     selectInnerCells
   } = props;
+
+  const findColumn = columnId => {
+    const column = columnsToManage.filter(c => `${c.columnId}` === columnId)[0];
+    return {
+      column,
+      index: columnsToManage.indexOf(column)
+    };
+  };
 
   const moveColumn = (columnId, atIndex) => {
     const {
@@ -550,18 +1719,10 @@ const ColumnsList = props => {
     }));
   };
 
-  const findColumn = columnId => {
-    const column = columnsToManage.filter(c => `${c.columnId}` === columnId)[0];
-    return {
-      column,
-      index: columnsToManage.indexOf(column)
-    };
-  };
-
   const [, drop] = useDrop({
     accept: ItemTypes.COLUMN
   });
-  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement(Fragment$1, null, /*#__PURE__*/React__default.createElement("div", {
     ref: drop,
     style: {
       display: "flex",
@@ -579,6 +1740,13 @@ const ColumnsList = props => {
       selectInnerCells: selectInnerCells
     });
   })));
+};
+
+ColumnsList.propTypes = {
+  updateColumnsInState: propTypes.any,
+  columnsToManage: propTypes.any,
+  isInnerCellSelected: propTypes.any,
+  selectInnerCells: propTypes.any
 };
 
 const ColumnReordering = /*#__PURE__*/memo(props => {
@@ -619,7 +1787,7 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     } = event ? event.target : "";
     value = value ? value.toLowerCase() : "";
 
-    if (value != "") {
+    if (value !== "") {
       setSearchedColumns(originalColumns.filter(column => {
         return column.Header.toLowerCase().includes(value);
       }).concat(getRemarksColumnIfAvailable().filter(column => {
@@ -650,11 +1818,13 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
   const isCheckboxSelected = header => {
     if (header === additionalColumnHeader) {
       return remarksColumnToManage.length > 0;
-    } else if (header === "Select All") {
-      return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
-    } else {
-      return isItemPresentInList(managedColumns, header);
     }
+
+    if (header === "Select All") {
+      return searchedColumns.length === managedColumns.length + remarksColumnToManage.length;
+    }
+
+    return isItemPresentInList(managedColumns, header);
   };
 
   const isInnerCellSelected = (columnHeader, header) => {
@@ -668,11 +1838,11 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
       return columnsList.findIndex(column => {
         return column.Header === originalColumns[indexOfColumnToAdd].Header;
       });
-    } else {
-      return findColumn(columnsList, columnHeader).innerCells.findIndex(cell => {
-        return cell.Header === originalInnerCells[indexOfColumnToAdd].Header;
-      });
     }
+
+    return findColumn(columnsList, columnHeader).innerCells.findIndex(cell => {
+      return cell.Header === originalInnerCells[indexOfColumnToAdd].Header;
+    });
   };
 
   const selectAllColumns = event => {
@@ -709,7 +1879,7 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
         let prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-          indexOfColumnToAdd = indexOfColumnToAdd - 1;
+          indexOfColumnToAdd -= 1;
           prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
         }
 
@@ -750,7 +1920,7 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
         let prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
-          indexOfColumnToAdd = indexOfColumnToAdd - 1;
+          indexOfColumnToAdd -= 1;
           prevItemIndex = findIndexOfItem("innercell", stateColumnList, indexOfColumnToAdd, columnheader, originalInnerCells);
         }
 
@@ -785,11 +1955,10 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     if (managedColumns && managedColumns.length > 0) {
       setSearchedColumns(concatedOriginalColumns);
       props.updateColumnStructure(managedColumns, remarksColumnToManage);
+      toggleManageColumns();
     } else {
       setIsErrorDisplayed(true);
     }
-
-    toggleManageColumns();
   };
 
   const resetInnerCells = columnList => {
@@ -807,6 +1976,7 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     setManagedColumns(resetInnerCells(originalColumns));
     setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
     setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
+    setIsErrorDisplayed(false);
     props.updateColumnStructure(originalColumns, getRemarksColumnIfAvailable());
   };
 
@@ -814,9 +1984,9 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleManageColumns
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "columns--grid"
+      className: "neo-popover neo-popover--column columns--grid"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "column__grid"
+      className: "neo-popover__column column__grid"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__chooser"
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -868,6 +2038,7 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
       }
     }, "Select at least one column (other than ", additionalColumnHeader, ")") : null), /*#__PURE__*/React__default.createElement("div", {
       className: "column__close",
+      role: "presentation",
       onClick: toggleManageColumns
     }, /*#__PURE__*/React__default.createElement("i", {
       className: "fa fa-times",
@@ -908,19 +2079,30 @@ const ColumnReordering = /*#__PURE__*/memo(props => {
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__btns"
     }, /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
       className: "btns",
       onClick: resetColumnUpdate
     }, "Reset"), /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
       className: "btns",
       onClick: toggleManageColumns
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
       className: "btns btns__save",
       onClick: doColumnUpdate
     }, "Save")))))));
-  } else {
-    return /*#__PURE__*/React__default.createElement("div", null);
   }
+
+  return /*#__PURE__*/React__default.createElement("div", null);
 });
+ColumnReordering.propTypes = {
+  isManageColumnOpen: propTypes.any,
+  toggleManageColumns: propTypes.any,
+  originalColumns: propTypes.any,
+  isExpandContentAvailable: propTypes.any,
+  additionalColumn: propTypes.any,
+  updateColumnStructure: propTypes.any
+};
 
 const ItemTypes$1 = {
   SORT_ITEM: "SORT_ITEM"
@@ -1064,7 +2246,7 @@ const SortItem = ({
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "sort__icon",
-    type: "button",
+    role: "presentation",
     onClick: copySort
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
     src: SortCopy,
@@ -1073,7 +2255,7 @@ const SortItem = ({
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "sort__icon",
-    type: "button",
+    role: "presentation",
     onClick: deleteSort
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement("img", {
     src: SortDelete,
@@ -1081,11 +2263,30 @@ const SortItem = ({
   })))));
 };
 
+SortItem.propTypes = {
+  id: propTypes.any,
+  sortOption: propTypes.any,
+  originalColumns: propTypes.any,
+  moveSort: propTypes.any,
+  findSort: propTypes.any,
+  updateSingleSortingOption: propTypes.any,
+  copySortOption: propTypes.any,
+  deleteSortOption: propTypes.any
+};
+
 const SortingList = props => {
   const {
     updateSortingOptions,
     sortOptions
   } = props;
+
+  const findSort = sortId => {
+    const sort = sortOptions.filter((c, index) => index === sortId)[0];
+    return {
+      sort,
+      index: sortOptions.indexOf(sort)
+    };
+  };
 
   const moveSort = (sortId, atIndex) => {
     const {
@@ -1097,18 +2298,10 @@ const SortingList = props => {
     }));
   };
 
-  const findSort = sortId => {
-    const sort = sortOptions.filter((c, index) => index === sortId)[0];
-    return {
-      sort,
-      index: sortOptions.indexOf(sort)
-    };
-  };
-
   const [, drop] = useDrop({
     accept: ItemTypes$1.SORT_ITEM
   });
-  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement(Fragment$1, null, /*#__PURE__*/React__default.createElement("div", {
     ref: drop,
     style: {
       display: "flex",
@@ -1127,6 +2320,15 @@ const SortingList = props => {
       deleteSortOption: props.deleteSortOption
     });
   })));
+};
+
+SortingList.propTypes = {
+  updateSortingOptions: propTypes.any,
+  sortOptions: propTypes.any,
+  originalColumns: propTypes.any,
+  copySortOption: propTypes.any,
+  deleteSortOption: propTypes.any,
+  updateSingleSortingOption: propTypes.any
 };
 
 const GroupSort = /*#__PURE__*/memo(props => {
@@ -1207,6 +2409,8 @@ const GroupSort = /*#__PURE__*/memo(props => {
       if (duplicateSort) {
         isError = true;
       }
+
+      return null;
     });
 
     if (!isError) {
@@ -1221,23 +2425,19 @@ const GroupSort = /*#__PURE__*/memo(props => {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleGroupSortOverLay
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sorts--grid"
+      className: "neo-popover"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__grid"
+      className: "neo-popover__sort"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__settings"
-    }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__header"
-    }, /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__headerTxt"
-    }, "Sort"), /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__close"
+      className: "neo-popover__title"
+    }, /*#__PURE__*/React__default.createElement("h2", null, "Sort"), /*#__PURE__*/React__default.createElement("div", {
+      className: "neo-popover__close"
     }, /*#__PURE__*/React__default.createElement("i", {
       className: "fa fa-times",
       "aria-hidden": "true",
       onClick: toggleGroupSortOverLay
     }))), /*#__PURE__*/React__default.createElement("div", {
-      className: "sort__body"
+      className: "neo-popover__content"
     }, /*#__PURE__*/React__default.createElement(DndProvider, {
       backend: MultiBackend,
       options: HTML5toTouch
@@ -1254,7 +2454,7 @@ const GroupSort = /*#__PURE__*/memo(props => {
       className: "sort__new"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "sort__section",
-      type: "button",
+      role: "presentation",
       onClick: addSortingOptions
     }, /*#__PURE__*/React__default.createElement("span", null, "+"), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__txt"
@@ -1263,16 +2463,24 @@ const GroupSort = /*#__PURE__*/memo(props => {
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "sort__btns"
     }, /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
       className: "btns",
       onClick: clearSortingOptions
     }, "Clear All"), /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
       className: "btns btns__save",
       onClick: applySort
-    }, "Ok")))))));
-  } else {
-    return /*#__PURE__*/React__default.createElement("div", null);
+    }, "Ok"))))));
   }
+
+  return /*#__PURE__*/React__default.createElement("div", null);
 });
+GroupSort.propTypes = {
+  isGroupSortOverLayOpen: propTypes.any,
+  toggleGroupSortOverLay: propTypes.any,
+  originalColumns: propTypes.any,
+  applyGroupSort: propTypes.any
+};
 
 const ExportData = /*#__PURE__*/memo(props => {
   const {
@@ -1299,44 +2507,65 @@ const ExportData = /*#__PURE__*/memo(props => {
     isDownload = true;
     let filteredRow = [];
     let filteredRowValues = [];
+    let filteredRowHeader = [];
     setWarning("");
 
     if (managedColumns.length > 0 && downloadTypes.length > 0) {
-      rows.forEach(rowDetails => {
+      const rowLength = rows && rows.length > 0 ? rows.length : 0;
+      rows.forEach((rowDetails, index) => {
         let row = rowDetails.original;
-        const keys = Object.getOwnPropertyNames(row);
         let filteredColumnVal = {};
         let rowFilteredValues = [];
-        keys.forEach(function (key) {
-          managedColumns.forEach(columnName => {
-            if (columnName.accessor === key || columnName.innerCells && columnName.innerCells.length && columnName.innerCells.includes(key)) {
-              let columnValue = "";
+        let rowFilteredHeader = [];
+        managedColumns.forEach(columnName => {
+          const {
+            Header,
+            accessor,
+            innerCells
+          } = columnName;
+          const accessorRowValue = row[accessor];
+          let columnValue = "";
+          let columnHeader = "";
 
-              if (typeof row[key] === "object") {
-                if (row[key].length === undefined) columnValue = Object.values(row[key]).toString().replace(",", " | ");
+          if (accessor) {
+            if (innerCells && innerCells.length > 0 && typeof accessorRowValue === "object") {
+              innerCells.forEach(cell => {
+                const innerCellAccessor = cell.accessor;
+                const innerCellHeader = cell.Header;
+                const innerCellAccessorValue = accessorRowValue[innerCellAccessor];
 
-                if (row[key].length > 0) {
-                  let arrObj = "";
-                  row[key].forEach((item, index) => {
-                    arrObj = index != 0 ? arrObj + " | " + Object.values(item) : Object.values(item);
+                if (accessorRowValue.length > 0) {
+                  accessorRowValue.forEach((item, index) => {
+                    columnValue = item[innerCellAccessor].toString();
+                    columnHeader = Header + " - " + innerCellHeader + "_" + index;
+                    filteredColumnVal[columnHeader] = columnValue;
+                    rowFilteredValues.push(columnValue);
+                    rowFilteredHeader.push(columnHeader);
                   });
-                  columnValue = arrObj;
+                } else if (innerCellAccessorValue) {
+                  columnValue = innerCellAccessorValue;
+                  columnHeader = Header + " - " + innerCellHeader;
+                  filteredColumnVal[columnHeader] = columnValue;
+                  rowFilteredValues.push(columnValue);
+                  rowFilteredHeader.push(columnHeader);
                 }
-              } else {
-                columnValue = row[key];
-              }
-
-              filteredColumnVal[key] = columnValue;
+              });
+            } else {
+              columnValue = accessorRowValue;
+              columnHeader = Header;
+              filteredColumnVal[columnHeader] = columnValue;
               rowFilteredValues.push(columnValue);
+              rowFilteredHeader.push(columnHeader);
             }
-          });
+          }
         });
         filteredRow.push(filteredColumnVal);
         filteredRowValues.push(rowFilteredValues);
+        if (rowLength === index + 1) filteredRowHeader.push(rowFilteredHeader);
       });
       downloadTypes.map(item => {
         if (item === "pdf") {
-          downloadPDF(filteredRowValues);
+          downloadPDF(filteredRowValues, filteredRowHeader);
         } else if (item === "excel") {
           downloadXLSFile(filteredRow);
         } else {
@@ -1354,21 +2583,36 @@ const ExportData = /*#__PURE__*/memo(props => {
     }
   };
 
-  const downloadPDF = rowFilteredValues => {
+  const downloadPDF = (rowFilteredValues, rowFilteredHeader) => {
     const unit = "pt";
     const size = "A4";
     const orientation = "landscape";
-    const marginLeft = 300;
+    const marginLeft = 30;
     const doc = new jsPDF(orientation, unit, size);
     doc.setFontSize(15);
     const title = "iCargo Neo Report";
-    const headers = [managedColumns.map(column => {
-      return column.Header;
-    })];
-    let content = {
+    const content = {
       startY: 50,
-      head: headers,
-      body: rowFilteredValues
+      head: rowFilteredHeader,
+      body: rowFilteredValues,
+      tableWidth: "wrap",
+      headStyles: {
+        fillColor: [102, 102, 255]
+      },
+      styles: {
+        fontSize: 12,
+        overflowX: "visible",
+        overflowY: "visible"
+      },
+      theme: "grid",
+      overflow: "visible",
+      cellWidth: "auto",
+      margin: {
+        top: 15,
+        right: 30,
+        bottom: 10,
+        left: 30
+      }
     };
     doc.text(title, marginLeft, 40);
     doc.autoTable(content);
@@ -1424,7 +2668,7 @@ const ExportData = /*#__PURE__*/memo(props => {
     } = event ? event.target : "";
     value = value ? value.toLowerCase() : "";
 
-    if (value != "") {
+    if (value !== "") {
       setSearchedColumns(originalColumns.filter(column => {
         return column.Header.toLowerCase().includes(value);
       }).concat(getRemarksColumnIfAvailable().filter(column => {
@@ -1438,12 +2682,12 @@ const ExportData = /*#__PURE__*/memo(props => {
   const isCheckboxSelected = header => {
     if (header === "Select All") {
       return managedColumns.length === searchedColumns.length;
-    } else {
-      const selectedColumn = managedColumns.filter(column => {
-        return column.Header === header;
-      });
-      return selectedColumn && selectedColumn.length > 0;
     }
+
+    const selectedColumn = managedColumns.filter(column => {
+      return column.Header === header;
+    });
+    return selectedColumn && selectedColumn.length > 0;
   };
 
   const selectAllColumns = event => {
@@ -1474,7 +2718,7 @@ const ExportData = /*#__PURE__*/memo(props => {
         prevItemIndex = managedColumns.findIndex(column => {
           return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
         });
-        indexOfColumnToAdd = indexOfColumnToAdd - 1;
+        indexOfColumnToAdd -= 1;
       }
 
       const newColumnsList = managedColumns.slice(0);
@@ -1506,9 +2750,9 @@ const ExportData = /*#__PURE__*/memo(props => {
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: toggleExportDataOverlay
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "exports--grid"
+      className: "neo-popover neo-popover--exports exports--grid"
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: "export__grid"
+      className: "neo-popover__export export__grid"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "export__chooser"
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -1621,16 +2865,26 @@ const ExportData = /*#__PURE__*/memo(props => {
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "export__btns"
     }, /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
       className: "btns",
       onClick: toggleExportDataOverlay
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
+      type: "button",
       className: "btns btns__save",
       onClick: exportRowData
     }, "Export")))))));
-  } else {
-    return /*#__PURE__*/React__default.createElement("div", null);
   }
+
+  return /*#__PURE__*/React__default.createElement("div", null);
 });
+ExportData.propTypes = {
+  isExportOverlayOpen: propTypes.any,
+  toggleExportDataOverlay: propTypes.any,
+  rows: propTypes.any,
+  originalColumns: propTypes.any,
+  isExpandContentAvailable: propTypes.any,
+  additionalColumn: propTypes.any
+};
 
 const listRef = /*#__PURE__*/createRef(null);
 const Customgrid = /*#__PURE__*/memo(props => {
@@ -1658,7 +2912,7 @@ const Customgrid = /*#__PURE__*/memo(props => {
   const [columns, setColumns] = useState(managableColumns);
   const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(isExpandContentAvailable);
   const itemCount = hasNextPage ? data.length + 1 : data.length;
-  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage ? loadNextPage : () => {};
+  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage || (() => {});
 
   const isItemLoaded = index => !hasNextPage || index < data.length;
 
@@ -1712,7 +2966,7 @@ const Customgrid = /*#__PURE__*/memo(props => {
 
   const updateColumnStructure = (newColumnStructure, remarksColumn) => {
     setColumns([...newColumnStructure]);
-    setIsRowExpandEnabled(remarksColumn && remarksColumn.length > 0 ? true : false);
+    setIsRowExpandEnabled(!!(remarksColumn && remarksColumn.length > 0));
   };
 
   const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
@@ -1737,12 +2991,12 @@ const Customgrid = /*#__PURE__*/memo(props => {
     columns,
     data,
     defaultColumn,
-    globalFilter: (rows, columns, filterValue) => {
+    globalFilter: (rowsToFilter, columnsToFilter, filterValue) => {
       if (globalSearchLogic && typeof globalSearchLogic === "function") {
-        return globalSearchLogic(rows, columns, filterValue);
-      } else {
-        return rows;
+        return globalSearchLogic(rowsToFilter, columnsToFilter, filterValue);
       }
+
+      return rowsToFilter;
     },
     autoResetFilters: false,
     autoResetGlobalFilter: false,
@@ -1750,7 +3004,7 @@ const Customgrid = /*#__PURE__*/memo(props => {
     autoResetExpanded: false,
     autoResetSelectedRows: false
   }, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns, hooks => {
-    hooks.allColumns.push(columns => [{
+    hooks.allColumns.push(hookColumns => [{
       id: "selection",
       columnId: "column_custom_0",
       disableResizing: true,
@@ -1761,11 +3015,21 @@ const Customgrid = /*#__PURE__*/memo(props => {
       maxWidth: 35,
       Header: ({
         getToggleAllRowsSelectedProps
-      }) => /*#__PURE__*/React__default.createElement(RowSelector, getToggleAllRowsSelectedProps()),
+      }) => {
+        const headerSelectProps = { ...getToggleAllRowsSelectedProps()
+        };
+        return /*#__PURE__*/React__default.createElement(RowSelector, {
+          checked: headerSelectProps.checked,
+          indeterminate: headerSelectProps.indeterminate,
+          onChange: headerSelectProps.onChange,
+          style: headerSelectProps.style,
+          title: headerSelectProps.title
+        });
+      },
       Cell: ({
         row
       }) => /*#__PURE__*/React__default.createElement(RowSelector, row.getToggleRowSelectedProps())
-    }, ...columns, {
+    }, ...hookColumns, {
       id: "custom",
       columnId: "column_custom_1",
       disableResizing: true,
@@ -1828,23 +3092,23 @@ const Customgrid = /*#__PURE__*/memo(props => {
         className: "expand"
       }, displayExpandedContent ? displayExpandedContent(row) : null) : null);
     }
+
+    return null;
   }, [prepareRow, rows, displayExpandedContent]);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "table-wrapper",
     style: {
-      width: gridWidth ? gridWidth : "100%"
+      width: gridWidth || "100%"
     }
   }, /*#__PURE__*/React__default.createElement("link", {
     rel: "stylesheet",
     href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
   }), /*#__PURE__*/React__default.createElement("div", {
-    className: "table-filter"
+    className: "neo-grid-header"
   }, /*#__PURE__*/React__default.createElement("div", {
-    className: "results"
-  }, /*#__PURE__*/React__default.createElement("div", {
-    className: "name"
-  }, /*#__PURE__*/React__default.createElement("strong", null, rows.length), /*#__PURE__*/React__default.createElement("span", null, " ", title ? title : "Rows"))), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-utilities"
+    className: "neo-grid-header__results"
+  }, /*#__PURE__*/React__default.createElement("strong", null, rows.length), /*#__PURE__*/React__default.createElement("span", null, title || "Rows")), /*#__PURE__*/React__default.createElement("div", {
+    className: "neo-grid-header__utilities"
   }, /*#__PURE__*/React__default.createElement(ColumnReordering, {
     isManageColumnOpen: isManageColumnOpen,
     toggleManageColumns: toggleManageColumns,
@@ -1868,38 +3132,45 @@ const Customgrid = /*#__PURE__*/memo(props => {
     isExpandContentAvailable: isExpandContentAvailable,
     additionalColumn: [additionalColumn]
   }), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon keyword-search",
+    className: "utilities-icon keyword-search",
+    role: "presentation",
     onClick: toggleColumnFilter
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-filter",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon bulk-select",
+    className: "utilities-icon bulk-select",
+    role: "presentation",
     onClick: bulkSelector
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-pencil-square-o",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon bulk-select",
+    className: "utilities-icon bulk-select",
+    role: "presentation",
     onClick: toggleGroupSortOverLay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-sort-amount-desc",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon manage-columns",
+    className: "utilities-icon manage-columns",
+    role: "presentation",
     onClick: toggleManageColumns
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-columns",
     "aria-hidden": "true"
   })), /*#__PURE__*/React__default.createElement("div", {
-    className: "filter-icon manage-columns",
+    className: "utilities-icon manage-columns",
+    role: "presentation",
     onClick: toggleExportDataOverlay
   }, /*#__PURE__*/React__default.createElement("i", {
     className: "fa fa-share-alt",
     "aria-hidden": "true"
   })))), /*#__PURE__*/React__default.createElement("div", {
     className: "table-popus"
-  }, isRowEditOverlyOpen ? /*#__PURE__*/React__default.createElement(RowEditOverLay, {
+  }, isRowEditOverlyOpen ? /*#__PURE__*/React__default.createElement("div", {
+    className: "overlay"
+  }, /*#__PURE__*/React__default.createElement(RowEditOverLay, {
     row: editedRowData,
     columns: columns,
     isRowExpandEnabled: isRowExpandEnabled,
@@ -1907,14 +3178,16 @@ const Customgrid = /*#__PURE__*/memo(props => {
     getRowEditOverlay: getRowEditOverlay,
     closeRowEditOverlay: closeRowEditOverlay,
     updateRowInGrid: updateRowInGrid
-  }) : null, isRowDeleteOverlyOpen ? /*#__PURE__*/React__default.createElement(RowDeleteOverLay, {
+  })) : null, isRowDeleteOverlyOpen ? /*#__PURE__*/React__default.createElement("div", {
+    className: "overlay"
+  }, /*#__PURE__*/React__default.createElement(RowDeleteOverLay, {
     row: deletedRowData,
     closeRowDeleteOverlay: closeRowDeleteOverlay,
     deleteRowFromGrid: deleteRowFromGrid
-  }) : null), /*#__PURE__*/React__default.createElement("div", {
-    className: "tableContainer table-outer",
+  })) : null), /*#__PURE__*/React__default.createElement("div", {
+    className: "tableContainer table-outer neo-grid",
     style: {
-      height: gridHeight ? gridHeight : "50vh",
+      height: gridHeight || "50vh",
       overflowX: "auto",
       overflowY: "hidden"
     }
@@ -1967,6 +3240,29 @@ const Customgrid = /*#__PURE__*/memo(props => {
     overscanCount: 20
   }, RenderRow)))))));
 });
+Customgrid.propTypes = {
+  title: propTypes.any,
+  gridHeight: propTypes.any,
+  gridWidth: propTypes.any,
+  managableColumns: propTypes.any,
+  originalColumns: propTypes.any,
+  data: propTypes.any,
+  getRowEditOverlay: propTypes.any,
+  updateRowInGrid: propTypes.any,
+  deleteRowFromGrid: propTypes.any,
+  globalSearchLogic: propTypes.any,
+  selectBulkData: propTypes.any,
+  calculateRowHeight: propTypes.any,
+  isExpandContentAvailable: propTypes.any,
+  displayExpandedContent: propTypes.any,
+  hasNextPage: propTypes.any,
+  isNextPageLoading: propTypes.any,
+  loadNextPage: propTypes.any,
+  doGroupSort: propTypes.any,
+  getToggleAllRowsSelectedProps: propTypes.any,
+  row: propTypes.any,
+  additionalColumn: propTypes.any
+};
 
 const Grid = /*#__PURE__*/memo(props => {
   const {
@@ -2053,45 +3349,10 @@ const Grid = /*#__PURE__*/memo(props => {
     }
   };
 
-  let processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
-  let additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop);
+  const processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
+  const additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop);
   const gridColumns = useMemo(() => processedColumns, []);
-  let renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
-
-  const DisplayTag = props => {
-    console.log(additionalColumn);
-    const {
-      cellKey
-    } = props;
-
-    if (additionalColumn && cellKey) {
-      if (checkInnerCells(additionalColumn, cellKey)) {
-        return /*#__PURE__*/React__default.createElement(Fragment, null, " ", props.children);
-      }
-    }
-
-    return null;
-  };
-
-  const checkInnerCells = (column, cellKey) => {
-    if (column) {
-      const {
-        innerCells
-      } = column;
-
-      if (innerCells) {
-        const innerCellData = innerCells.find(cell => {
-          return cell.accessor === cellKey;
-        });
-
-        if (innerCellData) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
+  const renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
   const displayExpandedContent = row => {
     const {
@@ -2099,7 +3360,11 @@ const Grid = /*#__PURE__*/memo(props => {
     } = row;
 
     if (original) {
-      return renderExpandedContent(original, DisplayTag);
+      return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
+        value: {
+          additionalColumn: additionalColumn
+        }
+      }, renderExpandedContent(original, AdditionalColumnTag));
     }
   };
 
@@ -2141,13 +3406,13 @@ const Grid = /*#__PURE__*/memo(props => {
 
       if (rowValue) {
         const textLength = Object.values(rowValue).join(",").length;
-        rowHeight = rowHeight + Math.ceil(80 * textLength / totalFlexWidth);
+        rowHeight += Math.ceil(80 * textLength / totalFlexWidth);
         const widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
-        rowHeight = rowHeight + widthVariable / 1000;
+        rowHeight += widthVariable / 1000;
       }
 
       if (isExpanded && additionalColumn) {
-        rowHeight = rowHeight + (additionalColumn.innerCells && additionalColumn.innerCells.length > 0 ? additionalColumn.innerCells.length * 35 : 35);
+        rowHeight += additionalColumn.innerCells && additionalColumn.innerCells.length > 0 ? additionalColumn.innerCells.length * 35 : 35;
       }
     }
 
@@ -2157,9 +3422,9 @@ const Grid = /*#__PURE__*/memo(props => {
   const compareValues = (compareOrder, v1, v2) => {
     if (compareOrder === "Ascending") {
       return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
-    } else {
-      return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
     }
+
+    return v1 < v2 ? 1 : v1 > v2 ? -1 : 0;
   };
 
   const getSortedData = originalData => {
@@ -2255,8 +3520,25 @@ const Grid = /*#__PURE__*/memo(props => {
       textAlign: "center",
       marginTop: "70px"
     }
-  }, isLoading ? "Initializing Grid..." : "Invalid Data or Column Configurations"));
+  }, isLoading ? "Initializing Grid..." : /*#__PURE__*/React__default.createElement("span", {
+    className: "error"
+  }, "Invalid Data or Column Configurations")));
 });
+Grid.propTypes = {
+  title: propTypes.any,
+  gridHeight: propTypes.any,
+  gridWidth: propTypes.any,
+  columns: propTypes.any,
+  columnToExpand: propTypes.any,
+  fetchData: propTypes.any,
+  getRowEditOverlay: propTypes.any,
+  updateRowData: propTypes.any,
+  deleteRowData: propTypes.any,
+  selectBulkData: propTypes.any,
+  calculateRowHeight: propTypes.any,
+  cellKey: propTypes.any,
+  children: propTypes.any
+};
 
 export default Grid;
 //# sourceMappingURL=index.modern.js.map

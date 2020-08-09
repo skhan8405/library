@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-fragments */
 /* eslint-disable react/destructuring-assignment */
 import React, { useState, Fragment } from "react";
 import { useDrop } from "react-dnd";
