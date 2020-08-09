@@ -1228,7 +1228,7 @@ const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
   const filteredColumns = columns.filter(column => {
     return isDesktop ? !column.onlyInTablet : !column.onlyInDesktop;
   });
-  let modifiedColumns = [];
+  const modifiedColumns = [];
   filteredColumns.forEach((column, index) => {
     const {
       innerCells,
@@ -1236,10 +1236,11 @@ const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
       sortValue
     } = column;
     const isInnerCellsPresent = innerCells && innerCells.length > 0;
-    column.columnId = `column_${index}`;
+    const elem = column;
+    elem.columnId = `column_${index}`;
 
-    if (!column.Cell && column.displayCell) {
-      column.Cell = row => {
+    if (!elem.Cell && elem.displayCell) {
+      elem.Cell = row => {
         return /*#__PURE__*/React__default.createElement(CellDisplayAndEdit, {
           row: row,
           columns: columns,
@@ -1248,24 +1249,24 @@ const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
       };
     }
 
-    if (!column.disableSortBy) {
+    if (!elem.disableSortBy) {
       if (isInnerCellsPresent) {
         if (sortValue) {
-          column.sortType = (rowA, rowB) => {
+          elem.sortType = (rowA, rowB) => {
             return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
           };
         } else {
-          column.disableSortBy = true;
+          elem.disableSortBy = true;
         }
       } else if (!innerCells) {
-        column.sortType = (rowA, rowB) => {
+        elem.sortType = (rowA, rowB) => {
           return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
         };
       }
     }
 
-    if (!column.disableFilters) {
-      column.filter = (rows, id, filterValue) => {
+    if (!elem.disableFilters) {
+      elem.filter = (rows, id, filterValue) => {
         const searchText = filterValue ? filterValue.toLowerCase() : "";
         return rows.filter(row => {
           const {
@@ -1285,10 +1286,11 @@ const extractAdditionalColumn = (additionalColumn, isDesktop) => {
     innerCells
   } = additionalColumn;
   const isInnerCellsPresent = innerCells && innerCells.length > 0;
-  additionalColumn.columnId = `ExpandColumn`;
+  const element = additionalColumn;
+  element.columnId = `ExpandColumn`;
 
   if (isInnerCellsPresent) {
-    additionalColumn.innerCells = innerCells.filter(cell => {
+    element.innerCells = innerCells.filter(cell => {
       return isDesktop ? !cell.onlyInTablet : !cell.onlyInDesktop;
     });
   }
@@ -1297,7 +1299,6 @@ const extractAdditionalColumn = (additionalColumn, isDesktop) => {
 };
 
 const AdditionalColumnTag = props => {
-  console.log("Inside additional tag");
   const contextVallues = useContext(AdditionalColumnContext);
   const {
     additionalColumn

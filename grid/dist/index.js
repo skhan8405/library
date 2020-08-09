@@ -1268,10 +1268,11 @@ var extractColumns = function extractColumns(columns, searchColumn, isDesktop, u
         accessor = column.accessor,
         sortValue = column.sortValue;
     var isInnerCellsPresent = innerCells && innerCells.length > 0;
-    column.columnId = "column_" + index;
+    var elem = column;
+    elem.columnId = "column_" + index;
 
-    if (!column.Cell && column.displayCell) {
-      column.Cell = function (row) {
+    if (!elem.Cell && elem.displayCell) {
+      elem.Cell = function (row) {
         return /*#__PURE__*/React__default.createElement(CellDisplayAndEdit, {
           row: row,
           columns: columns,
@@ -1280,24 +1281,24 @@ var extractColumns = function extractColumns(columns, searchColumn, isDesktop, u
       };
     }
 
-    if (!column.disableSortBy) {
+    if (!elem.disableSortBy) {
       if (isInnerCellsPresent) {
         if (sortValue) {
-          column.sortType = function (rowA, rowB) {
+          elem.sortType = function (rowA, rowB) {
             return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
           };
         } else {
-          column.disableSortBy = true;
+          elem.disableSortBy = true;
         }
       } else if (!innerCells) {
-        column.sortType = function (rowA, rowB) {
+        elem.sortType = function (rowA, rowB) {
           return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
         };
       }
     }
 
-    if (!column.disableFilters) {
-      column.filter = function (rows, id, filterValue) {
+    if (!elem.disableFilters) {
+      elem.filter = function (rows, id, filterValue) {
         var searchText = filterValue ? filterValue.toLowerCase() : "";
         return rows.filter(function (row) {
           var original = row.original;
@@ -1313,10 +1314,11 @@ var extractColumns = function extractColumns(columns, searchColumn, isDesktop, u
 var extractAdditionalColumn = function extractAdditionalColumn(additionalColumn, isDesktop) {
   var innerCells = additionalColumn.innerCells;
   var isInnerCellsPresent = innerCells && innerCells.length > 0;
-  additionalColumn.columnId = "ExpandColumn";
+  var element = additionalColumn;
+  element.columnId = "ExpandColumn";
 
   if (isInnerCellsPresent) {
-    additionalColumn.innerCells = innerCells.filter(function (cell) {
+    element.innerCells = innerCells.filter(function (cell) {
       return isDesktop ? !cell.onlyInTablet : !cell.onlyInDesktop;
     });
   }
@@ -1325,7 +1327,6 @@ var extractAdditionalColumn = function extractAdditionalColumn(additionalColumn,
 };
 
 var AdditionalColumnTag = function AdditionalColumnTag(props) {
-  console.log("Inside additional tag");
   var contextVallues = React.useContext(AdditionalColumnContext);
   var additionalColumn = contextVallues.additionalColumn;
   var cellKey = props.cellKey;
