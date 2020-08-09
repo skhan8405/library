@@ -122,7 +122,6 @@ const ExportData = memo((props) => {
                         }
                     } else if (displayInExpandedRegion && isInnerCellsPresent) {
                         //For column in the expanded section
-                        console.log("Inside");
                         originalInnerCells.forEach((expandedCell) => {
                             const expandedCellAccessor = expandedCell.accessor;
                             const expandedCellHeader = expandedCell.Header;
