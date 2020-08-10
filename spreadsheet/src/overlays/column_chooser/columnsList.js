@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+/* eslint-disable react/jsx-fragments */
+/* eslint-disable react/destructuring-assignment */
+import React, { useState, Fragment } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
+import PropTypes from "prop-types";
 import { ItemTypes } from "./ItemTypes";
 import ColumnItem from "./columnItem";
-import PropTypes from "prop-types";
 
 const ColumnsList = (props) => {
     const [columns, setColumns] = useState([...props.columnsArray]);
+
+    const findColumn = (id) => {
+        const column = columns.filter((c) => `${c.id}` === id)[0];
+        return {
+            column,
+            index: columns.indexOf(column)
+        };
+    };
 
     const moveColumn = (id, atIndex) => {
         const { column, index } = findColumn(id);
@@ -18,7 +28,7 @@ const ColumnsList = (props) => {
                 ]
             })
         );
-        let values = [];
+        const values = [];
         let temp = [];
         temp = update(columns, {
             $splice: [
@@ -32,14 +42,6 @@ const ColumnsList = (props) => {
         props.handleReorderList(values);
     };
 
-    const findColumn = (id) => {
-        const column = columns.filter((c) => `${c.id}` === id)[0];
-        return {
-            column,
-            index: columns.indexOf(column)
-        };
-    };
-
     const [, drop] = useDrop({ accept: ItemTypes.COLUMN });
 
     React.useEffect(() => {
@@ -47,7 +49,7 @@ const ColumnsList = (props) => {
     }, [props.columnsArray]);
 
     return (
-        <React.Fragment>
+        <Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
                 {columns.map((column) => (
                     <ColumnItem
@@ -59,7 +61,7 @@ const ColumnsList = (props) => {
                     />
                 ))}
             </div>
-        </React.Fragment>
+        </Fragment>
     );
 };
 

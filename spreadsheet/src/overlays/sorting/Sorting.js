@@ -1,3 +1,6 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint no-unused-expressions: ["error", {"allowTernary": true }] */
+/* eslint-disable react/no-access-state-in-setstate */
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,15 +12,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
-import SortingList from "./SortingList";
 import PropTypes from "prop-types";
+import SortingList from "./SortingList";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             rowList: [true],
-            rows: [],
             sortingOrderList:
                 this.props.sortingParamsObjectList === undefined
                     ? []
@@ -40,16 +42,10 @@ class App extends React.Component {
         this.wrapperRef = node;
     }
 
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-            this.props.closeSorting();
-        }
-    }
-
     add = () => {
-        let rowList = [...this.state.rowList];
+        const rowList = [...this.state.rowList];
         rowList.push(true);
-        var existingSortingOrderList = this.state.sortingOrderList;
+        const existingSortingOrderList = this.state.sortingOrderList;
         existingSortingOrderList.push({
             sortBy: this.props.columnFieldValue[0],
             order: "Ascending",
@@ -62,7 +58,7 @@ class App extends React.Component {
     };
 
     copy = (i) => {
-        let rowList = [...this.state.sortingOrderList];
+        const rowList = [...this.state.sortingOrderList];
         rowList.push(JSON.parse(JSON.stringify(rowList[i])));
         this.setState({ sortingOrderList: rowList });
     };
@@ -73,7 +69,7 @@ class App extends React.Component {
     };
 
     remove = (i) => {
-        let sortingOrderList = [...this.state.sortingOrderList];
+        const sortingOrderList = [...this.state.sortingOrderList];
         sortingOrderList.splice(i, 1);
         this.setState({ sortingOrderList });
         if (sortingOrderList.length <= 1) {
@@ -86,16 +82,14 @@ class App extends React.Component {
             return {
                 id: index,
                 text: (
-                    <div className="sort__bodyContent" key={index}>
+                    <div className="sort__bodyContent" key={row}>
                         <div className="sort__reorder">
                             <div className="">
                                 <div>&nbsp;</div>
                             </div>
 
                             <div className="sort__icon">
-                                <FontAwesomeIcon
-                                    icon={faAlignJustify}
-                                ></FontAwesomeIcon>
+                                <FontAwesomeIcon icon={faAlignJustify} />
                             </div>
                         </div>
 
@@ -107,7 +101,7 @@ class App extends React.Component {
                             <div className="sort__file">
                                 <select
                                     className="custom__ctrl"
-                                    name={"sortBy"}
+                                    name="sortBy"
                                     onChange={(e) =>
                                         this.captureSortingFeildValues(
                                             e,
@@ -117,11 +111,9 @@ class App extends React.Component {
                                     }
                                     value={row.sortBy}
                                 >
-                                    {this.props.columnFieldValue.map(
-                                        (item, index) => (
-                                            <option key={index}>{item}</option>
-                                        )
-                                    )}
+                                    {this.props.columnFieldValue.map((item) => (
+                                        <option key={item}>{item}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -134,7 +126,7 @@ class App extends React.Component {
                             <div className="sort__file">
                                 <select
                                     className="custom__ctrl"
-                                    name={"sortOn"}
+                                    name="sortOn"
                                     onChange={(e) =>
                                         this.captureSortingFeildValues(
                                             e,
@@ -157,7 +149,7 @@ class App extends React.Component {
                             <div className="sort__file">
                                 <select
                                     className="custom__ctrl"
-                                    name={"order"}
+                                    name="order"
                                     onChange={(e) =>
                                         this.captureSortingFeildValues(
                                             e,
@@ -183,7 +175,7 @@ class App extends React.Component {
                                     icon={faCopy}
                                     title="Copy"
                                     onClick={() => this.copy(index)}
-                                ></FontAwesomeIcon>
+                                />
                             </div>
                         </div>
 
@@ -197,7 +189,7 @@ class App extends React.Component {
                                     icon={faTrash}
                                     title="Delete"
                                     onClick={() => this.remove(index)}
-                                ></FontAwesomeIcon>
+                                />
                             </div>
                         </div>
                     </div>
@@ -207,19 +199,19 @@ class App extends React.Component {
     };
 
     captureSortingFeildValues = (event, index, sortingKey) => {
-        var existingSortingOrderList = this.state.sortingOrderList;
+        const existingSortingOrderList = this.state.sortingOrderList;
 
         if (sortingKey === "sortBy") {
-            existingSortingOrderList[index]["sortBy"] = event.target.value;
+            existingSortingOrderList[index].sortBy = event.target.value;
         }
         if (sortingKey === "order") {
-            existingSortingOrderList[index]["order"] = event.target.value;
+            existingSortingOrderList[index].order = event.target.value;
         }
         if (
-            existingSortingOrderList[index]["sortOn"] === "" ||
-            existingSortingOrderList[index]["sortOn"] === undefined
+            existingSortingOrderList[index].sortOn === "" ||
+            existingSortingOrderList[index].sortOn === undefined
         ) {
-            existingSortingOrderList[index]["sortOn"] = "Value";
+            existingSortingOrderList[index].sortOn = "Value";
         }
         this.setState({
             sortingOrderList: existingSortingOrderList
@@ -238,9 +230,9 @@ class App extends React.Component {
             : this.setState({
                   errorMessage: false
               });
-        !showError
-            ? this.props.setTableAsPerSortingParams(this.state.sortingOrderList)
-            : "";
+        if (!showError) {
+            this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
+        }
     };
 
     /**
@@ -250,6 +242,12 @@ class App extends React.Component {
     handleReorderListOfSort = (reOrderedIndexList) => {
         this.props.handleTableSortSwap(reOrderedIndexList);
     };
+
+    handleClickOutside(event) {
+        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+            this.props.closeSorting();
+        }
+    }
 
     render() {
         return (
@@ -265,8 +263,8 @@ class App extends React.Component {
                                 <FontAwesomeIcon
                                     className="icon-close"
                                     icon={faTimes}
-                                    onClick={(e) => this.props.closeSorting()}
-                                ></FontAwesomeIcon>
+                                    onClick={() => this.props.closeSorting()}
+                                />
                             </div>
                         </div>
 
@@ -300,11 +298,13 @@ class App extends React.Component {
                                 <FontAwesomeIcon
                                     icon={faPlus}
                                     className="sort__icon"
-                                ></FontAwesomeIcon>
-
+                                />
                                 <div
+                                    role="button"
+                                    tabIndex={0}
                                     className="sort__txt"
                                     onClick={() => this.add()}
+                                    onKeyDown={() => this.add()}
                                 >
                                     New Sort
                                 </div>
@@ -313,6 +313,7 @@ class App extends React.Component {
                         <div className="sort__footer">
                             <div className="sort__btns">
                                 <button
+                                    type="button"
                                     className="btns"
                                     onClick={this.clearAll}
                                 >
@@ -320,6 +321,7 @@ class App extends React.Component {
                                 </button>
 
                                 <button
+                                    type="button"
                                     className="btns btns__save"
                                     onClick={() =>
                                         this.updateTableAsPerSortCondition()
@@ -341,10 +343,8 @@ App.propTypes = {
     closeSorting: PropTypes.any,
     columnFieldValue: PropTypes.any,
     clearAllSortingParams: PropTypes.any,
-    sortingObj: PropTypes.any,
     setTableAsPerSortingParams: PropTypes.any,
-    handleTableSortSwap: PropTypes.any,
-    rowList: PropTypes.any
+    handleTableSortSwap: PropTypes.any
 };
 
 export default App;

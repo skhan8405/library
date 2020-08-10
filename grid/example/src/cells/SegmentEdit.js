@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 
-const SegmentEdit = ({ rowData, DisplayTag, airportCodeList, rowUpdateCallBack }) => {
+const SegmentEdit = ({
+    rowData,
+    DisplayTag,
+    airportCodeList,
+    rowUpdateCallBack
+}) => {
     const [updatedRowData, setUpdatedRowData] = useState(rowData);
     const { segment, weight } = updatedRowData;
 
@@ -77,7 +82,11 @@ const SegmentEdit = ({ rowData, DisplayTag, airportCodeList, rowUpdateCallBack }
                 </select>
             </DisplayTag>
             <DisplayTag columnKey="weight" cellKey="percentage">
-                <input type="text" value={percentage} onChange={updateWeightPercentage} />{" "}
+                <input
+                    type="text"
+                    value={percentage}
+                    onChange={updateWeightPercentage}
+                />
             </DisplayTag>
             <DisplayTag columnKey="weight" cellKey="value">
                 <input type="text" value={value} onChange={updateWeightValue} />{" "}

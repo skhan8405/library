@@ -104,7 +104,13 @@ const App = () => {
                 );
             },
             editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
-                return <FlightEdit rowData={rowData} DisplayTag={DisplayTag} rowUpdateCallBack={rowUpdateCallBack} />;
+                return (
+                    <FlightEdit
+                        rowData={rowData}
+                        DisplayTag={DisplayTag}
+                        rowUpdateCallBack={rowUpdateCallBack}
+                    />
+                );
             }
         },
         {
@@ -190,7 +196,16 @@ const App = () => {
             ],
             disableSortBy: true,
             displayCell: (rowData, DisplayTag) => {
-                const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = rowData.details;
+                const {
+                    startTime,
+                    endTime,
+                    status,
+                    additionalStatus,
+                    flightModel,
+                    bodyType,
+                    type,
+                    timeStatus
+                } = rowData.details;
                 const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
@@ -198,49 +213,73 @@ const App = () => {
                     <div className="details-wrap">
                         <ul>
                             <li>
-                                <DisplayTag columnKey="details" cellKey="startTime">
+                                <DisplayTag
+                                    columnKey="details"
+                                    cellKey="startTime"
+                                >
                                     {startTime}
                                 </DisplayTag>
                                 -
-                                <DisplayTag columnKey="details" cellKey="endTime">
+                                <DisplayTag
+                                    columnKey="details"
+                                    cellKey="endTime"
+                                >
                                     {endTime}
                                 </DisplayTag>
                             </li>
                             <li className="divider">|</li>
                             <li>
-                                <DisplayTag columnKey="details" cellKey="status">
+                                <DisplayTag
+                                    columnKey="details"
+                                    cellKey="status"
+                                >
                                     <span>{status}</span>
                                 </DisplayTag>
                             </li>
                             <li className="divider">|</li>
                             <li>
-                                <DisplayTag columnKey="details" cellKey="additionalStatus">
+                                <DisplayTag
+                                    columnKey="details"
+                                    cellKey="additionalStatus"
+                                >
                                     {additionalStatus}
                                 </DisplayTag>
                             </li>
                             <li className="divider">|</li>
                             <li>
-                                <DisplayTag columnKey="details" cellKey="flightModel">
+                                <DisplayTag
+                                    columnKey="details"
+                                    cellKey="flightModel"
+                                >
                                     {flightModel}
                                 </DisplayTag>
                             </li>
                             <li className="divider">|</li>
                             <li>
-                                <DisplayTag columnKey="details" cellKey="bodyType">
+                                <DisplayTag
+                                    columnKey="details"
+                                    cellKey="bodyType"
+                                >
                                     {bodyType}
                                 </DisplayTag>
                             </li>
                             <li className="divider">|</li>
                             <li>
                                 <span>
-                                    <DisplayTag columnKey="details" cellKey="type">
+                                    <DisplayTag
+                                        columnKey="details"
+                                        cellKey="type"
+                                    >
                                         {type}
                                     </DisplayTag>
                                 </span>
                             </li>
                             <li className="divider">|</li>
                             <li>
-                                <DisplayTag columnKey="details" cellKey="timeStatus">
+                                <DisplayTag
+                                    columnKey="details"
+                                    cellKey="timeStatus"
+                                >
                                     <strong>{timeValue} </strong>
                                     <span>{timeText}</span>
                                 </DisplayTag>
@@ -351,10 +390,16 @@ const App = () => {
                             {uldPositions.map((positions, index) => {
                                 return (
                                     <li key={index}>
-                                        <DisplayTag columnKey="uldPositions" cellKey="position">
+                                        <DisplayTag
+                                            columnKey="uldPositions"
+                                            cellKey="position"
+                                        >
                                             <span>{positions.position}</span>
                                         </DisplayTag>
-                                        <DisplayTag columnKey="uldPositions" cellKey="value">
+                                        <DisplayTag
+                                            columnKey="uldPositions"
+                                            cellKey="value"
+                                        >
                                             <strong>{positions.value}</strong>
                                         </DisplayTag>
                                     </li>
@@ -407,7 +452,12 @@ const App = () => {
                 );
             },
             editCell: (rowData, rowUpdateCallBack) => {
-                return <SrEdit rowData={rowData} rowUpdateCallBack={rowUpdateCallBack} />;
+                return (
+                    <SrEdit
+                        rowData={rowData}
+                        rowUpdateCallBack={rowUpdateCallBack}
+                    />
+                );
             }
         },
         {
@@ -454,9 +504,16 @@ const App = () => {
         ],
         displayCell: (rowData, DisplayTag) => {
             const { remarks, details } = rowData;
-            const { startTime, endTime, status, additionalStatus, flightModel, bodyType, type, timeStatus } = details
-                ? details
-                : {};
+            const {
+                startTime,
+                endTime,
+                status,
+                additionalStatus,
+                flightModel,
+                bodyType,
+                type,
+                timeStatus
+            } = details ? details : {};
             const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
@@ -498,7 +555,7 @@ const App = () => {
         }
     };
 
-    //Pass row edit overlay to the grid component
+    //Pass row edit overlay to the grid component callback function
     const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
         return (
             <RowEdit
@@ -509,6 +566,21 @@ const App = () => {
             />
         );
     };
+
+    //#region -- Configure actions that has to be diplayed in row options overlay and the callback method to be rturned from component
+    //Configure additional actions
+    const rowActions = [
+        { label: "Send SCR", value: "SCR" },
+        { label: "Segment Summary", value: "SegmentSummary" },
+        { label: "Open Summary", value: "OpenSummary" },
+        { label: "Close Summary", value: "CloseSummary" }
+    ];
+    //Configure row action callback function
+    const rowActionCallback = (rowData, actionValue) => {
+        console.log("Row action: " + actionValue);
+        console.log(rowData);
+    };
+    //#endregion
 
     //Add logic to calculate height of each row, based on the content of  or more columns
     const calculateRowHeight = (row, gridColumns) => {
@@ -529,8 +601,12 @@ const App = () => {
                 //Find the length of text of data in that column
                 const textLength = Object.values(rowValue).join(",").length;
                 //This is a formula that was created for the test data used.
-                rowHeight = rowHeight + Math.ceil((75 * textLength) / totalFlexWidth);
-                const widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+                rowHeight =
+                    rowHeight + Math.ceil((75 * textLength) / totalFlexWidth);
+                const widthVariable =
+                    totalFlexWidth > width
+                        ? totalFlexWidth - width
+                        : width - totalFlexWidth;
                 rowHeight = rowHeight + widthVariable / 1000;
             }
             //Add logic to increase row height if row is expanded
@@ -538,7 +614,8 @@ const App = () => {
                 //Increase height based on the number of inner cells in additional columns
                 rowHeight =
                     rowHeight +
-                    (columnToExpand.innerCells && columnToExpand.innerCells.length > 0
+                    (columnToExpand.innerCells &&
+                    columnToExpand.innerCells.length > 0
                         ? columnToExpand.innerCells.length * 35
                         : 35);
             }
@@ -570,6 +647,8 @@ const App = () => {
             gridWidth="100%"
             columns={columns}
             columnToExpand={columnToExpand}
+            rowActions={rowActions}
+            rowActionCallback={rowActionCallback}
             fetchData={fetchData}
             getRowEditOverlay={getRowEditOverlay}
             calculateRowHeight={calculateRowHeight}
