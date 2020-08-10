@@ -29,6 +29,13 @@ import RowDeleteOverLay from "./Functions/RowDeleteOverLay";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
 import ExportData from "./Overlays/exportdata";
+import IconColumns from "./Images/icon-columns.svg";
+import IconAngle from "./Images/icon-angle.svg";
+import IconFilter from "./Images/icon-filter.svg";
+import IconShare from "./Images/icon-share.svg";
+import IconGroupSort from "./Images/icon-group-sort.svg";
+import IconSort from "./Images/icon-sort.svg";
+import IconEdit from "./Images/icon-edit.png";
 
 const listRef = createRef(null);
 
@@ -247,17 +254,17 @@ const Customgrid = memo((props) => {
                                         className="expander"
                                         {...row.getToggleRowExpandedProps()}
                                     >
-                                        {row.isExpanded ? (
-                                            <i
-                                                className="fa fa-angle-up"
-                                                aria-hidden="true"
+                                        <i>
+                                            <img
+                                                className={
+                                                    row.isExpanded
+                                                        ? "icon-arrow-up"
+                                                        : "icon-arrow-down"
+                                                }
+                                                src={IconAngle}
+                                                alt="Row Collapse Icon"
                                             />
-                                        ) : (
-                                            <i
-                                                className="fa fa-angle-down"
-                                                aria-hidden="true"
-                                            />
-                                        )}
+                                        </i>
                                     </span>
                                 ) : null}
                             </div>
@@ -328,10 +335,6 @@ const Customgrid = memo((props) => {
     // React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
     return (
         <div className="table-wrapper" style={{ width: gridWidth || "100%" }}>
-            <link
-                rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-            />
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
                     <strong>{rows.length}</strong>
@@ -371,41 +374,45 @@ const Customgrid = memo((props) => {
                         role="presentation"
                         onClick={toggleColumnFilter}
                     >
-                        <i className="fa fa-filter" aria-hidden="true" />
+                        <i>
+                            <img src={IconFilter} alt="Column Filter Icon" />
+                        </i>
                     </div>
                     <div
                         className="utilities-icon bulk-select"
                         role="presentation"
                         onClick={bulkSelector}
                     >
-                        <i
-                            className="fa fa-pencil-square-o"
-                            aria-hidden="true"
-                        />
+                        <i>
+                            <img src={IconEdit} alt="Bulk Export Icon" />
+                        </i>
                     </div>
                     <div
                         className="utilities-icon bulk-select"
                         role="presentation"
                         onClick={toggleGroupSortOverLay}
                     >
-                        <i
-                            className="fa fa-sort-amount-desc"
-                            aria-hidden="true"
-                        />
+                        <i>
+                            <img src={IconGroupSort} alt="Group sort Icon" />
+                        </i>
                     </div>
                     <div
                         className="utilities-icon manage-columns"
                         role="presentation"
                         onClick={toggleManageColumns}
                     >
-                        <i className="fa fa-columns" aria-hidden="true" />
+                        <i>
+                            <img src={IconColumns} alt="collumn-chooser-icon" />
+                        </i>
                     </div>
                     <div
                         className="utilities-icon manage-columns"
                         role="presentation"
                         onClick={toggleExportDataOverlay}
                     >
-                        <i className="fa fa-share-alt" aria-hidden="true" />
+                        <i>
+                            <img src={IconShare} alt="Export Data Icon" />
+                        </i>
                     </div>
                 </div>
             </div>
@@ -463,17 +470,19 @@ const Customgrid = memo((props) => {
                                                     {column.render("Header")}
                                                     <span>
                                                         {column.isSorted ? (
-                                                            column.isSortedDesc ? (
-                                                                <i
-                                                                    className="fa fa-sort-desc"
-                                                                    aria-hidden="true"
+                                                            <i>
+                                                                <img
+                                                                    className={
+                                                                        column.isSortedDesc
+                                                                            ? "sort-asc"
+                                                                            : "sort-desc"
+                                                                    }
+                                                                    src={
+                                                                        IconSort
+                                                                    }
+                                                                    alt="Export Overlay Close Icon"
                                                                 />
-                                                            ) : (
-                                                                <i
-                                                                    className="fa fa-sort-asc"
-                                                                    aria-hidden="true"
-                                                                />
-                                                            )
+                                                            </i>
                                                         ) : (
                                                             ""
                                                         )}

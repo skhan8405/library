@@ -5,6 +5,10 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
+import IconCsv from "../../Images/icon-csv.svg";
+import IconExcel from "../../Images/icon-excel.svg";
+import IconPdf from "../../Images/icon-pdf.svg";
+import IconClose from "../../Images/icon-close.svg";
 
 const ExportData = memo((props) => {
     const {
@@ -384,11 +388,12 @@ const ExportData = memo((props) => {
                             <div className="export__header">
                                 <div className="export__headerTxt" />
                                 <div className="export__close">
-                                    <i
-                                        className="fa fa-times"
-                                        aria-hidden="true"
-                                        onClick={toggleExportDataOverlay}
-                                    />
+                                    <i onClick={toggleExportDataOverlay}>
+                                        <img
+                                            src={IconClose}
+                                            alt="Export Overlay Close Icon"
+                                        />
+                                    </i>
                                 </div>
                             </div>
                             <div className="export__as">Export As</div>
@@ -406,11 +411,12 @@ const ExportData = memo((props) => {
                                         />
                                     </div>
                                     <div className="export__file">
-                                        <i
-                                            className="fa fa-file-pdf-o"
-                                            aria-hidden="true"
-                                        />
-                                        <br />
+                                        <i>
+                                            <img
+                                                src={IconPdf}
+                                                alt="PDF Export Icon"
+                                            />
+                                        </i>
                                         <strong>PDF</strong>
                                     </div>
                                 </div>
@@ -427,11 +433,12 @@ const ExportData = memo((props) => {
                                         />
                                     </div>
                                     <div className="export__file">
-                                        <i
-                                            className="fa fa-file-excel-o"
-                                            aria-hidden="true"
-                                        />
-                                        <br />
+                                        <i>
+                                            <img
+                                                src={IconExcel}
+                                                alt="Excel Export Icon"
+                                            />
+                                        </i>
                                         <strong>Excel</strong>
                                     </div>
                                 </div>
@@ -448,11 +455,12 @@ const ExportData = memo((props) => {
                                         />
                                     </div>
                                     <div className="export__file">
-                                        <i
-                                            className="fa fa-file-text-o"
-                                            aria-hidden="true"
-                                        />
-                                        <br />
+                                        <i>
+                                            <img
+                                                src={IconCsv}
+                                                alt="CSV Export Icon"
+                                            />
+                                        </i>
                                         <strong>CSV</strong>
                                     </div>
                                 </div>
