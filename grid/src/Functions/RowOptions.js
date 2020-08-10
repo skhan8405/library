@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import RowDelete from "../Images/RowDelete.svg";
 import RowEdit from "../Images/RowEdit.svg";
 import RowPin from "../Images/RowPin.png";
+import IconCancel from "../Images/icon-cancel.svg";
 
 const RowOptions = memo(
     ({
