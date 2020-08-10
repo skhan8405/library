@@ -1,4 +1,5 @@
 import React, { memo, useMemo, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
     extractColumns,
     extractAdditionalColumn
@@ -6,7 +7,6 @@ import {
 import { AdditionalColumnContext } from "./Utilities/TagsContext";
 import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
-import PropTypes from "prop-types";
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
@@ -56,8 +56,8 @@ const Grid = memo((props) => {
             // Enter if cell value is array
             if (rowAccessorValue.length > 0) {
                 // Loop through cell array value and check if searched text is present
-                rowAccessorValue.map((value) => {
-                    innerCells.map((cell) => {
+                rowAccessorValue.forEach((value) => {
+                    innerCells.forEach((cell) => {
                         const dataAccessor = value[cell.accessor];
                         if (
                             dataAccessor &&
@@ -72,7 +72,7 @@ const Grid = memo((props) => {
                 });
             } else {
                 // If cell value is an object, loop through inner cells and check if searched text is present
-                innerCells.map((cell) => {
+                innerCells.forEach((cell) => {
                     const dataAccessor = original[accessor][cell.accessor];
                     if (
                         dataAccessor &&
@@ -167,7 +167,7 @@ const Grid = memo((props) => {
     // #endregion
 
     // Add logic for doing global search in the grid
-    const globalSearchLogic = (rows, columns, filterValue) => {
+    const globalSearchLogic = (rows, filterValue) => {
         // Enter search logic only if rows and columns are available
         if (filterValue && processedColumns.length > 0) {
             // convert user searched text to lower case
@@ -382,8 +382,8 @@ Grid.propTypes = {
     deleteRowData: PropTypes.any,
     selectBulkData: PropTypes.any,
     calculateRowHeight: PropTypes.any,
-    cellKey: PropTypes.any,
-    children: PropTypes.any
+    rowActions: PropTypes.any,
+    rowActionCallback: PropTypes.any
 };
 
 export default Grid;

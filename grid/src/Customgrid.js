@@ -178,11 +178,7 @@ const Customgrid = memo((props) => {
                     globalSearchLogic &&
                     typeof globalSearchLogic === "function"
                 ) {
-                    return globalSearchLogic(
-                        rowsToFilter,
-                        columnsToFilter,
-                        filterValue
-                    );
+                    return globalSearchLogic(rowsToFilter, filterValue);
                 }
                 return rowsToFilter;
             },
@@ -364,8 +360,8 @@ const Customgrid = memo((props) => {
                         toggleExportDataOverlay={toggleExportDataOverlay}
                         rows={rows}
                         originalColumns={originalColumns}
-                        columns={columns} //Updated columns structure from manage columns overlay
-                        isRowExpandEnabled={isRowExpandEnabled} //Updated additional column structure from manage columns overlay
+                        columns={columns} // Updated columns structure from manage columns overlay
+                        isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
                         isExpandContentAvailable={isExpandContentAvailable}
                         additionalColumn={[additionalColumn]}
                     />
@@ -574,7 +570,9 @@ Customgrid.propTypes = {
     doGroupSort: PropTypes.any,
     getToggleAllRowsSelectedProps: PropTypes.any,
     row: PropTypes.any,
-    additionalColumn: PropTypes.any
+    additionalColumn: PropTypes.any,
+    rowActions: PropTypes.any,
+    rowActionCallback: PropTypes.any
 };
 
 export default Customgrid;

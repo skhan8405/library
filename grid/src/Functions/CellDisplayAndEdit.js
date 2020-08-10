@@ -110,10 +110,7 @@ const CellDisplayAndEdit = memo(({ row, columns, updateRowInGrid }) => {
 CellDisplayAndEdit.propTypes = {
     row: PropTypes.any,
     columns: PropTypes.any,
-    updateRowInGrid: PropTypes.any,
-    cellKey: PropTypes.any,
-    columnKey: PropTypes.any,
-    children: PropTypes.any
+    updateRowInGrid: PropTypes.any
 };
 
 export default CellDisplayAndEdit;

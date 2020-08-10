@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import RowDelete from "../Images/RowDelete.svg";
 import RowEdit from "../Images/RowEdit.svg";
 import RowPin from "../Images/RowPin.png";
-import IconCancel from "../Images/icon-cancel.svg";
 
 const RowOptions = memo(
     ({
@@ -145,6 +144,8 @@ const RowOptions = memo(
 
 RowOptions.propTypes = {
     row: PropTypes.any,
+    rowActions: PropTypes.any,
+    rowActionCallback: PropTypes.any,
     bindRowEditOverlay: PropTypes.any,
     bindRowDeleteOverlay: PropTypes.any
 };
