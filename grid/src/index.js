@@ -6,8 +6,9 @@ import {
 import { AdditionalColumnContext } from "./Utilities/TagsContext";
 import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 import PropTypes from "prop-types";
+// eslint-disable-next-line import/no-unresolved
+import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const Grid = memo((props) => {
     const {
