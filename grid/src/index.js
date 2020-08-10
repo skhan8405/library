@@ -15,11 +15,11 @@ const Grid = memo((props) => {
         title,
         gridHeight,
         gridWidth,
+        loadData,
         columns,
         columnToExpand,
         rowActions,
         rowActionCallback,
-        fetchData,
         getRowEditOverlay,
         updateRowData,
         deleteRowData,
@@ -269,11 +269,10 @@ const Grid = memo((props) => {
     // Fetch the next set of data and append it to the variable holding grid data and update the state value.
     // Also update the hasNextPage state value to False once API response is empty, to avoid unwanted API calls.
     const loadNextPage = (...args) => {
-        const newIndex = args && args.length > 0 ? args[0] : -1;
-        if (newIndex >= 0 && hasNextPage) {
+        if (hasNextPage) {
             setIsLoading(true);
             setIsNextPageLoading(true);
-            fetchData(newIndex).then((data) => {
+            loadData().then((data) => {
                 setIsLoading(false);
                 setHasNextPage(data && data.length > 0);
                 setIsNextPageLoading(false);
@@ -299,7 +298,7 @@ const Grid = memo((props) => {
 
         // Make API call to fetch initial set of data.
         setIsLoading(true);
-        fetchData(0).then((data) => {
+        loadData().then((data) => {
             setIsLoading(false);
             setItems(data);
         });
@@ -376,7 +375,7 @@ Grid.propTypes = {
     gridWidth: PropTypes.any,
     columns: PropTypes.any,
     columnToExpand: PropTypes.any,
-    fetchData: PropTypes.any,
+    loadData: PropTypes.any,
     getRowEditOverlay: PropTypes.any,
     updateRowData: PropTypes.any,
     deleteRowData: PropTypes.any,
