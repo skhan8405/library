@@ -330,7 +330,7 @@ const ExportData = memo((props) => {
                     <div className="neo-popover__export export__grid">
                         <div className="export__chooser">
                             <div className="export__header">
-                                <div className="">
+                                <div>
                                     <strong>Export Data</strong>
                                 </div>
                             </div>

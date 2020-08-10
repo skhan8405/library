@@ -54,7 +54,7 @@ const ColumnItem = ({
                         <img src={IconJustify} alt="Column Chooser Drag Icon" />
                     </i>
                 </div>
-                <div className="">{Header}</div>
+                <div>{Header}</div>
                 <div className="column__innerCells__wrap">
                     {originalInnerCells && originalInnerCells.length > 0
                         ? originalInnerCells.map((cell, index) => {

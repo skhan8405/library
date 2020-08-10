@@ -304,7 +304,7 @@ const ColumnReordering = memo((props) => {
                     <div className="neo-popover__column column__grid">
                         <div className="column__chooser">
                             <div className="column__header">
-                                <div className="">
+                                <div>
                                     <strong>Column Chooser</strong>
                                 </div>
                             </div>
@@ -406,7 +406,7 @@ const ColumnReordering = memo((props) => {
                                 {remarksColumnToManage &&
                                 remarksColumnToManage.length > 0 ? (
                                     <div className="column__reorder full-width">
-                                        <div className="">
+                                        <div>
                                             {remarksColumnToManage[0].Header}
                                         </div>
                                         <div className="column__innerCells__wrap">
