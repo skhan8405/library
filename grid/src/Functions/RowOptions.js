@@ -113,6 +113,7 @@ const RowOptions = memo(
                                                               );
                                                           }}
                                                       >
+                                                          <i className="default" />
                                                           <span>{label}</span>
                                                       </span>
                                                   </li>
