@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { AdditionalColumnContext } from "../Utilities/TagsContext";
 import { checkInnerCells } from "../Utilities/TagUtilities";
@@ -10,7 +10,11 @@ const AdditionalColumnTag = (props) => {
 
     if (additionalColumn && cellKey) {
         if (checkInnerCells(additionalColumn, cellKey)) {
-            return <> {props.children}</>;
+            return (
+                <React.Fragment key="AdditionalColumnFragment">
+                    {props.children}
+                </React.Fragment>
+            );
         }
     }
     return null;

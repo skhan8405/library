@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { RowEditContext } from "../Utilities/TagsContext";
 import { checkInnerCells } from "../Utilities/TagUtilities";
@@ -14,11 +14,19 @@ const RowEditTag = (props) => {
         );
         if (selectedColumn && cellKey) {
             if (checkInnerCells(selectedColumn, cellKey)) {
-                return <> {props.children}</>;
+                return (
+                    <React.Fragment key="RowEditFragment">
+                        {props.children}
+                    </React.Fragment>
+                );
             }
         } else if (!selectedColumn && isRowExpandEnabled && additionalColumn) {
             if (checkInnerCells(additionalColumn, columnKey)) {
-                return <> {props.children}</>;
+                return (
+                    <React.Fragment key="RowEditFragment">
+                        {props.children}
+                    </React.Fragment>
+                );
             }
         }
     }
