@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import PropTypes from "prop-types";
 import { AdditionalColumnContext } from "../Utilities/TagsContext";
 import { checkInnerCells } from "../Utilities/TagUtilities";
