@@ -47,7 +47,7 @@ const ColumnItem = ({
     return (
         <div style={{ opacity }}>
             <div className="column__reorder">
-                <div
+                <div data-testid="columnItem"
                     ref={(node) => drag(drop(node))}
                     style={{ cursor: "move" }}
                     className="column_drag"
