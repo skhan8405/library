@@ -63,7 +63,7 @@ const ColumnItem = ({
                               return (
                                   <div
                                       className="column__wrap"
-                                      key={cell.Header}
+                                      key={`${cell.Header}_${cell.accessor}`}
                                   >
                                       <div className="column__checkbox">
                                           <input
