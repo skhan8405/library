@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faStar } from "@fortawesome/free-solid-svg-icons";
+import { ReactComponent as IconCheck } from "../images/icon-check.svg";
 
 const SavedFilters = (props) => {
     const [showFilter, setShowFilter] = useState(false);
@@ -40,7 +39,9 @@ const SavedFilters = (props) => {
         return (
             <div key={index}>
                 <div className="alignLeft">
-                    <FontAwesomeIcon style={{ marginLeft: "-54px" }} icon={faCheck}></FontAwesomeIcon>
+                    <div>
+                        <IconCheck />
+                    </div>
                     <div
                         style={{ marginLeft: "15px" }}
                         onClick={(e) => {

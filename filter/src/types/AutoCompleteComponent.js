@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-// import "react-bootstrap-typeahead/css/Typeahead.css";
 import { Multiselect } from "multiselect-react-dropdown";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 import { Form } from "react-bootstrap";
 
 export default function AutoComplete(props) {
@@ -50,13 +48,13 @@ export default function AutoComplete(props) {
                                 props.handleAutoCompleteEnabled(item);
                             }}
                         />
-                        <FontAwesomeIcon
-                            icon={faTimes}
-                            type="button"
+                        <div
                             onClick={(e) => {
                                 handleClose(item);
                             }}
-                        />
+                        >
+                            <IconTimes />
+                        </div>
                     </div>
                 </div>
                 <div className="displayFlex multiselect">

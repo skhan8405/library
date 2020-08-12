@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
+import { ReactComponent as IconLeftAlign } from "../images/icon-leftAlign.svg";
 import SavedFilters from "./SavedFilters";
 
 let chips, chipCount;
@@ -10,7 +9,10 @@ const MainFilterPanel = (props) => {
     const [countShow, setCountShow] = useState("none");
     useEffect(() => {
         setChipArray(props.applyFilterChip.applyFilter);
-        if (props.applyFilterChip.applyFilter && props.applyFilterChip.applyFilter.length > 0) {
+        if (
+            props.applyFilterChip.applyFilter &&
+            props.applyFilterChip.applyFilter.length > 0
+        ) {
             setCountShow("");
         } else {
             setCountShow("none");
@@ -87,7 +89,9 @@ const MainFilterPanel = (props) => {
         <div className="neo-header">
             <div className="displayFlex">
                 <div className="alignLeft">
-                    <FontAwesomeIcon icon={faAlignLeft} onClick={handleListFilter} />
+                    <div className="iconLeft" onClick={handleListFilter}>
+                        <IconLeftAlign />
+                    </div>
                     <SavedFilters
                         onSelectSavedFilter={props.onSelectSavedFilter}
                         showFilter={listFilter}
@@ -100,7 +104,10 @@ const MainFilterPanel = (props) => {
             </div>
             <div className="secondList">
                 <div className="displayFlex">
-                    <span style={{ display: countShow }} className="listContent">
+                    <span
+                        style={{ display: countShow }}
+                        className="listContent"
+                    >
                         count:{chipCount}
                     </span>
                     {chips}
