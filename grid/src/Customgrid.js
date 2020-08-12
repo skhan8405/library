@@ -359,6 +359,7 @@ const Customgrid = memo((props) => {
                     <div
                         className="utilities-icon keyword-search"
                         role="presentation"
+                        data-testid="toggleColumnFilter"
                         onClick={toggleColumnFilter}
                     >
                         <i>
@@ -368,6 +369,7 @@ const Customgrid = memo((props) => {
                     <div
                         className="utilities-icon bulk-select"
                         role="presentation"
+                        data-testid="bulkSelector"
                         onClick={bulkSelector}
                     >
                         <i>
@@ -377,6 +379,7 @@ const Customgrid = memo((props) => {
                     <div
                         className="utilities-icon bulk-select"
                         role="presentation"
+                        data-testid="toggleGroupSortOverLay"
                         onClick={toggleGroupSortOverLay}
                     >
                         <i>
@@ -386,6 +389,7 @@ const Customgrid = memo((props) => {
                     <div
                         className="utilities-icon manage-columns"
                         role="presentation"
+                        data-testid="toggleManageColumns"
                         onClick={toggleManageColumns}
                     >
                         <i>
@@ -395,6 +399,7 @@ const Customgrid = memo((props) => {
                     <div
                         className="utilities-icon manage-columns"
                         role="presentation"
+                        data-testid="toggleExportDataOverlay"
                         onClick={toggleExportDataOverlay}
                     >
                         <i>
