@@ -36,12 +36,14 @@ export default function FieldComponent(props) {
                             id={item.name}
                             label=""
                             defaultChecked={item.enabled}
+                            data-testid="handleDateTimeEnabled-check"
                             onChange={() => {
                                 props.handleDateTimeEnabled(item);
                             }}
                         />
                         <div
                             role="presentation"
+                            data-testid="deleteDateTimeElement-click"
                             onClick={() => {
                                 handleClose(item);
                             }}
@@ -66,6 +68,7 @@ export default function FieldComponent(props) {
                                         type="datetime-local"
                                         value={field.value}
                                         className={field.name}
+                                        data-testid="createDateTimeArray-input"
                                         onChange={(e) => {
                                             props.createDateTimeArray(
                                                 item,
