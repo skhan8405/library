@@ -2,31 +2,49 @@
 import React from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { screen } from "@testing-library/dom";
 import ExportData from "../../../../src/Overlays/exportdata/index";
 
 describe("Export Data unit test", () => {
+    HTMLCanvasElement.prototype.getContext = () => {
+        // return whatever getContext has to return
+        return [];
+    };
     global.URL.createObjectURL = jest.fn();
     const mocktoggleExportDataOverlay = jest.fn();
-    const mockAdditionalColumn = [
-        {
-            Header: "Remarks",
-            innerCells: [
-                {
-                    Header: "Remarks",
-                    accessor: "remarks"
-                }
-            ],
-            columnId: "ExpandColumn",
-            displayInExpandedRegion: true,
-            originalInnerCells: [
-                {
-                    Header: "Remarks",
-                    accessor: "remarks"
-                }
-            ]
-        }
-    ];
+    const mockAdditionalColumn = {
+        Header: "Remarks",
+        innerCells: [
+            {
+                Header: "Remarks",
+                accessor: "remarks"
+            },
+            {
+                Header: "ULD Positions",
+                accessor: "uldPositions"
+            },
+            {
+                Header: "Flight",
+                accessor: "flight"
+            }
+        ],
+        columnId: "ExpandColumn",
+        displayInExpandedRegion: true,
+        originalInnerCells: [
+            {
+                Header: "Remarks",
+                accessor: "remarks"
+            },
+            {
+                Header: "ULD Positions",
+                accessor: "uldPositions"
+            },
+            {
+                Header: "Flight",
+                accessor: "flight"
+            }
+        ]
+    };
+
     const mockColumns = [
         {
             Header: "Id",
@@ -61,6 +79,34 @@ describe("Export Data unit test", () => {
                 {
                     Header: "Date",
                     accessor: "date"
+                }
+            ]
+        },
+        {
+            Header: "ULD Positions",
+            accessor: "uldPositions",
+            width: 120,
+            innerCells: [
+                {
+                    Header: "Position",
+                    accessor: "position"
+                },
+                {
+                    Header: "Value",
+                    accessor: "value"
+                }
+            ],
+            disableSortBy: true,
+            columnId: "column_6",
+            displayInExpandedRegion: false,
+            originalInnerCells: [
+                {
+                    Header: "Position",
+                    accessor: "position"
+                },
+                {
+                    Header: "Value",
+                    accessor: "value"
                 }
             ]
         },
@@ -110,6 +156,34 @@ describe("Export Data unit test", () => {
             ]
         },
         {
+            Header: "ULD Positions",
+            accessor: "uldPositions",
+            width: 120,
+            innerCells: [
+                {
+                    Header: "Position",
+                    accessor: "position"
+                },
+                {
+                    Header: "Value",
+                    accessor: "value"
+                }
+            ],
+            disableSortBy: true,
+            columnId: "column_6",
+            displayInExpandedRegion: false,
+            originalInnerCells: [
+                {
+                    Header: "Position",
+                    accessor: "position"
+                },
+                {
+                    Header: "Value",
+                    accessor: "value"
+                }
+            ]
+        },
+        {
             Header: "SR",
             accessor: "sr",
             width: 90,
@@ -126,6 +200,24 @@ describe("Export Data unit test", () => {
                     flightno: "XX2225",
                     date: "31-Aug-2016"
                 },
+                uldPositions: [
+                    {
+                        position: "L3",
+                        value: "7/6"
+                    },
+                    {
+                        position: "Q2",
+                        value: "5/1"
+                    },
+                    {
+                        position: "L8",
+                        value: "5/9"
+                    },
+                    {
+                        position: "Q7",
+                        value: "1/9"
+                    }
+                ],
                 sr: "74/ AWBs",
                 remarks: "Enim aute magna ipsum magna"
             },
@@ -138,6 +230,24 @@ describe("Export Data unit test", () => {
                     flightno: "XX2225",
                     date: "31-Aug-2016"
                 },
+                uldPositions: [
+                    {
+                        position: "L3",
+                        value: "7/6"
+                    },
+                    {
+                        position: "Q2",
+                        value: "5/1"
+                    },
+                    {
+                        position: "L8",
+                        value: "5/9"
+                    },
+                    {
+                        position: "Q7",
+                        value: "1/9"
+                    }
+                ],
                 sr: "74/ AWBs",
                 remarks: "Enim aute magna ipsum magna"
             },
@@ -155,6 +265,24 @@ describe("Export Data unit test", () => {
                     flightno: "XX6983",
                     date: "23-May-2016"
                 },
+                uldPositions: [
+                    {
+                        position: "L3",
+                        value: "7/6"
+                    },
+                    {
+                        position: "Q2",
+                        value: "5/1"
+                    },
+                    {
+                        position: "L8",
+                        value: "5/9"
+                    },
+                    {
+                        position: "Q7",
+                        value: "1/9"
+                    }
+                ],
                 sr: "84/ AWBs",
                 remarks: "Enim aute magna ipsum magna"
             },
@@ -167,6 +295,24 @@ describe("Export Data unit test", () => {
                     flightno: "XX6983",
                     date: "23-May-2016"
                 },
+                uldPositions: [
+                    {
+                        position: "L3",
+                        value: "7/6"
+                    },
+                    {
+                        position: "Q2",
+                        value: "5/1"
+                    },
+                    {
+                        position: "L8",
+                        value: "5/9"
+                    },
+                    {
+                        position: "Q7",
+                        value: "1/9"
+                    }
+                ],
                 sr: "84/ AWBs",
                 remarks: "Enim aute magna ipsum magna"
             },
@@ -198,7 +344,6 @@ describe("Export Data unit test", () => {
             />,
             container
         );
-        screen.debug();
         expect(getByText("Export As")).toBeInTheDocument();
     });
     it("should render empty div with exportOverlay false", () => {
@@ -215,7 +360,6 @@ describe("Export Data unit test", () => {
             />,
             container
         );
-        screen.debug();
         expect(component).toBeDefined();
     });
     it("should check columns", () => {
@@ -236,6 +380,8 @@ describe("Export Data unit test", () => {
         expect(selectAllCheck.checked).toEqual(true);
         fireEvent.click(selectAllCheck);
         expect(selectAllCheck.checked).toEqual(false);
+        fireEvent.click(selectAllCheck);
+        expect(selectAllCheck.checked).toEqual(true);
     });
     it("should check all file types and export data", () => {
         const { getByTestId } = render(
@@ -358,6 +504,9 @@ describe("Export Data unit test", () => {
         const filterList = getByTestId("search");
         expect(filterList.value).toBe("");
         fireEvent.change(filterList, { target: { value: "id" } });
+        expect(filterList.value).toBe("id");
+        fireEvent.change(filterList, { target: { value: "" } });
+        expect(filterList.value).toBe("");
     });
     it("should select single column", () => {
         const { getByTestId } = render(
@@ -379,7 +528,6 @@ describe("Export Data unit test", () => {
         const singleColumn = getByTestId("SR");
         fireEvent.click(singleColumn);
         expect(singleColumn.checked).toEqual(true);
-        screen.debug();
         const selectCsv = getByTestId("chk_csv_test");
         fireEvent.click(selectCsv);
         expect(selectCsv.checked).toEqual(true);
