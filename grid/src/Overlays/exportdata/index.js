@@ -5,10 +5,10 @@ import JsPdf from "jspdf";
 import "jspdf-autotable";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
-import IconCsv from "../../Images/icon-csv.svg";
-import IconExcel from "../../Images/icon-excel.svg";
-import IconPdf from "../../Images/icon-pdf.svg";
-import IconClose from "../../Images/icon-close.svg";
+import { ReactComponent as IconCsv } from "../../Images/icon-csv.svg";
+import { ReactComponent as IconExcel } from "../../Images/icon-excel.svg";
+import { ReactComponent as IconPdf } from "../../Images/icon-pdf.svg";
+import { ReactComponent as IconClose } from "../../Images/icon-close.svg";
 
 const ExportData = memo((props) => {
     const {
@@ -397,10 +397,7 @@ const ExportData = memo((props) => {
                                         aria-hidden="true"
                                         onClick={toggleExportDataOverlay}
                                     >
-                                        <img
-                                            src={IconClose}
-                                            alt="Export Overlay Close Icon"
-                                        />
+                                        <IconClose />
                                     </i>
                                 </div>
                             </div>
@@ -420,10 +417,7 @@ const ExportData = memo((props) => {
                                     </div>
                                     <div className="export__file">
                                         <i>
-                                            <img
-                                                src={IconPdf}
-                                                alt="PDF Export Icon"
-                                            />
+                                            <IconPdf />
                                         </i>
                                         <strong>PDF</strong>
                                     </div>
@@ -442,10 +436,7 @@ const ExportData = memo((props) => {
                                     </div>
                                     <div className="export__file">
                                         <i>
-                                            <img
-                                                src={IconExcel}
-                                                alt="Excel Export Icon"
-                                            />
+                                            <IconExcel />
                                         </i>
                                         <strong>Excel</strong>
                                     </div>
@@ -464,10 +455,7 @@ const ExportData = memo((props) => {
                                     </div>
                                     <div className="export__file">
                                         <i>
-                                            <img
-                                                src={IconCsv}
-                                                alt="CSV Export Icon"
-                                            />
+                                            <IconCsv />
                                         </i>
                                         <strong>CSV</strong>
                                     </div>
