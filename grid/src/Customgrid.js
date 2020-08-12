@@ -373,7 +373,7 @@ const Customgrid = memo((props) => {
                         </i>
                     </div>
                     <div
-                        className="utilities-icon bulk-select"
+                        className="utilities-icon group-sort"
                         role="presentation"
                         onClick={toggleGroupSortOverLay}
                     >
@@ -391,7 +391,7 @@ const Customgrid = memo((props) => {
                         </i>
                     </div>
                     <div
-                        className="utilities-icon manage-columns"
+                        className="utilities-icon export-data"
                         role="presentation"
                         onClick={toggleExportDataOverlay}
                     >
