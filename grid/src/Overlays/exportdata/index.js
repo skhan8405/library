@@ -335,6 +335,7 @@ const ExportData = memo((props) => {
                                 <div>
                                     <input
                                         type="text"
+                                        data-testid="search"
                                         placeholder="Search column"
                                         className="custom__ctrl"
                                         onChange={filterColumnsList}
@@ -345,6 +346,7 @@ const ExportData = memo((props) => {
                                         <input
                                             type="checkbox"
                                             value="Select All"
+                                            data-testid="select-all-checkbox"
                                             checked={isCheckboxSelected(
                                                 "Select All"
                                             )}
@@ -364,6 +366,7 @@ const ExportData = memo((props) => {
                                             <div className="export__checkbox">
                                                 <input
                                                     type="checkbox"
+                                                    data-testid={`${column.Header}`}
                                                     value={column.Header}
                                                     checked={isCheckboxSelected(
                                                         column.Header
@@ -400,6 +403,7 @@ const ExportData = memo((props) => {
                                         <input
                                             type="checkbox"
                                             id="chk_pdf"
+                                            data-testid="chk_pdf_test"
                                             value="pdf"
                                             checked={downloadTypes.includes(
                                                 "pdf"
@@ -419,6 +423,7 @@ const ExportData = memo((props) => {
                                         <input
                                             type="checkbox"
                                             id="chk_excel"
+                                            data-testid="chk_excel_test"
                                             value="excel"
                                             checked={downloadTypes.includes(
                                                 "excel"
@@ -438,6 +443,7 @@ const ExportData = memo((props) => {
                                         <input
                                             type="checkbox"
                                             id="chk_csv"
+                                            data-testid="chk_csv_test"
                                             value="csv"
                                             checked={downloadTypes.includes(
                                                 "csv"
@@ -469,6 +475,7 @@ const ExportData = memo((props) => {
                                 <div className="export__btns">
                                     <button
                                         type="button"
+                                        data-testid="cancel_button"
                                         className="btns"
                                         onClick={toggleExportDataOverlay}
                                     >
@@ -476,6 +483,7 @@ const ExportData = memo((props) => {
                                     </button>
                                     <button
                                         type="button"
+                                        data-testid="export_button"
                                         className="btns btns__save"
                                         onClick={exportRowData}
                                     >
