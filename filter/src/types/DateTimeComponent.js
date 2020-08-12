@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 import { Form } from "react-bootstrap";
 
 export default function FieldComponent(props) {
@@ -38,20 +37,22 @@ export default function FieldComponent(props) {
                                 props.handleDateTimeEnabled(item);
                             }}
                         />
-
-                        <FontAwesomeIcon
-                            className="fontIcons"
-                            icon={faTimes}
+                        <div
                             onClick={(e) => {
                                 handleClose(item);
                             }}
-                        />
+                        >
+                            <IconTimes />
+                        </div>
                     </div>
                 </div>
                 {item.field.map((field, index) => {
                     return (
                         <div key={`${index}-${field.name}`}>
-                            <div className="displayFlex" key={`${index},${field.name}`}>
+                            <div
+                                className="displayFlex"
+                                key={`${index},${field.name}`}
+                            >
                                 <Form.Text>{field.column}</Form.Text>
                             </div>
                             <div className="filter__split" key={index}>
@@ -62,7 +63,11 @@ export default function FieldComponent(props) {
                                         value={field.value}
                                         className={field.name}
                                         onChange={(e) => {
-                                            props.createDateTimeArray(item, field.column, e.target.value);
+                                            props.createDateTimeArray(
+                                                item,
+                                                field.column,
+                                                e.target.value
+                                            );
                                         }}
                                     />
                                     <span className="date-button">
