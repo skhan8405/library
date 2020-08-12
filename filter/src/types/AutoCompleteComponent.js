@@ -1,7 +1,10 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React, { useState, useEffect } from "react";
 import { Multiselect } from "multiselect-react-dropdown";
-import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 import { Form } from "react-bootstrap";
+import PropTypes from "prop-types";
+import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 
 export default function AutoComplete(props) {
     const [autoCompleteArr, setAutoAcompleteArr] = useState([]);
@@ -24,7 +27,7 @@ export default function AutoComplete(props) {
     const onSelect = (selectedList, selectedItem, item) => {
         props.createAutoCompleteArray(item, selectedList);
     };
-    let autoCompleteDiv = autoCompleteArr.map((item, index) => {
+    const autoCompleteDiv = autoCompleteArr.map((item, index) => {
         let validationClass = "";
         if (item.validated === false) {
             validationClass = "text-danger";
@@ -44,12 +47,13 @@ export default function AutoComplete(props) {
                             className={item.type.concat(item.name)}
                             id={item.name.concat(item.type)}
                             checked={item.enabled}
-                            onChange={(e) => {
+                            onChange={() => {
                                 props.handleAutoCompleteEnabled(item);
                             }}
                         />
                         <div
-                            onClick={(e) => {
+                            role="presentation"
+                            onClick={() => {
                                 handleClose(item);
                             }}
                         >
@@ -79,3 +83,10 @@ export default function AutoComplete(props) {
     });
     return <div>{autoCompleteDiv}</div>;
 }
+
+AutoComplete.propTypes = {
+    autoCompleteArray: PropTypes.any,
+    deleteAutoCompleteElement: PropTypes.any,
+    createAutoCompleteArray: PropTypes.any,
+    handleAutoCompleteEnabled: PropTypes.any
+};

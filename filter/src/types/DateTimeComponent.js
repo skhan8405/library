@@ -1,6 +1,9 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React, { useState, useEffect } from "react";
-import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 import { Form } from "react-bootstrap";
+import PropTypes from "prop-types";
+import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 
 export default function FieldComponent(props) {
     const [fieldComponentArr, setFieldComponentArr] = useState([]);
@@ -14,7 +17,7 @@ export default function FieldComponent(props) {
     const handleClose = (item) => {
         props.deleteDateTimeElement(item);
     };
-    let fieldComponentDiv = fieldComponentArr.map((item, index) => {
+    const fieldComponentDiv = fieldComponentArr.map((item, index) => {
         let validationClass = "";
         if (item.validated === false) {
             validationClass = "text-danger";
@@ -33,12 +36,13 @@ export default function FieldComponent(props) {
                             id={item.name}
                             label=""
                             defaultChecked={item.enabled}
-                            onChange={(e) => {
+                            onChange={() => {
                                 props.handleDateTimeEnabled(item);
                             }}
                         />
                         <div
-                            onClick={(e) => {
+                            role="presentation"
+                            onClick={() => {
                                 handleClose(item);
                             }}
                         >
@@ -70,9 +74,9 @@ export default function FieldComponent(props) {
                                             );
                                         }}
                                     />
-                                    <span className="date-button">
-                                        <button type="button"></button>
-                                    </span>
+                                    {/* <span className="date-button">
+                                        <button type="button" />
+                                    </span> */}
                                 </div>
                             </div>
                         </div>
@@ -86,3 +90,10 @@ export default function FieldComponent(props) {
     });
     return <div>{fieldComponentDiv}</div>;
 }
+
+FieldComponent.propTypes = {
+    dateTimesArray: PropTypes.any,
+    deleteDateTimeElement: PropTypes.any,
+    handleDateTimeEnabled: PropTypes.any,
+    createDateTimeArray: PropTypes.any
+};
