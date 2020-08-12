@@ -5,10 +5,10 @@ import "jspdf-autotable";
 import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import PropTypes from "prop-types";
-import IconCsv from "./Images/icon-csv.svg";
-import IconExcel from "./Images/icon-excel.svg";
-import IconPdf from "./Images/icon-pdf.svg";
-import IconClose from "./Images/icon-close.svg";
+import IconCsv from "../../Images/icon-csv.svg";
+import IconExcel from "../../Images/icon-excel.svg";
+import IconPdf from "../../Images/icon-pdf.svg";
+import IconClose from "../../Images/icon-close.svg";
 
 let downLaodFileType = [];
 class ExportData extends React.Component {

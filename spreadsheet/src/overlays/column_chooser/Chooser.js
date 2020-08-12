@@ -9,8 +9,8 @@ import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import PropTypes from "prop-types";
 import ColumnsList from "./columnsList";
-import IconClose from "./Images/icon-close.svg";
-import IconJustify from "./Images/icon-align-justify.svg";
+import IconClose from "../../Images/icon-close.svg";
+import IconJustify from "../../Images/icon-align-justify.svg";
 
 class ColumnReordering extends React.Component {
     constructor(props) {

@@ -6,10 +6,10 @@ import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import PropTypes from "prop-types";
 import SortingList from "./SortingList";
-import IconClose from "./Images/icon-close.svg";
-import IconNav from "./Images/icon-nav.svg";
-import SortCopy from "./Images/SortCopy.svg";
-import SortDelete from "./Images/SortDelete.svg";
+import IconClose from "../../Images/icon-close.svg";
+import IconNav from "../../Images/icon-nav.svg";
+import SortCopy from "../../Images/SortCopy.svg";
+import SortDelete from "../../Images/SortDelete.svg";
 
 class App extends React.Component {
     constructor(props) {

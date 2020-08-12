@@ -2,7 +2,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { useState, useEffect } from "react";
 import { SEARCH_NOT_FOUNT_ERROR } from "./ErrorConstants";
-import IconClose from "./Images/icon-close.svg";
+import IconClose from "../Images/icon-close.svg";
 
 const ErrorMessage = (props) => {
     const [status, setStatus] = useState(props.status);

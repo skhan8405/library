@@ -15,13 +15,13 @@ import ErrorMessage from "./common/ErrorMessage";
 import ColumnReordering from "./overlays/column_chooser/Chooser";
 import Sorting from "./overlays/sorting/Sorting";
 import ExportData from "./overlays/export_data/ExportData";
-// eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 import IconColumns from "./Images/icon-columns.svg";
 import IconShare from "./Images/icon-share.svg";
 import IconGroupSort from "./Images/icon-group-sort.svg";
 import IconFilter from "./Images/icon-filter.svg";
 import IconSearch from "./Images/icon-search.svg";
+// eslint-disable-next-line import/no-unresolved
+import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const { DropDownEditor } = Editors;
 const selectors = Data.Selectors;
