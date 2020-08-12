@@ -285,7 +285,7 @@ class ExportData extends React.Component {
                         <div className="export__as">Export as</div>
                         <div className="export__body">
                             <div className="export__reorder">
-                                <div className="">
+                                <div className="check-wrap">
                                     <input
                                         type="checkbox"
                                         name="pdf"
@@ -317,7 +317,7 @@ class ExportData extends React.Component {
                                 </div>
                             </div>
                             <div className="export__reorder">
-                                <div className="">
+                                <div className="check-wrap">
                                     <input
                                         type="checkbox"
                                         name="csv"
