@@ -1,6 +1,9 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React, { useEffect, useState } from "react";
-import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 import { Form } from "react-bootstrap";
+import PropTypes from "prop-types";
+import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 
 export default function TextComponents(props) {
     const [textComponentArr, setTextComponentArr] = useState([]);
@@ -8,7 +11,7 @@ export default function TextComponents(props) {
         setTextComponentArr(props.textComponentsArray);
     }, [props.textComponentsArray]);
 
-    let textComponentDiv = textComponentArr.map((item, index) => {
+    const textComponentDiv = textComponentArr.map((item, index) => {
         let validationClass = "";
         if (item.validated === false) {
             validationClass = "text-danger";
@@ -26,12 +29,13 @@ export default function TextComponents(props) {
                                 label=""
                                 id={item.name}
                                 checked={item.enabled}
-                                onChange={(e) => {
+                                onChange={() => {
                                     props.handleTextComponentEnabled(item);
                                 }}
-                            ></Form.Check>
+                            />
                             <div
-                                onClick={(e) => {
+                                role="presentation"
+                                onClick={() => {
                                     props.deleteTextComponentElement(item);
                                 }}
                             >
@@ -52,7 +56,7 @@ export default function TextComponents(props) {
                                     e.target.value
                                 );
                             }}
-                        ></input>
+                        />
                     </div>
                     <span id="fieldWarning" className={validationClass}>
                         {item.warning}
@@ -64,3 +68,10 @@ export default function TextComponents(props) {
 
     return <div>{textComponentDiv}</div>;
 }
+
+TextComponents.propTypes = {
+    textComponentsArray: PropTypes.any,
+    handleTextComponentEnabled: PropTypes.any,
+    deleteTextComponentElement: PropTypes.any,
+    createTextComponentsArray: PropTypes.any
+};

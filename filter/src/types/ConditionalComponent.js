@@ -1,13 +1,16 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React, { useState, useEffect } from "react";
-import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 import { Form } from "react-bootstrap";
+import PropTypes from "prop-types";
+import { ReactComponent as IconTimes } from "../images/icon-close.svg";
 
 export default function Condition(props) {
     const [conditionArr, setConditionArr] = useState([]);
     useEffect(() => {
         setConditionArr(props.conditionsArray);
     }, [props.conditionsArray]);
-    let conditionalDiv = conditionArr.map((item, index) => {
+    const conditionalDiv = conditionArr.map((item, index) => {
         let validationClass = "";
         if (item.validated === false) {
             validationClass = "text-danger";
@@ -26,12 +29,13 @@ export default function Condition(props) {
                             id={item.name}
                             label=""
                             checked={item.enabled}
-                            onChange={(e) => {
+                            onChange={() => {
                                 props.handleCondionalEnabled(item);
                             }}
                         />
                         <div
-                            onClick={(e) => {
+                            role="presentation"
+                            onClick={() => {
                                 props.deleteConditionalElement(item);
                             }}
                         >
@@ -86,3 +90,10 @@ export default function Condition(props) {
     });
     return <div>{conditionalDiv}</div>;
 }
+
+Condition.propTypes = {
+    conditionsArray: PropTypes.any,
+    handleCondionalEnabled: PropTypes.any,
+    deleteConditionalElement: PropTypes.any,
+    createConditionalArray: PropTypes.any
+};

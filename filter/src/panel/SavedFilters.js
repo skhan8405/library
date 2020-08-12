@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
 import { ReactComponent as IconCheck } from "../images/icon-check.svg";
 
 const SavedFilters = (props) => {
     const [showFilter, setShowFilter] = useState(false);
-    let listRef = useRef();
+    const listRef = useRef();
     useEffect(() => {
-        let listHandler = (event) => {
+        const listHandler = (event) => {
             if (listRef.current && !listRef.current.contains(event.target)) {
                 setShowFilter(false);
                 props.handleListFilter();
@@ -19,22 +20,10 @@ const SavedFilters = (props) => {
         };
     }, [props]);
 
-    let name = "";
-    let keyValue = "";
+    const keyValue = "";
     let savedFilters = localStorage.getItem("savedFilters");
     savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-    const addToFavourite = (item) => {
-        if (item.color === "#bcbdd1") {
-            item.color = "#2680e8";
-        } else {
-            item.color = "#bcbdd1";
-        }
-        console.log(savedFilters);
-        savedFilters.map((filterArray, index) => {
-            console.log(filterArray.color);
-        });
-        props.addingToFavourite(item);
-    };
+
     const savedFilter = savedFilters.map((filterArray, index) => {
         return (
             <div key={index}>
@@ -43,9 +32,10 @@ const SavedFilters = (props) => {
                         <IconCheck />
                     </div>
                     <div
+                        role="presentation"
                         style={{ marginLeft: "15px" }}
-                        onClick={(e) => {
-                            //below two methods are required for closing the savedFilter list popUp
+                        onClick={() => {
+                            // below two methods are required for closing the savedFilter list popUp
                             setShowFilter(false);
                             props.handleListFilter();
                             props.addSavedFilters(filterArray);
@@ -68,9 +58,14 @@ const SavedFilters = (props) => {
                 </div>
             </div>
         );
-    } else {
-        return <div></div>;
     }
+    return <div />;
+};
+
+SavedFilters.propTypes = {
+    handleListFilter: PropTypes.any,
+    showFilter: PropTypes.any,
+    addSavedFilters: PropTypes.any
 };
 
 export default SavedFilters;

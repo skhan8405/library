@@ -1,5 +1,8 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
+import PropTypes from "prop-types";
 import AutoComplete from "../types/AutoCompleteComponent";
 import FieldComponent from "../types/DateTimeComponent";
 import Condition from "../types/ConditionalComponent";
@@ -12,7 +15,10 @@ const RightDrawer = (props) => {
     const [saveFilterWarning, setSaveFilterWarning] = useState("");
     const [warningLabel, setWarningLabel] = useState("");
     const [applyFilterWarning, setApplyFilterWarning] = useState("");
-    const [applyfilterWarningClassName, setApplyFilterWariningClassname] = useState("");
+    const [
+        applyfilterWarningClassName,
+        setApplyFilterWariningClassname
+    ] = useState("");
     const [recentFilterShow, setRecentFilterShow] = useState("none");
     const [filterShow, setFilterShow] = useState("");
     useEffect(() => {
@@ -23,7 +29,11 @@ const RightDrawer = (props) => {
         setWarningLabel(props.saveWarningClassName);
         setSaveFilterWarning(props.saveWarningLabel);
         setShowSavePopup(props.showSavePopUp);
-    }, [props.saveWarningClassName, props.saveWarningLabel, props.showSavePopUp]);
+    }, [
+        props.saveWarningClassName,
+        props.saveWarningLabel,
+        props.showSavePopUp
+    ]);
     useEffect(() => {
         setRecentFilterShow(props.recentFilterShow);
         setFilterShow(props.filterShow);
@@ -47,14 +57,18 @@ const RightDrawer = (props) => {
     let savedFilters = localStorage.getItem("savedFilters");
     savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
     if (savedFilters.length > 2) {
-        savedFilters = savedFilters.slice(savedFilters.length - 2, savedFilters.length);
+        savedFilters = savedFilters.slice(
+            savedFilters.length - 2,
+            savedFilters.length
+        );
     }
     const recent = savedFilters.map((filterArray, index) => {
         return (
             <div
+                role="presentation"
                 className="recentFilters"
                 key={index}
-                onClick={(e) => {
+                onClick={() => {
                     props.addSavedFilters(filterArray);
                 }}
             >
@@ -63,8 +77,11 @@ const RightDrawer = (props) => {
         );
     });
     return (
-        <React.Fragment>
-            <div style={{ display: recentFilterShow }} className="filter__content">
+        <div>
+            <div
+                style={{ display: recentFilterShow }}
+                className="filter__content"
+            >
                 <div>Recent Filters</div>
                 {recent}
             </div>
@@ -82,8 +99,12 @@ const RightDrawer = (props) => {
                         dataType={props.dataType}
                         options={props.options}
                         autoCompleteArray={props.autoCompleteArray}
-                        deleteAutoCompleteElement={props.deleteAutoCompleteElement}
-                        handleAutoCompleteEnabled={props.handleAutoCompleteEnabled}
+                        deleteAutoCompleteElement={
+                            props.deleteAutoCompleteElement
+                        }
+                        handleAutoCompleteEnabled={
+                            props.handleAutoCompleteEnabled
+                        }
                         createAutoCompleteArray={props.createAutoCompleteArray}
                     />
                     <FieldComponent
@@ -105,31 +126,49 @@ const RightDrawer = (props) => {
                         conditionsArray={props.conditionsArray}
                         handleCondionalEnabled={props.handleCondionalEnabled}
                         createConditionalArray={props.createConditionalArray}
-                        deleteConditionalElement={props.deleteConditionalElement}
+                        deleteConditionalElement={
+                            props.deleteConditionalElement
+                        }
                     />
                     <TextComponents
                         textComponentsArray={props.textComponentsArray}
-                        deleteTextComponentElement={props.deleteTextComponentElement}
-                        createTextComponentsArray={props.createTextComponentsArray}
-                        handleTextComponentEnabled={props.handleTextComponentEnabled}
+                        deleteTextComponentElement={
+                            props.deleteTextComponentElement
+                        }
+                        createTextComponentsArray={
+                            props.createTextComponentsArray
+                        }
+                        handleTextComponentEnabled={
+                            props.handleTextComponentEnabled
+                        }
                     />
                 </div>
                 <div className="filter__btn">
                     <div className="filter__save">
-                        <Button className="button-save" variant="" onClick={props.openShowSavePopUp}>
+                        <Button
+                            className="button-save"
+                            variant=""
+                            onClick={props.openShowSavePopUp}
+                        >
                             <SaveLogo />
                             <span>SAVE</span>
                         </Button>
                     </div>
                     <div className="btn-wrap">
-                        <span className={applyfilterWarningClassName}>{applyFilterWarning}</span>
-                        <Button variant="" className="reset" onClick={props.resetDrawer}>
+                        <span className={applyfilterWarningClassName}>
+                            {applyFilterWarning}
+                        </span>
+                        <Button
+                            variant=""
+                            className="reset"
+                            onClick={props.resetDrawer}
+                        >
                             Reset
                         </Button>
                         <Button
                             variant=""
                             className="applyFilter"
-                            onClick={(e) => {
+                            onClick={() => {
                                 props.applyFilter();
                                 props.deleteAutoCompleteElement({});
                                 props.deleteConditionalElement({});
@@ -140,23 +179,34 @@ const RightDrawer = (props) => {
                             Apply Filter
                         </Button>
                     </div>
-                    <div style={{ display: showSavePopup }} className="popup--save">
+                    <div
+                        style={{ display: showSavePopup }}
+                        className="popup--save"
+                    >
                         <h5>Save the Filter</h5>
-                        <span className={warningLabel}>{saveFilterWarning}</span>
+                        <span className={warningLabel}>
+                            {saveFilterWarning}
+                        </span>
                         <label>Saved Filter Name</label>
-                        <input className="txt" value={saveFilterName} onChange={(e) => registersaveFilterName(e)} />
+                        <input
+                            className="txt"
+                            value={saveFilterName}
+                            onChange={(e) => registersaveFilterName(e)}
+                        />
                         <div className="btn-wrap">
                             <button
+                                type="button"
                                 className="button"
-                                onClick={(e) => {
+                                onClick={() => {
                                     cancelSavePopup();
                                 }}
                             >
                                 Cancel
                             </button>
                             <button
+                                type="button"
                                 className="button"
-                                onClick={(e) => {
+                                onClick={() => {
                                     props.saveFilter(saveFilterName);
                                     // setSaveFilterName("");
                                 }}
@@ -167,8 +217,54 @@ const RightDrawer = (props) => {
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </div>
     );
+};
+
+RightDrawer.propTypes = {
+    emptyFilterWarning: PropTypes.any,
+    emptyFilterClassName: PropTypes.any,
+    saveWarningClassName: PropTypes.any,
+    saveWarningLabel: PropTypes.any,
+    showSavePopUp: PropTypes.any,
+    recentFilterShow: PropTypes.any,
+    filterShow: PropTypes.any,
+    addSavedFilters: PropTypes.any,
+    filterCount: PropTypes.any,
+    name: PropTypes.any,
+    type: PropTypes.any,
+    enabled: PropTypes.any,
+    dataType: PropTypes.any,
+    options: PropTypes.any,
+    autoCompleteArray: PropTypes.any,
+    deleteAutoCompleteElement: PropTypes.any,
+    handleAutoCompleteEnabled: PropTypes.any,
+    createAutoCompleteArray: PropTypes.any,
+    dateTimesArray: PropTypes.any,
+    deleteDateTimeElement: PropTypes.any,
+    handleDateTimeEnabled: PropTypes.any,
+    createDateTimeArray: PropTypes.any,
+    addToday: PropTypes.any,
+    addTomorrow: PropTypes.any,
+    addThisMonth: PropTypes.any,
+    addForteenDays: PropTypes.any,
+    addSevenDays: PropTypes.any,
+    addThisWeek: PropTypes.any,
+    lastDayChange: PropTypes.any,
+    nextDayChange: PropTypes.any,
+    conditionsArray: PropTypes.any,
+    handleCondionalEnabled: PropTypes.any,
+    createConditionalArray: PropTypes.any,
+    deleteConditionalElement: PropTypes.any,
+    textComponentsArray: PropTypes.any,
+    deleteTextComponentElement: PropTypes.any,
+    createTextComponentsArray: PropTypes.any,
+    handleTextComponentEnabled: PropTypes.any,
+    openShowSavePopUp: PropTypes.any,
+    resetDrawer: PropTypes.any,
+    applyFilter: PropTypes.any,
+    saveFilter: PropTypes.any,
+    addThirtyDays: PropTypes.any
 };
 
 export default RightDrawer;

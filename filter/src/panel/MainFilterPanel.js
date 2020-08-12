@@ -1,8 +1,12 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { ReactComponent as IconLeftAlign } from "../images/icon-leftAlign.svg";
 import SavedFilters from "./SavedFilters";
 
-let chips, chipCount;
+let chips;
+let chipCount;
 const MainFilterPanel = (props) => {
     const [listFilter, setListFilter] = useState(false);
     const [chipArray, setChipArray] = useState([]);
@@ -27,9 +31,10 @@ const MainFilterPanel = (props) => {
             if (item.type) {
                 return (
                     <div
+                        role="presentation"
                         className="listContent"
                         key={index}
-                        onClick={(e) => {
+                        onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
                     >
@@ -41,12 +46,14 @@ const MainFilterPanel = (props) => {
                         })}
                     </div>
                 );
-            } else if (item.condition) {
+            }
+            if (item.condition) {
                 return (
                     <div
+                        role="presentation"
                         className="listContent"
                         key={index}
-                        onClick={(e) => {
+                        onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
                     >
@@ -54,12 +61,14 @@ const MainFilterPanel = (props) => {
                         {item.amount}
                     </div>
                 );
-            } else if (item.fieldValue) {
+            }
+            if (item.fieldValue) {
                 return (
                     <div
+                        role="presentation"
                         className="listContent"
                         key={index}
-                        onClick={(e) => {
+                        onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
                     >
@@ -67,29 +76,33 @@ const MainFilterPanel = (props) => {
                         {item.value}
                     </div>
                 );
-            } else {
-                return (
-                    <div
-                        className="listContent"
-                        key={index}
-                        onClick={(e) => {
-                            props.addAppliedFilters(chipArray);
-                        }}
-                    >
-                        <span>{item.name}</span>:{item.value}
-                    </div>
-                );
             }
+            return (
+                <div
+                    role="presentation"
+                    className="listContent"
+                    key={index}
+                    onClick={() => {
+                        props.addAppliedFilters(chipArray);
+                    }}
+                >
+                    <span>{item.name}</span>:{item.value}
+                </div>
+            );
         });
     } else {
-        chips = <div></div>;
+        chips = <div />;
     }
 
     return (
         <div className="neo-header">
             <div className="displayFlex">
                 <div className="alignLeft">
-                    <div className="iconLeft" onClick={handleListFilter}>
+                    <div
+                        role="presentation"
+                        className="iconLeft"
+                        onClick={handleListFilter}
+                    >
                         <IconLeftAlign />
                     </div>
                     <SavedFilters
@@ -112,7 +125,8 @@ const MainFilterPanel = (props) => {
                     </span>
                     {chips}
                     <div
-                        onClick={(e) => {
+                        role="presentation"
+                        onClick={() => {
                             props.showDrawer();
                         }}
                         className="addFilter"
@@ -123,6 +137,15 @@ const MainFilterPanel = (props) => {
             </div>
         </div>
     );
+};
+
+MainFilterPanel.propTypes = {
+    applyFilterChip: PropTypes.any,
+    addAppliedFilters: PropTypes.any,
+    onSelectSavedFilter: PropTypes.any,
+    addSavedFilters: PropTypes.any,
+    addingToFavourite: PropTypes.any,
+    showDrawer: PropTypes.any
 };
 
 export default MainFilterPanel;
