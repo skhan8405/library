@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React from "react";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -79,7 +79,12 @@ describe("ColumnsList unit test", () => {
         );
         expect(getByText("Flight")).toBeInTheDocument();
     });
-    it("contains 2 columnItems inside ColumnList", () => {
+    it("should work drag and drop functionality", () => {
+        const createBubbledEvent = (type, props = {}) => {
+            const event = new Event(type, { bubbles: true });
+            Object.assign(event, props);
+            return event;
+        };
         const { getAllByTestId } = render(
             <DndProvider backend={MultiBackend} options={HTML5toTouch}>
                 <ColumnsList
@@ -91,7 +96,13 @@ describe("ColumnsList unit test", () => {
             </DndProvider>
         );
         expect(getAllByTestId("columnItem")).toHaveLength(2);
-        const item = getAllByTestId("columnItem")[0];
-        fireEvent.drag(item);
+        const startingNode = getAllByTestId("columnItem")[0];
+        const endingNode = getAllByTestId("columnItem")[1];
+        startingNode.dispatchEvent(
+            createBubbledEvent("dragstart", { clientX: 0, clientY: 0 })
+        );
+        endingNode.dispatchEvent(
+            createBubbledEvent("drop", { clientX: 0, clientY: 1 })
+        );
     });
 });
