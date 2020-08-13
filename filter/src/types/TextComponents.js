@@ -29,12 +29,14 @@ export default function TextComponents(props) {
                                 label=""
                                 id={item.name}
                                 checked={item.enabled}
+                                data-testid="handleTextComponentEnabled-check"
                                 onChange={() => {
                                     props.handleTextComponentEnabled(item);
                                 }}
                             />
                             <div
                                 role="presentation"
+                                data-testid="deleteTextComponentElement-button"
                                 onClick={() => {
                                     props.deleteTextComponentElement(item);
                                 }}
@@ -50,6 +52,7 @@ export default function TextComponents(props) {
                             type="text"
                             defaultValue={item.value}
                             className="form-control"
+                            data-testid="createTextComponentsArray-input"
                             onChange={(e) => {
                                 props.createTextComponentsArray(
                                     item,

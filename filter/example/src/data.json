@@ -130,43 +130,6 @@
       "validationMessage": "This field is required*"
     },
     {
-      "name": "Revenue",
-      "dataType": "Numeric",
-      "enabled": true,
-      "condition": [
-        {
-          "value": "equals"
-        },
-        {
-          "value": "not equals to"
-        },
-        {
-          "value": "less than"
-        },
-        {
-          "value": "greater than"
-        },
-        {
-          "value": "less or equal"
-        },
-        {
-          "value": "greater or equal"
-        },
-        {
-          "value": "contains"
-        },
-        {
-          "value": "does not match"
-        },
-        {
-          "value": "starts with"
-        }
-      ],
-      "types": [],
-      "field": [],
-      "validationMessage": "This field is required*"
-    },
-    {
       "name": "Yeild",
       "enabled": false,
       "dataType": "Text",

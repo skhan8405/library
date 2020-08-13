@@ -2,7 +2,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import RowEditOverLay from "../../../src/Functions/RowEditOverlay";
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/extend-expect";
 
 describe("render row edit overlay", () => {
     const rowdata = {
