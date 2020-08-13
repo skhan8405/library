@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-undef */
+
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom/extend-expect";
 
 import LeftDrawer from "../../../src/drawer/LeftDrawer";
-import userEvent from "@testing-library/user-event";
 
 describe("LeftDrawer component", () => {
     const filterData = {
@@ -576,15 +579,15 @@ describe("LeftDrawer component", () => {
             }
         ]
     };
-    const item = [
-        {
-            name: "Booking Profile",
-            dataType: "Text",
-            enabled: false,
-            validated: false,
-            warning: "This field is required*"
-        }
-    ];
+    // const item = [
+    //     {
+    //         name: "Booking Profile",
+    //         dataType: "Text",
+    //         enabled: false,
+    //         validated: false,
+    //         warning: "This field is required*"
+    //     }
+    // ];
 
     const fromLeftToRight = jest.fn();
     it("Should check LeftDrawer ", () => {
@@ -606,6 +609,7 @@ describe("LeftDrawer component", () => {
         const searchFilterHandlerElm = wrapper.getByTestId(
             "searchFilterHandler-input"
         );
+        // eslint-disable-next-line no-unused-expressions
         expect(searchFilterHandlerElm).toBeInTheDocument;
         userEvent.type(searchFilterHandlerElm, "Booking Profile");
         expect(searchFilterHandlerElm).toHaveLength;

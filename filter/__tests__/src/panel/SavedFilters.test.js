@@ -1,9 +1,9 @@
+/* eslint-disable no-undef */
+
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
-
 import { unmountComponentAtNode } from "react-dom";
-
 import SavedFilters from "../../../src/panel/SavedFilters";
 
 let container = null;
@@ -31,10 +31,6 @@ describe("Main Filter Panel component", () => {
 
     const handleListFilter = jest.fn();
     const addSavedFilters = jest.fn();
-    const addingToFavourite = jest.fn();
-    const setShowFilter = jest.fn();
-
-    let container;
     beforeEach(() => {
         // setup a DOM element as a render target
         container = document.createElement("div");
@@ -50,6 +46,7 @@ describe("Main Filter Panel component", () => {
     });
 
     it("Save Filter ", () => {
+        // eslint-disable-next-line no-unused-vars
         const { getByTestId } = render(
             <SavedFilters
                 showFilter={props.showFilter}

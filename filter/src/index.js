@@ -1,4 +1,7 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React, { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import RightDrawer from "./drawer/RightDrawer";
 import LeftDrawer from "./drawer/LeftDrawer";
 import MainFilterPanel from "./panel/MainFilterPanel";
@@ -86,12 +89,14 @@ export default function Filter(props) {
      * Method set the state which shows the drawer when on true condition
      */
     const showDrawer = () => {
+        // eslint-disable-next-line no-use-before-define
         setApplyFilter(true);
     };
     /**
      * Method set the state which closes the drawer when the state is in false condition
      */
     const closeDrawer = () => {
+        // eslint-disable-next-line no-use-before-define
         setApplyFilter(false);
     };
     /**
@@ -108,15 +113,16 @@ export default function Filter(props) {
         if (filterCount > 0) {
             setEmptyFilterClassName("");
             setEmptyFilterWarning("");
-            let applyFilter = {
+            // eslint-disable-next-line no-shadow
+            const applyFilter = {
                 applyFilterArray: []
             };
             let tempObj = { applyFilter: [] };
-            let obj = [];
+            const obj = [];
             if (autoCompletesValueArray.length > 0) {
                 autoCompletesValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
-                    obj.push(Object.assign({}, item));
+                    obj.push({ ...item });
                 });
                 applyFilter.applyFilterArray.push({
                     autoComplete: autoCompletesValueArray
@@ -125,7 +131,7 @@ export default function Filter(props) {
             if (dateTimesValueArray.length > 0) {
                 dateTimesValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
-                    obj.push(Object.assign({}, item));
+                    obj.push({ ...item });
                 });
                 applyFilter.applyFilterArray.push({
                     dateTime: dateTimesValueArray
@@ -134,7 +140,7 @@ export default function Filter(props) {
             if (conditionsValueArray.length > 0) {
                 conditionsValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
-                    obj.push(Object.assign({}, item));
+                    obj.push({ ...item });
                 });
                 applyFilter.applyFilterArray.push({
                     conditional: conditionsValueArray
@@ -143,7 +149,7 @@ export default function Filter(props) {
             if (textComponentsValueArray.length > 0) {
                 textComponentsValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
-                    obj.push(Object.assign({}, item));
+                    obj.push({ ...item });
                 });
                 applyFilter.applyFilterArray.push({
                     textComponent: textComponentsValueArray
@@ -151,8 +157,9 @@ export default function Filter(props) {
             }
             setApplyFilterChip(tempObj);
             obj.forEach((objec) => {
-                delete objec.dataType;
-                delete objec.enabled;
+                const item = objec; // Added for no-param-reassign lint errors
+                delete item.dataType;
+                delete item.enabled;
             });
             props.appliedFilters(obj);
             tempObj = {};
@@ -162,12 +169,146 @@ export default function Filter(props) {
             setEmptyFilterWarning("No Filter is being selected");
         }
     };
+
+    /**
+     * Method To delete the specific element from filter array upon clicking close
+     * @param {*} item is the specific filter element object
+     */
+    /* eslint-disable no-param-reassign */
+    const deleteAutoCompleteElement = (item) => {
+        filterData.filter.forEach((it) => {
+            it.types.forEach((tip) => {
+                if (tip.name === item.type && item.name === it.name) {
+                    tip.weight = 400;
+                }
+            });
+        });
+        let autoCompleteArray = [...autoCompletesArray];
+        const index = autoCompleteArray.findIndex(
+            (x) => x.name === item.name && x.type === item.type
+        );
+        if (index !== -1) {
+            autoCompleteArray.splice(index, 1);
+        } else {
+            autoCompleteArray = [];
+        }
+        setAutoCompletesArray(autoCompleteArray);
+        autoCompleteArray.forEach((aut) => {
+            filterData.filter.forEach((fit) => {
+                if (fit.types && fit.name !== aut.name && fit.weight === 700) {
+                    fit.weight = 400;
+                }
+            });
+        });
+    };
+
+    /**
+     * Method To delete the specific element from filter array upon clicking close
+     * @param {*} item is the specific filter element object
+     */
+    const deleteConditionalElement = (item) => {
+        filterData.filter.forEach((it) => {
+            // Added for no-param-reassign lint errors
+            const deleteItem = it;
+            if (deleteItem.name === item.name) {
+                deleteItem.weight = 400;
+            }
+        });
+        let conditionArray = [...conditionsArray];
+        const index = conditionArray.findIndex(
+            (x) => x.name === item.name && x.dataType === item.dataType
+        );
+        if (index !== -1) {
+            conditionArray.splice(index, 1);
+        } else {
+            conditionArray = [];
+        }
+        setConditionsArray(conditionArray);
+    };
+
+    /**
+     * Method To delete the specific element from filter array upon clicking close
+     * @param {*} item is the specific filter element object
+     */
+    /* eslint-disable no-param-reassign */
+    const deleteDateTimeElement = (item) => {
+        filterData.filter.forEach((it) => {
+            if (it.name === item.name) {
+                it.weight = 400;
+            }
+        });
+        filterData.filter.forEach((it) => {
+            if (it.name === item.name) {
+                item.weight = 400;
+            }
+        });
+        let dateTimeArray = [...dateTimesArray];
+        const index = dateTimeArray.findIndex((x) => x.name === item.name);
+        dateTimeArray.splice(index, 1);
+        // eslint-disable-next-line no-shadow
+        dateTimeArray.forEach((item) => {
+            item.field.forEach((fieldArray) => {
+                fieldArray.value = "";
+            });
+        });
+        setDateTimesArray(dateTimeArray);
+        dateTimeArray = [];
+        filterData.filter.forEach((filters) => {
+            if (filters.name === item.name) {
+                item.field.forEach((fieldArray) => {
+                    fieldArray.value = "";
+                });
+            }
+        });
+        if (item === {}) {
+            setDateTimesValueArray([]);
+        }
+    };
+
+    /**
+     * Method To delete the specific element from filter array upon clicking close
+     * @param {*} item is the specific filter element object
+     */
+    const deleteTextComponentElement = (item) => {
+        filterData.filter.forEach((it) => {
+            // Added for no-param-reassign lint errors
+            const deleteItem = it;
+            if (deleteItem.name === item.name) {
+                deleteItem.weight = 400;
+            }
+        });
+        let textComponentArray = [...textComponentsArray];
+        const index = textComponentArray.findIndex(
+            (x) => x.name === item.name && x.dataType === item.dataType
+        );
+        if (index !== -1) {
+            textComponentArray.splice(index, 1);
+        } else {
+            textComponentArray = [];
+        }
+        setTextComponentsArray(textComponentArray);
+    };
+
+    /**
+     * Method To reset the right drawer
+     */
+    const resetDrawer = () => {
+        deleteAutoCompleteElement({});
+        deleteConditionalElement({});
+        deleteDateTimeElement({});
+        deleteTextComponentElement({});
+        setApplyFilterChip({});
+        setRecentFilterShow("");
+        setFilterShow("none");
+    };
+
     /**
      * Method To save the filters
      * @param {*} value is saved filter from the saved filter popup list
      */
+    /* eslint-disable no-param-reassign */
     const saveFilter = (value) => {
-        let obj = [];
+        const obj = [];
         if (value.length > 0) {
             if (
                 !(
@@ -181,21 +322,23 @@ export default function Filter(props) {
                 setSaveWarningClassName("text-danger");
                 setSaveWarningLabel("No filters selected or values entered");
             } else {
-                let savedFilter = {
+                const savedFilter = {
                     filter: []
                 };
                 if (autoCompletesValueArray.length > 0) {
                     let autoCompleteArray = [...autoCompletesArray];
-                    autoCompleteArray.forEach((item) => {
+                    autoCompleteArray.map((item) => {
+                        const newItem = item;
                         autoCompletesValueArray.forEach((valueItem) => {
                             if (
                                 valueItem.name === item.name &&
                                 valueItem.type === item.type
                             ) {
-                                item.validated = true;
-                                item.warning = "";
+                                newItem.validated = true;
+                                newItem.warning = "";
                             }
                         });
+                        return newItem;
                     });
                     setAutoCompletesArray(autoCompleteArray);
                     let count = 0;
@@ -216,21 +359,25 @@ export default function Filter(props) {
                     autoCompleteArray = [];
                 } else {
                     let autoCompleteArray = [...autoCompletesArray];
-                    autoCompleteArray.forEach((item) => {
-                        item.validated = false;
+                    autoCompleteArray.map((item) => {
+                        const newItem = item;
+                        newItem.validated = false;
+                        return newItem;
                     });
                     setAutoCompletesArray(autoCompleteArray);
                     autoCompleteArray = [];
                 }
                 if (dateTimesValueArray.length > 0) {
                     let dateTimeArray = [...dateTimesArray];
-                    dateTimeArray.forEach((item) => {
+                    dateTimeArray.map((item) => {
+                        const newItem = item;
                         dateTimesValueArray.forEach((valueItem) => {
                             if (valueItem.name === item.name) {
-                                item.validated = true;
-                                item.warning = "";
+                                newItem.validated = true; // Added for no-param-reassign lint errors
+                                newItem.warning = "";
                             }
                         });
+                        return newItem;
                     });
                     setDateTimesArray(dateTimeArray);
                     let count = 0;
@@ -251,8 +398,10 @@ export default function Filter(props) {
                     dateTimeArray = [];
                 } else {
                     let dateTimeArray = [...dateTimesArray];
-                    dateTimeArray.forEach((item) => {
-                        item.validated = false;
+                    dateTimeArray.map((item) => {
+                        const newItem = item;
+                        newItem.validated = false; // Added for no-param-reassign lint errors
+                        return newItem;
                     });
                     setDateTimesArray(dateTimeArray);
                     dateTimeArray = [];
@@ -328,7 +477,7 @@ export default function Filter(props) {
                     textComponentArray = [];
                 }
                 if (savedFilter.filter.length > 0) {
-                    savedFilter[value] = savedFilter["filter"];
+                    savedFilter[value] = savedFilter.filter;
                     delete savedFilter.filter;
                     let savedFilters = localStorage.getItem("savedFilters");
                     savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
@@ -349,16 +498,16 @@ export default function Filter(props) {
             setSaveWarningLabel("Enter a valid filterName");
         }
         autoCompletesValueArray.forEach((item) => {
-            obj.push(Object.assign({}, item));
+            obj.push({ ...item });
         });
         dateTimesValueArray.forEach((item) => {
-            obj.push(Object.assign({}, item));
+            obj.push({ ...item });
         });
         conditionsValueArray.forEach((item) => {
-            obj.push(Object.assign({}, item));
+            obj.push({ ...item });
         });
         textComponentsValueArray.forEach((item) => {
-            obj.push(Object.assign({}, item));
+            obj.push({ ...item });
         });
         obj.forEach((objec) => {
             delete objec.dataType;
@@ -376,6 +525,7 @@ export default function Filter(props) {
      * @param {*} condition is the condition array of the filter if present
      * @param {*} options is the options array of the filter if present
      */
+    /* eslint-disable no-param-reassign */
     const fromLeftToRight = (
         name,
         dataType,
@@ -393,11 +543,11 @@ export default function Filter(props) {
         setEmptyFilterClassName("");
         setEmptyFilterWarning("");
         if (dataType === "AutoComplete") {
-            let value = {
-                name: name,
-                type: type,
-                dataType: dataType,
-                enabled: enabled,
+            const value = {
+                name,
+                type,
+                dataType,
+                enabled,
                 objectArray: []
             };
             filterData.filter.forEach((item) => {
@@ -412,42 +562,42 @@ export default function Filter(props) {
             });
             let autoCompleteArray = [...autoCompletesArray];
             if (autoCompleteArray.length > 0) {
-                let index = autoCompleteArray.findIndex(
+                const index = autoCompleteArray.findIndex(
                     (x) => x.name === value.name && x.type === value.type
                 );
                 if (index === -1) {
                     autoCompleteArray.push({
-                        name: name,
-                        type: type,
-                        dataType: dataType,
-                        enabled: enabled,
+                        name,
+                        type,
+                        dataType,
+                        enabled,
                         objectArray: options,
                         validated: false,
-                        warning: warning
+                        warning
                     });
                 }
             } else {
                 autoCompleteArray.push({
-                    name: name,
-                    type: type,
-                    dataType: dataType,
-                    enabled: enabled,
+                    name,
+                    type,
+                    dataType,
+                    enabled,
                     objectArray: options,
                     validated: false,
-                    warning: warning
+                    warning
                 });
             }
             setAutoCompletesArray(autoCompleteArray);
             autoCompleteArray = [];
         }
         if (dataType === "DateTime") {
-            let value = {
-                name: name,
-                dataType: dataType,
-                enabled: enabled,
-                field: field,
+            const value = {
+                name,
+                dataType,
+                enabled,
+                field,
                 validated: false,
-                warning: warning
+                warning
             };
             filterData.filter.forEach((item) => {
                 if (item.name === value.name) {
@@ -456,41 +606,41 @@ export default function Filter(props) {
             });
             let dateTimeArray = [...dateTimesArray];
             if (dateTimeArray.length > 0) {
-                let index = dateTimeArray.findIndex(
+                const index = dateTimeArray.findIndex(
                     (x) => x.name === value.name && x.field === value.field
                 );
                 if (index === -1) {
                     dateTimeArray.push({
-                        name: name,
-                        dataType: dataType,
-                        enabled: enabled,
-                        field: field,
+                        name,
+                        dataType,
+                        enabled,
+                        field,
                         validated: false,
-                        warning: warning
+                        warning
                     });
                 }
             } else {
                 dateTimeArray.push({
-                    name: name,
-                    dataType: dataType,
-                    enabled: enabled,
-                    field: field,
+                    name,
+                    dataType,
+                    enabled,
+                    field,
                     validated: false,
-                    warning: warning
+                    warning
                 });
             }
             setDateTimesArray(dateTimeArray);
             dateTimeArray = [];
         }
         if (dataType === "Numeric") {
-            let value = {
-                name: name,
-                dataType: dataType,
-                enabled: enabled,
-                condition: condition,
+            const value = {
+                name,
+                dataType,
+                enabled,
+                condition,
                 amount: "",
                 validated: false,
-                warning: warning
+                warning
             };
             filterData.filter.forEach((item) => {
                 if (item.name === value.name) {
@@ -499,42 +649,42 @@ export default function Filter(props) {
             });
             let conditionArray = [...conditionsArray];
             if (conditionArray.length > 0) {
-                let index = conditionArray.findIndex(
+                const index = conditionArray.findIndex(
                     (x) =>
                         x.name === value.name && x.condition === value.condition
                 );
                 if (index === -1) {
                     conditionArray.push({
-                        name: name,
-                        dataType: dataType,
-                        enabled: enabled,
-                        condition: condition,
+                        name,
+                        dataType,
+                        enabled,
+                        condition,
                         amount: "",
                         validated: false,
-                        warning: warning
+                        warning
                     });
                 }
             } else {
                 conditionArray.push({
-                    name: name,
-                    dataType: dataType,
-                    enabled: enabled,
-                    condition: condition,
+                    name,
+                    dataType,
+                    enabled,
+                    condition,
                     amount: "",
                     validated: false,
-                    warning: warning
+                    warning
                 });
             }
             setConditionsArray(conditionArray);
             conditionArray = [];
         }
         if (dataType === "Text") {
-            let value = {
-                name: name,
-                dataType: dataType,
-                enabled: enabled,
+            const value = {
+                name,
+                dataType,
+                enabled,
                 validated: false,
-                warning: warning
+                warning
             };
             filterData.filter.forEach((item) => {
                 if (item.name === value.name) {
@@ -543,26 +693,26 @@ export default function Filter(props) {
             });
             let textComponentArray = [...textComponentsArray];
             if (textComponentArray.length > 0) {
-                let index = textComponentArray.findIndex(
+                const index = textComponentArray.findIndex(
                     (x) =>
                         x.name === value.name && x.dataType === value.dataType
                 );
                 if (index === -1) {
                     textComponentArray.push({
-                        name: name,
-                        dataType: dataType,
-                        enabled: enabled,
+                        name,
+                        dataType,
+                        enabled,
                         validated: false,
-                        warning: warning
+                        warning
                     });
                 }
             } else {
                 textComponentArray.push({
-                    name: name,
-                    dataType: dataType,
-                    enabled: enabled,
+                    name,
+                    dataType,
+                    enabled,
                     validated: false,
-                    warning: warning
+                    warning
                 });
             }
             setTextComponentsArray(textComponentArray);
@@ -574,19 +724,21 @@ export default function Filter(props) {
      * @param {*} item is the specific filter element object
      * @param {*} valueArray is the selected multiselect options
      */
+    /* eslint-disable no-param-reassign */
+    /* eslint-disable no-shadow */
     const createAutoCompleteArray = (item, valueArray) => {
         setShowSavePopUp("none");
         setSaveWarningLabel("");
         setSaveWarningClassName("");
         let autoCompleteArray = [...autoCompletesArray];
-        let tempObj = JSON.parse(JSON.stringify(item));
+        const tempObj = JSON.parse(JSON.stringify(item));
         tempObj.value = valueArray;
         let autoCompleteValueArray = [...autoCompletesValueArray];
         if (autoCompleteValueArray.length > 0) {
-            let index = autoCompleteValueArray.findIndex(
+            const index_ = autoCompleteValueArray.findIndex(
                 (x) => x.name === tempObj.name && x.type === tempObj.type
             );
-            if (index === -1) {
+            if (index_ === -1) {
                 autoCompleteValueArray.push({
                     name: tempObj.name,
                     type: tempObj.type,
@@ -595,8 +747,9 @@ export default function Filter(props) {
                     value: tempObj.value
                 });
             } else {
-                autoCompleteValueArray[index].value = tempObj.value;
+                autoCompleteValueArray[index_].value = tempObj.value;
             }
+
             autoCompleteValueArray.forEach((valueItem) => {
                 autoCompleteArray.forEach((item) => {
                     if (
@@ -616,6 +769,7 @@ export default function Filter(props) {
                 enabled: tempObj.enabled,
                 value: tempObj.value
             });
+            // eslint-disable-next-line no-shadow
             autoCompleteValueArray.forEach((valueItem) => {
                 autoCompleteArray.forEach((item) => {
                     if (
@@ -633,53 +787,26 @@ export default function Filter(props) {
         setAutoCompletesValueArray(autoCompleteValueArray);
         autoCompleteValueArray = [];
     };
-    /**
-     * Method To delete the specific element from filter array upon clicking close
-     * @param {*} item is the specific filter element object
-     */
-    const deleteAutoCompleteElement = (item) => {
-        filterData.filter.forEach((it) => {
-            it.types.forEach((tip) => {
-                if (tip.name === item.type && item.name === it.name) {
-                    tip.weight = 400;
-                }
-            });
-        });
-        let autoCompleteArray = [...autoCompletesArray];
-        let index = autoCompleteArray.findIndex(
-            (x) => x.name === item.name && x.type === item.type
-        );
-        if (index !== -1) {
-            autoCompleteArray.splice(index, 1);
-        } else {
-            autoCompleteArray = [];
-        }
-        setAutoCompletesArray(autoCompleteArray);
-        autoCompleteArray.forEach((aut) => {
-            filterData.filter.forEach((fit) => {
-                if (fit.types && fit.name !== aut.name && fit.weight === 700) {
-                    fit.weight = 400;
-                }
-            });
-        });
-    };
+
     /**
      * Method To toggle the switch to enable and disable the input fields
      * @param {*} item is the specific filter element object
      */
+    /* eslint-disable no-param-reassign */
     const handleAutoCompleteEnabled = (item) => {
-        let autoCompleteArray = [...autoCompletesArray];
-        let index = autoCompleteArray.findIndex(
+        const autoCompleteArray = [...autoCompletesArray];
+        const index = autoCompleteArray.findIndex(
             (x) => x.name === item.name && x.type === item.type
         );
         if (index !== -1) {
             autoCompleteArray[index].enabled = !autoCompleteArray[index]
                 .enabled;
         }
+        // eslint-disable-next-line no-shadow
         setAutoCompletesArray(autoCompleteArray);
         if (autoCompletesValueArray.length > 0) {
             let autoCompleteValueArray = [...autoCompletesValueArray];
-            let index = autoCompleteValueArray.findIndex(
+            const index = autoCompleteValueArray.findIndex(
                 (x) => x.name === item.name && x.type === item.type
             );
             autoCompleteValueArray[index].enabled = !autoCompleteValueArray[
@@ -689,63 +816,30 @@ export default function Filter(props) {
             autoCompleteValueArray = [];
         }
     };
-    /**
-     * Method To delete the specific element from filter array upon clicking close
-     * @param {*} item is the specific filter element object
-     */
-    const deleteDateTimeElement = (item) => {
-        filterData.filter.forEach((it) => {
-            if (it.name === item.name) {
-                it.weight = 400;
-            }
-        });
-        filterData.filter.forEach((it) => {
-            if (it.name === item.name) {
-                item.weight = 400;
-            }
-        });
-        let dateTimeArray = [...dateTimesArray];
-        let index = dateTimeArray.findIndex((x) => x.name === item.name);
-        dateTimeArray.splice(index, 1);
-        dateTimeArray.forEach((item) => {
-            item.field.forEach((fieldArray) => {
-                fieldArray.value = "";
-            });
-        });
-        setDateTimesArray(dateTimeArray);
-        dateTimeArray = [];
-        filterData.filter.forEach((filters) => {
-            if (filters.name === item.name) {
-                item.field.forEach((fieldArray) => {
-                    fieldArray.value = "";
-                });
-            }
-        });
-        if (item === {}) {
-            setDateTimesValueArray([]);
-        }
-    };
+
     /**
      * Method To toggle the switch to enable and disable the input fields
      * @param {*} item is the specific filter element object
      */
+    /* eslint-disable no-param-reassign */
     const handleDateTimeEnabled = (item) => {
         let dateTimeArray = [...dateTimesArray];
-        let index = dateTimeArray.findIndex(
+        const index = dateTimeArray.findIndex(
             (x) => x.name === item.name && x.field === item.field
         );
         if (index !== -1) {
             dateTimeArray[index].enabled = !dateTimeArray[index].enabled;
         }
         setDateTimesArray(dateTimeArray);
+        // eslint-disable-next-line no-shadow
         dateTimeArray = [];
         if (dateTimesValueArray.length > 0) {
             let dateTimeValueArray = [...dateTimesValueArray];
-            let tempArray = [];
+            const tempArray = [];
             item.field.forEach((item) => {
                 tempArray.push(item.column);
             });
-            let index = dateTimeValueArray.findIndex(
+            const index = dateTimeValueArray.findIndex(
                 (x) => x.name === item.name && tempArray.includes(x.fieldValue)
             );
             if (index !== -1) {
@@ -764,6 +858,7 @@ export default function Filter(props) {
      * @param {*} fieldName is the specific type of field/date in which change is happening
      * @param {*} value is value of the field
      */
+    /* eslint-disable no-param-reassign */
     const createDateTimeArray = (item, fieldName, value) => {
         setShowSavePopUp("none");
         setSaveWarningLabel("");
@@ -771,12 +866,12 @@ export default function Filter(props) {
         let dateTimeArray = [...dateTimesArray];
         console.log(dateTimesArray);
         console.log(value);
-        let tempObj = JSON.parse(JSON.stringify(item));
+        const tempObj = JSON.parse(JSON.stringify(item));
         tempObj.fieldValue = fieldName;
         tempObj.value = value;
         let dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeValueArray.length > 0) {
-            let index = dateTimeValueArray.findIndex(
+            const index = dateTimeValueArray.findIndex(
                 (x) =>
                     x.fieldValue === tempObj.fieldValue &&
                     x.name === tempObj.name
@@ -857,21 +952,21 @@ export default function Filter(props) {
             ,
             { value: hour },
             ,
-            { value: minute },
-            ,
-            { value: seconds }
+            { value: minute }
         ] = dateTimeFormat.formatToParts(date);
         return `${year}-${month}-${day}${"T"}${hour}:${minute}`;
     };
     /**
      * Method To set both from date and to date as todays date
      */
+    /* eslint-disable no-param-reassign */
     const addToday = () => {
-        let todayDate = new Date();
-        let dated = getValueOfDate(todayDate);
+        const todayDate = new Date();
+        const dated = getValueOfDate(todayDate);
         console.log(dated);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
+        // eslint-disable-next-line no-shadow
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
                 item.field.forEach((fieldArray) => {
@@ -900,6 +995,7 @@ export default function Filter(props) {
     /**
      * Method To set both from date and to date as tomorrow's date
      */
+    /* eslint-disable no-param-reassign */
     const addTomorrow = () => {
         let fromDate = new Date();
         let toDate = new Date();
@@ -907,8 +1003,8 @@ export default function Filter(props) {
         toDate.setDate(toDate.getDate() + 1);
         fromDate = getValueOfDate(fromDate);
         toDate = getValueOfDate(toDate);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
                 item.field[0].value = fromDate;
@@ -939,14 +1035,15 @@ export default function Filter(props) {
     /**
      * Method To set the date range as this month
      */
+    /* eslint-disable no-param-reassign */
     const addThisMonth = () => {
-        let today = new Date();
+        const today = new Date();
         let fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
         let toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
         fromDate = getValueOfDate(fromDate);
         toDate = getValueOfDate(toDate);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
                 item.field[0].value = fromDate;
@@ -977,6 +1074,7 @@ export default function Filter(props) {
     /**
      * Method To set the date range as next 14 days
      */
+    /* eslint-disable no-param-reassign */
     const addForteenDays = () => {
         let fromDate = new Date();
         let toDate = new Date();
@@ -984,8 +1082,8 @@ export default function Filter(props) {
         toDate.setDate(toDate.getDate() + 14);
         fromDate = getValueOfDate(fromDate);
         toDate = getValueOfDate(toDate);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
                 item.field[0].value = fromDate;
@@ -1016,6 +1114,7 @@ export default function Filter(props) {
     /**
      * Method To set the date range as next 7 days
      */
+    /* eslint-disable no-param-reassign */
     const addSevenDays = () => {
         let fromDate = new Date();
         let toDate = new Date();
@@ -1023,8 +1122,8 @@ export default function Filter(props) {
         toDate.setDate(toDate.getDate() + 7);
         fromDate = getValueOfDate(fromDate);
         toDate = getValueOfDate(toDate);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
                 item.field[0].value = fromDate;
@@ -1055,16 +1154,17 @@ export default function Filter(props) {
     /**
      * Method To set the date range as current week Sunday to Saturday
      */
+    /* eslint-disable no-param-reassign */
     const addThisWeek = () => {
-        let today = new Date();
-        let from = today.getDate() - today.getDay();
-        let to = from + 6;
+        const today = new Date();
+        const from = today.getDate() - today.getDay();
+        const to = from + 6;
         let fromDate = new Date(today.setDate(from)).toUTCString();
         let toDate = new Date(today.setDate(to)).toUTCString();
         fromDate = getValueOfDate(fromDate);
         toDate = getValueOfDate(toDate);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
                 item.field[0].value = fromDate;
@@ -1095,15 +1195,16 @@ export default function Filter(props) {
     /**
      * Method To set the date range as next 30 days
      */
+    /* eslint-disable no-param-reassign */
     const addThirtyDays = () => {
-        let from = new Date();
-        let to = new Date();
+        const from = new Date();
+        const to = new Date();
         from.setDate(from.getDate() + 1);
         to.setDate(to.getDate() + 30);
-        let fromDate = getValueOfDate(from);
-        let toDate = getValueOfDate(to);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const fromDate = getValueOfDate(from);
+        const toDate = getValueOfDate(to);
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
                 item.field[0].value = fromDate;
@@ -1143,28 +1244,32 @@ export default function Filter(props) {
         let toDate = new Date();
         if (value !== "0") {
             fromDate.setDate(fromDate.getDate() + 1);
-            toDate.setDate(toDate.getDate() + parseInt(value));
+            toDate.setDate(toDate.getDate() + parseInt(value, 10));
         }
         fromDate = getValueOfDate(fromDate);
         toDate = getValueOfDate(toDate);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
-                item.field[0].value = fromDate;
-                item.field[1].value = toDate;
-                item.field.forEach((fieldArray) => {
+                // Added for no-param-reassign lint errors
+                const item_ = item;
+                item_.field[0].value = fromDate;
+                item_.field[1].value = toDate;
+                item_.field.forEach((fieldArray) => {
                     if (dateTimeValueArray.length > 1) {
                         dateTimeValueArray.forEach((arr) => {
-                            if (arr.fieldValue === fieldArray.column) {
-                                arr.value = fieldArray.value;
+                            // Added for no-param-reassign lint errors
+                            const arr_ = arr;
+                            if (arr_.fieldValue === fieldArray.column) {
+                                arr_.value = fieldArray.value;
                             }
                         });
                     } else {
                         dateTimeValueArray.push({
-                            name: item.name,
-                            dataType: item.dataType,
-                            enabled: item.enabled,
+                            name: item_.name,
+                            dataType: item_.dataType,
+                            enabled: item_.enabled,
                             fieldValue: fieldArray.column,
                             value: fieldArray.value
                         });
@@ -1187,29 +1292,33 @@ export default function Filter(props) {
         let fromDate = new Date();
         let toDate = new Date();
         if (value !== "0") {
-            fromDate.setDate(fromDate.getDate() - parseInt(value));
+            fromDate.setDate(fromDate.getDate() - parseInt(value, 10));
             toDate.setDate(toDate.getDate() - 1);
         }
         fromDate = getValueOfDate(fromDate);
         toDate = getValueOfDate(toDate);
-        let dateTimeArray = [...dateTimesArray];
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeArray = [...dateTimesArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
-                item.field[0].value = fromDate;
-                item.field[1].value = toDate;
-                item.field.forEach((fieldArray) => {
+                // Added for no-param-reassign lint errors
+                const item_ = item;
+                item_.field[0].value = fromDate;
+                item_.field[1].value = toDate;
+                item_.field.forEach((fieldArray) => {
                     if (dateTimeValueArray.length > 1) {
                         dateTimeValueArray.forEach((arr) => {
-                            if (arr.fieldValue === fieldArray.column) {
-                                arr.value = fieldArray.value;
+                            // Added for no-param-reassign lint errors
+                            const arr_ = arr;
+                            if (arr_.fieldValue === fieldArray.column) {
+                                arr_.value = fieldArray.value;
                             }
                         });
                     } else {
                         dateTimeValueArray.push({
-                            name: item.name,
-                            dataType: item.dataType,
-                            enabled: item.enabled,
+                            name: item_.name,
+                            dataType: item_.dataType,
+                            enabled: item_.enabled,
                             fieldValue: fieldArray.column,
                             value: fieldArray.value
                         });
@@ -1226,8 +1335,8 @@ export default function Filter(props) {
      * @param {*} item is the specific filter element object
      */
     const handleCondionalEnabled = (item) => {
-        let conditionArray = [...conditionsArray];
-        let index = conditionArray.findIndex(
+        const conditionArray = [...conditionsArray];
+        const index = conditionArray.findIndex(
             (x) => x.name === item.name && x.condition === item.condition
         );
         if (index !== -1) {
@@ -1237,10 +1346,11 @@ export default function Filter(props) {
         let conditionValueArray = [];
         conditionValueArray = [...conditionsValueArray];
         if (conditionValueArray.length > 0) {
-            let index = conditionValueArray.findIndex(
+            // Added for no-param-reassign lint errors
+            const index_ = conditionValueArray.findIndex(
                 (x) => x.name === item.name && x.dataType === item.dataType
             );
-            conditionValueArray[index].enabled = !conditionValueArray[index]
+            conditionValueArray[index_].enabled = !conditionValueArray[index_]
                 .enabled;
         }
         setConditionsValueArray(conditionValueArray);
@@ -1255,14 +1365,14 @@ export default function Filter(props) {
         setShowSavePopUp("none");
         setSaveWarningLabel("");
         setSaveWarningClassName("");
-        let conditionArray = [...conditionsArray];
-        let valueArray = [];
+        const conditionArray = [...conditionsArray];
+        const valueArray = [];
         item.condition.forEach((it) => {
             valueArray.push(it.value);
         });
         let conditionValueArray = [...conditionsValueArray];
         if (conditionValueArray.length > 0) {
-            let index = conditionValueArray.findIndex(
+            const index = conditionValueArray.findIndex(
                 (x) => x.name === item.name && x.dataType === item.dataType
             );
             if (index !== -1) {
@@ -1273,63 +1383,45 @@ export default function Filter(props) {
                 }
             }
             conditionValueArray.forEach((valueItem) => {
-                conditionArray.forEach((item) => {
-                    if (item.name === valueItem.name) {
-                        item.validated = true;
-                        item.warning = "";
+                conditionArray.forEach((items) => {
+                    // Added for no-param-reassign lint errors
+                    const item_ = items;
+                    if (item_.name === valueItem.name) {
+                        item_.validated = true;
+                        item_.warning = "";
                     }
                 });
             });
+        } else if (valueArray.includes(value)) {
+            conditionValueArray.push({
+                name: item.name,
+                dataType: item.dataType,
+                enabled: item.enabled,
+                condition: value
+            });
         } else {
-            if (valueArray.includes(value)) {
-                conditionValueArray.push({
-                    name: item.name,
-                    dataType: item.dataType,
-                    enabled: item.enabled,
-                    condition: value
+            conditionValueArray.push({
+                name: item.name,
+                dataType: item.dataType,
+                enabled: item.enabled,
+                condition: item.condition[0].value,
+                amount: value
+            });
+            conditionValueArray.forEach((valueItem) => {
+                conditionArray.forEach((items) => {
+                    // Added for no-param-reassign lint errors
+                    const item_ = items;
+                    if (item_.name === valueItem.name) {
+                        item_.validated = true;
+                        item_.warning = "";
+                    }
                 });
-            } else {
-                conditionValueArray.push({
-                    name: item.name,
-                    dataType: item.dataType,
-                    enabled: item.enabled,
-                    condition: item.condition[0].value,
-                    amount: value
-                });
-                conditionValueArray.forEach((valueItem) => {
-                    conditionArray.forEach((item) => {
-                        if (item.name === valueItem.name) {
-                            item.validated = true;
-                            item.warning = "";
-                        }
-                    });
-                });
-            }
+            });
         }
         setConditionsValueArray(conditionValueArray);
         conditionValueArray = [];
     };
-    /**
-     * Method To delete the specific element from filter array upon clicking close
-     * @param {*} item is the specific filter element object
-     */
-    const deleteConditionalElement = (item) => {
-        filterData.filter.forEach((it) => {
-            if (it.name === item.name) {
-                it.weight = 400;
-            }
-        });
-        let conditionArray = [...conditionsArray];
-        let index = conditionArray.findIndex(
-            (x) => x.name === item.name && x.dataType === item.dataType
-        );
-        if (index !== -1) {
-            conditionArray.splice(index, 1);
-        } else {
-            conditionArray = [];
-        }
-        setConditionsArray(conditionArray);
-    };
+
     /**
      * Method To create arrays containing values upon change trigger from respective input fields
      * @param {*} item is the specific filter element object
@@ -1339,10 +1431,10 @@ export default function Filter(props) {
         setShowSavePopUp("none");
         setSaveWarningLabel("");
         setSaveWarningClassName("");
-        let textComponentArray = [...textComponentsArray];
+        const textComponentArray = [...textComponentsArray];
         let textComponentValueArray = [...textComponentsValueArray];
         if (textComponentValueArray.length > 0) {
-            let index = textComponentValueArray.findIndex(
+            const index = textComponentValueArray.findIndex(
                 (x) => x.name === item.name && x.dataType === item.dataType
             );
             if (index === -1) {
@@ -1350,16 +1442,18 @@ export default function Filter(props) {
                     name: item.name,
                     dataType: item.dataType,
                     enabled: item.enabled,
-                    value: value
+                    value
                 });
             } else {
                 textComponentValueArray[index].value = value;
             }
             textComponentValueArray.forEach((valueItem) => {
-                textComponentArray.forEach((item) => {
-                    if (item.name === valueItem.name) {
-                        item.validated = true;
-                        item.warning = "";
+                textComponentArray.forEach((items) => {
+                    // Added for no-param-reassign lint errors
+                    const item_ = items;
+                    if (item_.name === valueItem.name) {
+                        item_.validated = true;
+                        item_.warning = "";
                     }
                 });
             });
@@ -1368,13 +1462,15 @@ export default function Filter(props) {
                 name: item.name,
                 dataType: item.dataType,
                 enabled: item.enabled,
-                value: value
+                value
             });
             textComponentValueArray.forEach((valueItem) => {
-                textComponentArray.forEach((item) => {
-                    if (item.name === valueItem.name) {
-                        item.validated = true;
-                        item.warning = "";
+                textComponentArray.forEach((textItem) => {
+                    // Added for no-param-reassign lint errors
+                    const item_ = textItem;
+                    if (item_.name === valueItem.name) {
+                        item_.validated = true;
+                        item_.warning = "";
                     }
                 });
             });
@@ -1388,7 +1484,7 @@ export default function Filter(props) {
      */
     const handleTextComponentEnabled = (item) => {
         let textComponentArray = [...textComponentsArray];
-        let index = textComponentArray.findIndex(
+        const index = textComponentArray.findIndex(
             (x) => x.name === item.name && x.dataType === item.dataType
         );
         if (index !== -1) {
@@ -1399,13 +1495,14 @@ export default function Filter(props) {
         textComponentArray = [];
         let textComponentValueArray = [...textComponentsValueArray];
         if (textComponentValueArray.length > 0) {
-            let index = textComponentValueArray.findIndex(
+            // Added for no-param-reassign lint errors
+            const index_ = textComponentValueArray.findIndex(
                 (x) => x.name === item.name && x.dataType === item.dataType
             );
-            if (index !== -1) {
+            if (index_ !== -1) {
                 textComponentValueArray[
-                    index
-                ].enabled = !textComponentValueArray[index].enabled;
+                    index_
+                ].enabled = !textComponentValueArray[index_].enabled;
             }
         }
         setTextComponentsValueArray(textComponentValueArray);
@@ -1429,27 +1526,7 @@ export default function Filter(props) {
         });
         return options;
     };
-    /**
-     * Method To delete the specific element from filter array upon clicking close
-     * @param {*} item is the specific filter element object
-     */
-    const deleteTextComponentElement = (item) => {
-        filterData.filter.forEach((it) => {
-            if (it.name === item.name) {
-                it.weight = 400;
-            }
-        });
-        let textComponentArray = [...textComponentsArray];
-        let index = textComponentArray.findIndex(
-            (x) => x.name === item.name && x.dataType === item.dataType
-        );
-        if (index !== -1) {
-            textComponentArray.splice(index, 1);
-        } else {
-            textComponentArray = [];
-        }
-        setTextComponentsArray(textComponentArray);
-    };
+
     /**
      * Method To map the applied filters to drawer on clicking the chips
      * @param {*} items is the  filter element array
@@ -1461,10 +1538,10 @@ export default function Filter(props) {
         let text = [];
         items.forEach((item) => {
             if (item.dataType === "AutoComplete") {
-                let autoCompleteArray = [...autoComplete];
-                let options = returnOptions(item.name, item.type);
+                const autoCompleteArray = [...autoComplete];
+                const options = returnOptions(item.name, item.type);
                 if (autoCompleteArray.length > 0) {
-                    let index = autoCompleteArray.findIndex(
+                    const index = autoCompleteArray.findIndex(
                         (x) => x.name === item.name && item.type === x.type
                     );
 
@@ -1490,7 +1567,7 @@ export default function Filter(props) {
                 }
                 autoComplete = autoCompleteArray;
             } else if (item.dataType === "DateTime") {
-                let dateTimeArray = [...dateTime];
+                const dateTimeArray = [...dateTime];
                 if (dateTimeArray.length === 0) {
                     dateTimeArray.push({
                         name: item.name,
@@ -1498,12 +1575,13 @@ export default function Filter(props) {
                         enabled: item.enabled,
                         field: []
                     });
-                    dateTimesValueArray.forEach((item) => {
-                        if (item.fieldValue) {
+                    dateTimesValueArray.forEach((item_) => {
+                        // Added for no-param-reassign lint errors
+                        if (item_.fieldValue) {
                             dateTimeArray.forEach((dt) => {
                                 dt.field.push({
-                                    column: item.fieldValue,
-                                    value: item.value
+                                    column: item_.fieldValue,
+                                    value: item_.value
                                 });
                             });
                         }
@@ -1511,7 +1589,7 @@ export default function Filter(props) {
                 }
                 dateTime = dateTimeArray;
             } else if (item.dataType === "Numeric") {
-                let conditionArray = [...condition];
+                const conditionArray = [...condition];
                 if (conditionArray.length === 0) {
                     conditionArray.push({
                         name: item.name,
@@ -1524,8 +1602,9 @@ export default function Filter(props) {
                     filterData.filter.forEach((data) => {
                         if (data.dataType === "Numeric") {
                             data.condition.forEach((values) => {
-                                conditionArray.forEach((item) => {
-                                    item.condition.push({
+                                conditionArray.forEach((item_) => {
+                                    // Added for no-param-reassign lint errors
+                                    item_.condition.push({
                                         value: values.value
                                     });
                                 });
@@ -1535,9 +1614,9 @@ export default function Filter(props) {
                 }
                 condition = conditionArray;
             } else {
-                let textComponentArray = [...textComponentsArray];
+                const textComponentArray = [...textComponentsArray];
                 if (textComponentArray.length > 0) {
-                    let index = textComponentArray.findIndex(
+                    const index = textComponentArray.findIndex(
                         (x) => x.name === item.name
                     );
                     if (index === -1) {
@@ -1563,6 +1642,7 @@ export default function Filter(props) {
             setConditionsArray(condition);
             setTextComponentsArray(text);
         });
+        // eslint-disable-next-line no-use-before-define
         setApplyFilter(true);
     };
     /**
@@ -1575,15 +1655,15 @@ export default function Filter(props) {
         let autoComplete = [];
         let condition = [];
         let text = [];
-        let tempArr = [];
-        let savedFilters = [];
-        for (let objects in item) {
-            item[objects].forEach((arrays) => {
-                for (let array in arrays) {
-                    tempArr.push(arrays[array]);
-                }
+        const tempArr = [];
+        const savedFilters = [];
+        Object.keys(item).forEach((key) => {
+            item[key].forEach((arrays) => {
+                Object.keys(arrays).forEach((key) => {
+                    tempArr.push(arrays[key]);
+                });
             });
-        }
+        });
         let arr = [];
         tempArr.forEach((arrays) => {
             arrays.forEach((array) => {
@@ -1593,7 +1673,7 @@ export default function Filter(props) {
         savedFilters.forEach((items) => {
             filterData.filter.forEach((fil) => {
                 if (fil.types.length) {
-                    let index = fil.types.findIndex(
+                    const index = fil.types.findIndex(
                         (x) => x.name === items.type && fil.name === items.name
                     );
                     if (index !== -1) {
@@ -1602,9 +1682,9 @@ export default function Filter(props) {
                 }
             });
             if (items.dataType === "AutoComplete") {
-                let autoCompleteArray = [...autoComplete];
+                const autoCompleteArray = [...autoComplete];
                 if (autoCompleteArray.length > 0) {
-                    let index = autoCompleteArray.findIndex(
+                    const index = autoCompleteArray.findIndex(
                         (x) => x.name === items.name && items.type === x.type
                     );
                     if (index === -1) {
@@ -1631,7 +1711,7 @@ export default function Filter(props) {
             }
         });
         setAutoCompletesArray(autoComplete);
-        let saveTempDateTimeArray = [];
+        const saveTempDateTimeArray = [];
         savedFilters.forEach((items) => {
             if (items.dataType === "DateTime") {
                 if (saveTempDateTimeArray.length === 0) {
@@ -1659,7 +1739,7 @@ export default function Filter(props) {
         setDateTimesArray(saveTempDateTimeArray);
         savedFilters.forEach((items) => {
             if (items.dataType === "Numeric") {
-                let conditionArray = [...condition];
+                const conditionArray = [...condition];
                 if (conditionArray.length === 0) {
                     conditionArray.push({
                         name: items.name,
@@ -1672,8 +1752,9 @@ export default function Filter(props) {
                     filterData.filter.forEach((data) => {
                         if (data.dataType === "Numeric") {
                             data.condition.forEach((values) => {
-                                conditionArray.forEach((items) => {
-                                    items.condition.push({
+                                conditionArray.forEach((items_) => {
+                                    // Added for no-param-reassign lint errors
+                                    items_.condition.push({
                                         value: values.value
                                     });
                                 });
@@ -1687,9 +1768,9 @@ export default function Filter(props) {
         setConditionsArray(condition);
         savedFilters.forEach((items) => {
             if (items.dataType === "Text") {
-                let textComponentArray = [...text];
+                const textComponentArray = [...text];
                 if (textComponentArray.length > 0) {
-                    let index = textComponentArray.findIndex(
+                    const index = textComponentArray.findIndex(
                         (x) => x.name === items.name
                     );
                     if (index === -1) {
@@ -1712,20 +1793,10 @@ export default function Filter(props) {
             }
         });
         setTextComponentsArray(text);
+        // eslint-disable-next-line no-use-before-define
         setApplyFilter(true);
     };
-    /**
-     * Method To reset the right drawer
-     */
-    const resetDrawer = () => {
-        deleteAutoCompleteElement({});
-        deleteConditionalElement({});
-        deleteDateTimeElement({});
-        deleteTextComponentElement({});
-        setApplyFilterChip({});
-        setRecentFilterShow("");
-        setFilterShow("none");
-    };
+
     const { ref, showApplyFilter, setApplyFilter } = useComponentVisible(true);
     return (
         <div ref={ref}>
@@ -1809,3 +1880,10 @@ export default function Filter(props) {
         </div>
     );
 }
+
+Filter.propTypes = {
+    filterData: PropTypes.any,
+    addingToFavourite: PropTypes.any,
+    appliedFilters: PropTypes.any,
+    savedFilters: PropTypes.any
+};

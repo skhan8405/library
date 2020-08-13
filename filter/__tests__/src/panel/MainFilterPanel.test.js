@@ -1,10 +1,9 @@
+/* eslint-disable no-undef */
+
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { act } from "react-dom/test-utils";
-
 import { unmountComponentAtNode } from "react-dom";
-
 import MainFilterPanel from "../../../src/panel/MainFilterPanel";
 
 let container = null;
@@ -97,12 +96,9 @@ describe("Main Filter Panel component", () => {
     const showDrawer = jest.fn();
     const addAppliedFilters = {};
     const addSavedFilters = jest.fn();
-    // const addingToFavourite = jest.fn();
-    const setCountShow = jest.fn();
-
-    let listFilter = false;
 
     it("Should be available in MainFilterPanel ", () => {
+        // eslint-disable-next-line no-unused-vars
         const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
@@ -116,8 +112,6 @@ describe("Main Filter Panel component", () => {
     });
 
     it(" Check type click ", () => {
-        // const element = .getAllByTestId("typecheck");
-        // console.log(element);
         const { getByTestId } = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
