@@ -172,36 +172,6 @@ export default function LeftDrawer(props) {
         }
         return <div key={index} />;
     });
-    const conditionHeads = leftDrawData.map((item, index) => {
-        if (item.condition.length) {
-            return (
-                <div className="conditionHeads" key={index}>
-                    <li
-                        role="presentation"
-                        style={{ fontWeight: item.weight }}
-                        data-testid="conditionHeads"
-                        onClick={() => {
-                            props.fromLeftToRight(
-                                item.name,
-                                item.dataType,
-                                item.enabled,
-                                item.types,
-                                item.field,
-                                item.condition,
-                                item.dataSource,
-                                item.validationMessage,
-                                item.options
-                            );
-                            // props.addedFilterCount();
-                        }}
-                    >
-                        {item.name}
-                    </li>
-                </div>
-            );
-        }
-        return <div key={index} />;
-    });
     const normalHeads = leftDrawData.map((item, index) => {
         if (
             !(item.condition.length || item.types.length || item.field.length)
@@ -250,7 +220,6 @@ export default function LeftDrawer(props) {
             <div className="leftDrawer">
                 <div>{accordianHeads}</div>
                 <div>{fieldHeads}</div>
-                <div>{conditionHeads}</div>
                 <div>{normalHeads}</div>
             </div>
         </div>
