@@ -105,7 +105,6 @@ const additionalColumndata = {
         },
         {
             Header: "Details",
-            onlyInTablet: true,
             accessor: "details"
         }
     ],
@@ -117,7 +116,6 @@ const additionalColumndata = {
         },
         {
             Header: "Details",
-            onlyInTablet: true,
             accessor: "details"
         }
     ]
@@ -137,11 +135,40 @@ test("should render", () => {
     );
     expect(componnet).toBeDefined();
 });
+test("should render expanded content", () => {
+    const componnet = render(
+        <RowEditContext.Provider
+            value={{
+                columns: columnsdata,
+                additionalColumn: additionalColumndata,
+                isRowExpandEnabled: true
+            }}
+        >
+            <RowEditTag columnKey="remarks" cellKey="remarks" />
+        </RowEditContext.Provider>
+    );
+    expect(componnet).toBeDefined();
+});
 test("should render without cellkey ReactDOM", () => {
     const componnet = render(
         <RowEditContext.Provider
             value={{
                 columns: columnsdata,
+                additionalColumn: additionalColumndata,
+                isRowExpandEnabled: false
+            }}
+        >
+            <RowEditTag columnKey="flight" />
+        </RowEditContext.Provider>
+    );
+    expect(componnet).toBeDefined();
+});
+
+test("should render without Columns", () => {
+    const componnet = render(
+        <RowEditContext.Provider
+            value={{
+                columns: null,
                 additionalColumn: additionalColumndata,
                 isRowExpandEnabled: false
             }}
