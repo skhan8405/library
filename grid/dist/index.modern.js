@@ -3327,6 +3327,7 @@ var ExportData = memo(function (props) {
       className: "export__body"
     }, /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("input", {
       type: "text",
+      "data-testid": "search",
       placeholder: "Search column",
       className: "custom__ctrl",
       onChange: filterColumnsList
@@ -3337,6 +3338,7 @@ var ExportData = memo(function (props) {
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
       value: "Select All",
+      "data-testid": "select-all-checkbox",
       checked: isCheckboxSelected("Select All"),
       onChange: selectAllColumns
     })), /*#__PURE__*/React__default.createElement("div", {
@@ -3349,6 +3351,7 @@ var ExportData = memo(function (props) {
         className: "export__checkbox"
       }, /*#__PURE__*/React__default.createElement("input", {
         type: "checkbox",
+        "data-testid": "" + column.Header,
         value: column.Header,
         checked: isCheckboxSelected(column.Header),
         onChange: selectSingleColumn
@@ -3377,6 +3380,7 @@ var ExportData = memo(function (props) {
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
       id: "chk_pdf",
+      "data-testid": "chk_pdf_test",
       value: "pdf",
       checked: downloadTypes.includes("pdf"),
       onChange: changeDownloadType
@@ -3389,6 +3393,7 @@ var ExportData = memo(function (props) {
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
       id: "chk_excel",
+      "data-testid": "chk_excel_test",
       value: "excel",
       checked: downloadTypes.includes("excel"),
       onChange: changeDownloadType
@@ -3401,6 +3406,7 @@ var ExportData = memo(function (props) {
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
       id: "chk_csv",
+      "data-testid": "chk_csv_test",
       value: "csv",
       checked: downloadTypes.includes("csv"),
       onChange: changeDownloadType
@@ -3420,10 +3426,12 @@ var ExportData = memo(function (props) {
       className: "export__btns"
     }, /*#__PURE__*/React__default.createElement("button", {
       type: "button",
+      "data-testid": "cancel_button",
       className: "btns",
       onClick: toggleExportDataOverlay
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
       type: "button",
+      "data-testid": "export_button",
       className: "btns btns__save",
       onClick: exportRowData
     }, "Export")))))));
@@ -3924,22 +3932,27 @@ var Customgrid = memo(function (props) {
   }), /*#__PURE__*/React__default.createElement("div", {
     className: "utilities-icon keyword-search",
     role: "presentation",
+    "data-testid": "toggleColumnFilter",
     onClick: toggleColumnFilter
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconFilter, null))), /*#__PURE__*/React__default.createElement("div", {
     className: "utilities-icon bulk-select",
     role: "presentation",
+    "data-testid": "bulkSelector",
     onClick: bulkSelector
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconEdit, null))), /*#__PURE__*/React__default.createElement("div", {
     className: "utilities-icon group-sort",
     role: "presentation",
+    "data-testid": "toggleGroupSortOverLay",
     onClick: toggleGroupSortOverLay
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconGroupSort, null))), /*#__PURE__*/React__default.createElement("div", {
     className: "utilities-icon manage-columns",
     role: "presentation",
+    "data-testid": "toggleManageColumns",
     onClick: toggleManageColumns
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconColumns, null))), /*#__PURE__*/React__default.createElement("div", {
     className: "utilities-icon export-data",
     role: "presentation",
+    "data-testid": "toggleExportDataOverlay",
     onClick: toggleExportDataOverlay
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconShare, null))))), /*#__PURE__*/React__default.createElement("div", {
     className: "table-popus"
