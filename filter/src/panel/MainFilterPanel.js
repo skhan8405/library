@@ -33,7 +33,6 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
-                        data-testid="typecheck"
                         key={index}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
@@ -42,8 +41,8 @@ const MainFilterPanel = (props) => {
                         <span>
                             {item.name}:{item.type}
                         </span>
-                        {item.value.map((value, index) => {
-                            return <div key={index}>{value.value}</div>;
+                        {item.value.map((value, index_) => {
+                            return <div key={index_}>{value.value}</div>;
                         })}
                     </div>
                 );
@@ -53,7 +52,6 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
-                        data-testid="conditionValue-check"
                         key={index}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
@@ -69,7 +67,6 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
-                        data-testid="fieldValue-check"
                         key={index}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
@@ -84,7 +81,6 @@ const MainFilterPanel = (props) => {
                 <div
                     role="presentation"
                     className="listContent"
-                    data-testid="chipCount-check"
                     key={index}
                     onClick={() => {
                         props.addAppliedFilters(chipArray);
@@ -105,12 +101,12 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="iconLeft"
-                        data-testid="handleListFilterCheck"
                         onClick={handleListFilter}
                     >
                         <IconLeftAlign />
                     </div>
                     <SavedFilters
+                        onSelectSavedFilter={props.onSelectSavedFilter}
                         showFilter={listFilter}
                         handleListFilter={handleListFilter}
                         addSavedFilters={props.addSavedFilters}
@@ -130,7 +126,6 @@ const MainFilterPanel = (props) => {
                     {chips}
                     <div
                         role="presentation"
-                        data-testid="showDrawer-check"
                         onClick={() => {
                             props.showDrawer();
                         }}

@@ -30,6 +30,7 @@ export default function LeftDrawer(props) {
      */
     const searchFilterHandler = (e) => {
         let filteredList = [];
+        // eslint-disable-next-line no-unused-vars
         let filteredTypeList = [];
         const searchKey = e.target.value;
         if (leftDrawData) {
@@ -80,7 +81,6 @@ export default function LeftDrawer(props) {
                                 onClick={() => {
                                     handleAccordian();
                                 }}
-                                data-testid="handleAccordianArrow"
                                 style={{ fontWeight: item.weight }}
                                 as={Card.Header}
                                 eventKey="1"
@@ -103,7 +103,7 @@ export default function LeftDrawer(props) {
                                 <Card.Body>
                                     <ul className="firstAccordion" key={index}>
                                         {item.types &&
-                                            item.types.map((type, index) => {
+                                            item.types.map((type, index_) => {
                                                 return (
                                                     <li
                                                         role="presentation"
@@ -111,7 +111,6 @@ export default function LeftDrawer(props) {
                                                             fontWeight:
                                                                 type.weight
                                                         }}
-                                                        data-testid="firstAccordion"
                                                         onClick={() => {
                                                             props.fromLeftToRight(
                                                                 item.name,
@@ -126,7 +125,7 @@ export default function LeftDrawer(props) {
                                                             );
                                                             // props.addedFilterCount();
                                                         }}
-                                                        key={index}
+                                                        key={index_}
                                                     >
                                                         {type.name}
                                                     </li>
@@ -149,7 +148,6 @@ export default function LeftDrawer(props) {
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
-                        data-testid="fieldHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -172,6 +170,35 @@ export default function LeftDrawer(props) {
         }
         return <div key={index} />;
     });
+    // const conditionHeads = leftDrawData.map((item, index) => {
+    //     if (item.condition.length) {
+    //         return (
+    //             <div className="conditionHeads" key={index}>
+    //                 <li
+    //                     role="presentation"
+    //                     style={{ fontWeight: item.weight }}
+    //                     onClick={() => {
+    //                         props.fromLeftToRight(
+    //                             item.name,
+    //                             item.dataType,
+    //                             item.enabled,
+    //                             item.types,
+    //                             item.field,
+    //                             item.condition,
+    //                             item.dataSource,
+    //                             item.validationMessage,
+    //                             item.options
+    //                         );
+    //                         // props.addedFilterCount();
+    //                     }}
+    //                 >
+    //                     {item.name}
+    //                 </li>
+    //             </div>
+    //         );
+    //     }
+    //     return <div key={index} />;
+    // });
     const normalHeads = leftDrawData.map((item, index) => {
         if (
             !(item.condition.length || item.types.length || item.field.length)
@@ -181,7 +208,6 @@ export default function LeftDrawer(props) {
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
-                        data-testid="normalHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -212,7 +238,6 @@ export default function LeftDrawer(props) {
                     type="text"
                     placeholder="Search a Filter"
                     defaultValue=""
-                    data-testid="searchFilterHandler-input"
                     className="customControl"
                     onChange={searchFilterHandler}
                 />

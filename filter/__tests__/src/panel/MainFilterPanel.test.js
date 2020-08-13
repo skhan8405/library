@@ -1,10 +1,11 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import "@testing-library/jest-dom/extend-expect";
 
 import { unmountComponentAtNode } from "react-dom";
-
 import MainFilterPanel from "../../../src/panel/MainFilterPanel";
 
 let container = null;
@@ -97,12 +98,9 @@ describe("Main Filter Panel component", () => {
     const showDrawer = jest.fn();
     const addAppliedFilters = {};
     const addSavedFilters = jest.fn();
-    // const addingToFavourite = jest.fn();
-    const setCountShow = jest.fn();
-
-    let listFilter = false;
 
     it("Should be available in MainFilterPanel ", () => {
+        // eslint-disable-next-line no-unused-vars
         const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
@@ -126,6 +124,7 @@ describe("Main Filter Panel component", () => {
             />,
             container
         );
+        // eslint-disable-next-line no-unused-expressions
         expect(props.applyFilterChip.applyFilter).toBeTruthy;
 
         const searchFilterHandlerElm = wrapper.getByTestId("typecheck");

@@ -52,16 +52,16 @@ export default function FieldComponent(props) {
                         </div>
                     </div>
                 </div>
-                {item.field.map((field, index) => {
+                {item.field.map((field, index_) => {
                     return (
-                        <div key={`${index}-${field.name}`}>
+                        <div key={`${index_}-${field.name}`}>
                             <div
                                 className="displayFlex"
-                                key={`${index},${field.name}`}
+                                key={`${index_},${field.name}`}
                             >
                                 <Form.Text>{field.column}</Form.Text>
                             </div>
-                            <div className="filter__split" key={index}>
+                            <div className="filter__split" key={index_}>
                                 <div className="date-wrap">
                                     <Form.Control
                                         disabled={!item.enabled}
