@@ -102,7 +102,7 @@ class ColumnReordering extends React.Component {
                             (item) =>
                                 item ===
                                 this.state.columnSelectList[
-                                    indexOfInsertion - 1
+                                indexOfInsertion - 1
                                 ]
                         );
                         indexOfInsertion += 1;
@@ -187,10 +187,10 @@ class ColumnReordering extends React.Component {
                                             this.state.maxLeftPinnedColumn -
                                                 this.state.leftPinnedColumList
                                                     .length <=
-                                            0
+                                                0
                                                 ? !this.state.leftPinnedColumList.includes(
-                                                      item
-                                                  )
+                                                    item
+                                                )
                                                 : false
                                         }
                                         onChange={() =>
@@ -274,6 +274,7 @@ class ColumnReordering extends React.Component {
                                 <div className="column__checkbox">
                                     <input
                                         type="checkbox"
+                                        data-testid="selectAllCheckBox"
                                         id="selectallcolumncheckbox"
                                         onChange={() =>
                                             this.selectAllToColumnReOrderList()
@@ -292,6 +293,7 @@ class ColumnReordering extends React.Component {
                                     <div className="column__wrap" key={item}>
                                         <div className="column__checkbox">
                                             <input
+                                                data-testid="addToColumnReorderEntityList"
                                                 type="checkbox"
                                                 id={`checkboxtoselectreorder_${item}`}
                                                 checked={this.state.columnReorderEntityList.includes(
@@ -318,6 +320,7 @@ class ColumnReordering extends React.Component {
                                 <strong>Column Settings</strong>
                             </div>
                             <div
+                                data-testid="closeColumnReordering"
                                 className="column__close"
                                 onClick={() =>
                                     this.props.closeColumnReOrdering()
@@ -337,20 +340,20 @@ class ColumnReordering extends React.Component {
                                 </strong>
                                 {this.state.maxLeftPinnedColumn -
                                     this.state.leftPinnedColumList.length >
-                                0 ? (
-                                    <strong>
-                                        &nbsp; &nbsp; Left Pinned Column Count
+                                    0 ? (
+                                        <strong>
+                                            &nbsp; &nbsp; Left Pinned Column Count
                                         Remaining :{" "}
-                                        {this.state.maxLeftPinnedColumn -
-                                            this.state.leftPinnedColumList
-                                                .length}
-                                    </strong>
-                                ) : (
-                                    <strong style={{ color: "red" }}>
-                                        &nbsp; &nbsp; Maximum Count Of Left Pin
-                                        Columns REACHED
-                                    </strong>
-                                )}
+                                            {this.state.maxLeftPinnedColumn -
+                                                this.state.leftPinnedColumList
+                                                    .length}
+                                        </strong>
+                                    ) : (
+                                        <strong style={{ color: "red" }}>
+                                            &nbsp; &nbsp; Maximum Count Of Left Pin
+                                            Columns REACHED
+                                        </strong>
+                                    )}
                             </div>
                             <DndProvider
                                 backend={TouchBackend}
@@ -367,6 +370,7 @@ class ColumnReordering extends React.Component {
                         <div className="column__footer">
                             <div className="column__btns">
                                 <button
+                                    data-testid="resetButton"
                                     type="button"
                                     className="btns"
                                     onClick={() =>
@@ -376,6 +380,7 @@ class ColumnReordering extends React.Component {
                                     Reset
                                 </button>
                                 <button
+                                    data-testid="cancelButton"
                                     type="button"
                                     className="btns"
                                     onClick={() =>
@@ -385,6 +390,7 @@ class ColumnReordering extends React.Component {
                                     Cancel
                                 </button>
                                 <button
+                                    data-testid="saveButton"
                                     type="button"
                                     className="btns btns__save"
                                     onClick={() =>

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import ExtDataGrid from "../../../src/common/extDataGrid";
 import ReactTestUtils, { act } from "react-dom/test-utils";
+import "@testing-library/jest-dom/extend-expect";
 
 let container;
 

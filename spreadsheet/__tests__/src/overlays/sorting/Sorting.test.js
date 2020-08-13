@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
+import { render, screen, fireEvent, getByRole, getByText } from "@testing-library/react";
 import Sorting from "../../../../src/overlays/sorting/Sorting";
+import "@testing-library/jest-dom/extend-expect";
+import { element } from "prop-types";
 
 let container;
 
@@ -14,25 +17,32 @@ afterEach(() => {
     document.body.removeChild(container);
     container = null;
 });
+
+const closeSorting = jest.fn();
+const sortingParamsObjectList = [];
+const columnFieldValue = [
+    "FlightNo",
+    "Date",
+    "Segment From",
+    "Revenue",
+    "Yeild",
+    "Segment To",
+    "Flight Model",
+    "Body Type",
+    "Type",
+    "Start Time",
+    "End Time"
+];
+const clearAllSortingParams = jest.fn();
+const setTableAsPerSortingParams = jest.fn(([]) => { });
+const handleTableSortSwap = jest.fn(([]) => { });
+
 test("<Sorting />", () => {
-    const closeSorting = jest.fn();
-    const sortingParamsObjectList = undefined;
-    const columnFieldValue = [
-        "FlightNo",
-        "Date",
-        "Segment From",
-        "Revenue",
-        "Yeild",
-        "Segment To",
-        "Flight Model",
-        "Body Type",
-        "Type",
-        "Start Time",
-        "End Time"
-    ];
-    const clearAllSortingParams = jest.fn();
-    const setTableAsPerSortingParams = jest.fn(([]) => {});
-    const handleTableSortSwap = jest.fn(([]) => {});
+    let sortingParamsObjectList = [{
+        order: "Ascending",
+        sortBy: "FlightNo",
+        sortOn: "Value"
+    }];
     act(() => {
         ReactDOM.render(
             <Sorting
@@ -56,7 +66,9 @@ test("<Sorting />", () => {
             handleTableSortSwap={handleTableSortSwap}
         />
     );
+
     component.add();
+    component.copy(0);
     component.captureSortingFeildValues(
         { target: { value: "Ascending" } },
         0,
@@ -68,10 +80,108 @@ test("<Sorting />", () => {
         "order"
     );
     component.updateTableAsPerSortCondition();
-    component.handleReorderListOfSort([]);
-    component.copy(1);
-    component.remove(2);
+    component.handleReorderListOfSort(["FlightNo",
+        "Date",
+        "Segment From",
+        "Revenue",
+        "Yeild"]);
+    sortingParamsObjectList = [];
+    component = ReactTestUtils.renderIntoDocument(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    component.remove(0);
     component.clearAll();
+    component.handleClickOutside({
+        target: {}
+    });
+
+});
+it("close sorting event trigger", () => {
+    let sortingParamsObjectList = [{
+        order: "Ascending",
+        sortBy: "FlightNo",
+        sortOn: "Value"
+    }];
+    const { getByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.click(getByTestId("closeSorting"));
+});
+
+it("selecting order dropDown", () => {
+    let component = ReactTestUtils.renderIntoDocument(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    component.createColumnsArrayFromProps([{
+        order: "Ascending",
+        sortBy: "FlightNo",
+        sortOn: "Value"
+    }])
+});
+it("ApplySort event trigger", () => {
+    const { getByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.click(getByTestId("applySort"));
+    const element = getByTestId("applySort")
+    expect(element).toHaveTextContent('Ok')
+});
+it("Add Sorting event trigger", () => {
+    const { getByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.click(getByTestId("addSort"));
+    fireEvent.keyDown(getByTestId("addSort"), { key: 'Enter', code: 'Enter' })
+});
+it("selecting Value from dropDown", () => {
+    const { getAllByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.change(getAllByTestId("selectingValue")[0], { target: { value: "FlightNo" } });
+    const element = getAllByTestId("selectingValue")[0]
+    expect(element).toHaveTextContent('Value')
 });
 // it("Should not call action on/off click inside the ExportData", () => {
 //   const map = {};

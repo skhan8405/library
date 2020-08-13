@@ -98,6 +98,7 @@ class App extends React.Component {
 
                             <div className="sort__file">
                                 <select
+                                    data-testid="selectSortingField"
                                     className="custom__ctrl"
                                     name="sortBy"
                                     onChange={(e) =>
@@ -125,6 +126,7 @@ class App extends React.Component {
                                 <select
                                     className="custom__ctrl"
                                     name="sortOn"
+                                    data-testid="selectingValue"
                                     onChange={(e) =>
                                         this.captureSortingFeildValues(
                                             e,
@@ -146,6 +148,7 @@ class App extends React.Component {
 
                             <div className="sort__file">
                                 <select
+                                    data-testid="selectOrder"
                                     className="custom__ctrl"
                                     name="order"
                                     onChange={(e) =>
@@ -221,11 +224,11 @@ class App extends React.Component {
         );
         showError
             ? this.setState({
-                  errorMessage: true
-              })
+                errorMessage: true
+            })
             : this.setState({
-                  errorMessage: false
-              });
+                errorMessage: false
+            });
         if (!showError) {
             this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
         }
@@ -246,13 +249,16 @@ class App extends React.Component {
     }
 
     render() {
+        //console.log(this.props)
         return (
             <div className="neo-popover" ref={this.setWrapperRef}>
                 <div className="neo-popover__sort">
                     <div className="neo-popover__title">
                         <h2>Sort</h2>
                         <div className="neo-popover__close">
-                            <i onClick={() => this.props.closeSorting()}>
+                            <i
+                                data-testid="closeSorting"
+                                onClick={() => this.props.closeSorting()}>
                                 <IconClose />
                             </i>
                         </div>
@@ -280,13 +286,14 @@ class App extends React.Component {
                                 one.
                             </span>
                         ) : (
-                            ""
-                        )}
+                                ""
+                            )}
                     </div>
                     <div className="sort__new">
                         <div
                             role="presentation"
                             className="sort__section"
+                            data-testid="addSort"
                             onClick={() => this.add()}
                             onKeyDown={() => this.add()}
                         >
@@ -305,6 +312,7 @@ class App extends React.Component {
                             </button>
 
                             <button
+                                data-testid="applySort"
                                 type="button"
                                 className="btns btns__save"
                                 onClick={() =>
