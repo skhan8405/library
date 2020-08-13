@@ -47,12 +47,14 @@ export default function AutoComplete(props) {
                             className={item.type.concat(item.name)}
                             id={item.name.concat(item.type)}
                             checked={item.enabled}
+                            data-testid="handleAutoCompleteEnabled-check"
                             onChange={() => {
                                 props.handleAutoCompleteEnabled(item);
                             }}
                         />
                         <div
                             role="presentation"
+                            data-testid="deleteAutoCompleteElement-click"
                             onClick={() => {
                                 handleClose(item);
                             }}

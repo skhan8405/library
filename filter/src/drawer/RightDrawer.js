@@ -5,7 +5,6 @@ import { Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import AutoComplete from "../types/AutoCompleteComponent";
 import FieldComponent from "../types/DateTimeComponent";
-import Condition from "../types/ConditionalComponent";
 import TextComponents from "../types/TextComponents";
 import { ReactComponent as SaveLogo } from "../images/save-icon.svg";
 
@@ -67,6 +66,7 @@ const RightDrawer = (props) => {
             <div
                 role="presentation"
                 className="recentFilters"
+                data-testid="recentFilters-div"
                 key={index}
                 onClick={() => {
                     props.addSavedFilters(filterArray);
@@ -122,14 +122,6 @@ const RightDrawer = (props) => {
                         lastDayChange={props.lastDayChange}
                         nextDayChange={props.nextDayChange}
                     />
-                    <Condition
-                        conditionsArray={props.conditionsArray}
-                        handleCondionalEnabled={props.handleCondionalEnabled}
-                        createConditionalArray={props.createConditionalArray}
-                        deleteConditionalElement={
-                            props.deleteConditionalElement
-                        }
-                    />
                     <TextComponents
                         textComponentsArray={props.textComponentsArray}
                         deleteTextComponentElement={
@@ -168,10 +160,10 @@ const RightDrawer = (props) => {
                         <Button
                             variant=""
                             className="applyFilter"
+                            data-testid="applyFilter-button"
                             onClick={() => {
                                 props.applyFilter();
                                 props.deleteAutoCompleteElement({});
-                                props.deleteConditionalElement({});
                                 props.deleteDateTimeElement({});
                                 props.deleteTextComponentElement({});
                             }}
@@ -191,12 +183,14 @@ const RightDrawer = (props) => {
                         <input
                             className="txt"
                             value={saveFilterName}
+                            data-testid="registersaveFilterName-input"
                             onChange={(e) => registersaveFilterName(e)}
                         />
                         <div className="btn-wrap">
                             <button
                                 type="button"
                                 className="button"
+                                data-testid="cancelSavePopup-button"
                                 onClick={() => {
                                     cancelSavePopup();
                                 }}
@@ -206,6 +200,7 @@ const RightDrawer = (props) => {
                             <button
                                 type="button"
                                 className="button"
+                                data-testid="saveFilter-button"
                                 onClick={() => {
                                     props.saveFilter(saveFilterName);
                                     // setSaveFilterName("");
@@ -252,10 +247,7 @@ RightDrawer.propTypes = {
     addThisWeek: PropTypes.any,
     lastDayChange: PropTypes.any,
     nextDayChange: PropTypes.any,
-    conditionsArray: PropTypes.any,
     handleCondionalEnabled: PropTypes.any,
-    createConditionalArray: PropTypes.any,
-    deleteConditionalElement: PropTypes.any,
     textComponentsArray: PropTypes.any,
     deleteTextComponentElement: PropTypes.any,
     createTextComponentsArray: PropTypes.any,
