@@ -236,6 +236,6 @@ describe("CellDisplayAndEdit unit test", () => {
         const div = container.getElementsByClassName(
             "table-cell--content table-cell--content__flight"
         );
-        expect(div).toBeUndefined();
+        expect(div).toBe([]);
     });
 });
