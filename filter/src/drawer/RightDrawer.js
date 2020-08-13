@@ -66,6 +66,7 @@ const RightDrawer = (props) => {
             <div
                 role="presentation"
                 className="recentFilters"
+                data-testid="recentFilters-div"
                 key={index}
                 onClick={() => {
                     props.addSavedFilters(filterArray);
@@ -159,6 +160,7 @@ const RightDrawer = (props) => {
                         <Button
                             variant=""
                             className="applyFilter"
+                            data-testid="applyFilter-button"
                             onClick={() => {
                                 props.applyFilter();
                                 props.deleteAutoCompleteElement({});
@@ -181,12 +183,14 @@ const RightDrawer = (props) => {
                         <input
                             className="txt"
                             value={saveFilterName}
+                            data-testid="registersaveFilterName-input"
                             onChange={(e) => registersaveFilterName(e)}
                         />
                         <div className="btn-wrap">
                             <button
                                 type="button"
                                 className="button"
+                                data-testid="cancelSavePopup-button"
                                 onClick={() => {
                                     cancelSavePopup();
                                 }}
@@ -196,6 +200,7 @@ const RightDrawer = (props) => {
                             <button
                                 type="button"
                                 className="button"
+                                data-testid="saveFilter-button"
                                 onClick={() => {
                                     props.saveFilter(saveFilterName);
                                     // setSaveFilterName("");

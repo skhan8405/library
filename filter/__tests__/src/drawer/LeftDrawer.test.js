@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import "@testing-library/user-event";
+import "@testing-library/jest-dom/extend-expect";
 
 import LeftDrawer from "../../../src/drawer/LeftDrawer";
 import userEvent from "@testing-library/user-event";
