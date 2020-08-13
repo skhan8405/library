@@ -80,6 +80,7 @@ export default function LeftDrawer(props) {
                                 onClick={() => {
                                     handleAccordian();
                                 }}
+                                data-testid="handleAccordianArrow"
                                 style={{ fontWeight: item.weight }}
                                 as={Card.Header}
                                 eventKey="1"
@@ -110,6 +111,7 @@ export default function LeftDrawer(props) {
                                                             fontWeight:
                                                                 type.weight
                                                         }}
+                                                        data-testid="firstAccordion"
                                                         onClick={() => {
                                                             props.fromLeftToRight(
                                                                 item.name,
@@ -147,6 +149,7 @@ export default function LeftDrawer(props) {
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
+                        data-testid="fieldHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -176,6 +179,7 @@ export default function LeftDrawer(props) {
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
+                        data-testid="conditionHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -207,6 +211,7 @@ export default function LeftDrawer(props) {
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
+                        data-testid="normalHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -237,6 +242,7 @@ export default function LeftDrawer(props) {
                     type="text"
                     placeholder="Search a Filter"
                     defaultValue=""
+                    data-testid="searchFilterHandler-input"
                     className="customControl"
                     onChange={searchFilterHandler}
                 />
