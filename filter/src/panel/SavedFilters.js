@@ -34,6 +34,7 @@ const SavedFilters = (props) => {
                     <div
                         role="presentation"
                         style={{ marginLeft: "15px" }}
+                        data-testid="addSavedFilters-check"
                         onClick={() => {
                             // below two methods are required for closing the savedFilter list popUp
                             setShowFilter(false);
