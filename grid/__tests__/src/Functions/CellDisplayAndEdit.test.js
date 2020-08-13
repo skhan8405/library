@@ -3,12 +3,11 @@
 import React from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/extend-expect";
 import CellDisplayAndEdit from "../../../src/Functions/CellDisplayAndEdit";
 
 describe("CellDisplayAndEdit unit test", () => {
     const mockUpdateDateValue = jest.fn();
-    const mockUpdateFlightNo = jest.fn();
     const mockDisplayCell = jest.fn((rowData, DisplayTag) => {
         const { flightno, date } = rowData.flight;
         return (
@@ -16,24 +15,26 @@ describe("CellDisplayAndEdit unit test", () => {
                 <DisplayTag cellKey="flightno" columnKey="flight">
                     <strong>{flightno}</strong>
                 </DisplayTag>
-                <DisplayTag cellKey="date">
+                <DisplayTag columnKey="flight" cellKey="date">
                     <span>{date}</span>
                 </DisplayTag>
             </div>
         );
     });
-    const mockEditCell = jest.fn((rowData, DisplayTag) => {
+    const mockEditCell = jest.fn((rowData, DisplayTag, rowUpdateCallBack) => {
         const { flightno, date } = rowData.flight;
         return (
             <div>
-                <DisplayTag cellKey="flightno">
+                <DisplayTag columnKey="flight" cellKey="flightno">
                     <input
+                        data-testid="flightnoinput"
+                        className="flight-no-input"
                         type="text"
                         value={flightno}
-                        onChange={mockUpdateFlightNo}
+                        onChange={() => rowUpdateCallBack("nothing")}
                     />
                 </DisplayTag>
-                <DisplayTag cellKey="date">
+                <DisplayTag columnKey="flight" cellKey="date">
                     <input
                         type="date"
                         value={date}
@@ -70,6 +71,35 @@ describe("CellDisplayAndEdit unit test", () => {
                     date: "31-Aug-2016"
                 }
             }
+        }
+    };
+
+    const editedRowValue = {
+        travelId: 0,
+        flight: {
+            flightno: "123",
+            date: "31-Aug-2016"
+        }
+    };
+
+    const incorrectRowValue = {
+        column: {
+            id: "flight",
+            Cell: jest.fn(),
+            accessor: jest.fn(),
+            columnId: "column_1",
+            depth: 0,
+            displayCell: mockDisplayCell,
+            editCell: mockEditCell,
+            innerCells: [
+                { Header: "Flight No", accessor: "flightno" },
+                { Header: "Date", accessor: "date" }
+            ],
+            isVisible: true,
+            originalInnerCells: [
+                { Header: "Flight No", accessor: "flightno" },
+                { Header: "Date", accessor: "date" }
+            ]
         }
     };
 
@@ -167,19 +197,15 @@ describe("CellDisplayAndEdit unit test", () => {
         });
         fireEvent.click(component.getByTestId("cancel"));
     });
-
-    it("should save values in edit option by clicking on save button", () => {
-        let component = null;
-        act(() => {
-            component = render(
-                <CellDisplayAndEdit
-                    row={row}
-                    columns={columns}
-                    updateRowInGrid={mockupdateRowInGrid}
-                />,
-                container
-            );
-        });
+    it("should save values in edit option by clicking on save button after making value change", () => {
+        const { getByTestId } = render(
+            <CellDisplayAndEdit
+                row={row}
+                columns={columns}
+                updateRowInGrid={mockupdateRowInGrid}
+            />,
+            container
+        );
         const editButton = document.querySelector("[class=cell-edit]")
             .firstChild;
         act(() => {
@@ -187,6 +213,30 @@ describe("CellDisplayAndEdit unit test", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        fireEvent.click(component.getByTestId("ok"));
+        const flightNoInput = getByTestId("flightnoinput");
+        expect(flightNoInput.value).toBe("XX2225");
+        fireEvent.change(flightNoInput, { target: { value: "123" } });
+
+        const setState = jest.fn(() => editedRowValue);
+        const useStateSpy = jest.spyOn(React, "useState");
+        /* eslint no-return-assign: "error" */
+        /* eslint-disable no-unused-vars */
+        useStateSpy.mockImplementation((init) => [editedRowValue, setState]);
+        fireEvent.click(getByTestId("ok"));
+    });
+    it("should not render component", () => {
+        let component = null;
+        act(() => {
+            component = render(
+                <CellDisplayAndEdit
+                    row={incorrectRowValue}
+                    columns={columns}
+                    updateRowInGrid={mockupdateRowInGrid}
+                />,
+                container
+            );
+        });
+        const editButton = document.querySelector("[class=cell-edit]");
+        expect(editButton).toBe(null);
     });
 });

@@ -1,10 +1,11 @@
+/* eslint-disable no-undef */
+
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { act } from "react-dom/test-utils";
+import "@testing-library/jest-dom/extend-expect";
 
 import { unmountComponentAtNode } from "react-dom";
-
 import MainFilterPanel from "../../../src/panel/MainFilterPanel";
 
 let container = null;
@@ -97,12 +98,9 @@ describe("Main Filter Panel component", () => {
     const showDrawer = jest.fn();
     const addAppliedFilters = {};
     const addSavedFilters = jest.fn();
-    // const addingToFavourite = jest.fn();
-    const setCountShow = jest.fn();
-
-    let listFilter = false;
 
     it("Should be available in MainFilterPanel ", () => {
+        // eslint-disable-next-line no-unused-vars
         const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
@@ -116,18 +114,21 @@ describe("Main Filter Panel component", () => {
     });
 
     it(" Check type click ", () => {
-        // const element = .getAllByTestId("typecheck");
-        // console.log(element);
-        const { getByTestId } = render(
+        const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip.applyFilter}
+                applyFilterChip={props.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
                 addingToFavourite={props.addingToFavourite}
-            />
+            />,
+            container
         );
-        fireEvent.click(getByTestId("typecheck"));
+        // eslint-disable-next-line no-unused-expressions
+        expect(props.applyFilterChip.applyFilter).toBeTruthy;
+
+        const searchFilterHandlerElm = wrapper.getByTestId("typecheck");
+        expect(searchFilterHandlerElm).toHaveBeenCalledTimes(1);
     });
 
     it(" Check condition click ", () => {
@@ -180,5 +181,18 @@ describe("Main Filter Panel component", () => {
             />
         );
         fireEvent.click(getByTestId("showDrawer-check"));
+    });
+
+    it("Handle List Filter Check ", () => {
+        const { getByTestId } = render(
+            <MainFilterPanel
+                showDrawer={showDrawer}
+                applyFilterChip={props.applyFilterChip.applyFilter}
+                addAppliedFilters={addAppliedFilters}
+                addSavedFilters={addSavedFilters}
+                addingToFavourite={props.addingToFavourite}
+            />
+        );
+        fireEvent.click(getByTestId("handleListFilterCheck"));
     });
 });

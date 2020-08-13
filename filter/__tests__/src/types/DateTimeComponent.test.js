@@ -1,6 +1,10 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-expressions */
+
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/extend-expect";
 
 import FieldComponent from "../../../src/types/DateTimeComponent";
 
@@ -27,7 +31,7 @@ describe("FieldComponent component", () => {
 
     const props = {
         dateTimesArray: item,
-        deleteDateTimeElement: false,
+        deleteDateTimeElement: jest.fn(),
         handleDateTimeEnabled: true,
         createDateTimeArray: "",
         addToday: "addtoday",
