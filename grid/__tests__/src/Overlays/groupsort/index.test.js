@@ -1,16 +1,10 @@
+/* eslint-disable no-undef */
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-    render,
-    cleanup,
-    fireEvent,
-    screen,
-    getByTestId
-} from "@testing-library/react";
-import { create } from "react-test-renderer";
+import { render, cleanup } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import "@testing-library/jest-dom/extend-expect";
-import GroupSort from "../../../src/Overlays/groupsort/index.js";
+import GroupSort from "../../../../src/Overlays/groupsort/index";
 
 describe("Group Sort-index test Cases", () => {
     const isGroupSortLayOverOpen = true;
@@ -67,9 +61,9 @@ describe("Group Sort-index test Cases", () => {
     const mockApplyGroupSortOverlay = jest.fn();
 
     it("renders Component", () => {
-        //LOGIC-->> render the div
-        //expect sorts--grid to be defined
-        const { container } = render(
+        // LOGIC-->> render the div
+        // expect sorts--grid to be defined
+        render(
             <GroupSort
                 isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                 toggleGroupSortOverLay={mockTableGroupSortOverLay}
@@ -77,43 +71,13 @@ describe("Group Sort-index test Cases", () => {
                 applyGroupSort={mockApplyGroupSortOverlay}
             />
         );
-        const div = container.getElementsByClassName("sorts--grid");
+        const div = document.getElementsByClassName("sorts--grid");
         expect(div).toBeDefined();
     });
 
-    it("should close Sort Overlay by clicking on close button", () => {
-        //LOGIC-->> close the layover on close button click
-        //expect neo-popover to be undefined
-        act(() => {
-            ReactDOM.render(
-                <GroupSort
-                    isGroupSortOverLayOpen={isGroupSortLayOverOpen}
-                    toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    originalColumns={originalColumns}
-                    applyGroupSort={mockApplyGroupSortOverlay}
-                />,
-                container
-            );
-        });
-        const closeButton = container
-            // .querySelector("[class=neo-popover__close]")
-            .getElementsByClassName("fa fa-times")[0];
-
-        act(() => {
-            closeButton.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        /*query --> sortLayOverDiv should be null*/
-        const sortLayOverDiv = document.getElementsByClassName(
-            ".neo-popover"
-        )[0];
-        expect(sortLayOverDiv).toBeUndefined();
-    });
-
     it("Clear All Sort Options", () => {
-        //LOGIC-->> Click the clear All button
-        //expect innerHTML inside sort body be ""
+        // LOGIC-->> Click the clear All button
+        // expect innerHTML inside sort body be ""
         act(() => {
             ReactDOM.render(
                 <GroupSort
@@ -135,12 +99,12 @@ describe("Group Sort-index test Cases", () => {
             .querySelector("[class=neo-popover__content]")
             .getElementsByTagName("div")[0].innerHTML;
 
-        //after clear all, the div inside class 'neo-popover__content' should be empty
+        // after clear all, the div inside class 'neo-popover__content should be empty
         expect(sortDivText).toBe("");
     });
 
     it("Apply Sort Test ", () => {
-        //LOGIC-->> Apply  sorting Param
+        // LOGIC-->> Apply  sorting Param
         // expect the HTML element neo-popover NOT to exists as layover gets closed.
         act(() => {
             ReactDOM.render(
@@ -167,12 +131,11 @@ describe("Group Sort-index test Cases", () => {
         const sortLayOverDiv = document.getElementsByClassName(
             ".neo-popover"
         )[0];
-        /*query --> sortLayOverDiv should be null*/
         expect(sortLayOverDiv).toBeUndefined();
     });
 
     it("Add New Sort ", () => {
-        //LOGIC-->> Add A sorting Param
+        // LOGIC-->> Add A sorting Param
         // expect no of rows in the sort__body HTML element to be more than 1 as previous.
         act(() => {
             ReactDOM.render(
@@ -193,7 +156,7 @@ describe("Group Sort-index test Cases", () => {
             .querySelector(".sort__section")
             .querySelector(".sort__txt");
 
-        //adding a new sort
+        // adding a new sort
         act(() => {
             newSortTxt.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
@@ -208,7 +171,7 @@ describe("Group Sort-index test Cases", () => {
     });
 
     it("Update A Sort Parameter", () => {
-        //LOGIC-->> Update a sorting Row by onChange of sortBy Select List
+        // LOGIC-->> Update a sorting Row by onChange of sortBy Select List
         // expect the sorting layover should exists.
         act(() => {
             ReactDOM.render(
@@ -257,7 +220,7 @@ describe("Group Sort-index test Cases", () => {
     });
 
     it("Delete A Sort Parameter", () => {
-        //LOGIC-->> check length of HTML element sort__bodyContent before and after delete
+        // LOGIC-->> check length of HTML element sort__bodyContent before and after delete
         // length before and after delete should be same.
         act(() => {
             ReactDOM.render(
@@ -279,7 +242,7 @@ describe("Group Sort-index test Cases", () => {
             .querySelector(".sort__section")
             .querySelector(".sort__txt");
 
-        //adding a sorting option
+        // adding a sorting option
         act(() => {
             newSortTxt.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
@@ -288,7 +251,7 @@ describe("Group Sort-index test Cases", () => {
 
         const deleteIcon = document.getElementsByClassName("sort__icon")[1];
 
-        //deleting a sorting option
+        // deleting a sorting option
         act(() => {
             deleteIcon.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
@@ -303,7 +266,7 @@ describe("Group Sort-index test Cases", () => {
     });
 
     it("Copy A Sort Parameter", () => {
-        //LOGIC-->> check length of HTML element sort__bodyContent before and after copy
+        // LOGIC-->> check length of HTML element sort__bodyContent before and after copy
         // length after Copy should be greater than 1 as before Copy.
         act(() => {
             ReactDOM.render(
@@ -323,7 +286,7 @@ describe("Group Sort-index test Cases", () => {
 
         const copyIcon = document.getElementsByClassName("sort__icon")[0];
 
-        //copying a sorting option
+        // copying a sorting option
         act(() => {
             copyIcon.dispatchEvent(new MouseEvent("click", { bubbles: true }));
         });
@@ -336,8 +299,8 @@ describe("Group Sort-index test Cases", () => {
     });
 
     it("Not Rendering the SortLayOver", () => {
-        //LOGIC-->> check render of layover with isGroupSortOverLayOpen as false
-        //exprect HTML element sort__bodyContent to be undefined
+        // LOGIC-->> check render of layover with isGroupSortOverLayOpen as false
+        // exprect HTML element sort__bodyContent to be undefined
         act(() => {
             ReactDOM.render(
                 <GroupSort
@@ -351,4 +314,3 @@ describe("Group Sort-index test Cases", () => {
         });
     });
 });
-
