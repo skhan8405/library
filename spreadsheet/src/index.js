@@ -22,7 +22,7 @@ import { ReactComponent as IconFilter } from "./images/icon-filter.svg";
 import { ReactComponent as IconSearch } from "./images/icon-search.svg";
 
 // eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+//import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const { DropDownEditor } = Editors;
 const selectors = Data.Selectors;
@@ -1231,9 +1231,9 @@ class Spreadsheet extends Component {
                     globalSearch={this.globalSearchLogic}
                     handleWarningStatus={this.handleWarningStatus}
                     closeWarningStatus={this.closeWarningStatus}
-                    // cellRangeSelection={{
-                    //   onComplete: this.setSelection,
-                    // }}
+                // cellRangeSelection={{
+                //   onComplete: this.setSelection,
+                // }}
                 />
             </div>
         );
