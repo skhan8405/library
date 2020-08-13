@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/extend-expect";
 
 import AutoCompleteComponent from "../../../src/types/AutoCompleteComponent";
 
@@ -24,8 +25,8 @@ describe("AutoCompleteComponent component", () => {
         options: "",
         autoCompleteArray: item,
         handleAutoCompleteEnabled: true,
-        deleteAutoCompleteElement: true,
-        createAutoCompleteArray: ""
+        deleteAutoCompleteElement: jest.fn(),
+        createAutoCompleteArray: item
     };
 
     it("Should be available in AutoCompleteComponent ", () => {

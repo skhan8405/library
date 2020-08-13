@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/extend-expect";
 
 import TextComponents from "../../../src/types/TextComponents";
 
@@ -18,7 +19,7 @@ describe("TextComponents component", () => {
     const props = {
         textComponentArr: item,
         handleTextComponentEnabled: true,
-        deleteTextComponentElement: true,
+        deleteTextComponentElement: jest.fn(),
         createTextComponentsArray: ""
     };
 
