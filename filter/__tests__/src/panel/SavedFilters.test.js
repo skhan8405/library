@@ -22,17 +22,9 @@ afterEach(() => {
 });
 
 describe("Main Filter Panel component", () => {
-    const props = {
-        onSelectSavedFilter: {},
-        listHandler: jest.fn(),
-        showFilter: true
-    };
-    // const showFilter = true;
-
     const handleListFilter = jest.fn();
     const addSavedFilters = jest.fn();
     const addingToFavourite = jest.fn();
-    const setShowFilter = jest.fn();
 
     let container;
     beforeEach(() => {
@@ -52,14 +44,12 @@ describe("Main Filter Panel component", () => {
     it("Save Filter ", () => {
         const { getByTestId } = render(
             <SavedFilters
-                showFilter={props.showFilter}
+                showFilter={true}
                 handleListFilter={handleListFilter}
                 addSavedFilters={addSavedFilters}
+                addingToFavourite={addingToFavourite}
             />
         );
-        // fireEvent.click(getByTestId("addSavedFilters-check"));
-
-        expect(props.listHandler).toHaveBeenCalledTimes(1);
-        expect(handleListFilter).toHaveBeenCalledTimes(1);
+        fireEvent.click(getByTestId("addSavedFilters-check"));
     });
 });
