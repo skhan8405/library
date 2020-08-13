@@ -247,7 +247,6 @@ RightDrawer.propTypes = {
     addThisWeek: PropTypes.any,
     lastDayChange: PropTypes.any,
     nextDayChange: PropTypes.any,
-    handleCondionalEnabled: PropTypes.any,
     textComponentsArray: PropTypes.any,
     deleteTextComponentElement: PropTypes.any,
     createTextComponentsArray: PropTypes.any,

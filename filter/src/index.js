@@ -189,30 +189,6 @@ export default function Filter(props) {
      * Method To delete the specific element from filter array upon clicking close
      * @param {*} item is the specific filter element object
      */
-    const deleteConditionalElement = (item) => {
-        filterData.filter.forEach((it) => {
-            // Added for no-param-reassign lint errors
-            const deleteItem = it;
-            if (deleteItem.name === item.name) {
-                deleteItem.weight = 400;
-            }
-        });
-        let conditionArray = [...conditionsArray];
-        const index = conditionArray.findIndex(
-            (x) => x.name === item.name && x.dataType === item.dataType
-        );
-        if (index !== -1) {
-            conditionArray.splice(index, 1);
-        } else {
-            conditionArray = [];
-        }
-        setConditionsArray(conditionArray);
-    };
-
-    /**
-     * Method To delete the specific element from filter array upon clicking close
-     * @param {*} item is the specific filter element object
-     */
     /* eslint-disable no-param-reassign */
     const deleteDateTimeElement = (item) => {
         filterData.filter.forEach((it) => {
@@ -277,7 +253,6 @@ export default function Filter(props) {
      */
     const resetDrawer = () => {
         deleteAutoCompleteElement({});
-        deleteConditionalElement({});
         deleteDateTimeElement({});
         deleteTextComponentElement({});
         setApplyFilterChip({});
@@ -1432,7 +1407,6 @@ export default function Filter(props) {
         setFilterShow("");
         setRecentFilterShow("none");
         let autoComplete = [];
-        let condition = [];
         let text = [];
         const tempArr = [];
         const savedFilters = [];
@@ -1546,17 +1520,7 @@ export default function Filter(props) {
         // eslint-disable-next-line no-use-before-define
         setApplyFilter(true);
     };
-    /**
-     * Method To reset the right drawer
-     */
-    const resetDrawer = () => {
-        deleteAutoCompleteElement({});
-        deleteDateTimeElement({});
-        deleteTextComponentElement({});
-        setApplyFilterChip({});
-        setRecentFilterShow("");
-        setFilterShow("none");
-    };
+
     const { ref, showApplyFilter, setApplyFilter } = useComponentVisible(true);
     return (
         <div ref={ref}>
