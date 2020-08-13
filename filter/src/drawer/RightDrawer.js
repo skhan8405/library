@@ -5,7 +5,6 @@ import { Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import AutoComplete from "../types/AutoCompleteComponent";
 import FieldComponent from "../types/DateTimeComponent";
-import Condition from "../types/ConditionalComponent";
 import TextComponents from "../types/TextComponents";
 import { ReactComponent as SaveLogo } from "../images/save-icon.svg";
 
@@ -122,14 +121,6 @@ const RightDrawer = (props) => {
                         lastDayChange={props.lastDayChange}
                         nextDayChange={props.nextDayChange}
                     />
-                    <Condition
-                        conditionsArray={props.conditionsArray}
-                        handleCondionalEnabled={props.handleCondionalEnabled}
-                        createConditionalArray={props.createConditionalArray}
-                        deleteConditionalElement={
-                            props.deleteConditionalElement
-                        }
-                    />
                     <TextComponents
                         textComponentsArray={props.textComponentsArray}
                         deleteTextComponentElement={
@@ -171,7 +162,6 @@ const RightDrawer = (props) => {
                             onClick={() => {
                                 props.applyFilter();
                                 props.deleteAutoCompleteElement({});
-                                props.deleteConditionalElement({});
                                 props.deleteDateTimeElement({});
                                 props.deleteTextComponentElement({});
                             }}
@@ -252,10 +242,7 @@ RightDrawer.propTypes = {
     addThisWeek: PropTypes.any,
     lastDayChange: PropTypes.any,
     nextDayChange: PropTypes.any,
-    conditionsArray: PropTypes.any,
     handleCondionalEnabled: PropTypes.any,
-    createConditionalArray: PropTypes.any,
-    deleteConditionalElement: PropTypes.any,
     textComponentsArray: PropTypes.any,
     deleteTextComponentElement: PropTypes.any,
     createTextComponentsArray: PropTypes.any,

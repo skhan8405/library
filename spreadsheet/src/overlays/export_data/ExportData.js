@@ -224,6 +224,7 @@ class ExportData extends React.Component {
                         <div className="export__body">
                             <div>
                                 <input
+                                    data-testid="searchExport"
                                     type="text"
                                     placeholder="Search export"
                                     className="custom__ctrl"
@@ -233,6 +234,7 @@ class ExportData extends React.Component {
                             <div className="export__wrap export__headertxt">
                                 <div className="export__checkbox">
                                     <input
+                                        data-testid="selectColumns"
                                         className="selectColumn"
                                         type="checkbox"
                                         onChange={() =>
@@ -244,32 +246,33 @@ class ExportData extends React.Component {
                                 <div className="export__txt">Select All</div>
                             </div>
                             {this.state.columnValueList &&
-                            this.state.columnValueList.length > 0
+                                this.state.columnValueList.length > 0
                                 ? this.state.columnValueList.map((column) => {
-                                      return (
-                                          <div
-                                              className="export__wrap"
-                                              key={column.key}
-                                          >
-                                              <div className="export__checkbox">
-                                                  <input
-                                                      type="checkbox"
-                                                      checked={this.state.columnEntityList.includes(
-                                                          column
-                                                      )}
-                                                      onChange={() =>
-                                                          this.addToColumnEntityList(
-                                                              column
-                                                          )
-                                                      }
-                                                  />
-                                              </div>
-                                              <div className="export__txt">
-                                                  {column.name}
-                                              </div>
-                                          </div>
-                                      );
-                                  })
+                                    return (
+                                        <div
+                                            className="export__wrap"
+                                            key={column.key}
+                                        >
+                                            <div className="export__checkbox">
+                                                <input
+                                                    data-testid="addToColumn"
+                                                    type="checkbox"
+                                                    checked={this.state.columnEntityList.includes(
+                                                        column
+                                                    )}
+                                                    onChange={() =>
+                                                        this.addToColumnEntityList(
+                                                            column
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="export__txt">
+                                                {column.name}
+                                            </div>
+                                        </div>
+                                    );
+                                })
                                 : ""}
                         </div>
                     </div>

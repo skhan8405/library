@@ -48,8 +48,6 @@ export default function Filter(props) {
     const [autoCompletesArray, setAutoCompletesArray] = useState([]);
     const [dateTimesArray, setDateTimesArray] = useState([]);
     const [dateTimesValueArray, setDateTimesValueArray] = useState([]);
-    const [conditionsArray, setConditionsArray] = useState([]);
-    const [conditionsValueArray, setConditionsValueArray] = useState([]);
     const [textComponentsArray, setTextComponentsArray] = useState([]);
     const [textComponentsValueArray, setTextComponentsValueArray] = useState(
         []
@@ -73,13 +71,11 @@ export default function Filter(props) {
         count =
             autoCompletesArray.length +
             dateTimesArray.length +
-            conditionsArray.length +
             textComponentsArray.length;
         setFilterCount(count);
     }, [
         autoCompletesArray,
         dateTimesArray,
-        conditionsArray,
         textComponentsArray
     ]);
     /**
@@ -131,15 +127,6 @@ export default function Filter(props) {
                     dateTime: dateTimesValueArray
                 });
             }
-            if (conditionsValueArray.length > 0) {
-                conditionsValueArray.forEach((item) => {
-                    tempObj.applyFilter.push(item);
-                    obj.push(Object.assign({}, item));
-                });
-                applyFilter.applyFilterArray.push({
-                    conditional: conditionsValueArray
-                });
-            }
             if (textComponentsValueArray.length > 0) {
                 textComponentsValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
@@ -173,7 +160,6 @@ export default function Filter(props) {
                 !(
                     autoCompletesValueArray.length > 0 ||
                     dateTimesValueArray.length > 0 ||
-                    conditionsValueArray.length > 0 ||
                     textComponentsValueArray.length > 0
                 )
             ) {
@@ -257,41 +243,6 @@ export default function Filter(props) {
                     setDateTimesArray(dateTimeArray);
                     dateTimeArray = [];
                 }
-                if (conditionsValueArray.length > 0) {
-                    let conditionArray = [...conditionsArray];
-                    conditionArray.forEach((item) => {
-                        conditionsValueArray.forEach((valueItem) => {
-                            if (valueItem.name === item.name) {
-                                item.validated = true;
-                                item.warning = "";
-                            }
-                        });
-                    });
-                    setConditionsArray(conditionArray);
-                    let count = 0;
-                    conditionsArray.forEach((item) => {
-                        if (item.validated === false) {
-                            count++;
-                        }
-                    });
-                    if (count === 0) {
-                        savedFilter.filter.push({
-                            conditional: conditionsValueArray
-                        });
-                    } else {
-                        setShowSavePopUp("");
-                        setSaveWarningClassName("text-danger");
-                        setSaveWarningLabel("Enter values in every field");
-                    }
-                    conditionArray = [];
-                } else {
-                    let conditionArray = [...conditionsArray];
-                    conditionArray.forEach((item) => {
-                        item.validated = false;
-                    });
-                    setConditionsArray(conditionArray);
-                    conditionArray = [];
-                }
                 if (textComponentsValueArray.length > 0) {
                     let textComponentArray = [...textComponentsArray];
                     textComponentArray.forEach((item) => {
@@ -352,9 +303,6 @@ export default function Filter(props) {
             obj.push(Object.assign({}, item));
         });
         dateTimesValueArray.forEach((item) => {
-            obj.push(Object.assign({}, item));
-        });
-        conditionsValueArray.forEach((item) => {
             obj.push(Object.assign({}, item));
         });
         textComponentsValueArray.forEach((item) => {
@@ -481,52 +429,6 @@ export default function Filter(props) {
             }
             setDateTimesArray(dateTimeArray);
             dateTimeArray = [];
-        }
-        if (dataType === "Numeric") {
-            let value = {
-                name: name,
-                dataType: dataType,
-                enabled: enabled,
-                condition: condition,
-                amount: "",
-                validated: false,
-                warning: warning
-            };
-            filterData.filter.forEach((item) => {
-                if (item.name === value.name) {
-                    item.weight = 700;
-                }
-            });
-            let conditionArray = [...conditionsArray];
-            if (conditionArray.length > 0) {
-                let index = conditionArray.findIndex(
-                    (x) =>
-                        x.name === value.name && x.condition === value.condition
-                );
-                if (index === -1) {
-                    conditionArray.push({
-                        name: name,
-                        dataType: dataType,
-                        enabled: enabled,
-                        condition: condition,
-                        amount: "",
-                        validated: false,
-                        warning: warning
-                    });
-                }
-            } else {
-                conditionArray.push({
-                    name: name,
-                    dataType: dataType,
-                    enabled: enabled,
-                    condition: condition,
-                    amount: "",
-                    validated: false,
-                    warning: warning
-                });
-            }
-            setConditionsArray(conditionArray);
-            conditionArray = [];
         }
         if (dataType === "Text") {
             let value = {
@@ -1222,115 +1124,6 @@ export default function Filter(props) {
         }
     };
     /**
-     * Method To toggle the switch to enable and disable the input fields
-     * @param {*} item is the specific filter element object
-     */
-    const handleCondionalEnabled = (item) => {
-        let conditionArray = [...conditionsArray];
-        let index = conditionArray.findIndex(
-            (x) => x.name === item.name && x.condition === item.condition
-        );
-        if (index !== -1) {
-            conditionArray[index].enabled = !conditionArray[index].enabled;
-        }
-        setConditionsArray(conditionArray);
-        let conditionValueArray = [];
-        conditionValueArray = [...conditionsValueArray];
-        if (conditionValueArray.length > 0) {
-            let index = conditionValueArray.findIndex(
-                (x) => x.name === item.name && x.dataType === item.dataType
-            );
-            conditionValueArray[index].enabled = !conditionValueArray[index]
-                .enabled;
-        }
-        setConditionsValueArray(conditionValueArray);
-        conditionValueArray = [];
-    };
-    /**
-     * Method To create arrays containing values upon change trigger from respective input fields
-     * @param {*} item is the specific filter element object
-     * @param {*} value is value of the input field
-     */
-    const createConditionalArray = (item, value) => {
-        setShowSavePopUp("none");
-        setSaveWarningLabel("");
-        setSaveWarningClassName("");
-        let conditionArray = [...conditionsArray];
-        let valueArray = [];
-        item.condition.forEach((it) => {
-            valueArray.push(it.value);
-        });
-        let conditionValueArray = [...conditionsValueArray];
-        if (conditionValueArray.length > 0) {
-            let index = conditionValueArray.findIndex(
-                (x) => x.name === item.name && x.dataType === item.dataType
-            );
-            if (index !== -1) {
-                if (valueArray.includes(value)) {
-                    conditionValueArray[index].condition = value;
-                } else {
-                    conditionValueArray[index].amount = value;
-                }
-            }
-            conditionValueArray.forEach((valueItem) => {
-                conditionArray.forEach((item) => {
-                    if (item.name === valueItem.name) {
-                        item.validated = true;
-                        item.warning = "";
-                    }
-                });
-            });
-        } else {
-            if (valueArray.includes(value)) {
-                conditionValueArray.push({
-                    name: item.name,
-                    dataType: item.dataType,
-                    enabled: item.enabled,
-                    condition: value
-                });
-            } else {
-                conditionValueArray.push({
-                    name: item.name,
-                    dataType: item.dataType,
-                    enabled: item.enabled,
-                    condition: item.condition[0].value,
-                    amount: value
-                });
-                conditionValueArray.forEach((valueItem) => {
-                    conditionArray.forEach((item) => {
-                        if (item.name === valueItem.name) {
-                            item.validated = true;
-                            item.warning = "";
-                        }
-                    });
-                });
-            }
-        }
-        setConditionsValueArray(conditionValueArray);
-        conditionValueArray = [];
-    };
-    /**
-     * Method To delete the specific element from filter array upon clicking close
-     * @param {*} item is the specific filter element object
-     */
-    const deleteConditionalElement = (item) => {
-        filterData.filter.forEach((it) => {
-            if (it.name === item.name) {
-                it.weight = 400;
-            }
-        });
-        let conditionArray = [...conditionsArray];
-        let index = conditionArray.findIndex(
-            (x) => x.name === item.name && x.dataType === item.dataType
-        );
-        if (index !== -1) {
-            conditionArray.splice(index, 1);
-        } else {
-            conditionArray = [];
-        }
-        setConditionsArray(conditionArray);
-    };
-    /**
      * Method To create arrays containing values upon change trigger from respective input fields
      * @param {*} item is the specific filter element object
      * @param {*} value is value of the input field
@@ -1457,7 +1250,6 @@ export default function Filter(props) {
     const addAppliedFilters = (items) => {
         let autoComplete = [];
         let dateTime = [];
-        let condition = [];
         let text = [];
         items.forEach((item) => {
             if (item.dataType === "AutoComplete") {
@@ -1510,30 +1302,6 @@ export default function Filter(props) {
                     });
                 }
                 dateTime = dateTimeArray;
-            } else if (item.dataType === "Numeric") {
-                let conditionArray = [...condition];
-                if (conditionArray.length === 0) {
-                    conditionArray.push({
-                        name: item.name,
-                        dataType: item.dataType,
-                        enabled: item.enabled,
-                        condition: [],
-                        amount: item.amount,
-                        value: item.condition
-                    });
-                    filterData.filter.forEach((data) => {
-                        if (data.dataType === "Numeric") {
-                            data.condition.forEach((values) => {
-                                conditionArray.forEach((item) => {
-                                    item.condition.push({
-                                        value: values.value
-                                    });
-                                });
-                            });
-                        }
-                    });
-                }
-                condition = conditionArray;
             } else {
                 let textComponentArray = [...textComponentsArray];
                 if (textComponentArray.length > 0) {
@@ -1560,7 +1328,6 @@ export default function Filter(props) {
             }
             setAutoCompletesArray(autoComplete);
             setDateTimesArray(dateTime);
-            setConditionsArray(condition);
             setTextComponentsArray(text);
         });
         setApplyFilter(true);
@@ -1658,34 +1425,6 @@ export default function Filter(props) {
         });
         setDateTimesArray(saveTempDateTimeArray);
         savedFilters.forEach((items) => {
-            if (items.dataType === "Numeric") {
-                let conditionArray = [...condition];
-                if (conditionArray.length === 0) {
-                    conditionArray.push({
-                        name: items.name,
-                        dataType: items.dataType,
-                        enabled: items.enabled,
-                        condition: [],
-                        amount: items.amount,
-                        value: items.condition
-                    });
-                    filterData.filter.forEach((data) => {
-                        if (data.dataType === "Numeric") {
-                            data.condition.forEach((values) => {
-                                conditionArray.forEach((items) => {
-                                    items.condition.push({
-                                        value: values.value
-                                    });
-                                });
-                            });
-                        }
-                    });
-                }
-                condition = conditionArray;
-            }
-        });
-        setConditionsArray(condition);
-        savedFilters.forEach((items) => {
             if (items.dataType === "Text") {
                 let textComponentArray = [...text];
                 if (textComponentArray.length > 0) {
@@ -1719,7 +1458,6 @@ export default function Filter(props) {
      */
     const resetDrawer = () => {
         deleteAutoCompleteElement({});
-        deleteConditionalElement({});
         deleteDateTimeElement({});
         deleteTextComponentElement({});
         setApplyFilterChip({});
@@ -1765,12 +1503,6 @@ export default function Filter(props) {
                                 addThirtyDays={addThirtyDays}
                                 lastDayChange={lastDayChange}
                                 nextDayChange={nextDayChange}
-                                conditionsArray={conditionsArray}
-                                handleCondionalEnabled={handleCondionalEnabled}
-                                createConditionalArray={createConditionalArray}
-                                deleteConditionalElement={
-                                    deleteConditionalElement
-                                }
                                 textComponentsArray={textComponentsArray}
                                 deleteTextComponentElement={
                                     deleteTextComponentElement
