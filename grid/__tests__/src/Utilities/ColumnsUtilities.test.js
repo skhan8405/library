@@ -86,7 +86,6 @@ const columns = [
         Header: "Segment",
         accessor: "segment",
         width: 100,
-        onlyInDesktop: true,
         innerCells: [
             {
                 Header: "From",
