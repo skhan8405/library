@@ -24,9 +24,9 @@ const SavedFilters = (props) => {
     let savedFilters = localStorage.getItem("savedFilters");
     savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
 
-    const savedFilter = savedFilters.map((filterArray, index) => {
+    const savedFilter = savedFilters.map((filterArray) => {
         return (
-            <div key={index}>
+            <div key={filterArray}>
                 <div className="alignLeft">
                     <div>
                         <IconCheck />

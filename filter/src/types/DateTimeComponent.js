@@ -17,13 +17,13 @@ export default function FieldComponent(props) {
     const handleClose = (item) => {
         props.deleteDateTimeElement(item);
     };
-    const fieldComponentDiv = fieldComponentArr.map((item, index) => {
+    const fieldComponentDiv = fieldComponentArr.map((item) => {
         let validationClass = "";
         if (item.validated === false) {
             validationClass = "text-danger";
         }
         return (
-            <div className="filter__input" key={index}>
+            <div className="filter__input" key={item}>
                 <div className="filter__input-title" key={1}>
                     <div className="filter__label">
                         <Form.Label>
@@ -52,16 +52,16 @@ export default function FieldComponent(props) {
                         </div>
                     </div>
                 </div>
-                {item.field.map((field, index_) => {
+                {item.field.map((field) => {
                     return (
-                        <div key={`${index_}-${field.name}`}>
+                        <div key={`${field}-${field.name}`}>
                             <div
                                 className="displayFlex"
-                                key={`${index_},${field.name}`}
+                                key={`${field},${field.name}`}
                             >
                                 <Form.Text>{field.column}</Form.Text>
                             </div>
-                            <div className="filter__split" key={index_}>
+                            <div className="filter__split" key={field}>
                                 <div className="date-wrap">
                                     <Form.Control
                                         disabled={!item.enabled}
