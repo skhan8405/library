@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 
 import React from "react";
-import ReactDOM from "react-dom";
-import ReactTestUtils, { act } from "react-dom/test-utils";
+import { act } from "react-dom/test-utils";
+import { render } from "@testing-library/react";
 import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -21,13 +21,13 @@ afterEach(() => {
 });
 
 it("Render mount the component and unmount the columnItem", () => {
-    const id = 1;
-    const text = { type: "div", id: "flightNo" };
+    const id = 0;
+    const text = <div></div>;
     const moveColumn = jest.fn();
     const findColumn = jest.fn(() => 1);
 
-    act("run functions", () => {
-        ReactDOM.render(
+    act(() => {
+        let { asFragment } = render(
             <DndProvider
                 backend={TouchBackend}
                 options={{
@@ -43,16 +43,6 @@ it("Render mount the component and unmount the columnItem", () => {
             </DndProvider>,
             container
         );
+        expect(asFragment).not.toBeNull;
     });
-    // eslint-disable-next-line no-unused-vars
-    let component = ReactTestUtils.renderIntoDocument(
-        <DndProvider
-            backend={TouchBackend}
-            options={{
-                enableMouseEvents: true
-            }}
-        >
-            <ColumnItem {...props} />
-        </DndProvider>
-    );
 });

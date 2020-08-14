@@ -371,7 +371,7 @@ afterEach(() => {
 const updateCellData = jest.fn();
 const selectBulkData = jest.fn();
 const saveRows = jest.fn();
-const props = {
+let props = {
     //column: [...columns],
     rows: [...data.slice(0, pageSize)],
     dataSet: [...data],
@@ -432,11 +432,23 @@ test("Spreadsheet - handleTableSortSwap", () => {
 });
 
 test("Spreadsheet - updateTableAsPerRowChooser", () => {
+    props = {
+        //column: [...columns],
+        rows: [...data.slice(0, pageSize)],
+        dataSet: [...data],
+        pageSize: pageSize,
+        count: pageSize,
+        gridHeight: "90vh",
+        maxLeftPinnedColumn: 3,
+        updateCellData: updateCellData,
+        selectBulkData: selectBulkData,
+        saveRows: saveRows
+    };
     act(() => {
         let colVal = [...columns];
         colVal[0].frozen = true;
         let incoming = ["FlightNo", "Date", "Segment From"];
-        let pinned = ["FlightNo", "Date"];
+        let pinned = ["FlightNo"];
         let component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...colVal]} />
         );
@@ -456,7 +468,7 @@ test("Spreadsheet - updateTableAsPerRowChooser 2", () => {
             <Spreadsheet {...props} columns={[...colVal]} />
         );
 
-        component.handleheaderNameList(columns.slice(0.1).reverse());
+        component.handleheaderNameList(columns.slice(0, 1).reverse());
         let d = component.updateTableAsPerRowChooser(incoming, pinned);
         expect(d).not.toBeNull();
     });
@@ -1248,19 +1260,19 @@ test("Spreadsheet - globalSearch - onChange ", () => {
     });
 });
 
-test("Spreadsheet - globalSearch - onChange ", () => {
-    act(() => {
-        let component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
-        );
+// test("Spreadsheet - globalSearch - onChange ", () => {
+//     act(() => {
+//         let component = ReactTestUtils.renderIntoDocument(
+//             <Spreadsheet {...props} columns={[...columns]} />
+//         );
 
-        let inputElm = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            component,
-            "globalSeachInput"
-        );
+//         let inputElm = ReactTestUtils.scryRenderedDOMComponentsWithClass(
+//             component,
+//             "globalSeachInput"
+//         );
 
-        inputElm.simulate("change", { target: { value: "aa" } });
+//         inputElm.simulate("change", { target: { value: "aa" } });
 
-        expect(inputElm).not.toBeNull();
-    });
-});
+//         expect(inputElm).not.toBeNull();
+//     });
+// });
