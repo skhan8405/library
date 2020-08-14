@@ -429,23 +429,22 @@ test("Spreadsheet - handleTableSortSwap", () => {
 
 test("Spreadsheet - updateTableAsPerRowChooser", () => {
     props = {
-        //column: [...columns],
         rows: [...data.slice(0, pageSize)],
         dataSet: [...data],
-        pageSize: pageSize,
+        pageSize,
         count: pageSize,
         gridHeight: "90vh",
         maxLeftPinnedColumn: 3,
-        updateCellData: updateCellData,
-        selectBulkData: selectBulkData,
-        saveRows: saveRows
+        updateCellData,
+        selectBulkData,
+        saveRows
     };
     act(() => {
         const colVal = [...columns];
         colVal[0].frozen = true;
-        let incoming = ["FlightNo", "Date", "Segment From"];
-        let pinned = ["FlightNo"];
-        let component = ReactTestUtils.renderIntoDocument(
+        const incoming = ["FlightNo", "Date", "Segment From"];
+        const pinned = ["FlightNo"];
+        const component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...colVal]} />
         );
 
@@ -465,7 +464,7 @@ test("Spreadsheet - updateTableAsPerRowChooser 2", () => {
         );
 
         component.handleheaderNameList(columns.slice(0, 1).reverse());
-        let d = component.updateTableAsPerRowChooser(incoming, pinned);
+        const d = component.updateTableAsPerRowChooser(incoming, pinned);
         expect(d).not.toBeNull();
     });
 });
@@ -550,7 +549,6 @@ test("Spreadsheet - clearAllSortingParams  ", () => {
             })
             .then(() => {
                 const d = component.clearAllSortingParams();
-                console.log(d);
                 expect(d).not.toBeNull();
             });
     });

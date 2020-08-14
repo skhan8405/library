@@ -126,6 +126,7 @@ exports[`render the chooser 1`] = `
           <div
             class="column__close"
             data-testid="closeColumnReordering"
+            role="presentation"
           >
             <i>
               <icon-mock />
