@@ -1,11 +1,11 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import Spreadsheet from "../../src/index";
-import { unmountComponentAtNode } from "react-dom";
-import { render, cleanup } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
-import ReactTestUtils from "react-dom/test-utils";
+import ReactTestUtils, { act } from "react-dom/test-utils";
 import "@testing-library/jest-dom/extend-expect";
 import "idempotent-babel-polyfill";
+
 const data = [
     {
         travelId: 0,
@@ -351,7 +351,6 @@ const columns = [
     }
 ];
 
-const gridHeight = "90vh";
 const pageSize = 10;
 
 let container = null;
@@ -455,32 +454,32 @@ test("Spreadsheet - updateTableAsPerRowChooser", () => {
         let component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...colVal]} />
         );
-        const pinnedColumnsList = [
-            {
-                key: "date",
-                name: "Date",
-                draggable: false,
-                editor: "DatePicker",
-                formulaApplicable: false,
-                sortable: true,
-                resizable: true,
-                filterable: true,
-                width: 150,
-                filterType: "autoCompleteFilter"
-            },
-            {
-                key: "segmentfrom",
-                name: "Segment From",
-                draggable: false,
-                editor: "DropDown",
-                formulaApplicable: false,
-                sortable: true,
-                resizable: true,
-                filterable: true,
-                width: 150,
-                filterType: "autoCompleteFilter"
-            }
-        ];
+        // const pinnedColumnsList = [
+        //     {
+        //         key: "date",
+        //         name: "Date",
+        //         draggable: false,
+        //         editor: "DatePicker",
+        //         formulaApplicable: false,
+        //         sortable: true,
+        //         resizable: true,
+        //         filterable: true,
+        //         width: 150,
+        //         filterType: "autoCompleteFilter"
+        //     },
+        //     {
+        //         key: "segmentfrom",
+        //         name: "Segment From",
+        //         draggable: false,
+        //         editor: "DropDown",
+        //         formulaApplicable: false,
+        //         sortable: true,
+        //         resizable: true,
+        //         filterable: true,
+        //         width: 150,
+        //         filterType: "autoCompleteFilter"
+        //     }
+        // ];
         let d = component.updateTableAsPerRowChooser(incoming, pinned);
         expect(d).not.toBeNull();
     });
@@ -495,32 +494,32 @@ test("Spreadsheet - updateTableAsPerRowChooser 2", () => {
         let component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...colVal]} />
         );
-        const pinnedColumnsList = [
-            {
-                key: "date",
-                name: "Date",
-                draggable: false,
-                editor: "DatePicker",
-                formulaApplicable: false,
-                sortable: true,
-                resizable: true,
-                filterable: true,
-                width: 150,
-                filterType: "autoCompleteFilter"
-            },
-            {
-                key: "segmentfrom",
-                name: "Segment From",
-                draggable: false,
-                editor: "DropDown",
-                formulaApplicable: false,
-                sortable: true,
-                resizable: true,
-                filterable: true,
-                width: 150,
-                filterType: "autoCompleteFilter"
-            }
-        ];
+        // const pinnedColumnsList = [
+        //     {
+        //         key: "date",
+        //         name: "Date",
+        //         draggable: false,
+        //         editor: "DatePicker",
+        //         formulaApplicable: false,
+        //         sortable: true,
+        //         resizable: true,
+        //         filterable: true,
+        //         width: 150,
+        //         filterType: "autoCompleteFilter"
+        //     },
+        //     {
+        //         key: "segmentfrom",
+        //         name: "Segment From",
+        //         draggable: false,
+        //         editor: "DropDown",
+        //         formulaApplicable: false,
+        //         sortable: true,
+        //         resizable: true,
+        //         filterable: true,
+        //         width: 150,
+        //         filterType: "autoCompleteFilter"
+        //     }
+        // ];
         component.handleheaderNameList(columns.slice(0.1).reverse());
         let d = component.updateTableAsPerRowChooser(incoming, pinned);
         expect(d).not.toBeNull();
@@ -605,7 +604,7 @@ test("Spreadsheet - clearAllSortingParams  ", () => {
                 sortDirection: "ASC",
                 sortColumn: "Date"
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.clearAllSortingParams();
                 console.log(d);
                 expect(d).not.toBeNull();
@@ -623,7 +622,7 @@ test("Spreadsheet - exportColumnData  ", () => {
                 subDataSet: [...data.slice(0, 5)],
                 searchValue: "AAA"
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.exportColumnData();
                 console.log(d);
                 expect(d).not.toBeNull();
@@ -655,7 +654,7 @@ test("Spreadsheet - setTableAsPerSortingParams", () => {
                 searchValue: "AAA",
                 sortingOrderSwapList: []
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.setTableAsPerSortingParams([
                     {
                         order: "Ascending",
@@ -685,7 +684,7 @@ test("Spreadsheet - groupSort", () => {
                 searchValue: "AAA",
                 sortingOrderSwapList: []
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.groupSort(
                     [
                         {
@@ -717,7 +716,7 @@ test("Spreadsheet - getSearchRecords 1", () => {
                 dataSet: [...data.slice(0, pageSize)],
                 searchValue: ""
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSearchRecords({
                     target: {
                         value: "A"
@@ -739,7 +738,7 @@ test("Spreadsheet - getSearchRecords 2", () => {
                 subDataSet: [...data.slice(0, pageSize)],
                 searchValue: "AA"
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSearchRecords({
                     target: {
                         value: "AAA"
@@ -770,7 +769,7 @@ test("Spreadsheet - getSearchRecords 3", () => {
                     }
                 ]
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSearchRecords({
                     target: {
                         value: "AA"
@@ -792,7 +791,7 @@ test("Spreadsheet - getSearchRecords 4", () => {
                 dataSet: [...data.slice(0, pageSize)],
                 searchValue: "a"
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSearchRecords({
                     target: {
                         value: ""
@@ -815,7 +814,7 @@ test("Spreadsheet - getSingleSortResult", () => {
                 sortDirection: "DESC",
                 sortColumn: "FlightNo"
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSingleSortResult([
                     ...data.slice(0, pageSize)
                 ]);
@@ -835,7 +834,7 @@ test("Spreadsheet - getSingleSortResult 2", () => {
                 dataSet: [...data.slice(0, pageSize)],
                 sortDirection: ""
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSingleSortResult([
                     ...data.slice(0, pageSize)
                 ]);
@@ -853,7 +852,7 @@ test("Spreadsheet - sortRows", () => {
             .setStateAsync({
                 dataSet: [...data.slice(0, pageSize)]
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.sortRows(
                     [...data.slice(0, pageSize)],
                     "FlightNo",
@@ -874,7 +873,7 @@ test("Spreadsheet - sortRows 2", () => {
                 subDataSet: [...data.slice(0, pageSize)],
                 searchValue: "a"
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.sortRows(
                     [...data.slice(0, pageSize)],
                     "FlightNo",
@@ -897,7 +896,7 @@ test("Spreadsheet - getSlicedRows ", () => {
             .setStateAsync({
                 subDataSet: [...data.slice(0, pageSize)]
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSlicedRows(
                     filters,
                     [...data.slice(0, pageSize)],
@@ -928,7 +927,7 @@ test("Spreadsheet - getSlicedRows 2", () => {
                     }
                 ]
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.getSlicedRows(
                     filters,
                     [...data.slice(0, pageSize)],
@@ -985,7 +984,7 @@ test("Spreadsheet - onGridRowsUpdated", () => {
             .setStateAsync({
                 rows: [...data.slice(0, pageSize)]
             })
-            .then((rst) => {
+            .then(() => {
                 let val = {
                     fromRow: 0,
                     toRow: 0,
@@ -1030,7 +1029,7 @@ test("Spreadsheet - handleFilterChange ", () => {
                     }
                 ]
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.handleFilterChange(filter);
                 expect(d).not.toBeNull();
             });
@@ -1062,7 +1061,7 @@ test("Spreadsheet - handleFilterChange 2", () => {
                 ],
                 junk: { ...junk }
             })
-            .then((rst) => {
+            .then(() => {
                 let d = component.handleFilterChange(filterVal);
                 expect(d).not.toBeNull();
             });
@@ -1095,7 +1094,7 @@ test("Spreadsheet - isSubset", () => {
             .setStateAsync({
                 sortingParamsObjectList: []
             })
-            .then((rs) => {
+            .then(() => {
                 let event = {
                     target: {
                         clientHeight: 582,
@@ -1121,7 +1120,7 @@ test("Spreadsheet - loadMoreRows ", () => {
                 pageRowCount: 10,
                 searchValue: ""
             })
-            .then((rs) => {
+            .then(() => {
                 component.loadMoreRows(0, 10).then((r) => {
                     expect(r.length).toBeGreaterThan(0);
                 });
@@ -1141,7 +1140,7 @@ test("Spreadsheet - loadMoreRows 2", () => {
                 pageRowCount: 10,
                 searchValue: "aaa"
             })
-            .then((rs) => {
+            .then(() => {
                 component.loadMoreRows(0, 10).then((r) => {
                     expect(r.length).toBeGreaterThan(0);
                 });
@@ -1163,7 +1162,7 @@ test("Spreadsheet - handleScroll", () => {
                 searchValue: "aaa",
                 pageIndex: 0
             })
-            .then(async (rs) => {
+            .then(async () => {
                 let event = {
                     target: {
                         clientHeight: 582,
@@ -1191,7 +1190,7 @@ test("Spreadsheet - globalSearchLogic", async () => {
                 searchValue: "aaa",
                 pageIndex: 0
             })
-            .then(async (rs) => {
+            .then(async () => {
                 let event = {
                     target: {
                         value: "aaa"
@@ -1234,7 +1233,7 @@ test("Spreadsheet - closeWarningStatus", () => {
                     }
                 ]
             })
-            .then((rs) => {
+            .then(() => {
                 let r = component.closeWarningStatus();
                 expect(r).not.toBeNull();
             });
@@ -1271,7 +1270,7 @@ test("Spreadsheet - clearAllFilters", () => {
                     }
                 ]
             })
-            .then((rs) => {
+            .then(() => {
                 let r = component.clearAllFilters();
                 expect(r).not.toBeNull();
             });
@@ -1291,7 +1290,7 @@ test("Spreadsheet - getFilterResult ", () => {
                 dataSet: [...data.slice(0, pageSize)],
                 junk: junk
             })
-            .then((rs) => {
+            .then(() => {
                 let r = component.getFilterResult([...data.slice(0, pageSize)]);
                 expect(r).not.toBeNull();
             });

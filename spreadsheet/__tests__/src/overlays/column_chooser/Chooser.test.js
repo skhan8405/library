@@ -1,12 +1,11 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import ColumnReordering from "../../../../src/overlays/column_chooser/Chooser";
 import ReactTestUtils, { act } from "react-dom/test-utils";
-import { render, screen, fireEvent, getByRole } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { DndProvider } from "react-dnd";
-import { cleanup } from '@testing-library/react'
-import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
 
 let container;
 
@@ -67,47 +66,66 @@ const handleheaderNameList = jest.fn();
 
 test("addToColumnReorderEntityList change trigger", () => {
     // afterEach(cleanup)
-    const { getAllByTestId } = render(<ColumnReordering
-        columns={columns}
-        maxLeftPinnedColumn={maxLeftPinnedColumn}
-        updateTableAsPerRowChooser={updateTableAsPerRowChooser}
-        headerKeys={headerKeys}
-        closeColumnReOrdering={closeColumnReOrdering}
-        existingPinnedHeadersList={existingPinnedHeadersList}
-        handleheaderNameList={handleheaderNameList} />)
-    fireEvent.click(getAllByTestId('addToColumnReorderEntityList')[0], { target: { checked: true } });
-    const element = getAllByTestId('addToColumnReorderEntityList')
-})
-test("selectAllCheckBox change trigger", () => {
-    // afterEach(cleanup)
-    const { getByTestId } = render(<ColumnReordering
-        columns={columns}
-        maxLeftPinnedColumn={maxLeftPinnedColumn}
-        updateTableAsPerRowChooser={updateTableAsPerRowChooser}
-        headerKeys={headerKeys}
-        closeColumnReOrdering={closeColumnReOrdering}
-        existingPinnedHeadersList={existingPinnedHeadersList}
-        handleheaderNameList={handleheaderNameList} />)
-    fireEvent.click(getByTestId('selectAllCheckBox'), { target: { checked: true } });
-})
-test("chooser", () => {
-
-    act(() => {
-        ReactDOM.render(<ColumnReordering columns={columns}
+    const { getAllByTestId } = render(
+        <ColumnReordering
+            columns={columns}
             maxLeftPinnedColumn={maxLeftPinnedColumn}
             updateTableAsPerRowChooser={updateTableAsPerRowChooser}
             headerKeys={headerKeys}
             closeColumnReOrdering={closeColumnReOrdering}
             existingPinnedHeadersList={existingPinnedHeadersList}
-            handleheaderNameList={handleheaderNameList} />, container);
+            handleheaderNameList={handleheaderNameList}
+        />
+    );
+    fireEvent.click(getAllByTestId("addToColumnReorderEntityList")[0], {
+        target: { checked: true }
     });
-    let component = ReactTestUtils.renderIntoDocument(<ColumnReordering columns={columns}
-        maxLeftPinnedColumn={maxLeftPinnedColumn}
-        updateTableAsPerRowChooser={updateTableAsPerRowChooser}
-        headerKeys={headerKeys}
-        closeColumnReOrdering={closeColumnReOrdering}
-        existingPinnedHeadersList={existingPinnedHeadersList}
-        handleheaderNameList={handleheaderNameList} />, container);
+    // const element = getAllByTestId("addToColumnReorderEntityList");
+});
+test("selectAllCheckBox change trigger", () => {
+    // afterEach(cleanup)
+    const { getByTestId } = render(
+        <ColumnReordering
+            columns={columns}
+            maxLeftPinnedColumn={maxLeftPinnedColumn}
+            updateTableAsPerRowChooser={updateTableAsPerRowChooser}
+            headerKeys={headerKeys}
+            closeColumnReOrdering={closeColumnReOrdering}
+            existingPinnedHeadersList={existingPinnedHeadersList}
+            handleheaderNameList={handleheaderNameList}
+        />
+    );
+    fireEvent.click(getByTestId("selectAllCheckBox"), {
+        target: { checked: true }
+    });
+});
+test("chooser", () => {
+    act(() => {
+        ReactDOM.render(
+            <ColumnReordering
+                columns={columns}
+                maxLeftPinnedColumn={maxLeftPinnedColumn}
+                updateTableAsPerRowChooser={updateTableAsPerRowChooser}
+                headerKeys={headerKeys}
+                closeColumnReOrdering={closeColumnReOrdering}
+                existingPinnedHeadersList={existingPinnedHeadersList}
+                handleheaderNameList={handleheaderNameList}
+            />,
+            container
+        );
+    });
+    let component = ReactTestUtils.renderIntoDocument(
+        <ColumnReordering
+            columns={columns}
+            maxLeftPinnedColumn={maxLeftPinnedColumn}
+            updateTableAsPerRowChooser={updateTableAsPerRowChooser}
+            headerKeys={headerKeys}
+            closeColumnReOrdering={closeColumnReOrdering}
+            existingPinnedHeadersList={existingPinnedHeadersList}
+            handleheaderNameList={handleheaderNameList}
+        />,
+        container
+    );
     component.resetColumnReorderList();
     component.componentWillUnmount();
     component.resetColumnReorderList();
@@ -155,14 +173,12 @@ test("chooser", () => {
             width: 150,
             filterType: "autoCompleteFilter"
         }
-    ])
+    ]);
     component.handleClickOutside({
         target: "parentDiv"
     });
-
 });
 test("render the chooser", () => {
-
     const { asFragment } = render(
         <ColumnReordering
             columns={columns}
@@ -189,7 +205,6 @@ test("render the chooser", () => {
     ).toMatchSnapshot();
 });
 it("reset button click event", () => {
-
     const { getByTestId } = render(
         <ColumnReordering
             columns={columns}
@@ -202,11 +217,10 @@ it("reset button click event", () => {
         />
     );
     fireEvent.click(getByTestId("resetButton"));
-    const element = getByTestId("resetButton")
-    expect(element).toHaveTextContent('Reset')
+    const element = getByTestId("resetButton");
+    expect(element).toHaveTextContent("Reset");
 });
 it("cancel button click event", () => {
-
     const { getByTestId } = render(
         <ColumnReordering
             columns={columns}
@@ -219,8 +233,8 @@ it("cancel button click event", () => {
         />
     );
     fireEvent.click(getByTestId("cancelButton"));
-    const element = getByTestId("cancelButton")
-    expect(element).toHaveTextContent('Cancel')
+    const element = getByTestId("cancelButton");
+    expect(element).toHaveTextContent("Cancel");
 });
 it("save button click event", () => {
     const { getByTestId } = render(
@@ -235,8 +249,8 @@ it("save button click event", () => {
         />
     );
     fireEvent.click(getByTestId("saveButton"));
-    const element = getByTestId("saveButton")
-    expect(element).toHaveTextContent('Save')
+    const element = getByTestId("saveButton");
+    expect(element).toHaveTextContent("Save");
 });
 it("close column reordering event", () => {
     const { getByTestId } = render(

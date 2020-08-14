@@ -1,8 +1,10 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { render, fireEvent } from "@testing-library/react";
 import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
-import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
+// import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import "@testing-library/jest-dom/extend-expect";

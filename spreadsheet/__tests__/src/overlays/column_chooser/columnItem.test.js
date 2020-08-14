@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
@@ -42,6 +44,7 @@ it("Render mount the component and unmount the columnItem", () => {
             container
         );
     });
+    // eslint-disable-next-line no-unused-vars
     let component = ReactTestUtils.renderIntoDocument(
         <DndProvider
             backend={TouchBackend}
