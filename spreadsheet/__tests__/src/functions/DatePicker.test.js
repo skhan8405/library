@@ -24,7 +24,7 @@ test("DatePicker", () => {
     act(() => {
         ReactDOM.render(<DatePicker {...props} />, container);
     });
-    let component = ReactTestUtils.renderIntoDocument(
+    const component = ReactTestUtils.renderIntoDocument(
         <DatePicker {...props} />
     );
     component.getInputNode();

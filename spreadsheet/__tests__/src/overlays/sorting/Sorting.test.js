@@ -20,7 +20,7 @@ afterEach(() => {
 });
 
 const closeSorting = jest.fn();
-const sortingParamsObjectList = [];
+let sortingParamsObjectList = [];
 const columnFieldValue = [
     "FlightNo",
     "Date",
@@ -39,7 +39,7 @@ const setTableAsPerSortingParams = jest.fn(() => {});
 const handleTableSortSwap = jest.fn(() => {});
 
 test("<Sorting />", () => {
-    let sortingParamsObjectList = [
+    sortingParamsObjectList = [
         {
             order: "Ascending",
             sortBy: "FlightNo",
@@ -108,7 +108,7 @@ test("<Sorting />", () => {
     });
 });
 it("close sorting event trigger", () => {
-    let sortingParamsObjectList = [
+    sortingParamsObjectList = [
         {
             order: "Ascending",
             sortBy: "FlightNo",
@@ -129,7 +129,7 @@ it("close sorting event trigger", () => {
 });
 
 it("selecting order dropDown", () => {
-    let component = ReactTestUtils.renderIntoDocument(
+    const component = ReactTestUtils.renderIntoDocument(
         <Sorting
             closeSorting={closeSorting}
             sortingParamsObjectList={sortingParamsObjectList}

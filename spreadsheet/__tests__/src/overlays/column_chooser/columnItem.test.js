@@ -3,9 +3,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
-import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
+import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
 import "@testing-library/jest-dom/extend-expect";
 
 let container;
@@ -45,7 +45,7 @@ it("Render mount the component and unmount the columnItem", () => {
         );
     });
     // eslint-disable-next-line no-unused-vars
-    let component = ReactTestUtils.renderIntoDocument(
+    const component = ReactTestUtils.renderIntoDocument(
         <DndProvider
             backend={TouchBackend}
             options={{
