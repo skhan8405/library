@@ -27,13 +27,13 @@ export default function AutoComplete(props) {
     const onSelect = (selectedList, selectedItem, item) => {
         props.createAutoCompleteArray(item, selectedList);
     };
-    const autoCompleteDiv = autoCompleteArr.map((item, index) => {
+    const autoCompleteDiv = autoCompleteArr.map((item) => {
         let validationClass = "";
         if (item.validated === false) {
             validationClass = "text-danger";
         }
         return (
-            <div className="filter__input" key={index}>
+            <div className="filter__input" key={item}>
                 <div className="filter__input-title">
                     <div className="filter__label">
                         <span>{item.name}</span>
