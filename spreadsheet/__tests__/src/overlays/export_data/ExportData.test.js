@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-undef */
 
 import React from "react";
@@ -354,7 +355,7 @@ it("add to column list change event", () => {
     });
 });
 test("testing exportDatat by triggering events", () => {
-    let { getByTestId } = render(
+    const { getByTestId } = render(
         <ExportData
             closeExport={closeExport}
             columnsList={columnsList}
@@ -367,7 +368,7 @@ test("testing exportDatat by triggering events", () => {
     fireEvent.click(getByTestId("exportValidationClick"));
 });
 test("testing exportValidation", () => {
-    let { getByTestId } = render(
+    const { getByTestId } = render(
         <ExportData closeExport={closeExport} columnsList={[]} rows={rows} />
     );
     fireEvent.click(getByTestId("addpdfDownloadType"), {
@@ -376,7 +377,7 @@ test("testing exportValidation", () => {
     fireEvent.click(getByTestId("exportValidationClick"));
 });
 test("testing exportValidation 1", () => {
-    let { getByTestId } = render(
+    const { getByTestId } = render(
         <ExportData closeExport={closeExport} columnsList={[]} rows={rows} />
     );
     fireEvent.click(getByTestId("exportValidationClick"));
