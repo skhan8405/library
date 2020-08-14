@@ -33,6 +33,7 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
+                        data-testid="typecheck"
                         key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
@@ -52,6 +53,7 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
+                        data-testid="conditionValue-check"
                         key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
@@ -67,6 +69,7 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
+                        data-testid="fieldValue-check"
                         key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
@@ -81,6 +84,7 @@ const MainFilterPanel = (props) => {
                 <div
                     role="presentation"
                     className="listContent"
+                    data-testid="chipCount-check"
                     key={item}
                     onClick={() => {
                         props.addAppliedFilters(chipArray);
@@ -101,16 +105,15 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="iconLeft"
+                        data-testid="handleListFilterCheck"
                         onClick={handleListFilter}
                     >
                         <IconLeftAlign />
                     </div>
                     <SavedFilters
-                        onSelectSavedFilter={props.onSelectSavedFilter}
                         showFilter={listFilter}
                         handleListFilter={handleListFilter}
                         addSavedFilters={props.addSavedFilters}
-                        addingToFavourite={props.addingToFavourite}
                     />
                     <div className="leftSpace">All flights</div>
                 </div>
@@ -126,6 +129,7 @@ const MainFilterPanel = (props) => {
                     {chips}
                     <div
                         role="presentation"
+                        data-testid="showDrawer-check"
                         onClick={() => {
                             props.showDrawer();
                         }}

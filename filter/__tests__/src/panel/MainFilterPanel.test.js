@@ -5,15 +5,46 @@ import { fireEvent, render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import "@testing-library/jest-dom/extend-expect";
 
-import { unmountComponentAtNode } from "react-dom";
+import ReactDOM, { unmountComponentAtNode } from "react-dom";
 import MainFilterPanel from "../../../src/panel/MainFilterPanel";
+import Datas from "./../data.json";
 
 let container = null;
+const applyFilter = [
+    {
+        name: "Departure Port",
+        dataType: "AutoComplete",
+        enabled: true,
+        value: "ABS"
+    }
+];
+
+var localStorageMock = (function () {
+    var store = {};
+    return {
+        getItem: function (key) {
+            return store[key];
+        },
+        setItem: function (key, value) {
+            store[key] = value.toString();
+        },
+        clear: function () {
+            store = {};
+        },
+        removeItem: function (key) {
+            delete store[key];
+        }
+    };
+})();
+Object.defineProperty(window, "localStorage", { value: localStorageMock });
+
 beforeEach(() => {
     // setup a DOM element as a render target
     container = document.createElement("div");
     // container *must* be attached to document so events work correctly.
     document.body.appendChild(container);
+    localStorage.clear();
+    localStorage.setItem("savedFilters", JSON.stringify(applyFilter));
 });
 
 afterEach(() => {
@@ -26,9 +57,14 @@ afterEach(() => {
 describe("Main Filter Panel component", () => {
     const props = {
         applyFilterChip: {
+            applyFilter: Datas.filter
+        }
+    };
+    const chipArray = {
+        applyFilterChip: {
             applyFilter: [
                 {
-                    name: "Arrival Port",
+                    name: "Departure Port",
                     type: "Airport",
                     dataType: "AutoComplete",
                     enabled: true,
@@ -36,148 +72,173 @@ describe("Main Filter Panel component", () => {
                         {
                             key: "AAB",
                             value: "AAB"
-                        },
-                        {
-                            key: "ABA",
-                            value: "ABA"
-                        }
-                    ]
-                },
-                {
-                    name: "Arrival Port",
-                    dataType: "AutoComplete",
-                    condition: "Check Condition",
-                    enabled: true,
-                    value: [
-                        {
-                            key: "AAB",
-                            value: "AAB"
-                        },
-                        {
-                            key: "ABA",
-                            value: "ABA"
-                        }
-                    ]
-                },
-                {
-                    name: "Arrival Port",
-                    dataType: "AutoComplete",
-                    fieldValue: "Check Field Value",
-                    enabled: true,
-                    value: [
-                        {
-                            key: "AAB",
-                            value: "AAB"
-                        },
-                        {
-                            key: "ABA",
-                            value: "ABA"
-                        }
-                    ]
-                },
-                {
-                    name: "Arrival Port",
-                    dataType: "AutoComplete",
-                    enabled: true,
-                    value: [
-                        {
-                            key: "AAB",
-                            value: "AAB"
-                        },
-                        {
-                            key: "ABA",
-                            value: "ABA"
                         }
                     ]
                 }
             ]
-        },
-        addingToFavourite: ""
+        }
     };
-
+    const conditionChipArray = {
+        applyFilterChip: {
+            applyFilter: [
+                {
+                    name: "Departure Port",
+                    condition: "ArrivalPort",
+                    dataType: "AutoComplete",
+                    enabled: true,
+                    value: [
+                        {
+                            key: "AAB",
+                            value: "AAB"
+                        }
+                    ]
+                }
+            ]
+        }
+    };
+    const fieldChipArray = {
+        applyFilterChip: {
+            applyFilter: [
+                {
+                    name: "Departure Port",
+                    dataType: "AutoComplete",
+                    fieldValue: "ArrivalPort",
+                    enabled: true,
+                    value: "ANB"
+                }
+            ]
+        }
+    };
+    const chipCountArray = {
+        applyFilterChip: {
+            applyFilter: [
+                {
+                    name: "Departure Port",
+                    dataType: "AutoComplete",
+                    enabled: true,
+                    value: "ABS"
+                }
+            ]
+        }
+    };
+    const emptyChipArray = {
+        applyFilterChip: {
+            applyFilter: []
+        }
+    };
     const showDrawer = jest.fn();
-    const addAppliedFilters = {};
+    const addAppliedFilters = jest.fn();
     const addSavedFilters = jest.fn();
+    const addingToFavourite = jest.fn();
 
-    it("Should be available in MainFilterPanel ", () => {
-        // eslint-disable-next-line no-unused-vars
-        const wrapper = render(
+    it("Should check MainFilterPanel ", () => {
+        ReactDOM.render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip}
+                applyFilterChip={chipArray.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={props.addingToFavourite}
+                addingToFavourite={addingToFavourite}
             />,
             container
         );
+        expect(chipArray.applyFilterChip).toBeTruthy;
+    });
+
+    it("Show Count ", () => {
+        ReactDOM.render(
+            <MainFilterPanel
+                showDrawer={showDrawer}
+                applyFilterChip={[]}
+                addAppliedFilters={addAppliedFilters}
+                addSavedFilters={addSavedFilters}
+                addingToFavourite={addingToFavourite}
+            />,
+            container
+        );
+        expect(chipArray.applyFilterChip).toBeTruthy;
+    });
+
+    it("Show Count 1 ", () => {
+        render(
+            <MainFilterPanel
+                showDrawer={showDrawer}
+                applyFilterChip={emptyChipArray}
+                addAppliedFilters={addAppliedFilters}
+                addSavedFilters={addSavedFilters}
+                addingToFavourite={addingToFavourite}
+            />
+        );
+        expect(chipArray.applyFilterChip).toBeTruthy;
     });
 
     it(" Check type click ", () => {
         const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip}
+                applyFilterChip={chipArray.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={props.addingToFavourite}
-            />,
-            container
+                addingToFavourite={addingToFavourite}
+            />
         );
-        // eslint-disable-next-line no-unused-expressions
-        expect(props.applyFilterChip.applyFilter).toBeTruthy;
 
-        const searchFilterHandlerElm = wrapper.getByTestId("typecheck");
-        expect(searchFilterHandlerElm).toHaveBeenCalledTimes(1);
+        const typeCheckElm = wrapper.getByTestId("typecheck");
+        fireEvent.click(typeCheckElm);
     });
 
     it(" Check condition click ", () => {
-        const { getByTestId } = render(
+        const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip.applyFilter}
+                applyFilterChip={conditionChipArray.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={props.addingToFavourite}
+                addingToFavourite={addingToFavourite}
             />
         );
-        fireEvent.click(getByTestId("conditionValue-check"));
+
+        const conditionElm = wrapper.getByTestId("conditionValue-check");
+        fireEvent.click(conditionElm);
     });
 
     it(" Check fieldValue click ", () => {
-        const { getByTestId } = render(
+        const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip.applyFilter}
+                applyFilterChip={fieldChipArray.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={props.addingToFavourite}
+                addingToFavourite={addingToFavourite}
             />
         );
-        fireEvent.click(getByTestId("fieldValue-check"));
+
+        const fieldValueElm = wrapper.getByTestId("fieldValue-check");
+        fireEvent.click(fieldValueElm);
     });
 
     it("Chip Count ", () => {
-        const { getByTestId } = render(
+        const wrapper = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip.applyFilter}
+                applyFilterChip={chipCountArray.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={props.addingToFavourite}
+                addingToFavourite={addingToFavourite}
             />
         );
-        fireEvent.click(getByTestId("chipCount-check"));
+
+        const chipCountElm = wrapper.getByTestId("chipCount-check");
+        fireEvent.click(chipCountElm);
     });
 
     it("Show Drawer check ", () => {
         const { getByTestId } = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip.applyFilter}
+                applyFilterChip={chipArray.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={props.addingToFavourite}
             />
         );
         fireEvent.click(getByTestId("showDrawer-check"));
@@ -187,10 +248,9 @@ describe("Main Filter Panel component", () => {
         const { getByTestId } = render(
             <MainFilterPanel
                 showDrawer={showDrawer}
-                applyFilterChip={props.applyFilterChip.applyFilter}
+                applyFilterChip={chipArray.applyFilterChip}
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={props.addingToFavourite}
             />
         );
         fireEvent.click(getByTestId("handleListFilterCheck"));
