@@ -13,6 +13,7 @@ import JsPdf from 'jspdf';
 import 'jspdf-autotable';
 import { saveAs } from 'file-saver';
 import { utils, write } from 'xlsx';
+import '!style-loader!css-loader!sass-loader!./Styles/main.scss';
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -1181,8 +1182,6 @@ function SvgIconPencil(props) {
   }, props), _ref);
 }
 
-require("./icon-pencil~lCxiUHYL.svg");
-
 function _extends$1() {
   _extends$1 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -1214,8 +1213,6 @@ function SvgIconTick(props) {
   }, props), _ref$1);
 }
 
-require("./icon-tick~bcRkTvQl.svg");
-
 function _extends$2() {
   _extends$2 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -1246,8 +1243,6 @@ function SvgIconCancel(props) {
     height: 11
   }, props), _ref$2);
 }
-
-require("./icon-cancel~FKHHixMn.svg");
 
 const CellDisplayAndEdit = memo(({
   row,
@@ -1523,8 +1518,6 @@ function SvgIconSearch(props) {
   }, props), _ref$3);
 }
 
-require("./icon-search~PApihVHT.svg");
-
 const GlobalFilter = memo(({
   globalFilter,
   setGlobalFilter
@@ -1581,8 +1574,6 @@ function SvgRowDelete(props) {
   }, props), _ref$4);
 }
 
-require("./RowDelete~RKolkpAF.svg");
-
 function _extends$5() {
   _extends$5 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -1612,8 +1603,6 @@ function SvgRowEdit(props) {
     height: 10
   }, props), _ref$5);
 }
-
-require("./RowEdit~BuKwAcSl.svg");
 
 const RowOptions = memo(({
   row,
@@ -1863,8 +1852,6 @@ function SvgIconAlignJustify(props) {
   }, props), _ref$6);
 }
 
-require("./icon-align-justify~QUGhdLyZ.svg");
-
 const ColumnItem = ({
   id,
   Header,
@@ -2047,8 +2034,6 @@ function SvgIconClose(props) {
     height: 14
   }, props), _ref$7);
 }
-
-require("./icon-close~ZZDpknDV.svg");
 
 const ColumnReordering = memo(props => {
   const {
@@ -2436,8 +2421,6 @@ function SvgIconNav(props) {
   }, props), _ref$8);
 }
 
-require("./icon-nav~opcpgOUc.svg");
-
 function _extends$9() {
   _extends$9 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -2505,8 +2488,6 @@ function SvgSortCopy(props) {
   }, props), _ref$9, _ref2, _ref3, _ref4);
 }
 
-require("./SortCopy~IGKyJbDR.svg");
-
 function _extends$a() {
   _extends$a = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -2537,8 +2518,6 @@ function SvgSortDelete(props) {
     height: 16
   }, props), _ref$a);
 }
-
-require("./SortDelete~MFpZtzWS.svg");
 
 const SortItem = ({
   id,
@@ -2934,8 +2913,6 @@ function SvgIconCsv(props) {
   }, props), _ref$b);
 }
 
-require("./icon-csv~ZTspeUdR.svg");
-
 function _extends$c() {
   _extends$c = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -2966,8 +2943,6 @@ function SvgIconExcel(props) {
   }, props), _ref$c);
 }
 
-require("./icon-excel~OSJQRCWo.svg");
-
 function _extends$d() {
   _extends$d = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -2997,8 +2972,6 @@ function SvgIconPdf(props) {
     height: 28
   }, props), _ref$d);
 }
-
-require("./icon-pdf~oXKjhZIN.svg");
 
 const ExportData = memo(props => {
   const {
@@ -3462,8 +3435,6 @@ function SvgIconColumns(props) {
   }, props), _ref$e);
 }
 
-require("./icon-columns~VciuGQJq.svg");
-
 function _extends$f() {
   _extends$f = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3495,8 +3466,6 @@ function SvgIconAngle(props) {
   }, props), _ref$f);
 }
 
-require("./icon-angle~ZgHXTFgp.svg");
-
 function _extends$g() {
   _extends$g = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3527,8 +3496,6 @@ function SvgIconFilter(props) {
   }, props), _ref$g);
 }
 
-require("./icon-filter~bbrxYmHo.svg");
-
 function _extends$h() {
   _extends$h = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3558,8 +3525,6 @@ function SvgIconShare(props) {
     height: 12
   }, props), _ref$h);
 }
-
-require("./icon-share~kEkYYNGj.svg");
 
 function _extends$i() {
   _extends$i = Object.assign || function (target) {
@@ -3592,8 +3557,6 @@ function SvgIconGroupSort(props) {
   }, props), _ref$i);
 }
 
-require("./icon-group-sort~EBbWfMDz.svg");
-
 function _extends$j() {
   _extends$j = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3623,8 +3586,6 @@ function SvgIconSort(props) {
     height: 5
   }, props), _ref$j);
 }
-
-require("./icon-sort~ghBebiHo.svg");
 
 function _extends$k() {
   _extends$k = Object.assign || function (target) {
@@ -3657,8 +3618,6 @@ function SvgIconEdit(props) {
     }
   }, props), _ref$k);
 }
-
-require("./icon-edit~jCBbryNN.svg");
 
 const listRef = createRef(null);
 const Customgrid = memo(props => {
