@@ -1,14 +1,14 @@
 /* eslint-disable no-undef */
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import { act } from "react-dom/test-utils";
-import SortList from "../../../../src/Overlays/groupsort/sortingList";
 import SortItem from "../../../../src/Overlays/groupsort/sortingItem";
 import "@testing-library/jest-dom/extend-expect";
+import SortingList from "../../../../src/Overlays/groupsort/sortingList";
 
 const HTML5toTouch = {
     backends: [
@@ -36,7 +36,7 @@ const originalColumns = [
                 accessor: "flightno"
             },
             {
-                Header: "Flight Date",
+                Header: "Date",
                 accessor: "date"
             }
         ],
@@ -90,22 +90,61 @@ const findSortMock = jest.fn(() => {
 });
 
 describe("testing sort item ", () => {
-    it("should renders parent component", () => {
-        const { getByText, container } = render(
+    let component;
+    beforeEach(() => {
+        component = document.createElement("div");
+        document.body.appendChild(component);
+    });
+    afterEach(cleanup);
+    it("should renders component with drag and drop", () => {
+        const createBubbledEvent = (type, props = {}) => {
+            const event = new Event(type, { bubbles: true });
+            Object.assign(event, props);
+            return event;
+        };
+        const { getAllByTestId, container } = render(
             <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-                <SortList
+                <SortingList
                     sortOptions={sortOptions}
                     originalColumns={originalColumns}
                     updateSortingOptions={updateSortingOptions}
-                    updateSingleSortingOption={updateSingleSortingOption}
-                    copySortOption={copySortOption}
-                    deleteSortOption={deleteSortOption}
                 />
             </DndProvider>
         );
         const childComponent = container.querySelector("div");
         expect(childComponent).toBeInTheDocument();
-        expect(getByText("Flight Date")).toBeInTheDocument();
+        const startingNode = getAllByTestId("sortItem")[0];
+        const endingNode = getAllByTestId("sortItem")[1];
+        startingNode.dispatchEvent(
+            createBubbledEvent("dragstart", { clientX: 0, clientY: 0 })
+        );
+        endingNode.dispatchEvent(
+            createBubbledEvent("drop", { clientX: 0, clientY: 1 })
+        );
+        fireEvent.dragEnd(startingNode);
+    });
+    it("should renders component with didDrop false", () => {
+        const createBubbledEvent = (type, props = {}) => {
+            const event = new Event(type, { bubbles: true });
+            Object.assign(event, props);
+            return event;
+        };
+        const { getAllByTestId, container } = render(
+            <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+                <SortingList
+                    sortOptions={sortOptions}
+                    originalColumns={originalColumns}
+                    updateSortingOptions={updateSortingOptions}
+                />
+            </DndProvider>
+        );
+        const childComponent = container.querySelector("div");
+        expect(childComponent).toBeInTheDocument();
+        const startingNode = getAllByTestId("sortItem")[0];
+        startingNode.dispatchEvent(
+            createBubbledEvent("dragstart", { clientX: 0, clientY: 0 })
+        );
+        fireEvent.dragEnd(startingNode);
     });
     it("should renders child component", () => {
         const { container } = render(
@@ -129,10 +168,12 @@ describe("testing sort item ", () => {
                     copySortOption={copySortOption}
                     deleteSortOption={deleteSortOption}
                 />
-            </DndProvider>
+            </DndProvider>,
+            component
         );
         const childComponent = container.querySelector("div");
         expect(childComponent).toBeInTheDocument();
+        fireEvent.dragStart(childComponent);
     });
     it("should renders after changing dropdown values", () => {
         const { getByText } = render(

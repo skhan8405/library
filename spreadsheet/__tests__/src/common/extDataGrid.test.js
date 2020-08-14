@@ -2,8 +2,8 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import ExtDataGrid from "../../../src/common/extDataGrid";
 import ReactTestUtils, { act } from "react-dom/test-utils";
+import ExtDataGrid from "../../../src/common/extDataGrid";
 import "@testing-library/jest-dom/extend-expect";
 
 let container;
@@ -40,7 +40,7 @@ it("Render mount the component and unmount the ExtDataGrid", () => {
                 rowGetter={mockRowGetter}
                 rowsCount={10}
                 onGridRowsUpdated={mockGridRowUpdate}
-                enableCellSelect={true}
+                enableCellSelect
                 onClearFilters={mockClearFilters}
                 onColumnResize={mockColumnResize}
                 onAddFilter={mockAddFilter}
@@ -55,14 +55,14 @@ it("Render mount the component and unmount the ExtDataGrid", () => {
                 }}
                 onGridSort={mockGridSort}
                 globalSearch={mockGlobalSearchLogic}
-                handleWarningStatus={""}
-                closeWarningStatus={""}
+                handleWarningStatus=""
+                closeWarningStatus=""
                 enableRowSelect={null}
             />,
             container
         );
     });
-    let component = ReactTestUtils.renderIntoDocument(
+    const component = ReactTestUtils.renderIntoDocument(
         <ExtDataGrid
             toolbar={<div />}
             getValidFilterValues={mockgetValidFilters}
@@ -71,7 +71,7 @@ it("Render mount the component and unmount the ExtDataGrid", () => {
             rowGetter={mockRowGetter}
             rowsCount={10}
             onGridRowsUpdated={mockGridRowUpdate}
-            enableCellSelect={true}
+            enableCellSelect
             onClearFilters={mockClearFilters}
             onColumnResize={mockColumnResize}
             onAddFilter={mockAddFilter}
@@ -86,8 +86,8 @@ it("Render mount the component and unmount the ExtDataGrid", () => {
             }}
             onGridSort={mockGridSort}
             globalSearch={mockGlobalSearchLogic}
-            handleWarningStatus={""}
-            closeWarningStatus={""}
+            handleWarningStatus=""
+            closeWarningStatus=""
             enableRowSelect={null}
             cellRangeSelection={{
                 onComplete: mockSetSelection
