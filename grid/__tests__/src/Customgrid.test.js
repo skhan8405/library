@@ -429,14 +429,12 @@ describe("render CustomgridCustomgrid", () => {
             />
         );
 
-        /* 
         // Global Filter Search
         const input = container.getElementsByClassName("txt").item(0);
         fireEvent.change(input, { target: { value: "ABC1178" } });
         expect(input.value).toBe("ABC1178");
         fireEvent.change(input, { target: { value: "" } });
         expect(input.value).toBe("");
-         */
 
         // Column Filter Search
         const toggleColumnFilter = container.querySelector(
