@@ -3,7 +3,7 @@ import React from "react";
 import {
     render,
     screen,
-    wait,
+    waitFor,
     cleanup,
     fireEvent
 } from "@testing-library/react";
@@ -366,7 +366,9 @@ describe("render Customgrid ", () => {
                 selectBulkData={mockSelectBulkData}
             />
         );
-        await wait(() => expect(screen.getByText("AWBs")).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText("AWBs")).toBeInTheDocument()
+        );
         const expander = container.getElementsByClassName("expander")[0];
         act(() => {
             expander.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -386,21 +388,21 @@ describe("render Customgrid ", () => {
         // Flight Column Search
         const columnInput = container.getElementsByClassName("txt").item(1);
         fireEvent.change(columnInput, { target: { value: "222" } });
-        await wait(() => expect(columnInput.value).toBe("222"));
+        await waitFor(() => expect(columnInput.value).toBe("222"));
         fireEvent.change(columnInput, { target: { value: "" } });
-        await wait(() => expect(columnInput.value).toBe(""));
+        await waitFor(() => expect(columnInput.value).toBe(""));
         // SR Column Search
         const SrInput = container.getElementsByClassName("txt").item(2);
         fireEvent.change(SrInput, { target: { value: "74" } });
-        await wait(() => expect(SrInput.value).toBe("74"));
+        await waitFor(() => expect(SrInput.value).toBe("74"));
         fireEvent.change(SrInput, { target: { value: "" } });
-        await wait(() => expect(SrInput.value).toBe(""));
+        await waitFor(() => expect(SrInput.value).toBe(""));
         // ULD Positions column search
         const positionInput = container.getElementsByClassName("txt").item(3);
         fireEvent.change(positionInput, { target: { value: "l1" } });
-        await wait(() => expect(positionInput.value).toBe("l1"));
+        await waitFor(() => expect(positionInput.value).toBe("l1"));
         fireEvent.change(positionInput, { target: { value: "" } });
-        await wait(() => expect(positionInput.value).toBe(""));
+        await waitFor(() => expect(positionInput.value).toBe(""));
 
         // Apply Sort
         const toggleGroupSortOverLay = container.querySelector(
@@ -429,7 +431,7 @@ describe("render Customgrid ", () => {
             );
         });
         sortOverlay = container.querySelector("[class='neo-popover__sort']");
-        await wait(() => expect(sortOverlay).toBeNull());
+        await waitFor(() => expect(sortOverlay).toBeNull());
 
         // Apply Sort
         act(() => {
@@ -466,7 +468,9 @@ describe("render Customgrid ", () => {
                 selectBulkData={mockSelectBulkData}
             />
         );
-        await wait(() => expect(screen.getByText("AWBs")).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText("AWBs")).toBeInTheDocument()
+        );
 
         // Row Options
         let rowOptionsIcon = container.querySelector("[class=icon-row-options]")
