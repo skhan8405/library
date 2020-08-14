@@ -250,7 +250,7 @@ describe("ColumnReordering unit test", () => {
     });
 
     it("should not render ColumnReordering component", () => {
-        const component = render(
+        render(
             <ColumnReordering
                 isManageColumnOpen={false}
                 toggleManageColumns={toggleManageColumns}
@@ -262,8 +262,7 @@ describe("ColumnReordering unit test", () => {
             container
         );
         const overlay = document.getElementsByClassName("neo-popover--column");
-        console.log(overlay);
-        console.log(overlay.innerHTML);
+        expect(overlay.innerHTML).toBeUndefined();
     });
 
     it("should render ColumnReordering component", () => {
