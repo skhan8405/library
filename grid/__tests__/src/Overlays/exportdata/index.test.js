@@ -382,6 +382,13 @@ describe("Export Data unit test", () => {
         expect(selectAllCheck.checked).toEqual(false);
         fireEvent.click(selectAllCheck);
         expect(selectAllCheck.checked).toEqual(true);
+
+        const selectSingleCheck = getByTestId("Flight");
+        expect(selectSingleCheck.checked).toEqual(true);
+        fireEvent.click(selectSingleCheck);
+        expect(selectSingleCheck.checked).toEqual(false);
+        fireEvent.click(selectSingleCheck);
+        expect(selectSingleCheck.checked).toEqual(true);
     });
     it("should check all file types and export data", () => {
         const { getByTestId } = render(
@@ -443,6 +450,11 @@ describe("Export Data unit test", () => {
         const selectAllCheck = getByTestId("select-all-checkbox");
         fireEvent.click(selectAllCheck);
         expect(selectAllCheck.checked).toEqual(false);
+        const selectPdf = getByTestId("chk_pdf_test");
+        fireEvent.click(selectPdf);
+        expect(selectPdf.checked).toEqual(true);
+        fireEvent.click(selectPdf);
+        expect(selectPdf.checked).toEqual(false);
         fireEvent.click(getByTestId("export_button"));
     });
     it("should provide warnings if no colmns is selected", () => {

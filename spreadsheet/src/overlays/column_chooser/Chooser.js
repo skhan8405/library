@@ -274,6 +274,7 @@ class ColumnReordering extends React.Component {
                                 <div className="column__checkbox">
                                     <input
                                         type="checkbox"
+                                        data-testid="selectAllCheckBox"
                                         id="selectallcolumncheckbox"
                                         onChange={() =>
                                             this.selectAllToColumnReOrderList()
@@ -292,6 +293,7 @@ class ColumnReordering extends React.Component {
                                     <div className="column__wrap" key={item}>
                                         <div className="column__checkbox">
                                             <input
+                                                data-testid="addToColumnReorderEntityList"
                                                 type="checkbox"
                                                 id={`checkboxtoselectreorder_${item}`}
                                                 checked={this.state.columnReorderEntityList.includes(
@@ -319,6 +321,7 @@ class ColumnReordering extends React.Component {
                             </div>
                             <div
                                 role="presentation"
+                                data-testid="closeColumnReordering"
                                 className="column__close"
                                 onClick={() =>
                                     this.props.closeColumnReOrdering()
@@ -368,6 +371,7 @@ class ColumnReordering extends React.Component {
                         <div className="column__footer">
                             <div className="column__btns">
                                 <button
+                                    data-testid="resetButton"
                                     type="button"
                                     className="btns"
                                     onClick={() =>
@@ -377,6 +381,7 @@ class ColumnReordering extends React.Component {
                                     Reset
                                 </button>
                                 <button
+                                    data-testid="cancelButton"
                                     type="button"
                                     className="btns"
                                     onClick={() =>
@@ -386,6 +391,7 @@ class ColumnReordering extends React.Component {
                                     Cancel
                                 </button>
                                 <button
+                                    data-testid="saveButton"
                                     type="button"
                                     className="btns btns__save"
                                     onClick={() =>

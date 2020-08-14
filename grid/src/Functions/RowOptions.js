@@ -40,6 +40,7 @@ const RowOptions = memo(
         };
 
         const additionalActionClicked = (actionValue) => {
+            closeRowOptionsOverlay();
             return rowActionCallback(original, actionValue);
         };
 

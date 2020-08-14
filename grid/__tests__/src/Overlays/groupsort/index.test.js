@@ -12,6 +12,7 @@ describe("Group Sort-index test Cases", () => {
         {
             Header: "Flight",
             accessor: "flight",
+            columnId: "flight-id",
             width: 100,
             innerCells: [
                 {
@@ -24,12 +25,11 @@ describe("Group Sort-index test Cases", () => {
                 }
             ],
             sortValue: "flightno"
-            // displayCell: mockDisplayCell,
-            // editCell: mockEditCell
         },
         {
             Header: "Flight1",
             accessor: "flight1",
+            columnId: "flight1-id",
             width: 100,
             innerCells: [
                 {
@@ -42,8 +42,6 @@ describe("Group Sort-index test Cases", () => {
                 }
             ],
             sortValue: "flightno1"
-            // displayCell: mockDisplayCell,
-            // editCell: mockEditCell
         }
     ];
 

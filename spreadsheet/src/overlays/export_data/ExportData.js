@@ -354,6 +354,7 @@ class ExportData extends React.Component {
                         <div className="export__footer">
                             <div className="export__btns">
                                 <button
+                                    data-testid="closeExport"
                                     type="button"
                                     className="btns"
                                     onClick={() => this.props.closeExport()}
@@ -361,6 +362,7 @@ class ExportData extends React.Component {
                                     Cancel
                                 </button>
                                 <button
+                                    data-testid="exportValidationClick"
                                     type="button"
                                     className="btns btns__save"
                                     onClick={() => {
