@@ -653,18 +653,6 @@ describe("LeftDrawer component", () => {
         fireEvent.click(normalHeadsElm);
     });
 
-    it("Check conditionHeads", () => {
-        const wrapper = render(
-            <LeftDrawer
-                filterData={filterData}
-                fromLeftToRight={fromLeftToRight}
-            />
-        );
-        const conditionHeadsElm = wrapper.getAllByTestId("conditionHeads")[0];
-        expect(conditionHeadsElm).toBeInTheDocument;
-        fireEvent.click(conditionHeadsElm);
-    });
-
     it("Check fieldHeads", () => {
         const wrapper = render(
             <LeftDrawer
