@@ -3,7 +3,7 @@ import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import RowOptions from "../../../src/Functions/RowOptions";
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/extend-expect";
 
 describe("render row options", () => {
     const rowdata = {

@@ -31,27 +31,9 @@ export default function LeftDrawer(props) {
     const searchFilterHandler = (e) => {
         let filteredList = [];
         // eslint-disable-next-line no-unused-vars
-        let filteredTypeList = [];
         const searchKey = e.target.value;
         if (leftDrawData) {
             filteredList = leftDrawTemp.filter((item) => {
-                if (item.types) {
-                    filteredTypeList = item.types.filter((type) => {
-                        return (
-                            type.name &&
-                            type.name
-                                .toLowerCase()
-                                .includes(searchKey.toLowerCase())
-                        );
-                    });
-
-                    return (
-                        item.name &&
-                        item.name
-                            .toLowerCase()
-                            .includes(searchKey.toLowerCase())
-                    );
-                }
                 return (
                     item.name &&
                     item.name.toLowerCase().includes(searchKey.toLowerCase())
@@ -71,13 +53,14 @@ export default function LeftDrawer(props) {
         }
     };
 
-    const accordianHeads = leftDrawData.map((item, index) => {
+    const accordianHeads = leftDrawData.map((item) => {
         if (item.types.length) {
             return (
-                <div key={index}>
+                <div key={item}>
                     <Accordion>
                         <Card>
                             <Accordion.Toggle
+                                data-testid="handleAccordianArrow"
                                 onClick={() => {
                                     handleAccordian();
                                 }}
@@ -101,9 +84,9 @@ export default function LeftDrawer(props) {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey="1">
                                 <Card.Body>
-                                    <ul className="firstAccordion" key={index}>
+                                    <ul className="firstAccordion" key={item}>
                                         {item.types &&
-                                            item.types.map((type, index_) => {
+                                            item.types.map((type) => {
                                                 return (
                                                     <li
                                                         role="presentation"
@@ -111,6 +94,7 @@ export default function LeftDrawer(props) {
                                                             fontWeight:
                                                                 type.weight
                                                         }}
+                                                        data-testid="firstAccordion"
                                                         onClick={() => {
                                                             props.fromLeftToRight(
                                                                 item.name,
@@ -125,7 +109,7 @@ export default function LeftDrawer(props) {
                                                             );
                                                             // props.addedFilterCount();
                                                         }}
-                                                        key={index_}
+                                                        key={type}
                                                     >
                                                         {type.name}
                                                     </li>
@@ -139,15 +123,16 @@ export default function LeftDrawer(props) {
                 </div>
             );
         }
-        return <div key={index} />;
+        return <div key={item} />;
     });
-    const fieldHeads = leftDrawData.map((item, index) => {
+    const fieldHeads = leftDrawData.map((item) => {
         if (item.field.length) {
             return (
-                <div className="fieldHeads" key={index}>
+                <div className="fieldHeads" key={item}>
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
+                        data-testid="fieldHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -168,7 +153,7 @@ export default function LeftDrawer(props) {
                 </div>
             );
         }
-        return <div key={index} />;
+        return <div key={item} />;
     });
     // const conditionHeads = leftDrawData.map((item, index) => {
     //     if (item.condition.length) {
@@ -199,15 +184,16 @@ export default function LeftDrawer(props) {
     //     }
     //     return <div key={index} />;
     // });
-    const normalHeads = leftDrawData.map((item, index) => {
+    const normalHeads = leftDrawData.map((item) => {
         if (
             !(item.condition.length || item.types.length || item.field.length)
         ) {
             return (
-                <div className="normalHeads" key={index}>
+                <div className="normalHeads" key={item}>
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
+                        data-testid="normalHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -228,7 +214,7 @@ export default function LeftDrawer(props) {
                 </div>
             );
         }
-        return <div key={index} />;
+        return <div key={item} />;
     });
     return (
         <div>
@@ -239,6 +225,7 @@ export default function LeftDrawer(props) {
                     placeholder="Search a Filter"
                     defaultValue=""
                     className="customControl"
+                    data-testid="searchFilterHandler-input"
                     onChange={searchFilterHandler}
                 />
             </Form.Row>

@@ -27,14 +27,14 @@ const MainFilterPanel = (props) => {
     };
     if (chipArray) {
         chipCount = chipArray.length;
-        chips = chipArray.map((item, index) => {
+        chips = chipArray.map((item) => {
             if (item.type) {
                 return (
                     <div
                         role="presentation"
                         className="listContent"
                         data-testid="typecheck"
-                        key={index}
+                        key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
@@ -42,8 +42,8 @@ const MainFilterPanel = (props) => {
                         <span>
                             {item.name}:{item.type}
                         </span>
-                        {item.value.map((value, index_) => {
-                            return <div key={index_}>{value.value}</div>;
+                        {item.value.map((value) => {
+                            return <div key={value}>{value.value}</div>;
                         })}
                     </div>
                 );
@@ -54,7 +54,7 @@ const MainFilterPanel = (props) => {
                         role="presentation"
                         className="listContent"
                         data-testid="conditionValue-check"
-                        key={index}
+                        key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
@@ -70,7 +70,7 @@ const MainFilterPanel = (props) => {
                         role="presentation"
                         className="listContent"
                         data-testid="fieldValue-check"
-                        key={index}
+                        key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
@@ -85,7 +85,7 @@ const MainFilterPanel = (props) => {
                     role="presentation"
                     className="listContent"
                     data-testid="chipCount-check"
-                    key={index}
+                    key={item}
                     onClick={() => {
                         props.addAppliedFilters(chipArray);
                     }}

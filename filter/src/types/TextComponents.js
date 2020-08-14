@@ -11,13 +11,13 @@ export default function TextComponents(props) {
         setTextComponentArr(props.textComponentsArray);
     }, [props.textComponentsArray]);
 
-    const textComponentDiv = textComponentArr.map((item, index) => {
+    const textComponentDiv = textComponentArr.map((item) => {
         let validationClass = "";
         if (item.validated === false) {
             validationClass = "text-danger";
         }
         return (
-            <div key={index}>
+            <div key={item}>
                 <div className="filter__input">
                     <div className="filter__input-title">
                         <div className="filter__label">

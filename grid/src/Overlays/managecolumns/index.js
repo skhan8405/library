@@ -16,7 +16,6 @@ const ColumnReordering = memo((props) => {
         isExpandContentAvailable,
         additionalColumn
     } = props;
-
     const additionalColumnHeader =
         additionalColumn && additionalColumn.length
             ? additionalColumn[0].Header
@@ -314,6 +313,7 @@ const ColumnReordering = memo((props) => {
                                         type="text"
                                         placeholder="Search column"
                                         className="custom__ctrl"
+                                        data-testid="filterColumnsList"
                                         onChange={filterColumnsList}
                                     />
                                 </div>

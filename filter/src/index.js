@@ -201,7 +201,7 @@ export default function Filter(props) {
                 item.weight = 400;
             }
         });
-        let dateTimeArray = [...dateTimesArray];
+        const dateTimeArray = [...dateTimesArray];
         const index = dateTimeArray.findIndex((x) => x.name === item.name);
         dateTimeArray.splice(index, 1);
         // eslint-disable-next-line no-shadow
@@ -211,7 +211,6 @@ export default function Filter(props) {
             });
         });
         setDateTimesArray(dateTimeArray);
-        dateTimeArray = [];
         filterData.filter.forEach((filters) => {
             if (filters.name === item.name) {
                 item.field.forEach((fieldArray) => {
@@ -283,7 +282,7 @@ export default function Filter(props) {
                     filter: []
                 };
                 if (autoCompletesValueArray.length > 0) {
-                    let autoCompleteArray = [...autoCompletesArray];
+                    const autoCompleteArray = [...autoCompletesArray];
                     autoCompleteArray.map((item) => {
                         const newItem = item;
                         autoCompletesValueArray.forEach((valueItem) => {
@@ -313,19 +312,15 @@ export default function Filter(props) {
                         setSaveWarningClassName("text-danger");
                         setSaveWarningLabel("Enter values in every field");
                     }
-                    autoCompleteArray = [];
                 } else {
-                    let autoCompleteArray = [...autoCompletesArray];
-                    autoCompleteArray.map((item) => {
-                        const newItem = item;
-                        newItem.validated = false;
-                        return newItem;
+                    const autoCompleteArray = [...autoCompletesArray];
+                    autoCompleteArray.forEach((item) => {
+                        item.validated = false;
                     });
                     setAutoCompletesArray(autoCompleteArray);
-                    autoCompleteArray = [];
                 }
                 if (dateTimesValueArray.length > 0) {
-                    let dateTimeArray = [...dateTimesArray];
+                    const dateTimeArray = [...dateTimesArray];
                     dateTimeArray.map((item) => {
                         const newItem = item;
                         dateTimesValueArray.forEach((valueItem) => {
@@ -352,19 +347,15 @@ export default function Filter(props) {
                         setSaveWarningClassName("text-danger");
                         setSaveWarningLabel("Enter values in every field");
                     }
-                    dateTimeArray = [];
                 } else {
-                    let dateTimeArray = [...dateTimesArray];
-                    dateTimeArray.map((item) => {
-                        const newItem = item;
-                        newItem.validated = false; // Added for no-param-reassign lint errors
-                        return newItem;
+                    const dateTimeArray = [...dateTimesArray];
+                    dateTimeArray.forEach((item) => {
+                        item.validated = false;
                     });
                     setDateTimesArray(dateTimeArray);
-                    dateTimeArray = [];
                 }
                 if (textComponentsValueArray.length > 0) {
-                    let textComponentArray = [...textComponentsArray];
+                    const textComponentArray = [...textComponentsArray];
                     textComponentArray.forEach((item) => {
                         textComponentsValueArray.forEach((valueItem) => {
                             if (valueItem.name === item.name) {
@@ -389,14 +380,12 @@ export default function Filter(props) {
                         setSaveWarningClassName("text-danger");
                         setSaveWarningLabel("Enter values in every field");
                     }
-                    textComponentArray = [];
                 } else {
-                    let textComponentArray = [...textComponentsArray];
+                    const textComponentArray = [...textComponentsArray];
                     textComponentArray.forEach((item) => {
                         item.validated = false;
                     });
                     setTextComponentsArray(textComponentArray);
-                    textComponentArray = [];
                 }
                 if (savedFilter.filter.length > 0) {
                     savedFilter[value] = savedFilter.filter;
@@ -479,7 +468,7 @@ export default function Filter(props) {
                     });
                 }
             });
-            let autoCompleteArray = [...autoCompletesArray];
+            const autoCompleteArray = [...autoCompletesArray];
             if (autoCompleteArray.length > 0) {
                 const index = autoCompleteArray.findIndex(
                     (x) => x.name === value.name && x.type === value.type
@@ -507,7 +496,6 @@ export default function Filter(props) {
                 });
             }
             setAutoCompletesArray(autoCompleteArray);
-            autoCompleteArray = [];
         }
         if (dataType === "DateTime") {
             const value = {
@@ -523,7 +511,7 @@ export default function Filter(props) {
                     item.weight = 700;
                 }
             });
-            let dateTimeArray = [...dateTimesArray];
+            const dateTimeArray = [...dateTimesArray];
             if (dateTimeArray.length > 0) {
                 const index = dateTimeArray.findIndex(
                     (x) => x.name === value.name && x.field === value.field
@@ -549,7 +537,6 @@ export default function Filter(props) {
                 });
             }
             setDateTimesArray(dateTimeArray);
-            dateTimeArray = [];
         }
         if (dataType === "Text") {
             const value = {
@@ -564,7 +551,7 @@ export default function Filter(props) {
                     item.weight = 700;
                 }
             });
-            let textComponentArray = [...textComponentsArray];
+            const textComponentArray = [...textComponentsArray];
             if (textComponentArray.length > 0) {
                 const index = textComponentArray.findIndex(
                     (x) =>
@@ -589,7 +576,6 @@ export default function Filter(props) {
                 });
             }
             setTextComponentsArray(textComponentArray);
-            textComponentArray = [];
         }
     };
     /**
@@ -606,7 +592,7 @@ export default function Filter(props) {
         let autoCompleteArray = [...autoCompletesArray];
         const tempObj = JSON.parse(JSON.stringify(item));
         tempObj.value = valueArray;
-        let autoCompleteValueArray = [...autoCompletesValueArray];
+        const autoCompleteValueArray = [...autoCompletesValueArray];
         if (autoCompleteValueArray.length > 0) {
             const index_ = autoCompleteValueArray.findIndex(
                 (x) => x.name === tempObj.name && x.type === tempObj.type
@@ -658,7 +644,6 @@ export default function Filter(props) {
         setAutoCompletesArray(autoCompleteArray);
         autoCompleteArray = [];
         setAutoCompletesValueArray(autoCompleteValueArray);
-        autoCompleteValueArray = [];
     };
 
     /**
@@ -678,7 +663,7 @@ export default function Filter(props) {
         // eslint-disable-next-line no-shadow
         setAutoCompletesArray(autoCompleteArray);
         if (autoCompletesValueArray.length > 0) {
-            let autoCompleteValueArray = [...autoCompletesValueArray];
+            const autoCompleteValueArray = [...autoCompletesValueArray];
             const index = autoCompleteValueArray.findIndex(
                 (x) => x.name === item.name && x.type === item.type
             );
@@ -686,7 +671,6 @@ export default function Filter(props) {
                 index
             ].enabled;
             setAutoCompletesValueArray(autoCompleteValueArray);
-            autoCompleteValueArray = [];
         }
     };
 
@@ -696,7 +680,7 @@ export default function Filter(props) {
      */
     /* eslint-disable no-param-reassign */
     const handleDateTimeEnabled = (item) => {
-        let dateTimeArray = [...dateTimesArray];
+        const dateTimeArray = [...dateTimesArray];
         const index = dateTimeArray.findIndex(
             (x) => x.name === item.name && x.field === item.field
         );
@@ -705,9 +689,8 @@ export default function Filter(props) {
         }
         setDateTimesArray(dateTimeArray);
         // eslint-disable-next-line no-shadow
-        dateTimeArray = [];
         if (dateTimesValueArray.length > 0) {
-            let dateTimeValueArray = [...dateTimesValueArray];
+            const dateTimeValueArray = [...dateTimesValueArray];
             const tempArray = [];
             item.field.forEach((item) => {
                 tempArray.push(item.column);
@@ -722,7 +705,6 @@ export default function Filter(props) {
             }
 
             setDateTimesValueArray(dateTimeValueArray);
-            dateTimeValueArray = [];
         }
     };
     /**
@@ -737,12 +719,10 @@ export default function Filter(props) {
         setSaveWarningLabel("");
         setSaveWarningClassName("");
         let dateTimeArray = [...dateTimesArray];
-        console.log(dateTimesArray);
-        console.log(value);
         const tempObj = JSON.parse(JSON.stringify(item));
         tempObj.fieldValue = fieldName;
         tempObj.value = value;
-        let dateTimeValueArray = [...dateTimesValueArray];
+        const dateTimeValueArray = [...dateTimesValueArray];
         if (dateTimeValueArray.length > 0) {
             const index = dateTimeValueArray.findIndex(
                 (x) =>
@@ -786,7 +766,6 @@ export default function Filter(props) {
             });
         }
         setDateTimesValueArray(dateTimeValueArray);
-        dateTimeValueArray = [];
         dateTimeArray = [...dateTimesArray];
         if (dateTimeArray.length > 0) {
             dateTimeArray.forEach((item) => {
@@ -807,7 +786,6 @@ export default function Filter(props) {
      */
     const getValueOfDate = (dateValue) => {
         const date = new Date(dateValue);
-        console.log(date);
         const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
             year: "numeric",
             month: "2-digit",
@@ -836,7 +814,6 @@ export default function Filter(props) {
     const addToday = () => {
         const todayDate = new Date();
         const dated = getValueOfDate(todayDate);
-        console.log(dated);
         const dateTimeArray = [...dateTimesArray];
         const dateTimeValueArray = [...dateTimesValueArray];
         // eslint-disable-next-line no-shadow
@@ -1213,7 +1190,7 @@ export default function Filter(props) {
         setSaveWarningLabel("");
         setSaveWarningClassName("");
         const textComponentArray = [...textComponentsArray];
-        let textComponentValueArray = [...textComponentsValueArray];
+        const textComponentValueArray = [...textComponentsValueArray];
         if (textComponentValueArray.length > 0) {
             const index = textComponentValueArray.findIndex(
                 (x) => x.name === item.name && x.dataType === item.dataType
@@ -1257,14 +1234,13 @@ export default function Filter(props) {
             });
         }
         setTextComponentsValueArray(textComponentValueArray);
-        textComponentValueArray = [];
     };
     /**
      * Method To toggle the switch to enable and disable the input fields
      * @param {*} item is the specific filter element object
      */
     const handleTextComponentEnabled = (item) => {
-        let textComponentArray = [...textComponentsArray];
+        const textComponentArray = [...textComponentsArray];
         const index = textComponentArray.findIndex(
             (x) => x.name === item.name && x.dataType === item.dataType
         );
@@ -1273,8 +1249,7 @@ export default function Filter(props) {
                 .enabled;
         }
         setTextComponentsArray(textComponentArray);
-        textComponentArray = [];
-        let textComponentValueArray = [...textComponentsValueArray];
+        const textComponentValueArray = [...textComponentsValueArray];
         if (textComponentValueArray.length > 0) {
             // Added for no-param-reassign lint errors
             const index_ = textComponentValueArray.findIndex(
@@ -1287,7 +1262,6 @@ export default function Filter(props) {
             }
         }
         setTextComponentsValueArray(textComponentValueArray);
-        textComponentValueArray = [];
     };
     /**
      * Method To return the specific options array for autoComplete element
@@ -1521,7 +1495,7 @@ export default function Filter(props) {
         setApplyFilter(true);
     };
 
-    const { ref, showApplyFilter, setApplyFilter } = useComponentVisible(true);
+    const { ref, showApplyFilter, setApplyFilter } = useComponentVisible();
     return (
         <div ref={ref}>
             {showApplyFilter && (

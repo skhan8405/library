@@ -1,9 +1,11 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
-import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
+import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
 import "@testing-library/jest-dom/extend-expect";
 
 let container;
@@ -42,7 +44,8 @@ it("Render mount the component and unmount the columnItem", () => {
             container
         );
     });
-    let component = ReactTestUtils.renderIntoDocument(
+    // eslint-disable-next-line no-unused-vars
+    const component = ReactTestUtils.renderIntoDocument(
         <DndProvider
             backend={TouchBackend}
             options={{
@@ -53,21 +56,3 @@ it("Render mount the component and unmount the columnItem", () => {
         </DndProvider>
     );
 });
-
-// describe("<ColumnItem />", () => {
-//   const props = {
-//     id: 1,
-//     text: "text",
-//     moveColumn: jest.fn(),
-//     findColumn: jest.fn(() => 1),
-//     useDrop: jest.fn(),
-//   };
-//   it("mount", () => {
-//     const wrapper = mount(
-//       <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-//         <ColumnItem {...props} />
-//       </DndProvider>
-//     );
-
-//   });
-// });

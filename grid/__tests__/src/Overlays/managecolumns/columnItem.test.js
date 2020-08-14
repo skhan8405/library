@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
-import ColumnItem from "../../src/Overlays/managecolumns/columnItem";
-import ColumnsList from "../../src/Overlays/managecolumns/columnsList";
+import ColumnItem from "../../../../src/Overlays/managecolumns/columnItem";
+import ColumnsList from "../../../../src/Overlays/managecolumns/columnsList";
 import "@testing-library/jest-dom/extend-expect";
 
 const HTML5toTouch = {
@@ -61,7 +61,6 @@ const managedColumns = [
         ]
     }
 ];
-
 const updateColumnsInState = jest.fn();
 const isInnerCellSelected = jest.fn();
 const selectInnerCells = jest.fn();
@@ -99,6 +98,56 @@ describe("render ColumnItem", () => {
         const childComponent = container.querySelector("div");
         expect(childComponent).toBeInTheDocument();
         expect(getByText("Flight")).toBeInTheDocument();
+    });
+    it("should work drag and drop functionality", () => {
+        const createBubbledEvent = (type, props = {}) => {
+            const event = new Event(type, { bubbles: true });
+            Object.assign(event, props);
+            return event;
+        };
+        const { getAllByTestId } = render(
+            <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+                <ColumnsList
+                    columnsToManage={managedColumns}
+                    updateColumnsInState={updateColumnsInState}
+                    isInnerCellSelected={isInnerCellSelected}
+                    selectInnerCells={selectInnerCells}
+                />
+            </DndProvider>
+        );
+        expect(getAllByTestId("columnItem")).toHaveLength(2);
+        const startingNode = getAllByTestId("columnItem")[0];
+        const endingNode = getAllByTestId("columnItem")[1];
+        startingNode.dispatchEvent(
+            createBubbledEvent("dragstart", { clientX: 0, clientY: 0 })
+        );
+        endingNode.dispatchEvent(
+            createBubbledEvent("drop", { clientX: 0, clientY: 1 })
+        );
+        fireEvent.dragEnd(startingNode);
+    });
+    it("should work drag and drop functionality with didDrop false", () => {
+        const createBubbledEvent = (type, props = {}) => {
+            const event = new Event(type, { bubbles: true });
+            Object.assign(event, props);
+            return event;
+        };
+        const { getAllByTestId } = render(
+            <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+                <ColumnsList
+                    columnsToManage={managedColumns}
+                    updateColumnsInState={updateColumnsInState}
+                    isInnerCellSelected={isInnerCellSelected}
+                    selectInnerCells={selectInnerCells}
+                />
+            </DndProvider>
+        );
+        expect(getAllByTestId("columnItem")).toHaveLength(2);
+        const startingNode = getAllByTestId("columnItem")[0];
+        startingNode.dispatchEvent(
+            createBubbledEvent("dragstart", { clientX: 0, clientY: 0 })
+        );
+        fireEvent.dragEnd(startingNode);
     });
 
     it("should renders child component", () => {

@@ -1,7 +1,9 @@
+/* eslint-disable no-undef */
+
 import React from "react";
-import ErrorMessage from "../../../src/common/ErrorMessage";
-import ReactDOM, { render, unmountComponentAtNode } from "react-dom";
+import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
+import ErrorMessage from "../../../src/common/ErrorMessage";
 import "@testing-library/jest-dom/extend-expect";
 
 let container = null;
