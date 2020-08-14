@@ -174,9 +174,9 @@ test("chooser", () => {
             filterType: "autoCompleteFilter"
         }
     ]);
-    component.handleClickOutside({
-        target: "parentDiv"
-    });
+    // component.handleClickOutside({
+    //     target: "parentDiv"
+    // });
 });
 test("render the chooser", () => {
     const { asFragment } = render(

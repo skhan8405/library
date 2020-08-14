@@ -1,10 +1,12 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
+import { act } from "react-dom/test-utils";
 import Filter from "../../src/index";
 import FilterData from "./data.json";
-import ReactTestUtils, { act } from "react-dom/test-utils";
 
 const airport = [
     { key: "AAA", value: "AAA" },
@@ -26,36 +28,39 @@ const airportGroup = [
 ];
 FilterData.filter.forEach((item) => {
     if (item.types) {
-        for (let i in item.types) {
-            if (item.types[i].dataSource === "Airport") {
-                item.types[i].options = airport;
+        Object.keys(item.types).forEach((key) => {
+            if (item.types[key].dataSource === "Airport") {
+                // eslint-disable-next-line no-param-reassign
+                item.types[key].options = airport;
             } else {
-                item.types[i].options = airportGroup;
+                // eslint-disable-next-line no-param-reassign
+                item.types[key].options = airportGroup;
             }
-        }
+        });
     }
 });
-let container;
+let container_;
 
 beforeEach(() => {
-    container = document.createElement("div");
-    document.body.appendChild(container);
+    container_ = document.createElement("div");
+    document.body.appendChild(container_);
 });
 
 afterEach(() => {
-    document.body.removeChild(container);
-    container = null;
+    document.body.removeChild(container_);
+    container_ = null;
 });
 
-let props = {
-    filterData: { FilterData },
-    appliedFilters: appliedFilters,
-    savedFilters: savedFilters,
-    addingToFavourite: addingToFavourite
-};
 const appliedFilters = jest.fn();
 const savedFilters = jest.fn();
 const addingToFavourite = jest.fn();
+
+const props = {
+    filterData: { FilterData },
+    appliedFilters,
+    savedFilters,
+    addingToFavourite
+};
 
 it("renders without crashing", () => {
     ReactDOM.render(<Filter filterData={FilterData} />, container);
@@ -63,26 +68,25 @@ it("renders without crashing", () => {
 });
 
 it("handleListFilterCheck", () => {
-    let wrapper = render(<Filter props={{ ...props }} />);
+    const wrapper = render(<Filter props={{ ...props }} />);
 
-    let left = wrapper.getByTestId("handleListFilterCheck");
+    const left = wrapper.getByTestId("handleListFilterCheck");
     fireEvent.click(left);
     expect(left).not.toBeNull();
 });
 
 it("showDrawer-check", () => {
-    const ref = React.createRef();
-    let wrapper = render(
+    const wrapper = render(
         <Filter filterData={FilterData} props={{ ...props }} />
     );
 
-    let addfilter = wrapper.getByTestId("showDrawer-check");
+    const addfilter = wrapper.getByTestId("showDrawer-check");
     fireEvent.click(addfilter);
     expect(addfilter).not.toBeNull();
 });
 
 it("applyFilter - date", () => {
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -126,8 +130,7 @@ it("applyFilter - date", () => {
 });
 
 it("saveFilter - Date ", () => {
-    const ref = React.createRef();
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -191,8 +194,7 @@ it("saveFilter - Date ", () => {
 });
 
 it("saveFilter - date - empty name", () => {
-    const ref = React.createRef();
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -254,8 +256,7 @@ it("saveFilter - date - empty name", () => {
 });
 
 it("Save filter - Departure Port > Airport", () => {
-    const ref = React.createRef();
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -281,7 +282,6 @@ it("Save filter - Departure Port > Airport", () => {
         "[data-testid='firstAccordion']"
     );
     act(() => {
-        //fireEvent.change(component3, { target: { value: "2020-08-04T13:27" } });
         component3.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
@@ -290,7 +290,6 @@ it("Save filter - Departure Port > Airport", () => {
     );
     act(() => {
         component4.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        //fireEvent.change(component4, { target: { value: "2020-08-04T13:27" } });
     });
 
     const component5 = container.querySelector(
@@ -320,8 +319,7 @@ it("Save filter - Departure Port > Airport", () => {
 });
 
 it("Save empty filter", () => {
-    const ref = React.createRef();
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -363,8 +361,7 @@ it("Save empty filter", () => {
 });
 
 it("applyFilter - Departure Port > Airport", () => {
-    const ref = React.createRef();
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -391,7 +388,6 @@ it("applyFilter - Departure Port > Airport", () => {
         "[data-testid='firstAccordion']"
     );
     act(() => {
-        //fireEvent.change(component3, { target: { value: "2020-08-04T13:27" } });
         component3.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
@@ -400,7 +396,6 @@ it("applyFilter - Departure Port > Airport", () => {
     );
     act(() => {
         component4.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        //fireEvent.change(component4, { target: { value: "2020-08-04T13:27" } });
     });
 
     const component5 = container.querySelector(
@@ -420,8 +415,7 @@ it("applyFilter - Departure Port > Airport", () => {
 });
 
 it("applyFilter - conditions - Revenue", () => {
-    const ref = React.createRef();
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -451,7 +445,6 @@ it("applyFilter - conditions - Revenue", () => {
 
     act(() => {
         fireEvent.change(component3, { target: { value: "2000" } });
-        //component3.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
     const component6 = container.querySelector(
@@ -463,8 +456,7 @@ it("applyFilter - conditions - Revenue", () => {
 });
 
 it("save filter - conditions - Revenue", () => {
-    const ref = React.createRef();
-    let { getByText, container } = render(
+    const { container } = render(
         <Filter
             filterData={FilterData}
             props={{ ...props }}
@@ -494,7 +486,6 @@ it("save filter - conditions - Revenue", () => {
 
     act(() => {
         fireEvent.change(component3, { target: { value: "2000" } });
-        //component3.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
     const sv = container.querySelector("[class='button-save btn btn-']");

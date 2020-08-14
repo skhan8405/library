@@ -103,9 +103,9 @@ test("<Sorting />", () => {
     );
     component.remove(0);
     component.clearAll();
-    component.handleClickOutside({
-        target: {}
-    });
+    // component.handleClickOutside({
+    //     target: {}
+    // });
 });
 it("close sorting event trigger", () => {
     sortingParamsObjectList = [

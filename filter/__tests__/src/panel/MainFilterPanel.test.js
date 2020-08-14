@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-undef */
 
 import React from "react";
@@ -7,44 +8,14 @@ import "@testing-library/jest-dom/extend-expect";
 
 import ReactDOM, { unmountComponentAtNode } from "react-dom";
 import MainFilterPanel from "../../../src/panel/MainFilterPanel";
-import Datas from "./../data.json";
 
 let container = null;
-const applyFilter = [
-    {
-        name: "Departure Port",
-        dataType: "AutoComplete",
-        enabled: true,
-        value: "ABS"
-    }
-];
-
-var localStorageMock = (function () {
-    var store = {};
-    return {
-        getItem: function (key) {
-            return store[key];
-        },
-        setItem: function (key, value) {
-            store[key] = value.toString();
-        },
-        clear: function () {
-            store = {};
-        },
-        removeItem: function (key) {
-            delete store[key];
-        }
-    };
-})();
-Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
 beforeEach(() => {
     // setup a DOM element as a render target
     container = document.createElement("div");
     // container *must* be attached to document so events work correctly.
     document.body.appendChild(container);
-    localStorage.clear();
-    localStorage.setItem("savedFilters", JSON.stringify(applyFilter));
 });
 
 afterEach(() => {
@@ -55,11 +26,6 @@ afterEach(() => {
 });
 
 describe("Main Filter Panel component", () => {
-    const props = {
-        applyFilterChip: {
-            applyFilter: Datas.filter
-        }
-    };
     const chipArray = {
         applyFilterChip: {
             applyFilter: [
