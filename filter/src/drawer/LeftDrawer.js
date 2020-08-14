@@ -78,6 +78,7 @@ export default function LeftDrawer(props) {
                     <Accordion>
                         <Card>
                             <Accordion.Toggle
+                                data-testid="handleAccordianArrow"
                                 onClick={() => {
                                     handleAccordian();
                                 }}
@@ -111,6 +112,7 @@ export default function LeftDrawer(props) {
                                                             fontWeight:
                                                                 type.weight
                                                         }}
+                                                        data-testid="firstAccordion"
                                                         onClick={() => {
                                                             props.fromLeftToRight(
                                                                 item.name,
@@ -148,6 +150,7 @@ export default function LeftDrawer(props) {
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
+                        data-testid="fieldHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -208,6 +211,7 @@ export default function LeftDrawer(props) {
                     <li
                         role="presentation"
                         style={{ fontWeight: item.weight }}
+                        data-testid="normalHeads"
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
@@ -239,6 +243,7 @@ export default function LeftDrawer(props) {
                     placeholder="Search a Filter"
                     defaultValue=""
                     className="customControl"
+                    data-testid="searchFilterHandler-input"
                     onChange={searchFilterHandler}
                 />
             </Form.Row>
