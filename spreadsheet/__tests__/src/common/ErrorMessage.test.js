@@ -2,6 +2,7 @@ import React from "react";
 import ErrorMessage from "../../../src/common/ErrorMessage";
 import ReactDOM, { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
+import "@testing-library/jest-dom/extend-expect";
 
 let container = null;
 beforeEach(() => {
@@ -20,7 +21,6 @@ afterEach(() => {
 
 test("ErrorMessage test", () => {
     act(() => {
-        console.log("hok");
         render(
             <ErrorMessage className="errorDiv" status="invalid" />,
             container

@@ -225,17 +225,18 @@ describe("CellDisplayAndEdit unit test", () => {
         fireEvent.click(getByTestId("ok"));
     });
     it("should not render component", () => {
-        // eslint-disable-next-line no-shadow
-        const { container } = render(
-            <CellDisplayAndEdit
-                row={incorrectRowValue}
-                columns={null}
-                updateRowInGrid={mockupdateRowInGrid}
-            />
-        );
-        const div = container.getElementsByClassName(
-            "table-cell--content table-cell--content__flight"
-        );
-        expect(div).toBe([]);
+        let component = null;
+        act(() => {
+            component = render(
+                <CellDisplayAndEdit
+                    row={incorrectRowValue}
+                    columns={columns}
+                    updateRowInGrid={mockupdateRowInGrid}
+                />,
+                container
+            );
+        });
+        const editButton = document.querySelector("[class=cell-edit]");
+        expect(editButton).toBe(null);
     });
 });

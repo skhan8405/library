@@ -243,7 +243,32 @@ describe("render row edit overlay", () => {
         ]
     };
 
-    const getRowEditOverlayMock = jest.fn();
+    const mockUpdateDateValue = jest.fn();
+    const getRowEditOverlayMock = jest.fn(
+        (rowData, DisplayTag, rowUpdateCallBack) => {
+            const { flightno, date } = rowData.flight;
+            return (
+                <div>
+                    <DisplayTag columnKey="flight" cellKey="flightno">
+                        <input
+                            data-testid="flightnoinput"
+                            className="flight-no-input"
+                            type="text"
+                            value={flightno}
+                            onChange={() => rowUpdateCallBack("nothing")}
+                        />
+                    </DisplayTag>
+                    <DisplayTag columnKey="flight" cellKey="date">
+                        <input
+                            type="date"
+                            value={date}
+                            onChange={mockUpdateDateValue}
+                        />
+                    </DisplayTag>
+                </div>
+            );
+        }
+    );
     const closeRowEditOverlayMock = jest.fn();
     const updateRowInGridMock = jest.fn();
 
@@ -264,7 +289,7 @@ describe("render row edit overlay", () => {
     });
 
     it("Save function should be called", () => {
-        const { getByText } = render(
+        const { getByText, getByTestId } = render(
             <RowEditOverLay
                 row={rowdata}
                 columns={columnsdata}
@@ -276,6 +301,10 @@ describe("render row edit overlay", () => {
             />
         );
 
+        const flightNoInput = getByTestId("flightnoinput");
+        expect(flightNoInput.value).toBe("XX2225");
+        fireEvent.change(flightNoInput, { target: { value: "123" } });
+
         const setState = jest.fn();
         const useStateSpy = jest.spyOn(React, "useState");
         /* eslint no-return-assign: "error" */
@@ -283,7 +312,7 @@ describe("render row edit overlay", () => {
         useStateSpy.mockImplementation((init) => [newrowdata, setState]);
 
         fireEvent.click(getByText("Save"));
-        expect(getRowEditOverlayMock).toHaveBeenCalledTimes(2);
+        expect(getRowEditOverlayMock).toHaveBeenCalledTimes(3);
     });
 
     it("Cancel function should be called", () => {

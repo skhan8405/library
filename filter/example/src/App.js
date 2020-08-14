@@ -64,7 +64,6 @@ export default function App() {
             filterData={FilterData}
             appliedFilters={appliedFilters}
             savedFilters={savedFilters}
-            addingToFavourite={addingToFavourite}
         />
     );
 }

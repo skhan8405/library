@@ -1,11 +1,13 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-expressions */
+
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
-
-import RightDrawer from "../../../src/drawer/RightDrawer";
 import userEvent from "@testing-library/user-event";
+import RightDrawer from "../../../src/drawer/RightDrawer";
+
 describe("RightDrawer component", () => {
     const item = [
         {
