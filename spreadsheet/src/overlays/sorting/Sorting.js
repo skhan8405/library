@@ -224,11 +224,11 @@ class App extends React.Component {
         );
         showError
             ? this.setState({
-                errorMessage: true
-            })
+                  errorMessage: true
+              })
             : this.setState({
-                errorMessage: false
-            });
+                  errorMessage: false
+              });
         if (!showError) {
             this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
         }
@@ -249,7 +249,6 @@ class App extends React.Component {
     }
 
     render() {
-        //console.log(this.props)
         return (
             <div className="neo-popover" ref={this.setWrapperRef}>
                 <div className="neo-popover__sort">
@@ -258,7 +257,8 @@ class App extends React.Component {
                         <div className="neo-popover__close">
                             <i
                                 data-testid="closeSorting"
-                                onClick={() => this.props.closeSorting()}>
+                                onClick={() => this.props.closeSorting()}
+                            >
                                 <IconClose />
                             </i>
                         </div>
@@ -286,8 +286,8 @@ class App extends React.Component {
                                 one.
                             </span>
                         ) : (
-                                ""
-                            )}
+                            ""
+                        )}
                     </div>
                     <div className="sort__new">
                         <div

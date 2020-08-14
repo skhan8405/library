@@ -98,6 +98,7 @@ const SortItem = ({
         <div className="sort__bodyContent" style={{ opacity }}>
             <div className="sort__reorder">
                 <div
+                    data-testid="sortItem"
                     ref={(node) => drag(drop(node))}
                     style={{ cursor: "move" }}
                 >
