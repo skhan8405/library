@@ -616,7 +616,7 @@ test("<ExportData />", () => {
         ]);
         component.exportValidation();
         component.selectAllToColumnList();
-        component.handleClickOutside({ target: {} });
+        // component.handleClickOutside({ target: {} });
     });
 });
 
