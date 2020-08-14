@@ -1,55 +1,60 @@
 /* eslint-disable no-undef */
 
 import React from "react";
-import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { unmountComponentAtNode } from "react-dom";
+import ReactDOM, { unmountComponentAtNode } from "react-dom";
 import SavedFilters from "../../../src/panel/SavedFilters";
+import { fireEvent, render } from "@testing-library/react";
 
 let container = null;
+const applyFilter = [
+    {
+        name: "Departure Port",
+        dataType: "AutoComplete",
+        enabled: true,
+        value: "ABS"
+    }
+];
+
+var localStorageMock = (function () {
+    var store = {};
+    return {
+        getItem: function (key) {
+            return store[key];
+        },
+        setItem: function (key, value) {
+            store[key] = value.toString();
+        },
+        clear: function () {
+            store = {};
+        },
+        removeItem: function (key) {
+            delete store[key];
+        }
+    };
+})();
+Object.defineProperty(window, "localStorage", { value: localStorageMock });
+
 beforeEach(() => {
-    // setup a DOM element as a render target
-    container = document.createElement("div");
-    // container *must* be attached to document so events work correctly.
-    document.body.appendChild(container);
+    localStorage.clear();
+    localStorage.setItem("savedFilters", JSON.stringify(applyFilter));
 });
 
-afterEach(() => {
-    // cleanup on exiting
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-});
-
-describe("Main Filter Panel component", () => {
+describe("Saved Filter Panel component", () => {
     const handleListFilter = jest.fn();
     const addSavedFilters = jest.fn();
-    const addingToFavourite = jest.fn();
-    beforeEach(() => {
-        // setup a DOM element as a render target
-        container = document.createElement("div");
-        // container *must* be attached to document so events work correctly.
-        document.body.appendChild(container);
-    });
-
-    afterEach(() => {
-        // cleanup on exiting
-        unmountComponentAtNode(container);
-        container.remove();
-        container = null;
-    });
 
     it("Save Filter ", () => {
         // eslint-disable-next-line no-unused-vars
-        const { getByTestId } = render(
+        const wrapper = render(
             <SavedFilters
                 // eslint-disable-next-line react/jsx-boolean-value
                 showFilter={true}
                 handleListFilter={handleListFilter}
                 addSavedFilters={addSavedFilters}
-                addingToFavourite={addingToFavourite}
             />
         );
-        fireEvent.click(getByTestId("addSavedFilters-check"));
+        const saveFilterElm = wrapper.getByTestId("addSavedFilters-check");
+        fireEvent.click(saveFilterElm);
     });
 });

@@ -6,7 +6,7 @@ import RightDrawer from "./drawer/RightDrawer";
 import LeftDrawer from "./drawer/LeftDrawer";
 import MainFilterPanel from "./panel/MainFilterPanel";
 // eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+// import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 /**
  * Component handling clock outside close of Drawer
