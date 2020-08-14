@@ -37,9 +37,6 @@ describe("<SortingList />", () => {
             text: "Segment From"
         }
     ];
-    // const props = {
-    //     columnsArray: [...columns]
-    // };
     const handleReorderListOfSort = jest.fn(() => {});
 
     it("mount and render", () => {
@@ -49,7 +46,6 @@ describe("<SortingList />", () => {
                 options={{ enableMouseEvents: true }}
             >
                 <SortingList
-                    // props={props}
                     sortsArray={sortsArray}
                     handleReorderListOfSort={handleReorderListOfSort}
                 />

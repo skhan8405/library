@@ -37,9 +37,7 @@ describe("<ColumnsList />", () => {
             text: "Segment From"
         }
     ];
-    // const props = {
-    //     columnsArray: [...columns]
-    // };
+
     const handleReorderList = jest.fn(() => {});
 
     it("mount and render", () => {
@@ -49,26 +47,11 @@ describe("<ColumnsList />", () => {
                 options={{ enableMouseEvents: true }}
             >
                 <ColumnsList
-                    // props={props}
                     columnsArray={columns}
                     handleReorderList={handleReorderList}
                 />
             </DndProvider>
         );
         expect(asFragment).not.toBeNull();
-        // const { getAllByTestId } = render(
-        //     <DndProvider
-        //         backend={TouchBackend}
-        //         options={{ enableMouseEvents: true }}
-        //     >
-        //         <ColumnsList
-        //             columnsArray={columns}
-        //             handleReorderList={handleReorderList}
-        //         />
-        //     </DndProvider>
-        // );
-        // expect(getAllByTestId("columnItem")).toHaveLength(2);
-        // const item = getAllByTestId("columnItem")[0];
-        // fireEvent.drag(item);
     });
 });

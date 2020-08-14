@@ -65,7 +65,6 @@ const updateTableAsPerRowChooser = jest.fn();
 const handleheaderNameList = jest.fn();
 
 test("addToColumnReorderEntityList change trigger", () => {
-    // afterEach(cleanup)
     const { getAllByTestId } = render(
         <ColumnReordering
             columns={columns}
@@ -80,10 +79,8 @@ test("addToColumnReorderEntityList change trigger", () => {
     fireEvent.click(getAllByTestId("addToColumnReorderEntityList")[0], {
         target: { checked: true }
     });
-    // const element = getAllByTestId("addToColumnReorderEntityList");
 });
 test("selectAllCheckBox change trigger", () => {
-    // afterEach(cleanup)
     const { getByTestId } = render(
         <ColumnReordering
             columns={columns}
@@ -174,9 +171,6 @@ test("chooser", () => {
             filterType: "autoCompleteFilter"
         }
     ]);
-    // component.handleClickOutside({
-    //     target: "parentDiv"
-    // });
 });
 test("render the chooser", () => {
     const { asFragment } = render(

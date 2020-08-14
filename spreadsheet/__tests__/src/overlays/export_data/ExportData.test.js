@@ -140,7 +140,6 @@ test("add to column change trigger", () => {
     const element = getAllByTestId("addToColumn");
 });
 test("selectColumn onChange trigger", () => {
-    // afterEach(cleanup)
     const { getByTestId } = render(
         <ExportData
             closeExport={closeExport}
@@ -298,7 +297,6 @@ test("<ExportData 2/>", () => {
                     date: "2017-12-14",
                     segmentfrom: "BCB"
                 }
-
             ])
         ).not.tobeNull;
         expect(
