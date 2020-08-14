@@ -297,6 +297,7 @@ class ExportData extends React.Component {
                             <div className="export__reorder">
                                 <div className="check-wrap">
                                     <input
+                                        data-testid="addpdfDownloadType"
                                         type="checkbox"
                                         name="pdf"
                                         value="pdf"
