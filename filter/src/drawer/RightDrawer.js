@@ -61,13 +61,13 @@ const RightDrawer = (props) => {
             savedFilters.length
         );
     }
-    const recent = savedFilters.map((filterArray, index) => {
+    const recent = savedFilters.map((filterArray) => {
         return (
             <div
                 role="presentation"
                 className="recentFilters"
                 data-testid="recentFilters-div"
-                key={index}
+                key={filterArray}
                 onClick={() => {
                     props.addSavedFilters(filterArray);
                 }}
@@ -179,13 +179,16 @@ const RightDrawer = (props) => {
                         <span className={warningLabel}>
                             {saveFilterWarning}
                         </span>
-                        <label>Saved Filter Name</label>
-                        <input
-                            className="txt"
-                            value={saveFilterName}
-                            data-testid="registersaveFilterName-input"
-                            onChange={(e) => registersaveFilterName(e)}
-                        />
+                        <label htmlFor="saveFilterName">
+                            Save Filter Name
+                            <input
+                                id="saveFilterName"
+                                className="txt"
+                                value={saveFilterName}
+                                data-testid="registersaveFilterName-input"
+                                onChange={(e) => registersaveFilterName(e)}
+                            />
+                        </label>
                         <div className="btn-wrap">
                             <button
                                 type="button"

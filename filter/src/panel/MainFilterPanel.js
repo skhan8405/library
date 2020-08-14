@@ -27,13 +27,13 @@ const MainFilterPanel = (props) => {
     };
     if (chipArray) {
         chipCount = chipArray.length;
-        chips = chipArray.map((item, index) => {
+        chips = chipArray.map((item) => {
             if (item.type) {
                 return (
                     <div
                         role="presentation"
                         className="listContent"
-                        key={index}
+                        key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
@@ -41,8 +41,8 @@ const MainFilterPanel = (props) => {
                         <span>
                             {item.name}:{item.type}
                         </span>
-                        {item.value.map((value, index_) => {
-                            return <div key={index_}>{value.value}</div>;
+                        {item.value.map((value) => {
+                            return <div key={value}>{value.value}</div>;
                         })}
                     </div>
                 );
@@ -52,7 +52,7 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
-                        key={index}
+                        key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
@@ -67,7 +67,7 @@ const MainFilterPanel = (props) => {
                     <div
                         role="presentation"
                         className="listContent"
-                        key={index}
+                        key={item}
                         onClick={() => {
                             props.addAppliedFilters(chipArray);
                         }}
@@ -81,7 +81,7 @@ const MainFilterPanel = (props) => {
                 <div
                     role="presentation"
                     className="listContent"
-                    key={index}
+                    key={item}
                     onClick={() => {
                         props.addAppliedFilters(chipArray);
                     }}

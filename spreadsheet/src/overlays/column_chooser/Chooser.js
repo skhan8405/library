@@ -102,7 +102,7 @@ class ColumnReordering extends React.Component {
                             (item) =>
                                 item ===
                                 this.state.columnSelectList[
-                                indexOfInsertion - 1
+                                    indexOfInsertion - 1
                                 ]
                         );
                         indexOfInsertion += 1;
@@ -187,10 +187,10 @@ class ColumnReordering extends React.Component {
                                             this.state.maxLeftPinnedColumn -
                                                 this.state.leftPinnedColumList
                                                     .length <=
-                                                0
+                                            0
                                                 ? !this.state.leftPinnedColumList.includes(
-                                                    item
-                                                )
+                                                      item
+                                                  )
                                                 : false
                                         }
                                         onChange={() =>
@@ -320,6 +320,7 @@ class ColumnReordering extends React.Component {
                                 <strong>Column Settings</strong>
                             </div>
                             <div
+                                role="presentation"
                                 data-testid="closeColumnReordering"
                                 className="column__close"
                                 onClick={() =>
@@ -340,20 +341,20 @@ class ColumnReordering extends React.Component {
                                 </strong>
                                 {this.state.maxLeftPinnedColumn -
                                     this.state.leftPinnedColumList.length >
-                                    0 ? (
-                                        <strong>
-                                            &nbsp; &nbsp; Left Pinned Column Count
+                                0 ? (
+                                    <strong>
+                                        &nbsp; &nbsp; Left Pinned Column Count
                                         Remaining :{" "}
-                                            {this.state.maxLeftPinnedColumn -
-                                                this.state.leftPinnedColumList
-                                                    .length}
-                                        </strong>
-                                    ) : (
-                                        <strong style={{ color: "red" }}>
-                                            &nbsp; &nbsp; Maximum Count Of Left Pin
-                                            Columns REACHED
-                                        </strong>
-                                    )}
+                                        {this.state.maxLeftPinnedColumn -
+                                            this.state.leftPinnedColumList
+                                                .length}
+                                    </strong>
+                                ) : (
+                                    <strong style={{ color: "red" }}>
+                                        &nbsp; &nbsp; Maximum Count Of Left Pin
+                                        Columns REACHED
+                                    </strong>
+                                )}
                             </div>
                             <DndProvider
                                 backend={TouchBackend}
