@@ -3,9 +3,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { render, fireEvent } from "@testing-library/react";
-import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
+import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
 import "@testing-library/jest-dom/extend-expect";
 
 let container;

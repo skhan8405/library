@@ -1,13 +1,14 @@
-import { applyFormula } from "../../../src/utilities/utils";
-import "@testing-library/jest-dom/extend-expect";
 /* eslint-disable no-undef */
 
+import { applyFormula } from "../../../src/utilities/utils";
+import "@testing-library/jest-dom/extend-expect";
+
 test("Utils - applyFormula - addition test", () => {
-    var obj = {};
-    var columnName = "total";
+    const obj = {};
+    const columnName = "total";
     obj[columnName] = "=SUM(10:20)";
 
-    var result = applyFormula(obj, columnName);
+    let result = applyFormula(obj, columnName);
     expect(result).toEqual({ total: 30 });
 
     obj[columnName] = "=ADD(10:20)";
@@ -32,11 +33,11 @@ test("Utils - applyFormula - addition test", () => {
 });
 
 test("Utils - applyFormula - multiplication test", () => {
-    var obj = {};
-    var columnName = "total";
+    const obj = {};
+    const columnName = "total";
     obj[columnName] = "=MUL(10:20)";
 
-    var result = applyFormula(obj, columnName);
+    let result = applyFormula(obj, columnName);
     expect(result).toEqual({ total: 200 });
 
     obj[columnName] = "=mul(10:20)";
@@ -51,11 +52,11 @@ test("Utils - applyFormula - multiplication test", () => {
 });
 
 test("Utils - applyFormula - subtraction test", () => {
-    var obj = {};
-    var columnName = "total";
+    const obj = {};
+    const columnName = "total";
     obj[columnName] = "=SUB(20:10)";
 
-    var result = applyFormula(obj, columnName);
+    let result = applyFormula(obj, columnName);
     expect(result).toEqual({ total: 10 });
 
     obj[columnName] = "=sub(20:10)";
@@ -80,11 +81,11 @@ test("Utils - applyFormula - subtraction test", () => {
 });
 
 test("Utils - applyFormula - min test", () => {
-    var obj = {};
-    var columnName = "total";
+    const obj = {};
+    const columnName = "total";
     obj[columnName] = "=min(20:10)";
 
-    var result = applyFormula(obj, columnName);
+    let result = applyFormula(obj, columnName);
     expect(result).toEqual({ total: 10 });
 
     obj[columnName] = "=MIN(20:10)";
@@ -99,11 +100,11 @@ test("Utils - applyFormula - min test", () => {
 });
 
 test("Utils - applyFormula - max test", () => {
-    var obj = {};
-    var columnName = "total";
+    const obj = {};
+    const columnName = "total";
     obj[columnName] = "=max(20:10)";
 
-    var result = applyFormula(obj, columnName);
+    let result = applyFormula(obj, columnName);
     expect(result).toEqual({ total: 20 });
 
     obj[columnName] = "=MAX(20:10)";
@@ -118,10 +119,10 @@ test("Utils - applyFormula - max test", () => {
 });
 
 test("Utils - applyFormula - no calculation test", () => {
-    var obj = {};
-    var columnName = "total";
+    const obj = {};
+    const columnName = "total";
     obj[columnName] = "=abc(20:10)";
 
-    var result = applyFormula(obj, columnName);
+    const result = applyFormula(obj, columnName);
     expect(result).toEqual(obj);
 });

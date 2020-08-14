@@ -2,9 +2,9 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import ColumnReordering from "../../../../src/overlays/column_chooser/Chooser";
 import ReactTestUtils, { act } from "react-dom/test-utils";
 import { render, fireEvent } from "@testing-library/react";
+import ColumnReordering from "../../../../src/overlays/column_chooser/Chooser";
 import "@testing-library/jest-dom/extend-expect";
 
 let container;
@@ -114,7 +114,7 @@ test("chooser", () => {
             container
         );
     });
-    let component = ReactTestUtils.renderIntoDocument(
+    const component = ReactTestUtils.renderIntoDocument(
         <ColumnReordering
             columns={columns}
             maxLeftPinnedColumn={maxLeftPinnedColumn}
