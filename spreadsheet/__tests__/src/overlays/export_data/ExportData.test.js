@@ -24,97 +24,19 @@ const rows = [
         travelId: 0,
         flightno: "XX6576",
         date: "2015-05-01",
-        segmentfrom: "ABC",
-        segmentto: "ZYY",
-        flightModel: 115,
-        bodyType: "Small Body",
-        type: "Car",
-        startTime: "03:34 (A)",
-        endTime: "03:05 (S)",
-        status: "To Be Cancelled",
-        additionalStatus: "",
-        timeStatus: "04:58|hrs to depart",
-        weightpercentage: "65%",
-        weightvalue: "52098/20000 kg",
-        volumepercentage: "32%",
-        volumevalue: "33/60 cbm",
-        uldposition1: "L4",
-        uldvalue1: "6/1",
-        uldposition2: "Q4",
-        uldvalue2: "2/7",
-        uldposition3: "L8",
-        uldvalue3: "7/5",
-        uldposition4: "Q8",
-        uldvalue4: "3/2",
-        revenue: "$60,485.33",
-        yeild: "$6.28",
-        sr: "52/ AWBs",
-        queuedBookingSR: "23/ AWBs",
-        queuedBookingvolume: "8023 kg / 35 cbm"
+        segmentfrom: "ABC"
     },
     {
         travelId: 1,
         flightno: "XX5177",
         date: "2018-02-09",
-        segmentfrom: "CCC",
-        segmentto: "YXZ",
-        flightModel: 197,
-        bodyType: "Small Body",
-        type: "Van",
-        startTime: "01:23 (E)",
-        endTime: "12:31 (E)",
-        status: "Cancelled",
-        additionalStatus: "Arrived",
-        timeStatus: "12:57|hrs to depart",
-        weightpercentage: "37%",
-        weightvalue: "49689/20000 kg",
-        volumepercentage: "47%",
-        volumevalue: "49/60 cbm",
-        uldposition1: "L3",
-        uldvalue1: "1/1",
-        uldposition2: "Q2",
-        uldvalue2: "3/4",
-        uldposition3: "L6",
-        uldvalue3: "8/1",
-        uldposition4: "Q6",
-        uldvalue4: "4/2",
-        revenue: "$62,830.60",
-        yeild: "$8.39",
-        sr: "34/ AWBs",
-        queuedBookingSR: "75/ AWBs",
-        queuedBookingvolume: "8893 kg / 43 cbm"
+        segmentfrom: "CCC"
     },
     {
         travelId: 2,
         flightno: "XX7883",
         date: "2017-12-14",
-        segmentfrom: "BCB",
-        segmentto: "XYZ",
-        flightModel: 244,
-        bodyType: "Small Body",
-        type: "Van",
-        startTime: "12:29 (S)",
-        endTime: "10:34 (A)",
-        status: "Cancelled",
-        additionalStatus: "",
-        timeStatus: "04:04|hrs to depart",
-        weightpercentage: "64%",
-        weightvalue: "56007/20000 kg",
-        volumepercentage: "62%",
-        volumevalue: "18/60 cbm",
-        uldposition1: "L3",
-        uldvalue1: "6/8",
-        uldposition2: "Q3",
-        uldvalue2: "3/2",
-        uldposition3: "L5",
-        uldvalue3: "8/6",
-        uldposition4: "Q7",
-        uldvalue4: "6/9",
-        revenue: "$57,361.63",
-        yeild: "$7.07",
-        sr: "88/ AWBs",
-        queuedBookingSR: "33/ AWBs",
-        queuedBookingvolume: "2916 kg / 50 cbm"
+        segmentfrom: "BCB"
     }
 ];
 const columnsList = [
@@ -256,7 +178,7 @@ test("onChange Trigger for selectColumns", () => {
     expect(input2.checked).toBe(true);
 });
 
-test("<ExportData />", () => {
+test("<ExportData 1 />", () => {
     global.URL.createObjectURL = jest.fn();
 
     act(() => {
@@ -269,6 +191,8 @@ test("<ExportData />", () => {
             container
         );
     });
+});
+test("<ExportData 2/>", () => {
     act(() => {
         const component = ReactTestUtils.renderIntoDocument(
             <ExportData
@@ -277,346 +201,129 @@ test("<ExportData />", () => {
                 rows={rows}
             />
         );
-        component.addToColumnEntityList({
-            key: "yeild",
-            name: "Yeild",
-            draggable: false,
-            editor: "Text",
-            formulaApplicable: true,
-            sortable: true,
-            resizable: true,
-            filterable: true,
-            width: 150,
-            filterType: "autoCompleteFilter",
-            dataSource: []
-        });
-        component.addToColumnEntityList({
-            key: "segmentfrom",
-            name: "Segment From",
-            draggable: false,
-            editor: "DropDown",
-            formulaApplicable: false,
-            sortable: true,
-            resizable: true,
-            filterable: true,
-            width: 150,
-            filterType: "autoCompleteFilter",
-            dataSource: []
-        });
+        expect(
+            component.addToColumnEntityList({
+                key: "yeild",
+                name: "Yeild",
+                draggable: false,
+                editor: "Text",
+                formulaApplicable: true,
+                sortable: true,
+                resizable: true,
+                filterable: true,
+                width: 150,
+                filterType: "autoCompleteFilter",
+                dataSource: []
+            })
+        ).not.tobeNull;
+        expect(
+            component.addToColumnEntityList({
+                key: "segmentfrom",
+                name: "Segment From",
+                draggable: false,
+                editor: "DropDown",
+                formulaApplicable: false,
+                sortable: true,
+                resizable: true,
+                filterable: true,
+                width: 150,
+                filterType: "autoCompleteFilter",
+                dataSource: []
+            })
+        ).not.tobeNull;
 
-        component.selectDownLoadType({
-            target: { checked: true, value: "pdf" }
-        });
-        component.selectDownLoadType({
-            target: { checked: false, value: "pdf" }
-        });
-        component.selectDownLoadType({
-            target: { checked: true, value: "csv" }
-        });
-        component.selectDownLoadType({
-            target: { checked: true, value: "excel" }
-        });
-        component.exportRowData();
-        component.downloadPDF(
-            [
+        expect(
+            component.selectDownLoadType({
+                target: { checked: true, value: "pdf" }
+            })
+        ).not.tobeNull;
+        expect(
+            component.selectDownLoadType({
+                target: { checked: false, value: "pdf" }
+            })
+        ).not.tobeNull;
+        expect(
+            component.selectDownLoadType({
+                target: { checked: true, value: "csv" }
+            })
+        ).not.tobeNull;
+        expect(
+            component.selectDownLoadType({
+                target: { checked: true, value: "excel" }
+            })
+        ).not.tobeNull;
+        expect(component.exportRowData()).not.tobeNull;
+        expect(
+            component.downloadPDF(
+                [
+                    {
+                        travelId: 0,
+                        flightno: "XX6576",
+                        date: "2015-05-01",
+                        segmentfrom: "ABC"
+                    },
+                    {
+                        travelId: 1,
+                        flightno: "XX5177",
+                        date: "2018-02-09",
+                        segmentfrom: "CCC"
+                    },
+                    {
+                        travelId: 2,
+                        flightno: "XX7883",
+                        date: "2017-12-14",
+                        segmentfrom: "BCB"
+                    }
+                ],
+                ["FlightNo", "Date", "Revenue"]
+            )
+        ).not.tobeNull;
+        expect(
+            component.downloadCSVFile([
                 {
                     travelId: 0,
                     flightno: "XX6576",
                     date: "2015-05-01",
-                    segmentfrom: "ABC",
-                    segmentto: "ZYY",
-                    flightModel: 115,
-                    bodyType: "Small Body",
-                    type: "Car",
-                    startTime: "03:34 (A)",
-                    endTime: "03:05 (S)",
-                    status: "To Be Cancelled",
-                    additionalStatus: "",
-                    timeStatus: "04:58|hrs to depart",
-                    weightpercentage: "65%",
-                    weightvalue: "52098/20000 kg",
-                    volumepercentage: "32%",
-                    volumevalue: "33/60 cbm",
-                    uldposition1: "L4",
-                    uldvalue1: "6/1",
-                    uldposition2: "Q4",
-                    uldvalue2: "2/7",
-                    uldposition3: "L8",
-                    uldvalue3: "7/5",
-                    uldposition4: "Q8",
-                    uldvalue4: "3/2",
-                    revenue: "$60,485.33",
-                    yeild: "$6.28",
-                    sr: "52/ AWBs",
-                    queuedBookingSR: "23/ AWBs",
-                    queuedBookingvolume: "8023 kg / 35 cbm"
+                    segmentfrom: "ABC"
                 },
                 {
                     travelId: 1,
                     flightno: "XX5177",
                     date: "2018-02-09",
-                    segmentfrom: "CCC",
-                    segmentto: "YXZ",
-                    flightModel: 197,
-                    bodyType: "Small Body",
-                    type: "Van",
-                    startTime: "01:23 (E)",
-                    endTime: "12:31 (E)",
-                    status: "Cancelled",
-                    additionalStatus: "Arrived",
-                    timeStatus: "12:57|hrs to depart",
-                    weightpercentage: "37%",
-                    weightvalue: "49689/20000 kg",
-                    volumepercentage: "47%",
-                    volumevalue: "49/60 cbm",
-                    uldposition1: "L3",
-                    uldvalue1: "1/1",
-                    uldposition2: "Q2",
-                    uldvalue2: "3/4",
-                    uldposition3: "L6",
-                    uldvalue3: "8/1",
-                    uldposition4: "Q6",
-                    uldvalue4: "4/2",
-                    revenue: "$62,830.60",
-                    yeild: "$8.39",
-                    sr: "34/ AWBs",
-                    queuedBookingSR: "75/ AWBs",
-                    queuedBookingvolume: "8893 kg / 43 cbm"
+                    segmentfrom: "CCC"
                 },
                 {
                     travelId: 2,
                     flightno: "XX7883",
                     date: "2017-12-14",
-                    segmentfrom: "BCB",
-                    segmentto: "XYZ",
-                    flightModel: 244,
-                    bodyType: "Small Body",
-                    type: "Van",
-                    startTime: "12:29 (S)",
-                    endTime: "10:34 (A)",
-                    status: "Cancelled",
-                    additionalStatus: "",
-                    timeStatus: "04:04|hrs to depart",
-                    weightpercentage: "64%",
-                    weightvalue: "56007/20000 kg",
-                    volumepercentage: "62%",
-                    volumevalue: "18/60 cbm",
-                    uldposition1: "L3",
-                    uldvalue1: "6/8",
-                    uldposition2: "Q3",
-                    uldvalue2: "3/2",
-                    uldposition3: "L5",
-                    uldvalue3: "8/6",
-                    uldposition4: "Q7",
-                    uldvalue4: "6/9",
-                    revenue: "$57,361.63",
-                    yeild: "$7.07",
-                    sr: "88/ AWBs",
-                    queuedBookingSR: "33/ AWBs",
-                    queuedBookingvolume: "2916 kg / 50 cbm"
+                    segmentfrom: "BCB"
                 }
-            ],
-            ["FlightNo", "Date", "Revenue"]
-        );
-        component.downloadCSVFile([
-            {
-                travelId: 0,
-                flightno: "XX6576",
-                date: "2015-05-01",
-                segmentfrom: "ABC",
-                segmentto: "ZYY",
-                flightModel: 115,
-                bodyType: "Small Body",
-                type: "Car",
-                startTime: "03:34 (A)",
-                endTime: "03:05 (S)",
-                status: "To Be Cancelled",
-                additionalStatus: "",
-                timeStatus: "04:58|hrs to depart",
-                weightpercentage: "65%",
-                weightvalue: "52098/20000 kg",
-                volumepercentage: "32%",
-                volumevalue: "33/60 cbm",
-                uldposition1: "L4",
-                uldvalue1: "6/1",
-                uldposition2: "Q4",
-                uldvalue2: "2/7",
-                uldposition3: "L8",
-                uldvalue3: "7/5",
-                uldposition4: "Q8",
-                uldvalue4: "3/2",
-                revenue: "$60,485.33",
-                yeild: "$6.28",
-                sr: "52/ AWBs",
-                queuedBookingSR: "23/ AWBs",
-                queuedBookingvolume: "8023 kg / 35 cbm"
-            },
-            {
-                travelId: 1,
-                flightno: "XX5177",
-                date: "2018-02-09",
-                segmentfrom: "CCC",
-                segmentto: "YXZ",
-                flightModel: 197,
-                bodyType: "Small Body",
-                type: "Van",
-                startTime: "01:23 (E)",
-                endTime: "12:31 (E)",
-                status: "Cancelled",
-                additionalStatus: "Arrived",
-                timeStatus: "12:57|hrs to depart",
-                weightpercentage: "37%",
-                weightvalue: "49689/20000 kg",
-                volumepercentage: "47%",
-                volumevalue: "49/60 cbm",
-                uldposition1: "L3",
-                uldvalue1: "1/1",
-                uldposition2: "Q2",
-                uldvalue2: "3/4",
-                uldposition3: "L6",
-                uldvalue3: "8/1",
-                uldposition4: "Q6",
-                uldvalue4: "4/2",
-                revenue: "$62,830.60",
-                yeild: "$8.39",
-                sr: "34/ AWBs",
-                queuedBookingSR: "75/ AWBs",
-                queuedBookingvolume: "8893 kg / 43 cbm"
-            },
-            {
-                travelId: 2,
-                flightno: "XX7883",
-                date: "2017-12-14",
-                segmentfrom: "BCB",
-                segmentto: "XYZ",
-                flightModel: 244,
-                bodyType: "Small Body",
-                type: "Van",
-                startTime: "12:29 (S)",
-                endTime: "10:34 (A)",
-                status: "Cancelled",
-                additionalStatus: "",
-                timeStatus: "04:04|hrs to depart",
-                weightpercentage: "64%",
-                weightvalue: "56007/20000 kg",
-                volumepercentage: "62%",
-                volumevalue: "18/60 cbm",
-                uldposition1: "L3",
-                uldvalue1: "6/8",
-                uldposition2: "Q3",
-                uldvalue2: "3/2",
-                uldposition3: "L5",
-                uldvalue3: "8/6",
-                uldposition4: "Q7",
-                uldvalue4: "6/9",
-                revenue: "$57,361.63",
-                yeild: "$7.07",
-                sr: "88/ AWBs",
-                queuedBookingSR: "33/ AWBs",
-                queuedBookingvolume: "2916 kg / 50 cbm"
-            }
-        ]);
-        component.downloadXLSFile([
-            {
-                travelId: 0,
-                flightno: "XX6576",
-                date: "2015-05-01",
-                segmentfrom: "ABC",
-                segmentto: "ZYY",
-                flightModel: 115,
-                bodyType: "Small Body",
-                type: "Car",
-                startTime: "03:34 (A)",
-                endTime: "03:05 (S)",
-                status: "To Be Cancelled",
-                additionalStatus: "",
-                timeStatus: "04:58|hrs to depart",
-                weightpercentage: "65%",
-                weightvalue: "52098/20000 kg",
-                volumepercentage: "32%",
-                volumevalue: "33/60 cbm",
-                uldposition1: "L4",
-                uldvalue1: "6/1",
-                uldposition2: "Q4",
-                uldvalue2: "2/7",
-                uldposition3: "L8",
-                uldvalue3: "7/5",
-                uldposition4: "Q8",
-                uldvalue4: "3/2",
-                revenue: "$60,485.33",
-                yeild: "$6.28",
-                sr: "52/ AWBs",
-                queuedBookingSR: "23/ AWBs",
-                queuedBookingvolume: "8023 kg / 35 cbm"
-            },
-            {
-                travelId: 1,
-                flightno: "XX5177",
-                date: "2018-02-09",
-                segmentfrom: "CCC",
-                segmentto: "YXZ",
-                flightModel: 197,
-                bodyType: "Small Body",
-                type: "Van",
-                startTime: "01:23 (E)",
-                endTime: "12:31 (E)",
-                status: "Cancelled",
-                additionalStatus: "Arrived",
-                timeStatus: "12:57|hrs to depart",
-                weightpercentage: "37%",
-                weightvalue: "49689/20000 kg",
-                volumepercentage: "47%",
-                volumevalue: "49/60 cbm",
-                uldposition1: "L3",
-                uldvalue1: "1/1",
-                uldposition2: "Q2",
-                uldvalue2: "3/4",
-                uldposition3: "L6",
-                uldvalue3: "8/1",
-                uldposition4: "Q6",
-                uldvalue4: "4/2",
-                revenue: "$62,830.60",
-                yeild: "$8.39",
-                sr: "34/ AWBs",
-                queuedBookingSR: "75/ AWBs",
-                queuedBookingvolume: "8893 kg / 43 cbm"
-            },
-            {
-                travelId: 2,
-                flightno: "XX7883",
-                date: "2017-12-14",
-                segmentfrom: "BCB",
-                segmentto: "XYZ",
-                flightModel: 244,
-                bodyType: "Small Body",
-                type: "Van",
-                startTime: "12:29 (S)",
-                endTime: "10:34 (A)",
-                status: "Cancelled",
-                additionalStatus: "",
-                timeStatus: "04:04|hrs to depart",
-                weightpercentage: "64%",
-                weightvalue: "56007/20000 kg",
-                volumepercentage: "62%",
-                volumevalue: "18/60 cbm",
-                uldposition1: "L3",
-                uldvalue1: "6/8",
-                uldposition2: "Q3",
-                uldvalue2: "3/2",
-                uldposition3: "L5",
-                uldvalue3: "8/6",
-                uldposition4: "Q7",
-                uldvalue4: "6/9",
-                revenue: "$57,361.63",
-                yeild: "$7.07",
-                sr: "88/ AWBs",
-                queuedBookingSR: "33/ AWBs",
-                queuedBookingvolume: "2916 kg / 50 cbm"
-            }
-        ]);
-        component.exportValidation();
-        component.selectAllToColumnList();
-        component.handleClickOutside({ target: {} });
+            ])
+        ).not.tobeNull;
+        expect(
+            component.downloadXLSFile([
+                {
+                    travelId: 0,
+                    flightno: "XX6576",
+                    date: "2015-05-01",
+                    segmentfrom: "ABC"
+                },
+                {
+                    travelId: 1,
+                    flightno: "XX5177",
+                    date: "2018-02-09",
+                    segmentfrom: "CCC"
+                },
+                {
+                    travelId: 2,
+                    flightno: "XX7883",
+                    date: "2017-12-14",
+                    segmentfrom: "BCB"
+                }
+            ])
+        ).not.tobeNull;
+        expect(component.exportValidation()).not.tobeNull;
+        expect(component.selectAllToColumnList()).not.tobeNull;
     });
 });
 
@@ -646,4 +353,32 @@ it("add to column list change event", () => {
             }
         }
     });
+});
+test("testing exportDatat by triggering events", () => {
+    let { getByTestId } = render(
+        <ExportData
+            closeExport={closeExport}
+            columnsList={columnsList}
+            rows={rows}
+        />
+    );
+    fireEvent.click(getByTestId("addpdfDownloadType"), {
+        target: { checked: true, value: "pdf" }
+    });
+    fireEvent.click(getByTestId("exportValidationClick"));
+});
+test("testing exportValidation", () => {
+    let { getByTestId } = render(
+        <ExportData closeExport={closeExport} columnsList={[]} rows={rows} />
+    );
+    fireEvent.click(getByTestId("addpdfDownloadType"), {
+        target: { checked: true, value: "pdf" }
+    });
+    fireEvent.click(getByTestId("exportValidationClick"));
+});
+test("testing exportValidation 1", () => {
+    let { getByTestId } = render(
+        <ExportData closeExport={closeExport} columnsList={[]} rows={rows} />
+    );
+    fireEvent.click(getByTestId("exportValidationClick"));
 });
