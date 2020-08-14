@@ -318,6 +318,7 @@ class ColumnReordering extends React.Component {
                                 <strong>Column Settings</strong>
                             </div>
                             <div
+                                role="presentation"
                                 className="column__close"
                                 onClick={() =>
                                     this.props.closeColumnReOrdering()

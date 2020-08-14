@@ -169,6 +169,7 @@ class App extends React.Component {
                             </div>
 
                             <div
+                                role="presentation"
                                 className="sort__icon"
                                 onClick={() => this.copy(index)}
                             >
@@ -182,6 +183,7 @@ class App extends React.Component {
                             </div>
 
                             <div
+                                role="presentation"
                                 className="sort__icon"
                                 onClick={() => this.remove(index)}
                             >
@@ -252,7 +254,10 @@ class App extends React.Component {
                     <div className="neo-popover__title">
                         <h2>Sort</h2>
                         <div className="neo-popover__close">
-                            <i onClick={() => this.props.closeSorting()}>
+                            <i
+                                role="presentation"
+                                onClick={() => this.props.closeSorting()}
+                            >
                                 <IconClose />
                             </i>
                         </div>

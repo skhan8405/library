@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
+
 import React, { useState, useEffect } from "react";
 import { SEARCH_NOT_FOUNT_ERROR } from "./ErrorConstants";
 import { ReactComponent as IconClose } from "../images/icon-close.svg";
@@ -16,6 +17,7 @@ const ErrorMessage = (props) => {
                     {SEARCH_NOT_FOUNT_ERROR}
                 </div>
                 <div
+                    role="presentation"
                     className="notification-close"
                     onClick={() => {
                         props.closeWarningStatus();
@@ -31,4 +33,5 @@ const ErrorMessage = (props) => {
     }
     return <div />;
 };
+
 export default ErrorMessage;

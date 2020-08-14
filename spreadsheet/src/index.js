@@ -3,10 +3,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/destructuring-assignment */
-import React, { Component } from "react";
 
+import React, { Component } from "react";
 import { Toolbar, Data, Filters, Editors } from "react-data-grid-addons";
-import { FormControl } from "react-bootstrap";
 import PropTypes from "prop-types";
 import ExtDataGrid from "./common/extDataGrid";
 import { applyFormula } from "./utilities/utils";
@@ -18,7 +17,6 @@ import ExportData from "./overlays/export_data/ExportData";
 import { ReactComponent as IconColumns } from "./images/icon-columns.svg";
 import { ReactComponent as IconShare } from "./images/icon-share.svg";
 import { ReactComponent as IconGroupSort } from "./images/icon-group-sort.svg";
-import { ReactComponent as IconFilter } from "./images/icon-filter.svg";
 import { ReactComponent as IconSearch } from "./images/icon-search.svg";
 
 // eslint-disable-next-line import/no-unresolved
@@ -33,7 +31,6 @@ const { AutoCompleteFilter, NumericFilter } = Filters;
 class Spreadsheet extends Component {
     constructor(props) {
         super(props);
-        const airportCodes = [];
         const { dataSet, pageSize } = this.props;
 
         const dataSetVar = JSON.parse(JSON.stringify(dataSet));
@@ -1319,7 +1316,9 @@ Spreadsheet.propTypes = {
     globalSearchLogic: PropTypes.any,
     closeWarningStatus: PropTypes.any,
     dataSet: PropTypes.any,
-    pageSize: PropTypes.any
+    pageSize: PropTypes.any,
+    updatedRows: PropTypes.any,
+    saveRows: PropTypes.any
 };
 
 export default Spreadsheet;

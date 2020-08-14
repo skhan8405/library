@@ -19,7 +19,8 @@ class ExportData extends React.Component {
             columnEntityList: this.props.columnsList,
             isAllSelected: true,
             downLaodFileType: [],
-            warning: "",
+            // eslint-disable-next-line react/no-unused-state
+            warning: " ",
             clickTag: "none"
         };
         this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -96,20 +97,20 @@ class ExportData extends React.Component {
 
     exportRowData = () => {
         const columnValueList = this.state.columnEntityList;
-        let filteredRow = [];
-        let filteredRowValues = [];
-        let filteredRowHeader = [];
+        const filteredRow = [];
+        const filteredRowValues = [];
+        const filteredRowHeader = [];
 
         if (
             columnValueList.length > 0 &&
             this.state.downLaodFileType.length > 0
         ) {
-            const rows = this.props.rows;
+            const { rows } = this.props;
             const rowLength = rows && rows.length > 0 ? rows.length : 0;
             rows.forEach((row, index) => {
-                let filteredColumnVal = {};
-                let rowFilteredValues = [];
-                let rowFilteredHeader = [];
+                const filteredColumnVal = {};
+                const rowFilteredValues = [];
+                const rowFilteredHeader = [];
                 columnValueList.forEach((columnName) => {
                     const { key, name } = columnName;
                     filteredColumnVal[name] = row[key];
@@ -190,13 +191,16 @@ class ExportData extends React.Component {
             this.exportRowData();
             this.setState({ clickTag: "none" });
         } else if (columnLength === 0) {
+            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "Column" });
             this.setState({ clickTag: "" });
         } else if (fileLength === 0) {
+            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "File Type" });
             this.setState({ clickTag: "" });
         }
         if (columnLength === 0 && fileLength === 0) {
+            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "File Type & Column" });
             this.setState({ clickTag: "" });
         }
@@ -246,33 +250,33 @@ class ExportData extends React.Component {
                                 <div className="export__txt">Select All</div>
                             </div>
                             {this.state.columnValueList &&
-                                this.state.columnValueList.length > 0
+                            this.state.columnValueList.length > 0
                                 ? this.state.columnValueList.map((column) => {
-                                    return (
-                                        <div
-                                            className="export__wrap"
-                                            key={column.key}
-                                        >
-                                            <div className="export__checkbox">
-                                                <input
-                                                    data-testid="addToColumn"
-                                                    type="checkbox"
-                                                    checked={this.state.columnEntityList.includes(
-                                                        column
-                                                    )}
-                                                    onChange={() =>
-                                                        this.addToColumnEntityList(
-                                                            column
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="export__txt">
-                                                {column.name}
-                                            </div>
-                                        </div>
-                                    );
-                                })
+                                      return (
+                                          <div
+                                              className="export__wrap"
+                                              key={column.key}
+                                          >
+                                              <div className="export__checkbox">
+                                                  <input
+                                                      data-testid="addToColumn"
+                                                      type="checkbox"
+                                                      checked={this.state.columnEntityList.includes(
+                                                          column
+                                                      )}
+                                                      onChange={() =>
+                                                          this.addToColumnEntityList(
+                                                              column
+                                                          )
+                                                      }
+                                                  />
+                                              </div>
+                                              <div className="export__txt">
+                                                  {column.name}
+                                              </div>
+                                          </div>
+                                      );
+                                  })
                                 : ""}
                         </div>
                     </div>
@@ -280,7 +284,10 @@ class ExportData extends React.Component {
                         <div className="export__header">
                             <div className="export__headerTxt" />
                             <div className="export__close">
-                                <i onClick={this.props.closeExport}>
+                                <i
+                                    role="presentation"
+                                    onClick={this.props.closeExport}
+                                >
                                     <IconClose />
                                 </i>
                             </div>
