@@ -322,6 +322,7 @@ const ColumnReordering = memo((props) => {
                                         <input
                                             type="checkbox"
                                             value="Select All"
+                                            data-testid="selectAllCheckbox"
                                             checked={isCheckboxSelected(
                                                 "Select All"
                                             )}
@@ -472,6 +473,7 @@ const ColumnReordering = memo((props) => {
                                         type="button"
                                         className="btns btns__save"
                                         onClick={doColumnUpdate}
+                                        data-testid="saveButton"
                                     >
                                         Save
                                     </button>
