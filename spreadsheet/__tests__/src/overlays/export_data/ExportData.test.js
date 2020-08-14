@@ -298,6 +298,7 @@ test("<ExportData 2/>", () => {
                     date: "2017-12-14",
                     segmentfrom: "BCB"
                 }
+
             ])
         ).not.tobeNull;
         expect(

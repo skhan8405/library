@@ -2,11 +2,10 @@
 
 import React from "react";
 import "@testing-library/jest-dom";
-import ReactDOM, { unmountComponentAtNode } from "react-dom";
-import SavedFilters from "../../../src/panel/SavedFilters";
 import { fireEvent, render } from "@testing-library/react";
+import SavedFilters from "../../../src/panel/SavedFilters";
 
-let container = null;
+// let container = null;
 const applyFilter = [
     {
         name: "Departure Port",
@@ -16,18 +15,22 @@ const applyFilter = [
     }
 ];
 
-var localStorageMock = (function () {
-    var store = {};
+const localStorageMock = (function () {
+    let store = {};
     return {
+        // eslint-disable-next-line object-shorthand
         getItem: function (key) {
             return store[key];
         },
+        // eslint-disable-next-line object-shorthand
         setItem: function (key, value) {
             store[key] = value.toString();
         },
+        // eslint-disable-next-line object-shorthand
         clear: function () {
             store = {};
         },
+        // eslint-disable-next-line object-shorthand
         removeItem: function (key) {
             delete store[key];
         }
