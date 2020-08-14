@@ -42,7 +42,7 @@ describe("<ColumnsList />", () => {
     const props = {
         columnsArray: [...columns]
     };
-    const handleReorderList = jest.fn((p) => {});
+    const handleReorderList = jest.fn(() => {});
 
     it("mount and render", () => {
         ReactDOM.render(

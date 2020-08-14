@@ -36,8 +36,8 @@ const columnFieldValue = [
     "End Time"
 ];
 const clearAllSortingParams = jest.fn();
-const setTableAsPerSortingParams = jest.fn(([]) => {});
-const handleTableSortSwap = jest.fn(([]) => {});
+const setTableAsPerSortingParams = jest.fn(() => {});
+const handleTableSortSwap = jest.fn(() => {});
 
 test("<Sorting />", () => {
     let sortingParamsObjectList = [
