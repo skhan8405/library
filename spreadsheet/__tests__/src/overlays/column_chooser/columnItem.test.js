@@ -56,21 +56,3 @@ it("Render mount the component and unmount the columnItem", () => {
         </DndProvider>
     );
 });
-
-// describe("<ColumnItem />", () => {
-//   const props = {
-//     id: 1,
-//     text: "text",
-//     moveColumn: jest.fn(),
-//     findColumn: jest.fn(() => 1),
-//     useDrop: jest.fn(),
-//   };
-//   it("mount", () => {
-//     const wrapper = mount(
-//       <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-//         <ColumnItem {...props} />
-//       </DndProvider>
-//     );
-
-//   });
-// });
