@@ -17,7 +17,6 @@ var JsPdf = _interopDefault(require('jspdf'));
 require('jspdf-autotable');
 var FileSaver = require('file-saver');
 var XLSX = require('xlsx');
-require('!style-loader!css-loader!sass-loader!./Styles/main.scss');
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -1215,6 +1214,8 @@ function SvgIconPencil(props) {
   }, props), _ref);
 }
 
+require("./icon-pencil~lCxiUHYL.svg");
+
 function _extends$2() {
   _extends$2 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -1246,6 +1247,8 @@ function SvgIconTick(props) {
   }, props), _ref$1);
 }
 
+require("./icon-tick~bcRkTvQl.svg");
+
 function _extends$3() {
   _extends$3 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -1276,6 +1279,8 @@ function SvgIconCancel(props) {
     height: 11
   }, props), _ref$2);
 }
+
+require("./icon-cancel~FKHHixMn.svg");
 
 var CellDisplayAndEdit = React.memo(function (_ref) {
   var row = _ref.row,
@@ -1543,6 +1548,8 @@ function SvgIconSearch(props) {
   }, props), _ref$3);
 }
 
+require("./icon-search~PApihVHT.svg");
+
 var GlobalFilter = React.memo(function (_ref) {
   var globalFilter = _ref.globalFilter,
       setGlobalFilter = _ref.setGlobalFilter;
@@ -1604,6 +1611,8 @@ function SvgRowDelete(props) {
   }, props), _ref$4);
 }
 
+require("./RowDelete~RKolkpAF.svg");
+
 function _extends$6() {
   _extends$6 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -1633,6 +1642,8 @@ function SvgRowEdit(props) {
     height: 10
   }, props), _ref$5);
 }
+
+require("./RowEdit~BuKwAcSl.svg");
 
 var RowOptions = React.memo(function (_ref) {
   var row = _ref.row,
@@ -1666,6 +1677,7 @@ var RowOptions = React.memo(function (_ref) {
   };
 
   var additionalActionClicked = function additionalActionClicked(actionValue) {
+    closeRowOptionsOverlay();
     return rowActionCallback(original, actionValue);
   };
 
@@ -1879,6 +1891,8 @@ function SvgIconAlignJustify(props) {
   }, props), _ref$6);
 }
 
+require("./icon-align-justify~QUGhdLyZ.svg");
+
 var ColumnItem = function ColumnItem(_ref) {
   var id = _ref.id,
       Header = _ref.Header,
@@ -2068,6 +2082,8 @@ function SvgIconClose(props) {
     height: 14
   }, props), _ref$7);
 }
+
+require("./icon-close~ZZDpknDV.svg");
 
 var ColumnReordering = React.memo(function (props) {
   var isManageColumnOpen = props.isManageColumnOpen,
@@ -2317,6 +2333,7 @@ var ColumnReordering = React.memo(function (props) {
       type: "text",
       placeholder: "Search column",
       className: "custom__ctrl",
+      "data-testid": "filterColumnsList",
       onChange: filterColumnsList
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "column__selectAll"
@@ -2325,6 +2342,7 @@ var ColumnReordering = React.memo(function (props) {
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
       value: "Select All",
+      "data-testid": "selectAllCheckbox",
       checked: isCheckboxSelected("Select All"),
       onChange: selectAllColumns
     })), /*#__PURE__*/React__default.createElement("div", {
@@ -2402,7 +2420,8 @@ var ColumnReordering = React.memo(function (props) {
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
       type: "button",
       className: "btns btns__save",
-      onClick: doColumnUpdate
+      onClick: doColumnUpdate,
+      "data-testid": "saveButton"
     }, "Save")))))));
   }
 
@@ -2450,6 +2469,8 @@ function SvgIconNav(props) {
     height: 11
   }, props), _ref$8);
 }
+
+require("./icon-nav~opcpgOUc.svg");
 
 function _extends$a() {
   _extends$a = Object.assign || function (target) {
@@ -2518,6 +2539,8 @@ function SvgSortCopy(props) {
   }, props), _ref$9, _ref2, _ref3, _ref4);
 }
 
+require("./SortCopy~IGKyJbDR.svg");
+
 function _extends$b() {
   _extends$b = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -2548,6 +2571,8 @@ function SvgSortDelete(props) {
     height: 16
   }, props), _ref$a);
 }
+
+require("./SortDelete~MFpZtzWS.svg");
 
 var SortItem = function SortItem(_ref) {
   var id = _ref.id,
@@ -2642,6 +2667,7 @@ var SortItem = function SortItem(_ref) {
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
+    "data-testid": "sortItem",
     ref: function ref(node) {
       return drag(drop(node));
     },
@@ -2957,6 +2983,8 @@ function SvgIconCsv(props) {
   }, props), _ref$b);
 }
 
+require("./icon-csv~ZTspeUdR.svg");
+
 function _extends$d() {
   _extends$d = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -2987,6 +3015,8 @@ function SvgIconExcel(props) {
   }, props), _ref$c);
 }
 
+require("./icon-excel~OSJQRCWo.svg");
+
 function _extends$e() {
   _extends$e = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3016,6 +3046,8 @@ function SvgIconPdf(props) {
     height: 28
   }, props), _ref$d);
 }
+
+require("./icon-pdf~oXKjhZIN.svg");
 
 var ExportData = React.memo(function (props) {
   var isExportOverlayOpen = props.isExportOverlayOpen,
@@ -3485,6 +3517,8 @@ function SvgIconColumns(props) {
   }, props), _ref$e);
 }
 
+require("./icon-columns~VciuGQJq.svg");
+
 function _extends$g() {
   _extends$g = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3516,6 +3550,8 @@ function SvgIconAngle(props) {
   }, props), _ref$f);
 }
 
+require("./icon-angle~ZgHXTFgp.svg");
+
 function _extends$h() {
   _extends$h = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3546,6 +3582,8 @@ function SvgIconFilter(props) {
   }, props), _ref$g);
 }
 
+require("./icon-filter~bbrxYmHo.svg");
+
 function _extends$i() {
   _extends$i = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3575,6 +3613,8 @@ function SvgIconShare(props) {
     height: 12
   }, props), _ref$h);
 }
+
+require("./icon-share~kEkYYNGj.svg");
 
 function _extends$j() {
   _extends$j = Object.assign || function (target) {
@@ -3607,6 +3647,8 @@ function SvgIconGroupSort(props) {
   }, props), _ref$i);
 }
 
+require("./icon-group-sort~EBbWfMDz.svg");
+
 function _extends$k() {
   _extends$k = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3636,6 +3678,8 @@ function SvgIconSort(props) {
     height: 5
   }, props), _ref$j);
 }
+
+require("./icon-sort~ghBebiHo.svg");
 
 function _extends$l() {
   _extends$l = Object.assign || function (target) {
@@ -3668,6 +3712,8 @@ function SvgIconEdit(props) {
     }
   }, props), _ref$k);
 }
+
+require("./icon-edit~jCBbryNN.svg");
 
 var listRef = React.createRef(null);
 var Customgrid = React.memo(function (props) {
