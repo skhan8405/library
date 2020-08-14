@@ -1,10 +1,12 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
-import { render, screen, fireEvent, getByRole, getByText } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import Sorting from "../../../../src/overlays/sorting/Sorting";
 import "@testing-library/jest-dom/extend-expect";
-import { element } from "prop-types";
+// import { element } from "prop-types";
 
 let container;
 
@@ -34,15 +36,17 @@ const columnFieldValue = [
     "End Time"
 ];
 const clearAllSortingParams = jest.fn();
-const setTableAsPerSortingParams = jest.fn(([]) => { });
-const handleTableSortSwap = jest.fn(([]) => { });
+const setTableAsPerSortingParams = jest.fn(() => {});
+const handleTableSortSwap = jest.fn(() => {});
 
 test("<Sorting />", () => {
-    let sortingParamsObjectList = [{
-        order: "Ascending",
-        sortBy: "FlightNo",
-        sortOn: "Value"
-    }];
+    let sortingParamsObjectList = [
+        {
+            order: "Ascending",
+            sortBy: "FlightNo",
+            sortOn: "Value"
+        }
+    ];
     act(() => {
         ReactDOM.render(
             <Sorting
@@ -80,11 +84,13 @@ test("<Sorting />", () => {
         "order"
     );
     component.updateTableAsPerSortCondition();
-    component.handleReorderListOfSort(["FlightNo",
+    component.handleReorderListOfSort([
+        "FlightNo",
         "Date",
         "Segment From",
         "Revenue",
-        "Yeild"]);
+        "Yeild"
+    ]);
     sortingParamsObjectList = [];
     component = ReactTestUtils.renderIntoDocument(
         <Sorting
@@ -101,14 +107,15 @@ test("<Sorting />", () => {
     component.handleClickOutside({
         target: {}
     });
-
 });
 it("close sorting event trigger", () => {
-    let sortingParamsObjectList = [{
-        order: "Ascending",
-        sortBy: "FlightNo",
-        sortOn: "Value"
-    }];
+    let sortingParamsObjectList = [
+        {
+            order: "Ascending",
+            sortBy: "FlightNo",
+            sortOn: "Value"
+        }
+    ];
     const { getByTestId } = render(
         <Sorting
             closeSorting={closeSorting}
@@ -133,11 +140,13 @@ it("selecting order dropDown", () => {
             handleTableSortSwap={handleTableSortSwap}
         />
     );
-    component.createColumnsArrayFromProps([{
-        order: "Ascending",
-        sortBy: "FlightNo",
-        sortOn: "Value"
-    }])
+    component.createColumnsArrayFromProps([
+        {
+            order: "Ascending",
+            sortBy: "FlightNo",
+            sortOn: "Value"
+        }
+    ]);
 });
 it("ApplySort event trigger", () => {
     const { getByTestId } = render(
@@ -151,8 +160,8 @@ it("ApplySort event trigger", () => {
         />
     );
     fireEvent.click(getByTestId("applySort"));
-    const element = getByTestId("applySort")
-    expect(element).toHaveTextContent('Ok')
+    const element = getByTestId("applySort");
+    expect(element).toHaveTextContent("Ok");
 });
 it("Add Sorting event trigger", () => {
     const { getByTestId } = render(
@@ -166,7 +175,7 @@ it("Add Sorting event trigger", () => {
         />
     );
     fireEvent.click(getByTestId("addSort"));
-    fireEvent.keyDown(getByTestId("addSort"), { key: 'Enter', code: 'Enter' })
+    fireEvent.keyDown(getByTestId("addSort"), { key: "Enter", code: "Enter" });
 });
 it("selecting Value from dropDown", () => {
     const { getAllByTestId } = render(
@@ -179,9 +188,11 @@ it("selecting Value from dropDown", () => {
             handleTableSortSwap={handleTableSortSwap}
         />
     );
-    fireEvent.change(getAllByTestId("selectingValue")[0], { target: { value: "FlightNo" } });
-    const element = getAllByTestId("selectingValue")[0]
-    expect(element).toHaveTextContent('Value')
+    fireEvent.change(getAllByTestId("selectingValue")[0], {
+        target: { value: "FlightNo" }
+    });
+    const element = getAllByTestId("selectingValue")[0];
+    expect(element).toHaveTextContent("Value");
 });
 // it("Should not call action on/off click inside the ExportData", () => {
 //   const map = {};

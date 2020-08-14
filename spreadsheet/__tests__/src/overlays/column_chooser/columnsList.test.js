@@ -1,8 +1,10 @@
+/* eslint-disable no-undef */
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { render, fireEvent } from "@testing-library/react";
 import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
-import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
+// import ColumnItem from "../../../../src/overlays/column_chooser/columnItem";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import "@testing-library/jest-dom/extend-expect";
@@ -40,7 +42,7 @@ describe("<ColumnsList />", () => {
     const props = {
         columnsArray: [...columns]
     };
-    const handleReorderList = jest.fn((p) => {});
+    const handleReorderList = jest.fn(() => {});
 
     it("mount and render", () => {
         ReactDOM.render(
