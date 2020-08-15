@@ -14,6 +14,7 @@ import regeneratorRuntime from "regenerator-runtime";
 import Grid from "../../src/index";
 
 describe("render Customgrid ", () => {
+    jest.setTimeout(30000);
     function mockOffsetSize(width, height) {
         Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
             configurable: true,
