@@ -146,9 +146,7 @@ const MainFilterPanel = (props) => {
 MainFilterPanel.propTypes = {
     applyFilterChip: PropTypes.any,
     addAppliedFilters: PropTypes.any,
-    onSelectSavedFilter: PropTypes.any,
     addSavedFilters: PropTypes.any,
-    addingToFavourite: PropTypes.any,
     showDrawer: PropTypes.any
 };
 

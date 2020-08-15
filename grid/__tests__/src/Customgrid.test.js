@@ -395,16 +395,15 @@ describe("render CustomgridCustomgrid", () => {
     const mockLoadNextPage = jest.fn();
     const mockDoGroupSort = jest.fn();
 
-    let container;
+    let mockContainer;
     beforeEach(() => {
-        container = document.createElement("div");
-        document.body.appendChild(container);
+        mockContainer = document.createElement("div");
+        document.body.appendChild(mockContainer);
     });
     afterEach(cleanup);
 
     it("should render Customgrid", () => {
         mockOffsetSize(600, 600);
-        // eslint-disable-next-line no-shadow
         const { getByText, container } = render(
             <Customgrid
                 title={mockTitle}
