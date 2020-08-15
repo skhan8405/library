@@ -353,7 +353,7 @@ const columns = [
 
 const pageSize = 10;
 
-let container = null;
+let container;
 
 beforeEach(() => {
     container = document.createElement("div");
@@ -380,6 +380,7 @@ let props = {
     selectBulkData,
     saveRows
 };
+
 test("<Spreadsheet />", () => {
     act(() => {
         const component = ReactTestUtils.renderIntoDocument(

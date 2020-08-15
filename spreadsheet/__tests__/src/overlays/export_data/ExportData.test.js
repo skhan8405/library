@@ -137,8 +137,8 @@ test("add to column change trigger", () => {
     fireEvent.click(getAllByTestId("addToColumn")[0], {
         target: { checked: true }
     });
-    // eslint-disable-next-line no-unused-vars
     const element = getAllByTestId("addToColumn");
+    expect(element).not.tobeNull;
 });
 test("selectColumn onChange trigger", () => {
     const { getByTestId } = render(
@@ -151,8 +151,8 @@ test("selectColumn onChange trigger", () => {
     fireEvent.click(getByTestId("selectColumns"), {
         target: { checked: true }
     });
-    // eslint-disable-next-line no-unused-vars
     const element = getByTestId("selectColumns");
+    expect(element).not.tobeNull;
 });
 test("close export click trigger", () => {
     const { getByTestId } = render(
@@ -172,8 +172,7 @@ test("onChange Trigger for SearchExport", () => {
     expect(input1.value).toBe("fli");
 });
 test("onChange Trigger for selectColumns", () => {
-    // eslint-disable-next-line no-unused-vars
-    const { input2, utils } = setup();
+    const { input2 } = setup();
     fireEvent.change(input2, { target: { checked: true } });
     expect(input2.checked).toBe(true);
 });

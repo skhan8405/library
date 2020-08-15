@@ -9,6 +9,7 @@ import { ReactComponent as IconCsv } from "../../images/icon-csv.svg";
 import { ReactComponent as IconExcel } from "../../images/icon-excel.svg";
 import { ReactComponent as IconPdf } from "../../images/icon-pdf.svg";
 import { ReactComponent as IconClose } from "../../images/icon-close.svg";
+import ClickAwayListener from "react-click-away-listener";
 
 let downLaodFileType = [];
 class ExportData extends React.Component {
@@ -23,22 +24,9 @@ class ExportData extends React.Component {
             warning: " ",
             clickTag: "none"
         };
-        this.setWrapperRef = this.setWrapperRef.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.handleClick = this.handleClick.bind(this);
         this.selectDownLoadType = this.selectDownLoadType.bind(this);
         this.exportValidation = this.exportValidation.bind(this);
-    }
-
-    componentDidMount() {
-        document.addEventListener("mousedown", this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener("mousedown", this.handleClickOutside);
-    }
-
-    setWrapperRef(node) {
-        this.wrapperRef = node;
     }
 
     resetColumnExportList = () => {
@@ -206,17 +194,15 @@ class ExportData extends React.Component {
         }
     };
 
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-            this.props.closeExport();
-        }
+    handleClick() {
+        this.props.closeExport();
     }
 
     render() {
         return (
-            <div
+            <ClickAwayListener
+                onClickAway={this.handleClick}
                 className="neo-popover neo-popover--exports exports--grid"
-                ref={this.setWrapperRef}
             >
                 <div className="neo-popover__export export__grid">
                     <div className="export__chooser">
@@ -376,7 +362,7 @@ class ExportData extends React.Component {
                         </div>
                     </div>
                 </div>
-            </div>
+            </ClickAwayListener>
         );
     }
 }

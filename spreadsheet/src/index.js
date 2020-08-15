@@ -20,7 +20,7 @@ import { ReactComponent as IconGroupSort } from "./images/icon-group-sort.svg";
 import { ReactComponent as IconSearch } from "./images/icon-search.svg";
 
 // eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+//import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const { DropDownEditor } = Editors;
 const selectors = Data.Selectors;
@@ -1140,6 +1140,7 @@ class Spreadsheet extends Component {
                     <div className="neo-grid-header__utilities">
                         <div className="txt-wrap">
                             <input
+                                data-testid="globalSearch"
                                 type="text"
                                 onChange={(e) => {
                                     this.handleSearchValue(e.target.value);
@@ -1155,6 +1156,7 @@ class Spreadsheet extends Component {
                             </i>
                         </div>
                         <div
+                            id="openSorting"
                             className="filterIcons"
                             onClick={this.sortingPanel}
                         >
