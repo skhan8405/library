@@ -25,10 +25,7 @@ describe("<ColumnsList />", () => {
             id: "FlightNo",
             text: (
                 <div className="column__reorder" key={1}>
-                    <div
-                        style={{ cursor: "move" }}
-                        className="column_drag"
-                    ></div>
+                    <div style={{ cursor: "move" }} className="column_drag" />
                     <div className="column__reorder__name">FlightNo</div>
                     <div className="column__innerCells__wrap">
                         <div className="column__wrap">
@@ -51,10 +48,7 @@ describe("<ColumnsList />", () => {
             id: "Date",
             text: (
                 <div className="column__reorder" key={2}>
-                    <div
-                        style={{ cursor: "move" }}
-                        className="column_drag"
-                    ></div>
+                    <div style={{ cursor: "move" }} className="column_drag" />
                     <div className="column__reorder__name">Date</div>
                     <div className="column__innerCells__wrap">
                         <div className="column__wrap">
@@ -77,10 +71,7 @@ describe("<ColumnsList />", () => {
             id: "SegmentFrom",
             text: (
                 <div className="column__reorder" key={3}>
-                    <div
-                        style={{ cursor: "move" }}
-                        className="column_drag"
-                    ></div>
+                    <div style={{ cursor: "move" }} className="column_drag" />
                     <div className="column__reorder__name">SegmentFrom</div>
                     <div className="column__innerCells__wrap">
                         <div className="column__wrap">

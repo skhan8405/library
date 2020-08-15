@@ -4,10 +4,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
 import { render, fireEvent } from "@testing-library/react";
-import ColumnReordering from "../../../../src/overlays/column_chooser/Chooser";
 import "@testing-library/jest-dom/extend-expect";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
+import ColumnReordering from "../../../../src/overlays/column_chooser/Chooser";
 import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
 
 let container;
@@ -278,7 +278,7 @@ test("testing addToColumnReorderEntityList ", () => {
         target: { checked: true }
     });
     const element = getAllByTestId("addToColumnReorderEntityList")[0];
-    expect(element).not.toBeNull;
+    expect(element).toBeInTheDocument();
 });
 test("testing reArrangeLeftPin event trigger ", () => {
     const { getAllByTestId } = render(
@@ -296,7 +296,7 @@ test("testing reArrangeLeftPin event trigger ", () => {
         target: { checked: true }
     });
     const element = getAllByTestId("reArrangeLeftPin")[0];
-    expect(element).not.toBeNull;
+    expect(element).toBeInTheDocument();
 });
 test("testing addToColumnReorderEntityList 1 ", () => {
     headerKeys = ["FlightNo", "Segment From"];
@@ -316,7 +316,7 @@ test("testing addToColumnReorderEntityList 1 ", () => {
         target: { checked: true }
     });
     const element = getAllByTestId("addToColumnReorderEntityList")[1];
-    expect(element).not.toBeNull;
+    expect(element).toBeInTheDocument();
 });
 test("testing addToColumnReorderEntityList 2 ", () => {
     headerKeys = ["FlightNo", "Segment From"];
@@ -336,19 +336,16 @@ test("testing addToColumnReorderEntityList 2 ", () => {
         target: { checked: true }
     });
     const element = getAllByTestId("addToColumnReorderEntityList")[1];
-    expect(element).not.toBeNull;
+    expect(element).toBeInTheDocument();
 });
 
 it("should work drag and drop functionality", () => {
-    const columns = [
+    const columns_ = [
         {
             id: "FlightNo",
             text: (
                 <div className="column__reorder" key={1}>
-                    <div
-                        style={{ cursor: "move" }}
-                        className="column_drag"
-                    ></div>
+                    <div style={{ cursor: "move" }} className="column_drag" />
                     <div className="column__reorder__name">FlightNo</div>
                     <div className="column__innerCells__wrap">
                         <div className="column__wrap">
@@ -371,10 +368,7 @@ it("should work drag and drop functionality", () => {
             id: "Date",
             text: (
                 <div className="column__reorder" key={2}>
-                    <div
-                        style={{ cursor: "move" }}
-                        className="column_drag"
-                    ></div>
+                    <div style={{ cursor: "move" }} className="column_drag" />
                     <div className="column__reorder__name">Date</div>
                     <div className="column__innerCells__wrap">
                         <div className="column__wrap">
@@ -397,10 +391,7 @@ it("should work drag and drop functionality", () => {
             id: "SegmentFrom",
             text: (
                 <div className="column__reorder" key={3}>
-                    <div
-                        style={{ cursor: "move" }}
-                        className="column_drag"
-                    ></div>
+                    <div style={{ cursor: "move" }} className="column_drag" />
                     <div className="column__reorder__name">SegmentFrom</div>
                     <div className="column__innerCells__wrap">
                         <div className="column__wrap">
@@ -433,7 +424,7 @@ it("should work drag and drop functionality", () => {
             options={{ enableMouseEvents: true }}
         >
             <ColumnsList
-                columnsArray={columns}
+                columnsArray={columns_}
                 handleReorderList={handleReorderList}
             />
         </DndProvider>

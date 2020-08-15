@@ -38,7 +38,11 @@ const Card = ({ id, text, moveCard, findCard }) => {
 
     const opacity = isDragging ? 0.5 : 1;
     return (
-        <div data-testid="sortingItem" ref={(node) => drag(drop(node))} style={{ ...style, opacity }}>
+        <div
+            data-testid="sortingItem"
+            ref={(node) => drag(drop(node))}
+            style={{ ...style, opacity }}
+        >
             {text}
         </div>
     );

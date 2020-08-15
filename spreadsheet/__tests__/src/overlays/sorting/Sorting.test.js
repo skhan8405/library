@@ -279,15 +279,3 @@ it("testing removal of sort", () => {
     );
     fireEvent.click(getAllByTestId("removeSort")[0]);
 });
-it("should close when clicking outside", () => {
-    const { getByTestId } = render(
-        <Sorting
-            closeSorting={closeSorting}
-            sortingParamsObjectList={sortingParamsObjectList}
-            columnFieldValue={columnFieldValue}
-            clearAllSortingParams={clearAllSortingParams}
-            setTableAsPerSortingParams={setTableAsPerSortingParams}
-            handleTableSortSwap={handleTableSortSwap}
-        />
-    );
-});

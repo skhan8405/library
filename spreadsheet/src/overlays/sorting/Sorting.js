@@ -7,12 +7,12 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import PropTypes from "prop-types";
+import ClickAwayListener from "react-click-away-listener";
 import SortingList from "./SortingList";
 import { ReactComponent as IconClose } from "../../images/icon-close.svg";
 import { ReactComponent as IconNav } from "../../images/icon-nav.svg";
 import { ReactComponent as SortCopy } from "../../images/SortCopy.svg";
 import { ReactComponent as SortDelete } from "../../images/SortDelete.svg";
-import ClickAwayListener from "react-click-away-listener";
 
 const HTML5toTouch = {
     backends: [

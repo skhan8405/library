@@ -10,10 +10,10 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import PropTypes from "prop-types";
+import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
 import { ReactComponent as IconClose } from "../../images/icon-close.svg";
 import { ReactComponent as IconJustify } from "../../images/icon-align-justify.svg";
-import ClickAwayListener from "react-click-away-listener";
 
 const HTML5toTouch = {
     backends: [
