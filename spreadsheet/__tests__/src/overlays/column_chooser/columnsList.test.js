@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import ColumnsList from "../../../../src/overlays/column_chooser/columnsList";
@@ -22,19 +22,82 @@ afterEach(() => {
 describe("<ColumnsList />", () => {
     const columns = [
         {
-            id: 1,
-            key: "flightno",
-            text: "FlightNo"
+            id: "FlightNo",
+            text: (
+                <div className="column__reorder" key={1}>
+                    <div
+                        style={{ cursor: "move" }}
+                        className="column_drag"
+                    ></div>
+                    <div className="column__reorder__name">FlightNo</div>
+                    <div className="column__innerCells__wrap">
+                        <div className="column__wrap">
+                            <div className="column__checkbox">
+                                <input
+                                    data-testid="reArrangeLeftPin"
+                                    role="button"
+                                    type="checkbox"
+                                    id={`checkBoxToPinLeft_${"FlightNo"}`}
+                                    disabled={false}
+                                />
+                            </div>
+                            <div className="column__txt">Pin Left</div>
+                        </div>
+                    </div>
+                </div>
+            )
         },
         {
-            id: 2,
-            key: "date",
-            text: "Date"
+            id: "Date",
+            text: (
+                <div className="column__reorder" key={2}>
+                    <div
+                        style={{ cursor: "move" }}
+                        className="column_drag"
+                    ></div>
+                    <div className="column__reorder__name">Date</div>
+                    <div className="column__innerCells__wrap">
+                        <div className="column__wrap">
+                            <div className="column__checkbox">
+                                <input
+                                    data-testid="reArrangeLeftPin"
+                                    role="button"
+                                    type="checkbox"
+                                    id={`checkBoxToPinLeft_${"Date"}`}
+                                    disabled={false}
+                                />
+                            </div>
+                            <div className="column__txt">Pin Left</div>
+                        </div>
+                    </div>
+                </div>
+            )
         },
         {
-            id: 3,
-            key: "segmentfrom",
-            text: "Segment From"
+            id: "SegmentFrom",
+            text: (
+                <div className="column__reorder" key={3}>
+                    <div
+                        style={{ cursor: "move" }}
+                        className="column_drag"
+                    ></div>
+                    <div className="column__reorder__name">SegmentFrom</div>
+                    <div className="column__innerCells__wrap">
+                        <div className="column__wrap">
+                            <div className="column__checkbox">
+                                <input
+                                    data-testid="reArrangeLeftPin"
+                                    role="button"
+                                    type="checkbox"
+                                    id={`checkBoxToPinLeft_${"SegmentFrom"}`}
+                                    disabled={false}
+                                />
+                            </div>
+                            <div className="column__txt">Pin Left</div>
+                        </div>
+                    </div>
+                </div>
+            )
         }
     ];
 
@@ -53,5 +116,33 @@ describe("<ColumnsList />", () => {
             </DndProvider>
         );
         expect(asFragment).not.toBeNull();
+    });
+    it("should work drag and drop functionality", () => {
+        const createBubbledEvent = (type, props = {}) => {
+            const event = new Event(type, { bubbles: true });
+            Object.assign(event, props);
+            return event;
+        };
+        const { getAllByTestId } = render(
+            <DndProvider
+                backend={TouchBackend}
+                options={{ enableMouseEvents: true }}
+            >
+                <ColumnsList
+                    columnsArray={columns}
+                    handleReorderList={handleReorderList}
+                />
+            </DndProvider>
+        );
+        expect(getAllByTestId("columnItem")).toHaveLength(3);
+        const startingNode = getAllByTestId("columnItem")[0];
+        const endingNode = getAllByTestId("columnItem")[1];
+        startingNode.dispatchEvent(
+            createBubbledEvent("dragstart", { clientX: 0, clientY: 0 })
+        );
+        endingNode.dispatchEvent(
+            createBubbledEvent("drop", { clientX: 0, clientY: 2 })
+        );
+        fireEvent.dragEnd(startingNode);
     });
 });
