@@ -307,9 +307,7 @@ describe("render row edit overlay", () => {
 
         const setState = jest.fn();
         const useStateSpy = jest.spyOn(React, "useState");
-        /* eslint no-return-assign: "error" */
-        /* eslint-disable no-unused-vars */
-        useStateSpy.mockImplementation((init) => [newrowdata, setState]);
+        useStateSpy.mockImplementation(() => [newrowdata, setState]);
 
         fireEvent.click(getByText("Save"));
         expect(getRowEditOverlayMock).toHaveBeenCalledTimes(3);

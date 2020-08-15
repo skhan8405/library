@@ -243,10 +243,10 @@ describe("ColumnReordering unit test", () => {
         }
     ];
     afterEach(cleanup);
-    let container;
+    let mockContainer;
     beforeAll(() => {
-        container = document.createElement("div");
-        document.body.appendChild(container);
+        mockContainer = document.createElement("div");
+        document.body.appendChild(mockContainer);
     });
 
     it("should not render ColumnReordering component", () => {
@@ -259,7 +259,7 @@ describe("ColumnReordering unit test", () => {
                 additionalColumn={mockAdditionalColumn}
                 updateColumnStructure={updateColumnStructure}
             />,
-            container
+            mockContainer
         );
         const overlay = document.getElementsByClassName("neo-popover--column");
         expect(overlay.innerHTML).toBeUndefined();
@@ -275,13 +275,12 @@ describe("ColumnReordering unit test", () => {
                 additionalColumn={mockAdditionalColumn}
                 updateColumnStructure={updateColumnStructure}
             />,
-            container
+            mockContainer
         );
         expect(component).toBeDefined();
     });
 
     it("should render ColumnReordering search component", () => {
-        // eslint-disable-next-line no-shadow
         const { getByTestId } = render(
             <ColumnReordering
                 isManageColumnOpen
@@ -314,7 +313,7 @@ describe("ColumnReordering unit test", () => {
                 additionalColumn={mockAdditionalColumn}
                 updateColumnStructure={updateColumnStructure}
             />,
-            container
+            mockContainer
         );
 
         const saveButton = document.getElementsByClassName(
@@ -341,7 +340,7 @@ describe("ColumnReordering unit test", () => {
                 additionalColumn={mockAdditionalColumn}
                 updateColumnStructure={updateColumnStructure}
             />,
-            container
+            mockContainer
         );
         const selectAllCheckBox = getByTestId("selectAllCheckbox");
 
@@ -370,7 +369,7 @@ describe("ColumnReordering unit test", () => {
                     additionalColumn={mockAdditionalColumn}
                     updateColumnStructure={updateColumnStructure}
                 />,
-                container
+                mockContainer
             );
         });
 
@@ -417,7 +416,7 @@ describe("ColumnReordering unit test", () => {
                     additionalColumn={mockAdditionalColumn}
                     updateColumnStructure={updateColumnStructure}
                 />,
-                container
+                mockContainer
             );
         });
 
@@ -464,7 +463,7 @@ describe("ColumnReordering unit test", () => {
                     additionalColumn={mockAdditionalColumn}
                     updateColumnStructure={updateColumnStructure}
                 />,
-                container
+                mockContainer
             );
         });
 
@@ -511,7 +510,7 @@ describe("ColumnReordering unit test", () => {
                     additionalColumn={mockAdditionalColumn}
                     updateColumnStructure={updateColumnStructure}
                 />,
-                container
+                mockContainer
             );
         });
 
@@ -549,7 +548,7 @@ describe("ColumnReordering unit test", () => {
                     additionalColumn={mockAdditionalColumn}
                     updateColumnStructure={updateColumnStructure}
                 />,
-                container
+                mockContainer
             );
         });
         const selectAllCheckBox = document
@@ -594,7 +593,7 @@ describe("ColumnReordering unit test", () => {
                     additionalColumn={mockAdditionalColumn}
                     updateColumnStructure={updateColumnStructure}
                 />,
-                container
+                mockContainer
             );
         });
 
@@ -624,7 +623,6 @@ describe("ColumnReordering unit test", () => {
     });
 
     it("Select InnerCell Of Remarks", () => {
-        // eslint-disable-next-line no-shadow
         const { container } = render(
             <ColumnReordering
                 isManageColumnOpen
@@ -658,7 +656,7 @@ describe("ColumnReordering unit test", () => {
                     additionalColumn={mockAdditionalColumn}
                     updateColumnStructure={updateColumnStructure}
                 />,
-                container
+                mockContainer
             );
         });
 

@@ -341,17 +341,16 @@ describe("render Customgrid ", () => {
         return resp;
     };
 
-    let container;
+    let mockContainer;
     beforeEach(() => {
-        container = document.createElement("div");
-        document.body.appendChild(container);
+        mockContainer = document.createElement("div");
+        document.body.appendChild(mockContainer);
     });
     afterEach(cleanup);
 
     it("without row height calculation", async () => {
         mockOffsetSize(600, 600);
-        // eslint-disable-next-line no-shadow
-        const { getAllByText, container } = render(
+        const { container } = render(
             <Grid
                 title={mockTitle}
                 gridHeight={mockGridHeight}
@@ -451,7 +450,6 @@ describe("render Customgrid ", () => {
 
     it("with row height calculation", async () => {
         mockOffsetSize(600, 600);
-        // eslint-disable-next-line no-shadow
         const { getByText, container } = render(
             <Grid
                 title={mockTitle}

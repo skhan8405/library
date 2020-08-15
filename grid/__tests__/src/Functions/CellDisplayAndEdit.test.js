@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-
 import React from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
@@ -124,15 +123,14 @@ describe("CellDisplayAndEdit unit test", () => {
         }
     ];
 
-    let container;
+    let mockContainer;
     beforeEach(() => {
-        container = document.createElement("div");
-        document.body.appendChild(container);
+        mockContainer = document.createElement("div");
+        document.body.appendChild(mockContainer);
     });
     afterEach(cleanup);
     const mockupdateRowInGrid = jest.fn();
     it("should render component", () => {
-        // eslint-disable-next-line no-shadow
         const { container } = render(
             <CellDisplayAndEdit
                 row={row}
@@ -153,7 +151,7 @@ describe("CellDisplayAndEdit unit test", () => {
                     columns={columns}
                     updateRowInGrid={mockupdateRowInGrid}
                 />,
-                container
+                mockContainer
             );
         });
         const component = document.querySelector("[class=cell-edit]")
@@ -185,7 +183,7 @@ describe("CellDisplayAndEdit unit test", () => {
                     columns={columns}
                     updateRowInGrid={mockupdateRowInGrid}
                 />,
-                container
+                mockContainer
             );
         });
         const editButton = document.querySelector("[class=cell-edit]")
@@ -204,7 +202,7 @@ describe("CellDisplayAndEdit unit test", () => {
                 columns={columns}
                 updateRowInGrid={mockupdateRowInGrid}
             />,
-            container
+            mockContainer
         );
         const editButton = document.querySelector("[class=cell-edit]")
             .firstChild;
@@ -219,21 +217,18 @@ describe("CellDisplayAndEdit unit test", () => {
 
         const setState = jest.fn(() => editedRowValue);
         const useStateSpy = jest.spyOn(React, "useState");
-        /* eslint no-return-assign: "error" */
-        /* eslint-disable no-unused-vars */
-        useStateSpy.mockImplementation((init) => [editedRowValue, setState]);
+        useStateSpy.mockImplementation(() => [editedRowValue, setState]);
         fireEvent.click(getByTestId("ok"));
     });
     it("should not render component", () => {
-        let component = null;
         act(() => {
-            component = render(
+            render(
                 <CellDisplayAndEdit
                     row={incorrectRowValue}
                     columns={columns}
                     updateRowInGrid={mockupdateRowInGrid}
                 />,
-                container
+                mockContainer
             );
         });
         const editButton = document.querySelector("[class=cell-edit]");
