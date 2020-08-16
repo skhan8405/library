@@ -1,52 +1,16 @@
 /* eslint-disable react/destructuring-assignment */
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import ClickAwayListener from "react-click-away-listener";
 import RightDrawer from "./drawer/RightDrawer";
 import LeftDrawer from "./drawer/LeftDrawer";
 import MainFilterPanel from "./panel/MainFilterPanel";
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
-/**
- * Component handling clock outside close of Drawer
- */
-function useComponentVisible() {
-    const [showApplyFilter, setApplyFilter] = useState(false);
-
-    const ref = useRef(null);
-
-    /**
-     * Method To sort the rows for a particular column
-     * @param {*} event is the event that is getting passed when an outside click is triggered
-     */
-    const handleHideDropdown = (event) => {
-        if (event.key === "Escape") {
-            setApplyFilter(false);
-        }
-    };
-    /**
-     * Method To sort the rows for a particular column
-     * @param {*} event it is the event triggered on the ref div when click happens
-     */
-    const handleClickOutside = (event) => {
-        if (ref.current && !ref.current.contains(event.target)) {
-            setApplyFilter(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener("keydown", handleHideDropdown, true);
-        document.addEventListener("click", handleClickOutside, true);
-        return () => {
-            document.removeEventListener("keydown", handleHideDropdown, true);
-            document.removeEventListener("click", handleClickOutside, true);
-        };
-    });
-
-    return { ref, showApplyFilter, setApplyFilter };
-}
 export default function Filter(props) {
+    const [showApplyFilter, setApplyFilter] = useState(false);
     const [autoCompletesValueArray, setAutoCompletesValueArray] = useState([]);
     const [autoCompletesArray, setAutoCompletesArray] = useState([]);
     const [dateTimesArray, setDateTimesArray] = useState([]);
@@ -1494,12 +1458,13 @@ export default function Filter(props) {
         // eslint-disable-next-line no-use-before-define
         setApplyFilter(true);
     };
-
-    const { ref, showApplyFilter, setApplyFilter } = useComponentVisible();
+    const handleClickAway = () => {
+        setApplyFilter(false);
+    };
     return (
-        <div ref={ref}>
+        <ClickAwayListener onClickAway={handleClickAway}>
             {showApplyFilter && (
-                <div className="neo-filter filter--grid" ref={ref}>
+                <div className="neo-filter filter--grid">
                     <div className="filter__wrap">
                         <div className="filter__list">
                             <LeftDrawer
@@ -1569,7 +1534,7 @@ export default function Filter(props) {
                 addSavedFilters={addSavedFilters}
                 addingToFavourite={props.addingToFavourite}
             />
-        </div>
+        </ClickAwayListener>
     );
 }
 

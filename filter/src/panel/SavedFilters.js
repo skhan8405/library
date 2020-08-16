@@ -1,29 +1,20 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import ClickAwayListener from "react-click-away-listener";
 import { ReactComponent as IconCheck } from "../images/icon-check.svg";
 
 const SavedFilters = (props) => {
     const [showFilter, setShowFilter] = useState(false);
-    const listRef = useRef();
     useEffect(() => {
-        const listHandler = (event) => {
-            if (listRef.current && !listRef.current.contains(event.target)) {
-                setShowFilter(false);
-                props.handleListFilter();
-            }
-        };
         setShowFilter(props.showFilter);
-        document.addEventListener("mousedown", listHandler);
-
-        return () => {
-            document.removeEventListener("mousedown", listHandler);
-        };
     }, [props]);
-
     const keyValue = "";
     let savedFilters = localStorage.getItem("savedFilters");
     savedFilters = savedFilters ? JSON.parse(savedFilters) : [];
-
+    const handleClickAway = () => {
+        setShowFilter(false);
+        props.handleListFilter();
+    };
     const savedFilter = savedFilters.map((filterArray) => {
         return (
             <div key={filterArray}>
@@ -50,14 +41,16 @@ const SavedFilters = (props) => {
     });
     if (showFilter) {
         return (
-            <div className="filter__saved" ref={listRef}>
-                <div className="savedFilters">
-                    <div className="text-muted">Saved Filters</div>
-                    <ul key={keyValue} className="leftSpace">
-                        {savedFilter}
-                    </ul>
+            <ClickAwayListener onClickAway={handleClickAway}>
+                <div className="filter__saved">
+                    <div className="savedFilters">
+                        <div className="text-muted">Saved Filters</div>
+                        <ul key={keyValue} className="leftSpace">
+                            {savedFilter}
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            </ClickAwayListener>
         );
     }
     return <div />;
