@@ -355,9 +355,9 @@ describe("render Customgrid ", () => {
     });
     afterEach(cleanup);
 
-    it("without row height calculation", async () => {
+    it("test row expand, column filter and Ascending group sort without row height calculation", async () => {
         mockOffsetSize(600, 600);
-        const { getByText, container } = render(
+        const { container } = render(
             <Grid
                 title={mockTitle}
                 gridHeight={mockGridHeight}
@@ -374,6 +374,8 @@ describe("render Customgrid ", () => {
             />
         );
         const gricContainer = await waitFor(() => container);
+
+        // Row expansion
         expect(gricContainer).toBeInTheDocument();
         const expander = gricContainer.getElementsByClassName("expander")[2];
         act(() => {
@@ -444,7 +446,7 @@ describe("render Customgrid ", () => {
         expect(sortOverlay).toBeNull();
     });
 
-    it("test descending group order", async () => {
+    it("test Descending group sort with row height calculation", async () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
@@ -492,7 +494,6 @@ describe("render Customgrid ", () => {
         fireEvent.change(sortOrderSelectList, {
             target: { value: "Descending" }
         });
-        // expect(getByText("Descending")).toBeInTheDocument();
         const applySortButton = sortOverlay.querySelector(
             "[class='btns btns__save']"
         );
@@ -507,7 +508,7 @@ describe("render Customgrid ", () => {
         expect(sortOverlay).toBeNull();
     });
 
-    it("with row height calculation", async () => {
+    it("test row options functionalities and column sort with row height calculation", async () => {
         mockOffsetSize(600, 600);
         const { getByText, container } = render(
             <Grid
@@ -618,7 +619,7 @@ describe("render Customgrid ", () => {
         });
     });
 
-    it("with row height calculation", async () => {
+    it("test grid with 2 rows to trigger the load more page function", async () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
