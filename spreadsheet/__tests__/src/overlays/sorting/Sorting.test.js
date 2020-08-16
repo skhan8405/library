@@ -82,6 +82,11 @@ test("<Sorting />", () => {
         0,
         "order"
     );
+    component.captureSortingFeildValues(
+        { target: { value: "Descending" } },
+        0,
+        "order"
+    );
     component.updateTableAsPerSortCondition();
     component.handleReorderListOfSort([
         "FlightNo",
@@ -103,9 +108,28 @@ test("<Sorting />", () => {
     );
     component.remove(0);
     component.clearAll();
-    component.handleClickOutside({
-        target: {}
-    });
+    sortingParamsObjectList = [
+        {
+            order: "Ascending",
+            sortBy: "FlightNo",
+            sortOn: ""
+        }
+    ];
+    component = ReactTestUtils.renderIntoDocument(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    component.captureSortingFeildValues(
+        { target: { value: "Descending" } },
+        0,
+        "sortBy"
+    );
 });
 it("close sorting event trigger", () => {
     sortingParamsObjectList = [
@@ -192,4 +216,66 @@ it("selecting Value from dropDown", () => {
     });
     const element = getAllByTestId("selectingValue")[0];
     expect(element).toHaveTextContent("Value");
+});
+it("testing capturing of sorting field values", () => {
+    const { getAllByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.change(
+        getAllByTestId("selectSortingField")[0],
+        { target: { value: "FlightNo" } },
+        0,
+        "sortBy"
+    );
+});
+it("testing selecting the order of the sort", () => {
+    const { getAllByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.change(
+        getAllByTestId("selectOrder")[0],
+        { target: { value: "FlightNo" } },
+        0,
+        "order"
+    );
+});
+it("testing copying of the sort", () => {
+    const { getAllByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.click(getAllByTestId("copySort")[0]);
+});
+it("testing removal of sort", () => {
+    const { getAllByTestId } = render(
+        <Sorting
+            closeSorting={closeSorting}
+            sortingParamsObjectList={sortingParamsObjectList}
+            columnFieldValue={columnFieldValue}
+            clearAllSortingParams={clearAllSortingParams}
+            setTableAsPerSortingParams={setTableAsPerSortingParams}
+            handleTableSortSwap={handleTableSortSwap}
+        />
+    );
+    fireEvent.click(getAllByTestId("removeSort")[0]);
 });

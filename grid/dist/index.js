@@ -1666,6 +1666,7 @@ var RowOptions = React.memo(function (_ref) {
   };
 
   var additionalActionClicked = function additionalActionClicked(actionValue) {
+    closeRowOptionsOverlay();
     return rowActionCallback(original, actionValue);
   };
 
@@ -2317,6 +2318,7 @@ var ColumnReordering = React.memo(function (props) {
       type: "text",
       placeholder: "Search column",
       className: "custom__ctrl",
+      "data-testid": "filterColumnsList",
       onChange: filterColumnsList
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "column__selectAll"
@@ -2325,6 +2327,7 @@ var ColumnReordering = React.memo(function (props) {
     }, /*#__PURE__*/React__default.createElement("input", {
       type: "checkbox",
       value: "Select All",
+      "data-testid": "selectAllCheckbox",
       checked: isCheckboxSelected("Select All"),
       onChange: selectAllColumns
     })), /*#__PURE__*/React__default.createElement("div", {
@@ -2402,7 +2405,8 @@ var ColumnReordering = React.memo(function (props) {
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
       type: "button",
       className: "btns btns__save",
-      onClick: doColumnUpdate
+      onClick: doColumnUpdate,
+      "data-testid": "saveButton"
     }, "Save")))))));
   }
 
@@ -2642,6 +2646,7 @@ var SortItem = function SortItem(_ref) {
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
+    "data-testid": "sortItem",
     ref: function ref(node) {
       return drag(drop(node));
     },

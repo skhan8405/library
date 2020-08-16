@@ -15,7 +15,7 @@
         "build": "SET NODE_ENV=dev && microbundle-crl --no-compress --format modern,cjs",
         "start": "SET NODE_ENV=dev && microbundle-crl watch --no-compress --format modern,cjs",
         "prepare": "run-s build",
-        "test": "SET NODE_ENV=test && jest --coverage --env=jest-environment-jsdom-sixteen",
+        "test": "jest --coverage --env=jest-environment-jsdom-sixteen",
         "lint": "eslint src/**/*.js src/*.js",
         "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
         "test:watch": "react-scripts test --env=jsdom",

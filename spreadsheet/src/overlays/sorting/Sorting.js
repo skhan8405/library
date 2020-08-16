@@ -3,14 +3,30 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React from "react";
 import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import PropTypes from "prop-types";
+import ClickAwayListener from "react-click-away-listener";
 import SortingList from "./SortingList";
 import { ReactComponent as IconClose } from "../../images/icon-close.svg";
 import { ReactComponent as IconNav } from "../../images/icon-nav.svg";
 import { ReactComponent as SortCopy } from "../../images/SortCopy.svg";
 import { ReactComponent as SortDelete } from "../../images/SortDelete.svg";
 
+const HTML5toTouch = {
+    backends: [
+        {
+            backend: HTML5Backend
+        },
+        {
+            backend: TouchBackend,
+            options: { enableMouseEvents: true },
+            preview: true,
+            transition: TouchTransition
+        }
+    ]
+};
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -22,20 +38,7 @@ class App extends React.Component {
                     : this.props.sortingParamsObjectList,
             errorMessage: false
         };
-        this.setWrapperRef = this.setWrapperRef.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-    }
-
-    componentDidMount() {
-        document.addEventListener("mousedown", this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener("mousedown", this.handleClickOutside);
-    }
-
-    setWrapperRef(node) {
-        this.wrapperRef = node;
+        this.handleClick = this.handleClick.bind(this);
     }
 
     add = () => {
@@ -172,6 +175,7 @@ class App extends React.Component {
                             </div>
 
                             <div
+                                data-testid="copySort"
                                 role="presentation"
                                 className="sort__icon"
                                 onClick={() => this.copy(index)}
@@ -186,6 +190,7 @@ class App extends React.Component {
                             </div>
 
                             <div
+                                data-testid="removeSort"
                                 role="presentation"
                                 className="sort__icon"
                                 onClick={() => this.remove(index)}
@@ -244,90 +249,90 @@ class App extends React.Component {
         this.props.handleTableSortSwap(reOrderedIndexList);
     };
 
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-            this.props.closeSorting();
-        }
+    handleClick() {
+        this.props.closeSorting();
     }
 
     render() {
         return (
-            <div className="neo-popover" ref={this.setWrapperRef}>
-                <div className="neo-popover__sort">
-                    <div className="neo-popover__title">
-                        <h2>Sort</h2>
-                        <div className="neo-popover__close">
-                            <i
+            <ClickAwayListener onClickAway={this.handleClick}>
+                <div className="neo-popover">
+                    <div className="neo-popover__sort">
+                        <div className="neo-popover__title">
+                            <h2>Sort</h2>
+                            <div className="neo-popover__close">
+                                <i
+                                    role="presentation"
+                                    data-testid="closeSorting"
+                                    onClick={() => this.props.closeSorting()}
+                                >
+                                    <IconClose />
+                                </i>
+                            </div>
+                        </div>
+
+                        <div className="neo-popover__content">
+                            <DndProvider
+                                backend={MultiBackend}
+                                options={HTML5toTouch}
+                            >
+                                <SortingList
+                                    handleReorderListOfSort={
+                                        this.handleReorderListOfSort
+                                    }
+                                    sortsArray={this.createColumnsArrayFromProps(
+                                        this.state.sortingOrderList
+                                    )}
+                                />
+                            </DndProvider>
+                        </div>
+                        <div className="sort-warning">
+                            {this.state.errorMessage ? (
+                                <span className="alert alert-danger">
+                                    Sort by opted are same, Please choose
+                                    different one.
+                                </span>
+                            ) : (
+                                ""
+                            )}
+                        </div>
+                        <div className="sort__new">
+                            <div
                                 role="presentation"
-                                data-testid="closeSorting"
-                                onClick={() => this.props.closeSorting()}
+                                className="sort__section"
+                                data-testid="addSort"
+                                onClick={() => this.add()}
+                                onKeyDown={() => this.add()}
                             >
-                                <IconClose />
-                            </i>
+                                <span>+</span>
+                                <div className="sort__txt">New Sort</div>
+                            </div>
                         </div>
-                    </div>
+                        <div className="sort__footer">
+                            <div className="sort__btns">
+                                <button
+                                    type="button"
+                                    className="btns"
+                                    onClick={this.clearAll}
+                                >
+                                    Clear All
+                                </button>
 
-                    <div className="neo-popover__content">
-                        <DndProvider
-                            backend={TouchBackend}
-                            options={{ enableMouseEvents: true }}
-                        >
-                            <SortingList
-                                handleReorderListOfSort={
-                                    this.handleReorderListOfSort
-                                }
-                                sortsArray={this.createColumnsArrayFromProps(
-                                    this.state.sortingOrderList
-                                )}
-                            />
-                        </DndProvider>
-                    </div>
-                    <div className="sort-warning">
-                        {this.state.errorMessage ? (
-                            <span className="alert alert-danger">
-                                Sort by opted are same, Please choose different
-                                one.
-                            </span>
-                        ) : (
-                            ""
-                        )}
-                    </div>
-                    <div className="sort__new">
-                        <div
-                            role="presentation"
-                            className="sort__section"
-                            data-testid="addSort"
-                            onClick={() => this.add()}
-                            onKeyDown={() => this.add()}
-                        >
-                            <span>+</span>
-                            <div className="sort__txt">New Sort</div>
-                        </div>
-                    </div>
-                    <div className="sort__footer">
-                        <div className="sort__btns">
-                            <button
-                                type="button"
-                                className="btns"
-                                onClick={this.clearAll}
-                            >
-                                Clear All
-                            </button>
-
-                            <button
-                                data-testid="applySort"
-                                type="button"
-                                className="btns btns__save"
-                                onClick={() =>
-                                    this.updateTableAsPerSortCondition()
-                                }
-                            >
-                                Ok
-                            </button>
+                                <button
+                                    data-testid="applySort"
+                                    type="button"
+                                    className="btns btns__save"
+                                    onClick={() =>
+                                        this.updateTableAsPerSortCondition()
+                                    }
+                                >
+                                    Ok
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </ClickAwayListener>
         );
     }
 }

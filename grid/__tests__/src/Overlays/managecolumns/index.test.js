@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
 import React from "react";
+import ReactDOM from "react-dom";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
+import { act } from "react-dom/test-utils";
 import ColumnReordering from "../../../../src/Overlays/managecolumns/index";
 
 describe("ColumnReordering unit test", () => {
@@ -14,11 +16,6 @@ describe("ColumnReordering unit test", () => {
                 {
                     Header: "Remarks",
                     accessor: "remarks"
-                },
-                {
-                    Header: "Details",
-                    onlyInTablet: true,
-                    accessor: "details"
                 }
             ],
             columnId: "ExpandColumn",
@@ -27,11 +24,6 @@ describe("ColumnReordering unit test", () => {
                 {
                     Header: "Remarks",
                     accessor: "remarks"
-                },
-                {
-                    Header: "Details",
-                    onlyInTablet: true,
-                    accessor: "details"
                 }
             ]
         }
@@ -251,10 +243,26 @@ describe("ColumnReordering unit test", () => {
         }
     ];
     afterEach(cleanup);
-    let container;
+    let mockContainer;
     beforeAll(() => {
-        container = document.createElement("div");
-        document.body.appendChild(container);
+        mockContainer = document.createElement("div");
+        document.body.appendChild(mockContainer);
+    });
+
+    it("should not render ColumnReordering component", () => {
+        render(
+            <ColumnReordering
+                isManageColumnOpen={false}
+                toggleManageColumns={toggleManageColumns}
+                originalColumns={mockOriginalColumns}
+                isExpandContentAvailable
+                additionalColumn={mockAdditionalColumn}
+                updateColumnStructure={updateColumnStructure}
+            />,
+            mockContainer
+        );
+        const overlay = document.getElementsByClassName("neo-popover--column");
+        expect(overlay.innerHTML).toBeUndefined();
     });
 
     it("should render ColumnReordering component", () => {
@@ -264,10 +272,10 @@ describe("ColumnReordering unit test", () => {
                 toggleManageColumns={toggleManageColumns}
                 originalColumns={mockOriginalColumns}
                 isExpandContentAvailable
-                additionalColumn={[mockAdditionalColumn]}
+                additionalColumn={mockAdditionalColumn}
                 updateColumnStructure={updateColumnStructure}
             />,
-            container
+            mockContainer
         );
         expect(component).toBeDefined();
     });
@@ -279,13 +287,390 @@ describe("ColumnReordering unit test", () => {
                 toggleManageColumns={toggleManageColumns}
                 originalColumns={mockOriginalColumns}
                 isExpandContentAvailable
-                additionalColumn={[mockAdditionalColumn]}
+                additionalColumn={mockAdditionalColumn}
                 updateColumnStructure={updateColumnStructure}
-            />,
-            container
+            />
         );
         const filterList = getByTestId("filterColumnsList");
         fireEvent.change(filterList, { target: { value: "id" } });
         expect(filterList.value).toBe("id");
+        fireEvent.change(filterList, { target: { value: "" } });
+        const coloumnBodyInnerHtml = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder");
+
+        expect(coloumnBodyInnerHtml.length).toBe(10);
+    });
+
+    it("Click on Save button For Default Select", () => {
+        render(
+            <ColumnReordering
+                isManageColumnOpen
+                toggleManageColumns={toggleManageColumns}
+                originalColumns={mockOriginalColumns}
+                isExpandContentAvailable
+                additionalColumn={mockAdditionalColumn}
+                updateColumnStructure={updateColumnStructure}
+            />,
+            mockContainer
+        );
+
+        const saveButton = document.getElementsByClassName(
+            "btns btns__save"
+        )[0];
+
+        // triggering Save button Click
+        act(() => {
+            saveButton.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+    });
+
+    it("Un-select and Select All coloumns", () => {
+        // LOGIC-->> UnSelect All Columns by unchecking the select All checkBox
+        // expect the coloumn body (on showing all chosen coloumns) to be empty
+        const { getByTestId } = render(
+            <ColumnReordering
+                isManageColumnOpen
+                toggleManageColumns={toggleManageColumns}
+                originalColumns={mockOriginalColumns}
+                isExpandContentAvailable
+                additionalColumn={mockAdditionalColumn}
+                updateColumnStructure={updateColumnStructure}
+            />,
+            mockContainer
+        );
+        const selectAllCheckBox = getByTestId("selectAllCheckbox");
+
+        // unchecking the select all checkbox
+        fireEvent.click(selectAllCheckBox);
+
+        // checking the select all checkbox
+        fireEvent.click(selectAllCheckBox);
+
+        const coloumnBodyInnerHtml = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder");
+
+        expect(coloumnBodyInnerHtml.length).toBe(10);
+    });
+
+    it("UnSelect The Segment Coloumn From Column Chooser", () => {
+        act(() => {
+            ReactDOM.render(
+                <ColumnReordering
+                    isManageColumnOpen
+                    toggleManageColumns={toggleManageColumns}
+                    originalColumns={mockOriginalColumns}
+                    isExpandContentAvailable
+                    additionalColumn={mockAdditionalColumn}
+                    updateColumnStructure={updateColumnStructure}
+                />,
+                mockContainer
+            );
+        });
+
+        const segmentColumCheckBox = document
+            .getElementsByClassName("column__chooser")[0]
+            .getElementsByClassName("column__checkbox")[3]
+            .getElementsByTagName("input")[0];
+
+        act(() => {
+            segmentColumCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        const isSegmentIncludedInBody = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .innerHTML.includes("Segment");
+
+        expect(isSegmentIncludedInBody).toBe(false);
+
+        const saveButton = document.getElementsByClassName(
+            "btns btns__save"
+        )[0];
+
+        // triggering Save button Click
+        act(() => {
+            saveButton.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+    });
+
+    it("UnSelect and Select Segment Column ", () => {
+        // LOGIC-->> UnSelect and then select segment Column
+        // expect no of coloumns to be as same before and after select
+        act(() => {
+            ReactDOM.render(
+                <ColumnReordering
+                    isManageColumnOpen
+                    toggleManageColumns={toggleManageColumns}
+                    originalColumns={mockOriginalColumns}
+                    isExpandContentAvailable
+                    additionalColumn={mockAdditionalColumn}
+                    updateColumnStructure={updateColumnStructure}
+                />,
+                mockContainer
+            );
+        });
+
+        const noOfColoumnsBeforeSelect = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder").length;
+
+        const segmentColumCheckBox = document
+            .getElementsByClassName("column__chooser")[0]
+            .getElementsByClassName("column__checkbox")[3]
+            .getElementsByTagName("input")[0];
+
+        // unchecking segment checkbox
+        act(() => {
+            segmentColumCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        // checking segment checkbox
+        act(() => {
+            segmentColumCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        const noOfColoumnsAfterSelect = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder").length;
+
+        expect(noOfColoumnsAfterSelect).toEqual(noOfColoumnsBeforeSelect);
+    });
+
+    it("UnSelect and Select Remarks Column ", () => {
+        act(() => {
+            ReactDOM.render(
+                <ColumnReordering
+                    isManageColumnOpen
+                    toggleManageColumns={toggleManageColumns}
+                    originalColumns={mockOriginalColumns}
+                    isExpandContentAvailable
+                    additionalColumn={mockAdditionalColumn}
+                    updateColumnStructure={updateColumnStructure}
+                />,
+                mockContainer
+            );
+        });
+
+        const noOfColoumnsBeforeSelect = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder").length;
+
+        const segmentColumCheckBox = document
+            .getElementsByClassName("column__chooser")[0]
+            .getElementsByClassName("column__checkbox")[10]
+            .getElementsByTagName("input")[0];
+
+        // unchecking segment checkbox
+        act(() => {
+            segmentColumCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        // checking segment checkbox
+        act(() => {
+            segmentColumCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        const noOfColoumnsAfterSelect = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder").length;
+
+        expect(noOfColoumnsAfterSelect).toEqual(noOfColoumnsBeforeSelect);
+    });
+
+    it("Unselect and Select Flight no Inner Cell", () => {
+        act(() => {
+            ReactDOM.render(
+                <ColumnReordering
+                    isManageColumnOpen
+                    toggleManageColumns={toggleManageColumns}
+                    originalColumns={mockOriginalColumns}
+                    isExpandContentAvailable
+                    additionalColumn={mockAdditionalColumn}
+                    updateColumnStructure={updateColumnStructure}
+                />,
+                mockContainer
+            );
+        });
+
+        const flightNoInnerCell = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder")[1]
+            .getElementsByTagName("input")[0];
+
+        // unchecking flightNo innerCell checkbox
+        act(() => {
+            flightNoInnerCell.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        // checking flightNo innerCell checkbox
+        act(() => {
+            flightNoInnerCell.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        expect(flightNoInnerCell.checked).toBeTruthy();
+    });
+
+    it("UnSelect All and Click Reset Button", () => {
+        act(() => {
+            ReactDOM.render(
+                <ColumnReordering
+                    isManageColumnOpen
+                    toggleManageColumns={toggleManageColumns}
+                    originalColumns={mockOriginalColumns}
+                    isExpandContentAvailable
+                    additionalColumn={mockAdditionalColumn}
+                    updateColumnStructure={updateColumnStructure}
+                />,
+                mockContainer
+            );
+        });
+        const selectAllCheckBox = document
+            .getElementsByClassName("column__chooser")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByTagName("input")[1];
+
+        // un-checking selectAll checkbox
+        act(() => {
+            selectAllCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        const resetButton = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("btns")[0];
+
+        // clicking Reset button
+        act(() => {
+            resetButton.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        const noOfColoumnsAfterReset = document
+            .getElementsByClassName("column__settings")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByClassName("column__reorder").length;
+
+        expect(noOfColoumnsAfterReset).toEqual(10);
+    });
+
+    it("Error scenario for no Coloumns Selected", () => {
+        act(() => {
+            ReactDOM.render(
+                <ColumnReordering
+                    isManageColumnOpen
+                    toggleManageColumns={toggleManageColumns}
+                    originalColumns={mockOriginalColumns}
+                    isExpandContentAvailable
+                    additionalColumn={mockAdditionalColumn}
+                    updateColumnStructure={updateColumnStructure}
+                />,
+                mockContainer
+            );
+        });
+
+        const selectAllCheckBox = document
+            .getElementsByClassName("column__chooser")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByTagName("input")[1];
+
+        act(() => {
+            selectAllCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        expect(selectAllCheckBox.checked).toBeFalsy();
+
+        const saveButton = document.getElementsByClassName(
+            "btns btns__save"
+        )[0];
+
+        // un-checking selectAll checkbox
+        act(() => {
+            saveButton.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+    });
+
+    it("Select InnerCell Of Remarks", () => {
+        const { container } = render(
+            <ColumnReordering
+                isManageColumnOpen
+                toggleManageColumns={toggleManageColumns}
+                originalColumns={mockOriginalColumns}
+                isExpandContentAvailable
+                additionalColumn={mockAdditionalColumn}
+                updateColumnStructure={updateColumnStructure}
+            />
+        );
+
+        const remarksInnerCellCheckBox = container
+            .getElementsByClassName("column__reorder")[9]
+            .getElementsByClassName("column__checkbox")[0]
+            .getElementsByTagName("input")[0];
+        act(() => {
+            remarksInnerCellCheckBox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+    });
+
+    it("Trigger search of columns onChnage", () => {
+        act(() => {
+            ReactDOM.render(
+                <ColumnReordering
+                    isManageColumnOpen
+                    toggleManageColumns={toggleManageColumns}
+                    originalColumns={mockOriginalColumns}
+                    isExpandContentAvailable
+                    additionalColumn={mockAdditionalColumn}
+                    updateColumnStructure={updateColumnStructure}
+                />,
+                mockContainer
+            );
+        });
+
+        const searchColoumnInputField = document
+            .getElementsByClassName("column__chooser")[0]
+            .getElementsByClassName("column__body")[0]
+            .getElementsByTagName("input")[0];
+
+        act(() => {
+            searchColoumnInputField.dispatchEvent(
+                new KeyboardEvent("keyDown", {
+                    event: { target: { value: "id" } }
+                })
+            );
+        });
     });
 });

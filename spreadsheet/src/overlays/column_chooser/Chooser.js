@@ -6,12 +6,28 @@
 
 import React from "react";
 import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import PropTypes from "prop-types";
+import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
 import { ReactComponent as IconClose } from "../../images/icon-close.svg";
 import { ReactComponent as IconJustify } from "../../images/icon-align-justify.svg";
 
+const HTML5toTouch = {
+    backends: [
+        {
+            backend: HTML5Backend
+        },
+        {
+            backend: TouchBackend,
+            options: { enableMouseEvents: true },
+            preview: true,
+            transition: TouchTransition
+        }
+    ]
+};
 class ColumnReordering extends React.Component {
     constructor(props) {
         super(props);
@@ -22,20 +38,8 @@ class ColumnReordering extends React.Component {
             isAllSelected: true,
             maxLeftPinnedColumn: this.props.maxLeftPinnedColumn
         };
-        this.setWrapperRef = this.setWrapperRef.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-    }
 
-    componentDidMount() {
-        document.addEventListener("mousedown", this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener("mousedown", this.handleClickOutside);
-    }
-
-    setWrapperRef(node) {
-        this.wrapperRef = node;
+        this.handleClick = this.handleClick.bind(this);
     }
 
     /**
@@ -59,12 +63,7 @@ class ColumnReordering extends React.Component {
         let existingColumnReorderEntityList = this.state
             .columnReorderEntityList;
         let isExistingAllSelect = this.state.isAllSelected;
-        if (!isExistingAllSelect) {
-            existingColumnReorderEntityList = this.props.columns.map(
-                (item) => item.name
-            );
-            isExistingAllSelect = true;
-        } else {
+        if (isExistingAllSelect) {
             existingColumnReorderEntityList = [];
             isExistingAllSelect = false;
         }
@@ -177,6 +176,7 @@ class ColumnReordering extends React.Component {
                             <div className="column__wrap">
                                 <div className="column__checkbox">
                                     <input
+                                        data-testid="reArrangeLeftPin"
                                         role="button"
                                         type="checkbox"
                                         id={`checkBoxToPinLeft_${item}`}
@@ -242,172 +242,184 @@ class ColumnReordering extends React.Component {
         this.props.handleheaderNameList(reordered);
     };
 
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-            this.props.closeColumnReOrdering();
-        }
+    handleClick() {
+        this.props.closeColumnReOrdering();
     }
 
     render() {
         return (
-            <div
-                className="neo-popover neo-popover--column columns--grid"
-                ref={this.setWrapperRef}
-            >
-                <div className="neo-popover__column column__grid">
-                    <div className="column__chooser">
-                        <div className="column__header">
-                            <div className="">
-                                <strong>Column Chooser</strong>
+            <ClickAwayListener onClickAway={this.handleClick}>
+                <div
+                    className="neo-popover neo-popover--column columns--grid"
+                    // ref={this.setWrapperRef}
+                >
+                    <div className="neo-popover__column column__grid">
+                        <div className="column__chooser">
+                            <div className="column__header">
+                                <div className="">
+                                    <strong>Column Chooser</strong>
+                                </div>
                             </div>
-                        </div>
-                        <div className="column__body">
-                            <div>
-                                <input
-                                    type="text"
-                                    placeholder="Search column"
-                                    className="custom__ctrl"
-                                    onChange={this.filterColumnReorderList}
-                                />
-                            </div>
-                            <div className="column__selectAll">
-                                <div className="column__checkbox">
+                            <div className="column__body">
+                                <div>
                                     <input
-                                        type="checkbox"
-                                        data-testid="selectAllCheckBox"
-                                        id="selectallcolumncheckbox"
-                                        onChange={() =>
-                                            this.selectAllToColumnReOrderList()
-                                        }
-                                        checked={
-                                            this.state.columnReorderEntityList
-                                                .length ===
-                                            this.props.columns.length
-                                        }
+                                        type="text"
+                                        placeholder="Search column"
+                                        className="custom__ctrl"
+                                        onChange={this.filterColumnReorderList}
                                     />
                                 </div>
-                                <div className="column__txt">Select all</div>
-                            </div>
-                            {this.state.columnSelectList.map((item) => {
-                                return (
-                                    <div className="column__wrap" key={item}>
-                                        <div className="column__checkbox">
-                                            <input
-                                                data-testid="addToColumnReorderEntityList"
-                                                type="checkbox"
-                                                id={`checkboxtoselectreorder_${item}`}
-                                                checked={this.state.columnReorderEntityList.includes(
-                                                    item
-                                                )}
-                                                onChange={() =>
-                                                    this.addToColumnReorderEntityList(
-                                                        item
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                        <div className="column__txt">
-                                            {item}
-                                        </div>
+                                <div className="column__selectAll">
+                                    <div className="column__checkbox">
+                                        <input
+                                            type="checkbox"
+                                            data-testid="selectAllCheckBox"
+                                            id="selectallcolumncheckbox"
+                                            onChange={() =>
+                                                this.selectAllToColumnReOrderList()
+                                            }
+                                            checked={
+                                                this.state
+                                                    .columnReorderEntityList
+                                                    .length ===
+                                                this.props.columns.length
+                                            }
+                                        />
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                    <div className="column__settings">
-                        <div className="column__header">
-                            <div className="column__headerTxt">
-                                <strong>Column Settings</strong>
+                                    <div className="column__txt">
+                                        Select all
+                                    </div>
+                                </div>
+                                {this.state.columnSelectList.map((item) => {
+                                    return (
+                                        <div
+                                            className="column__wrap"
+                                            key={item}
+                                        >
+                                            <div className="column__checkbox">
+                                                <input
+                                                    data-testid="addToColumnReorderEntityList"
+                                                    type="checkbox"
+                                                    id={`checkboxtoselectreorder_${item}`}
+                                                    checked={this.state.columnReorderEntityList.includes(
+                                                        item
+                                                    )}
+                                                    onChange={() =>
+                                                        this.addToColumnReorderEntityList(
+                                                            item
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="column__txt">
+                                                {item}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                            <div
-                                role="presentation"
-                                data-testid="closeColumnReordering"
-                                className="column__close"
-                                onClick={() =>
-                                    this.props.closeColumnReOrdering()
-                                }
-                            >
-                                <i>
-                                    <IconClose />
-                                </i>
-                            </div>
                         </div>
-
-                        <div className="column__body">
-                            <div className="column__info">
-                                <strong>
-                                    &nbsp; &nbsp; Selected Column Count :{" "}
-                                    {this.state.columnReorderEntityList.length}
-                                </strong>
-                                {this.state.maxLeftPinnedColumn -
-                                    this.state.leftPinnedColumList.length >
-                                0 ? (
-                                    <strong>
-                                        &nbsp; &nbsp; Left Pinned Column Count
-                                        Remaining :{" "}
-                                        {this.state.maxLeftPinnedColumn -
-                                            this.state.leftPinnedColumList
-                                                .length}
-                                    </strong>
-                                ) : (
-                                    <strong style={{ color: "red" }}>
-                                        &nbsp; &nbsp; Maximum Count Of Left Pin
-                                        Columns REACHED
-                                    </strong>
-                                )}
-                            </div>
-                            <DndProvider
-                                backend={TouchBackend}
-                                options={{ enableMouseEvents: true }}
-                            >
-                                <ColumnsList
-                                    columnsArray={this.createColumnsArrayFromProps(
-                                        this.state.columnReorderEntityList
-                                    )}
-                                    handleReorderList={this.handleReorderList}
-                                />
-                            </DndProvider>
-                        </div>
-                        <div className="column__footer">
-                            <div className="column__btns">
-                                <button
-                                    data-testid="resetButton"
-                                    type="button"
-                                    className="btns"
-                                    onClick={() =>
-                                        this.resetColumnReorderList()
-                                    }
-                                >
-                                    Reset
-                                </button>
-                                <button
-                                    data-testid="cancelButton"
-                                    type="button"
-                                    className="btns"
+                        <div className="column__settings">
+                            <div className="column__header">
+                                <div className="column__headerTxt">
+                                    <strong>Column Settings</strong>
+                                </div>
+                                <div
+                                    role="presentation"
+                                    data-testid="closeColumnReordering"
+                                    className="column__close"
                                     onClick={() =>
                                         this.props.closeColumnReOrdering()
                                     }
                                 >
-                                    Cancel
-                                </button>
-                                <button
-                                    data-testid="saveButton"
-                                    type="button"
-                                    className="btns btns__save"
-                                    onClick={() =>
-                                        this.props.updateTableAsPerRowChooser(
-                                            this.state.columnReorderEntityList,
-                                            this.state.leftPinnedColumList
-                                        )
-                                    }
+                                    <i>
+                                        <IconClose />
+                                    </i>
+                                </div>
+                            </div>
+
+                            <div className="column__body">
+                                <div className="column__info">
+                                    <strong>
+                                        &nbsp; &nbsp; Selected Column Count :{" "}
+                                        {
+                                            this.state.columnReorderEntityList
+                                                .length
+                                        }
+                                    </strong>
+                                    {this.state.maxLeftPinnedColumn -
+                                        this.state.leftPinnedColumList.length >
+                                    0 ? (
+                                        <strong>
+                                            &nbsp; &nbsp; Left Pinned Column
+                                            Count Remaining :{" "}
+                                            {this.state.maxLeftPinnedColumn -
+                                                this.state.leftPinnedColumList
+                                                    .length}
+                                        </strong>
+                                    ) : (
+                                        <strong style={{ color: "red" }}>
+                                            &nbsp; &nbsp; Maximum Count Of Left
+                                            Pin Columns REACHED
+                                        </strong>
+                                    )}
+                                </div>
+                                <DndProvider
+                                    backend={MultiBackend}
+                                    options={HTML5toTouch}
                                 >
-                                    Save
-                                </button>
+                                    <ColumnsList
+                                        columnsArray={this.createColumnsArrayFromProps(
+                                            this.state.columnReorderEntityList
+                                        )}
+                                        handleReorderList={
+                                            this.handleReorderList
+                                        }
+                                    />
+                                </DndProvider>
+                            </div>
+                            <div className="column__footer">
+                                <div className="column__btns">
+                                    <button
+                                        data-testid="resetButton"
+                                        type="button"
+                                        className="btns"
+                                        onClick={() =>
+                                            this.resetColumnReorderList()
+                                        }
+                                    >
+                                        Reset
+                                    </button>
+                                    <button
+                                        data-testid="cancelButton"
+                                        type="button"
+                                        className="btns"
+                                        onClick={() =>
+                                            this.props.closeColumnReOrdering()
+                                        }
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        data-testid="saveButton"
+                                        type="button"
+                                        className="btns btns__save"
+                                        onClick={() =>
+                                            this.props.updateTableAsPerRowChooser(
+                                                this.state
+                                                    .columnReorderEntityList,
+                                                this.state.leftPinnedColumList
+                                            )
+                                        }
+                                    >
+                                        Save
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </ClickAwayListener>
         );
     }
 }

@@ -39,7 +39,11 @@ const ColumnItem = ({ id, text, moveColumn, findColumn }) => {
     const opacity = isDragging ? 0.1 : 1;
 
     return (
-        <div ref={(node) => drag(drop(node))} style={{ ...style, opacity }}>
+        <div
+            data-testid="columnItem"
+            ref={(node) => drag(drop(node))}
+            style={{ ...style, opacity }}
+        >
             {text}
         </div>
     );

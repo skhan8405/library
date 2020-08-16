@@ -353,7 +353,7 @@ const columns = [
 
 const pageSize = 10;
 
-let container = null;
+let container;
 
 beforeEach(() => {
     container = document.createElement("div");
@@ -365,13 +365,10 @@ afterEach(() => {
     container = null;
 });
 
-// HTMLCanvasElement.prototype.getContext = () => {
-//     // return whatever getContext has to return
-// };
 const updateCellData = jest.fn();
 const selectBulkData = jest.fn();
 const saveRows = jest.fn();
-const props = {
+let props = {
     rows: [...data.slice(0, pageSize)],
     dataSet: [...data],
     pageSize,
@@ -383,6 +380,7 @@ const props = {
     selectBulkData,
     saveRows
 };
+
 test("<Spreadsheet />", () => {
     act(() => {
         const component = ReactTestUtils.renderIntoDocument(
@@ -431,11 +429,22 @@ test("Spreadsheet - handleTableSortSwap", () => {
 });
 
 test("Spreadsheet - updateTableAsPerRowChooser", () => {
+    props = {
+        rows: [...data.slice(0, pageSize)],
+        dataSet: [...data],
+        pageSize,
+        count: pageSize,
+        gridHeight: "90vh",
+        maxLeftPinnedColumn: 3,
+        updateCellData,
+        selectBulkData,
+        saveRows
+    };
     act(() => {
         const colVal = [...columns];
         colVal[0].frozen = true;
         const incoming = ["FlightNo", "Date", "Segment From"];
-        const pinned = ["FlightNo", "Date"];
+        const pinned = ["FlightNo"];
         const component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...colVal]} />
         );
@@ -455,7 +464,7 @@ test("Spreadsheet - updateTableAsPerRowChooser 2", () => {
             <Spreadsheet {...props} columns={[...colVal]} />
         );
 
-        component.handleheaderNameList(columns.slice(0.1).reverse());
+        component.handleheaderNameList(columns.slice(0, 1).reverse());
         const d = component.updateTableAsPerRowChooser(incoming, pinned);
         expect(d).not.toBeNull();
     });
@@ -541,7 +550,6 @@ test("Spreadsheet - clearAllSortingParams  ", () => {
             })
             .then(() => {
                 const d = component.clearAllSortingParams();
-                console.log(d);
                 expect(d).not.toBeNull();
             });
     });
@@ -912,9 +920,7 @@ test("Spreadsheet - onGridRowsUpdated", () => {
         const component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...columns]} />
         );
-        // let filters = JSON.parse(
-        //     '{"segmentto":{"filterTerm":[{"value":"ZYY","label":"ZYY"}],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}}'
-        // );
+
         component
             .setStateAsync({
                 rows: [...data.slice(0, pageSize)]
@@ -1245,23 +1251,6 @@ test("Spreadsheet - globalSearch - onChange ", () => {
             "globalSeachInput"
         );
         console.log(inputElm);
-        expect(inputElm).not.toBeNull();
-    });
-});
-
-test("Spreadsheet - globalSearch - onChange ", () => {
-    act(() => {
-        const component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
-        );
-
-        const inputElm = ReactTestUtils.scryRenderedDOMComponentsWithClass(
-            component,
-            "globalSeachInput"
-        );
-
-        inputElm.simulate("change", { target: { value: "aa" } });
-
         expect(inputElm).not.toBeNull();
     });
 });

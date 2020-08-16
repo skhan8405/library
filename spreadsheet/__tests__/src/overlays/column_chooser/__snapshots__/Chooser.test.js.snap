@@ -2,310 +2,322 @@
 
 exports[`render the chooser 1`] = `
 <DocumentFragment>
-  <div
-    class="neo-popover neo-popover--column columns--grid"
-  >
+  <div>
     <div
-      class="neo-popover__column column__grid"
+      class="neo-popover neo-popover--column columns--grid"
     >
       <div
-        class="column__chooser"
+        class="neo-popover__column column__grid"
       >
         <div
-          class="column__header"
+          class="column__chooser"
         >
           <div
-            class=""
-          >
-            <strong>
-              Column Chooser
-            </strong>
-          </div>
-        </div>
-        <div
-          class="column__body"
-        >
-          <div>
-            <input
-              class="custom__ctrl"
-              placeholder="Search column"
-              type="text"
-            />
-          </div>
-          <div
-            class="column__selectAll"
+            class="column__header"
           >
             <div
-              class="column__checkbox"
+              class=""
             >
+              <strong>
+                Column Chooser
+              </strong>
+            </div>
+          </div>
+          <div
+            class="column__body"
+          >
+            <div>
               <input
-                checked=""
-                data-testid="selectAllCheckBox"
-                id="selectallcolumncheckbox"
-                type="checkbox"
+                class="custom__ctrl"
+                placeholder="Search column"
+                type="text"
               />
             </div>
             <div
-              class="column__txt"
-            >
-              Select all
-            </div>
-          </div>
-          <div
-            class="column__wrap"
-          >
-            <div
-              class="column__checkbox"
-            >
-              <input
-                checked=""
-                data-testid="addToColumnReorderEntityList"
-                id="checkboxtoselectreorder_FlightNo"
-                type="checkbox"
-              />
-            </div>
-            <div
-              class="column__txt"
-            >
-              FlightNo
-            </div>
-          </div>
-          <div
-            class="column__wrap"
-          >
-            <div
-              class="column__checkbox"
-            >
-              <input
-                checked=""
-                data-testid="addToColumnReorderEntityList"
-                id="checkboxtoselectreorder_Date"
-                type="checkbox"
-              />
-            </div>
-            <div
-              class="column__txt"
-            >
-              Date
-            </div>
-          </div>
-          <div
-            class="column__wrap"
-          >
-            <div
-              class="column__checkbox"
-            >
-              <input
-                checked=""
-                data-testid="addToColumnReorderEntityList"
-                id="checkboxtoselectreorder_Segment From"
-                type="checkbox"
-              />
-            </div>
-            <div
-              class="column__txt"
-            >
-              Segment From
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="column__settings"
-      >
-        <div
-          class="column__header"
-        >
-          <div
-            class="column__headerTxt"
-          >
-            <strong>
-              Column Settings
-            </strong>
-          </div>
-          <div
-            class="column__close"
-            data-testid="closeColumnReordering"
-          >
-            <i>
-              <icon-mock />
-            </i>
-          </div>
-        </div>
-        <div
-          class="column__body"
-        >
-          <div
-            class="column__info"
-          >
-            <strong>
-                  Selected Column Count : 3
-            </strong>
-            <strong>
-                  Left Pinned Column Count Remaining : 5
-            </strong>
-          </div>
-          <div
-            style="display: flex; flex-wrap: wrap;"
-          >
-            <div
-              style="cursor: move; opacity: 1;"
+              class="column__selectAll"
             >
               <div
-                class="column__reorder"
+                class="column__checkbox"
               >
-                <div
-                  class="column_drag"
-                  style="cursor: move;"
-                >
-                  <i>
-                    <icon-mock />
-                  </i>
-                </div>
-                <div
-                  class="column__reorder__name"
-                >
-                  FlightNo
-                </div>
-                <div
-                  class="column__innerCells__wrap"
-                >
-                  <div
-                    class="column__wrap"
-                  >
-                    <div
-                      class="column__checkbox"
-                    >
-                      <input
-                        id="checkBoxToPinLeft_FlightNo"
-                        role="button"
-                        type="checkbox"
-                      />
-                    </div>
-                    <div
-                      class="column__txt"
-                    >
-                      Pin Left
-                    </div>
-                  </div>
-                </div>
+                <input
+                  checked=""
+                  data-testid="selectAllCheckBox"
+                  id="selectallcolumncheckbox"
+                  type="checkbox"
+                />
+              </div>
+              <div
+                class="column__txt"
+              >
+                Select all
               </div>
             </div>
             <div
-              style="cursor: move; opacity: 1;"
+              class="column__wrap"
             >
               <div
-                class="column__reorder"
+                class="column__checkbox"
               >
-                <div
-                  class="column_drag"
-                  style="cursor: move;"
-                >
-                  <i>
-                    <icon-mock />
-                  </i>
-                </div>
-                <div
-                  class="column__reorder__name"
-                >
-                  Date
-                </div>
-                <div
-                  class="column__innerCells__wrap"
-                >
-                  <div
-                    class="column__wrap"
-                  >
-                    <div
-                      class="column__checkbox"
-                    >
-                      <input
-                        id="checkBoxToPinLeft_Date"
-                        role="button"
-                        type="checkbox"
-                      />
-                    </div>
-                    <div
-                      class="column__txt"
-                    >
-                      Pin Left
-                    </div>
-                  </div>
-                </div>
+                <input
+                  checked=""
+                  data-testid="addToColumnReorderEntityList"
+                  id="checkboxtoselectreorder_FlightNo"
+                  type="checkbox"
+                />
+              </div>
+              <div
+                class="column__txt"
+              >
+                FlightNo
               </div>
             </div>
             <div
-              style="cursor: move; opacity: 1;"
+              class="column__wrap"
             >
               <div
-                class="column__reorder"
+                class="column__checkbox"
               >
-                <div
-                  class="column_drag"
-                  style="cursor: move;"
-                >
-                  <i>
-                    <icon-mock />
-                  </i>
-                </div>
-                <div
-                  class="column__reorder__name"
-                >
-                  Segment From
-                </div>
-                <div
-                  class="column__innerCells__wrap"
-                >
-                  <div
-                    class="column__wrap"
-                  >
-                    <div
-                      class="column__checkbox"
-                    >
-                      <input
-                        id="checkBoxToPinLeft_Segment From"
-                        role="button"
-                        type="checkbox"
-                      />
-                    </div>
-                    <div
-                      class="column__txt"
-                    >
-                      Pin Left
-                    </div>
-                  </div>
-                </div>
+                <input
+                  checked=""
+                  data-testid="addToColumnReorderEntityList"
+                  id="checkboxtoselectreorder_Date"
+                  type="checkbox"
+                />
+              </div>
+              <div
+                class="column__txt"
+              >
+                Date
+              </div>
+            </div>
+            <div
+              class="column__wrap"
+            >
+              <div
+                class="column__checkbox"
+              >
+                <input
+                  checked=""
+                  data-testid="addToColumnReorderEntityList"
+                  id="checkboxtoselectreorder_Segment From"
+                  type="checkbox"
+                />
+              </div>
+              <div
+                class="column__txt"
+              >
+                Segment From
               </div>
             </div>
           </div>
         </div>
         <div
-          class="column__footer"
+          class="column__settings"
         >
           <div
-            class="column__btns"
+            class="column__header"
           >
-            <button
-              class="btns"
-              data-testid="resetButton"
-              type="button"
+            <div
+              class="column__headerTxt"
             >
-              Reset
-            </button>
-            <button
-              class="btns"
-              data-testid="cancelButton"
-              type="button"
+              <strong>
+                Column Settings
+              </strong>
+            </div>
+            <div
+              class="column__close"
+              data-testid="closeColumnReordering"
+              role="presentation"
             >
-              Cancel
-            </button>
-            <button
-              class="btns btns__save"
-              data-testid="saveButton"
-              type="button"
+              <i>
+                <icon-mock />
+              </i>
+            </div>
+          </div>
+          <div
+            class="column__body"
+          >
+            <div
+              class="column__info"
             >
-              Save
-            </button>
+              <strong>
+                    Selected Column Count : 3
+              </strong>
+              <strong>
+                    Left Pinned Column Count Remaining : 5
+              </strong>
+            </div>
+            <div
+              style="display: flex; flex-wrap: wrap;"
+            >
+              <div
+                data-testid="columnItem"
+                draggable="true"
+                style="cursor: move; opacity: 1;"
+              >
+                <div
+                  class="column__reorder"
+                >
+                  <div
+                    class="column_drag"
+                    style="cursor: move;"
+                  >
+                    <i>
+                      <icon-mock />
+                    </i>
+                  </div>
+                  <div
+                    class="column__reorder__name"
+                  >
+                    FlightNo
+                  </div>
+                  <div
+                    class="column__innerCells__wrap"
+                  >
+                    <div
+                      class="column__wrap"
+                    >
+                      <div
+                        class="column__checkbox"
+                      >
+                        <input
+                          data-testid="reArrangeLeftPin"
+                          id="checkBoxToPinLeft_FlightNo"
+                          role="button"
+                          type="checkbox"
+                        />
+                      </div>
+                      <div
+                        class="column__txt"
+                      >
+                        Pin Left
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                data-testid="columnItem"
+                draggable="true"
+                style="cursor: move; opacity: 1;"
+              >
+                <div
+                  class="column__reorder"
+                >
+                  <div
+                    class="column_drag"
+                    style="cursor: move;"
+                  >
+                    <i>
+                      <icon-mock />
+                    </i>
+                  </div>
+                  <div
+                    class="column__reorder__name"
+                  >
+                    Date
+                  </div>
+                  <div
+                    class="column__innerCells__wrap"
+                  >
+                    <div
+                      class="column__wrap"
+                    >
+                      <div
+                        class="column__checkbox"
+                      >
+                        <input
+                          data-testid="reArrangeLeftPin"
+                          id="checkBoxToPinLeft_Date"
+                          role="button"
+                          type="checkbox"
+                        />
+                      </div>
+                      <div
+                        class="column__txt"
+                      >
+                        Pin Left
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                data-testid="columnItem"
+                draggable="true"
+                style="cursor: move; opacity: 1;"
+              >
+                <div
+                  class="column__reorder"
+                >
+                  <div
+                    class="column_drag"
+                    style="cursor: move;"
+                  >
+                    <i>
+                      <icon-mock />
+                    </i>
+                  </div>
+                  <div
+                    class="column__reorder__name"
+                  >
+                    Segment From
+                  </div>
+                  <div
+                    class="column__innerCells__wrap"
+                  >
+                    <div
+                      class="column__wrap"
+                    >
+                      <div
+                        class="column__checkbox"
+                      >
+                        <input
+                          data-testid="reArrangeLeftPin"
+                          id="checkBoxToPinLeft_Segment From"
+                          role="button"
+                          type="checkbox"
+                        />
+                      </div>
+                      <div
+                        class="column__txt"
+                      >
+                        Pin Left
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="column__footer"
+          >
+            <div
+              class="column__btns"
+            >
+              <button
+                class="btns"
+                data-testid="resetButton"
+                type="button"
+              >
+                Reset
+              </button>
+              <button
+                class="btns"
+                data-testid="cancelButton"
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                class="btns btns__save"
+                data-testid="saveButton"
+                type="button"
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </div>

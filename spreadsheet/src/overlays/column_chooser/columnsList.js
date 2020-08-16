@@ -47,7 +47,6 @@ const ColumnsList = (props) => {
     React.useEffect(() => {
         setColumns(props.columnsArray);
     }, [props.columnsArray]);
-
     return (
         <Fragment>
             <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
