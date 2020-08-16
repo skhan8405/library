@@ -156,16 +156,13 @@ const Grid = memo((props) => {
     const displayExpandedContent = (row) => {
         const { original } = row;
         const additionalColumnObj = additionalColumn;
-        if (original) {
-            return (
-                <AdditionalColumnContext.Provider
-                    value={{ additionalColumn: additionalColumnObj }}
-                >
-                    {renderExpandedContent(original, AdditionalColumnTag)}
-                </AdditionalColumnContext.Provider>
-            );
-        }
-        return null;
+        return (
+            <AdditionalColumnContext.Provider
+                value={{ additionalColumn: additionalColumnObj }}
+            >
+                {renderExpandedContent(original, AdditionalColumnTag)}
+            </AdditionalColumnContext.Provider>
+        );
     };
     // #endregion
 
