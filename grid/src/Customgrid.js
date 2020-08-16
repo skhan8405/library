@@ -51,7 +51,7 @@ const Customgrid = memo((props) => {
         getRowEditOverlay,
         updateRowInGrid,
         deleteRowFromGrid,
-        globalSearchLogic,
+        searchColumn,
         selectBulkData,
         calculateRowHeight,
         isExpandContentAvailable,
@@ -173,14 +173,23 @@ const Customgrid = memo((props) => {
             data,
             defaultColumn,
             globalFilter: (rowsToFilter, columnsToFilter, filterValue) => {
-                // Call global search function defined in application, if it is present
-                if (
-                    globalSearchLogic &&
-                    typeof globalSearchLogic === "function"
-                ) {
-                    return globalSearchLogic(rowsToFilter, filterValue);
-                }
-                return rowsToFilter;
+                // convert user searched text to lower case
+                const searchText = filterValue ? filterValue.toLowerCase() : "";
+                // Loop through all rows
+                return rowsToFilter.filter((row) => {
+                    // Find original data value of each row
+                    const { original } = row;
+                    // Return value of the filter method
+                    let returnValue = false;
+                    // Loop through all column values for each row
+                    originalColumns.forEach((column) => {
+                        // Do search for each column
+                        returnValue =
+                            returnValue ||
+                            searchColumn(column, original, searchText);
+                    });
+                    return returnValue;
+                });
             },
             autoResetFilters: false,
             autoResetGlobalFilter: false,
@@ -549,7 +558,7 @@ Customgrid.propTypes = {
     getRowEditOverlay: PropTypes.any,
     updateRowInGrid: PropTypes.any,
     deleteRowFromGrid: PropTypes.any,
-    globalSearchLogic: PropTypes.any,
+    searchColumn: PropTypes.any,
     selectBulkData: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     isExpandContentAvailable: PropTypes.any,

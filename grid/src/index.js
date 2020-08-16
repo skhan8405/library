@@ -169,31 +169,6 @@ const Grid = memo((props) => {
     };
     // #endregion
 
-    // Add logic for doing global search in the grid
-    const globalSearchLogic = (rows, filterValue) => {
-        // Enter search logic only if rows and columns are available
-        if (filterValue && processedColumns.length > 0) {
-            // convert user searched text to lower case
-            const searchText = filterValue.toLowerCase();
-            // Loop through all rows
-            return rows.filter((row) => {
-                // Find original data value of each row
-                const { original } = row;
-                // Return value of the filter method
-                let returnValue = false;
-                // Loop through all column values for each row
-                processedColumns.forEach((column) => {
-                    // Do search for each column
-                    returnValue =
-                        returnValue ||
-                        searchColumn(column, original, searchText);
-                });
-                return returnValue;
-            });
-        }
-        return rows;
-    };
-
     // Add logic to calculate height of each row, based on the content of  or more columns
     // This can be used only if developer using the component has not passed a function to calculate row height
     const calculateDefaultRowHeight = (row, columnsInGrid) => {
@@ -340,7 +315,7 @@ const Grid = memo((props) => {
                         getRowEditOverlay={getRowEditOverlay}
                         updateRowInGrid={updateRowInGrid}
                         deleteRowFromGrid={deleteRowFromGrid}
-                        globalSearchLogic={globalSearchLogic}
+                        searchColumn={searchColumn}
                         selectBulkData={selectBulkData}
                         calculateRowHeight={
                             calculateRowHeight &&

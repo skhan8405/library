@@ -299,17 +299,11 @@ describe("render CustomgridCustomgrid", () => {
     const mockTitle = "AWBs";
     const mockUpdateRowInGrid = jest.fn();
     const mockDeleteRowFromGrid = jest.fn();
-    const mockGlobalSearchLogic = jest.fn((rows, filterValue) => {
-        if (filterValue && gridColumns.length > 0) {
-            return rows.filter((row) => {
-                let returnValue = false;
-                gridColumns.forEach((column) => {
-                    returnValue = true;
-                });
-                return returnValue;
-            });
+    const mocksearchColumn = jest.fn((column, original, searchText) => {
+        if (column && searchText) {
+            return original;
         }
-        return rows;
+        return null;
     });
     const mockSelectBulkData = jest.fn();
     const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {
@@ -427,7 +421,7 @@ describe("render CustomgridCustomgrid", () => {
                 getRowEditOverlay={mockGetRowEditOverlay}
                 updateRowInGrid={mockUpdateRowInGrid}
                 deleteRowFromGrid={mockDeleteRowFromGrid}
-                globalSearchLogic={mockGlobalSearchLogic}
+                searchColumn={mocksearchColumn}
                 selectBulkData={mockSelectBulkData}
                 calculateRowHeight={mockCalculateRowHeight}
                 isExpandContentAvailable={mockIsExpandContentAvailable}
@@ -610,7 +604,7 @@ describe("render CustomgridCustomgrid", () => {
         expect(rowOptionActionOverlay).toBeNull();
     });
 
-    it("test global search for grid with search ogic implemented", async () => {
+    it("test global search for grid", async () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Customgrid
@@ -624,7 +618,7 @@ describe("render CustomgridCustomgrid", () => {
                 getRowEditOverlay={mockGetRowEditOverlay}
                 updateRowInGrid={mockUpdateRowInGrid}
                 deleteRowFromGrid={mockDeleteRowFromGrid}
-                globalSearchLogic={mockGlobalSearchLogic}
+                searchColumn={mocksearchColumn}
                 selectBulkData={mockSelectBulkData}
                 calculateRowHeight={mockCalculateRowHeight}
                 isExpandContentAvailable={mockIsExpandContentAvailable}
@@ -640,9 +634,9 @@ describe("render CustomgridCustomgrid", () => {
         const input = container.getElementsByClassName("txt").item(0);
         fireEvent.change(input, { target: { value: "1" } });
         expect(input.value).toBe("1");
-        await waitFor(() => expect(mockGlobalSearchLogic).toBeCalled());
+        await waitFor(() => expect(mocksearchColumn).toBeCalled());
         fireEvent.change(input, { target: { value: "" } });
         expect(input.value).toBe("");
-        await waitFor(() => expect(mockGlobalSearchLogic).toBeCalled());
+        await waitFor(() => expect(mocksearchColumn).toBeCalled());
     });
 });
