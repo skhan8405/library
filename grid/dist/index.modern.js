@@ -3632,7 +3632,7 @@ const Customgrid = memo(props => {
     getRowEditOverlay,
     updateRowInGrid,
     deleteRowFromGrid,
-    globalSearchLogic,
+    searchColumn,
     selectBulkData,
     calculateRowHeight,
     isExpandContentAvailable,
@@ -3727,11 +3727,17 @@ const Customgrid = memo(props => {
     data,
     defaultColumn,
     globalFilter: (rowsToFilter, columnsToFilter, filterValue) => {
-      if (globalSearchLogic && typeof globalSearchLogic === "function") {
-        return globalSearchLogic(rowsToFilter, filterValue);
-      }
-
-      return rowsToFilter;
+      const searchText = filterValue ? filterValue.toLowerCase() : "";
+      return rowsToFilter.filter(row => {
+        const {
+          original
+        } = row;
+        let returnValue = false;
+        originalColumns.forEach(column => {
+          returnValue = returnValue || searchColumn(column, original, searchText);
+        });
+        return returnValue;
+      });
     },
     autoResetFilters: false,
     autoResetGlobalFilter: false,
@@ -3800,25 +3806,21 @@ const Customgrid = memo(props => {
     index,
     style
   }) => {
-    if (isItemLoaded(index)) {
-      const row = rows[index];
-      prepareRow(row);
-      return /*#__PURE__*/React__default.createElement("div", Object.assign({}, row.getRowProps({
-        style
-      }), {
-        className: "table-row tr"
-      }), /*#__PURE__*/React__default.createElement("div", {
-        className: "table-row-wrap"
-      }, row.cells.map(cell => {
-        return /*#__PURE__*/React__default.createElement("div", Object.assign({}, cell.getCellProps(), {
-          className: "table-cell td"
-        }), cell.render("Cell"));
-      })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
-        className: "expand"
-      }, displayExpandedContent ? displayExpandedContent(row) : null) : null);
-    }
-
-    return null;
+    const row = rows[index];
+    prepareRow(row);
+    return /*#__PURE__*/React__default.createElement("div", Object.assign({}, row.getRowProps({
+      style
+    }), {
+      className: "table-row tr"
+    }), /*#__PURE__*/React__default.createElement("div", {
+      className: "table-row-wrap"
+    }, row.cells.map(cell => {
+      return /*#__PURE__*/React__default.createElement("div", Object.assign({}, cell.getCellProps(), {
+        className: "table-cell td"
+      }), cell.render("Cell"));
+    })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
+      className: "expand"
+    }, displayExpandedContent ? displayExpandedContent(row) : null) : null);
   }, [prepareRow, rows, displayExpandedContent]);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "table-wrapper",
@@ -3960,7 +3962,7 @@ Customgrid.propTypes = {
   getRowEditOverlay: propTypes.any,
   updateRowInGrid: propTypes.any,
   deleteRowFromGrid: propTypes.any,
-  globalSearchLogic: propTypes.any,
+  searchColumn: propTypes.any,
   selectBulkData: propTypes.any,
   calculateRowHeight: propTypes.any,
   isExpandContentAvailable: propTypes.any,
@@ -4075,34 +4077,11 @@ const Grid = memo(props => {
       original
     } = row;
     const additionalColumnObj = additionalColumn;
-
-    if (original) {
-      return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
-        value: {
-          additionalColumn: additionalColumnObj
-        }
-      }, renderExpandedContent(original, AdditionalColumnTag));
-    }
-
-    return null;
-  };
-
-  const globalSearchLogic = (rows, filterValue) => {
-    if (filterValue && processedColumns.length > 0) {
-      const searchText = filterValue.toLowerCase();
-      return rows.filter(row => {
-        const {
-          original
-        } = row;
-        let returnValue = false;
-        processedColumns.forEach(column => {
-          returnValue = returnValue || searchColumn(column, original, searchText);
-        });
-        return returnValue;
-      });
-    }
-
-    return rows;
+    return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
+      value: {
+        additionalColumn: additionalColumnObj
+      }
+    }, renderExpandedContent(original, AdditionalColumnTag));
   };
 
   const calculateDefaultRowHeight = (row, columnsInGrid) => {
@@ -4234,7 +4213,7 @@ const Grid = memo(props => {
     getRowEditOverlay: getRowEditOverlay,
     updateRowInGrid: updateRowInGrid,
     deleteRowFromGrid: deleteRowFromGrid,
-    globalSearchLogic: globalSearchLogic,
+    searchColumn: searchColumn,
     selectBulkData: selectBulkData,
     calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
     isExpandContentAvailable: typeof renderExpandedContent === "function",
