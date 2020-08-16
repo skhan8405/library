@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React from "react";
-import { render, fireEvent, cleanup } from "@testing-library/react";
+import { render, fireEvent, cleanup, waitFor } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import "@testing-library/jest-dom/extend-expect";
 /* eslint-disable no-unused-vars */
@@ -299,7 +299,18 @@ describe("render CustomgridCustomgrid", () => {
     const mockTitle = "AWBs";
     const mockUpdateRowInGrid = jest.fn();
     const mockDeleteRowFromGrid = jest.fn();
-    const mockGlobalSearchLogic = jest.fn();
+    const mockGlobalSearchLogic = jest.fn((rows, filterValue) => {
+        if (filterValue && gridColumns.length > 0) {
+            return rows.filter((row) => {
+                let returnValue = false;
+                gridColumns.forEach((column) => {
+                    returnValue = true;
+                });
+                return returnValue;
+            });
+        }
+        return rows;
+    });
     const mockSelectBulkData = jest.fn();
     const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {
         // Minimum height for each row
@@ -427,13 +438,6 @@ describe("render CustomgridCustomgrid", () => {
                 doGroupSort={mockDoGroupSort}
             />
         );
-
-        // Global Filter Search
-        const input = container.getElementsByClassName("txt").item(0);
-        fireEvent.change(input, { target: { value: "ABC1178" } });
-        expect(input.value).toBe("ABC1178");
-        fireEvent.change(input, { target: { value: "" } });
-        expect(input.value).toBe("");
 
         // Column Filter Search
         const toggleColumnFilter = container.querySelector(
@@ -604,5 +608,41 @@ describe("render CustomgridCustomgrid", () => {
             .getElementsByClassName("row-option-action-overlay")
             .item(0);
         expect(rowOptionActionOverlay).toBeNull();
+    });
+
+    it("test global search for grid with search ogic implemented", async () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Customgrid
+                title={mockTitle}
+                gridHeight={mockGridHeight}
+                gridWidth={mockGridWidth}
+                managableColumns={gridColumns}
+                originalColumns={gridColumns}
+                additionalColumn={mockAdditionalColumn}
+                data={data}
+                getRowEditOverlay={mockGetRowEditOverlay}
+                updateRowInGrid={mockUpdateRowInGrid}
+                deleteRowFromGrid={mockDeleteRowFromGrid}
+                globalSearchLogic={mockGlobalSearchLogic}
+                selectBulkData={mockSelectBulkData}
+                calculateRowHeight={mockCalculateRowHeight}
+                isExpandContentAvailable={mockIsExpandContentAvailable}
+                displayExpandedContent={mockDisplayExpandedContent}
+                hasNextPage={mockHasNextPage}
+                isNextPageLoading={mockIsNextPageLoading}
+                loadNextPage={mockLoadNextPage}
+                doGroupSort={mockDoGroupSort}
+            />
+        );
+
+        // Global Filter Search
+        const input = container.getElementsByClassName("txt").item(0);
+        fireEvent.change(input, { target: { value: "1" } });
+        expect(input.value).toBe("1");
+        await waitFor(() => expect(mockGlobalSearchLogic).toBeCalled());
+        fireEvent.change(input, { target: { value: "" } });
+        expect(input.value).toBe("");
+        await waitFor(() => expect(mockGlobalSearchLogic).toBeCalled());
     });
 });
