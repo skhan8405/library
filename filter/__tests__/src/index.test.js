@@ -505,3 +505,15 @@ it("save filter - conditions - Revenue", () => {
         savebtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 });
+test("addSavedFilter should be called", () => {
+    const { getByTestId } = render(
+        <Filter
+            filterData={FilterData}
+            props={{ ...props }}
+            savedFilters={savedFilters}
+            appliedFilters={appliedFilters}
+        />
+    );
+    fireEvent.click(getByTestId("handleListFilterCheck"));
+    fireEvent.click(getByTestId("addSavedFilters - check"));
+});

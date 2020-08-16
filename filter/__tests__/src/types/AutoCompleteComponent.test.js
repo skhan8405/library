@@ -13,18 +13,19 @@ describe("AutoCompleteComponent component", () => {
         {
             name: "Booking Profile",
             type: "Booking Profile",
-            dataType: "Text",
-            enabled: false,
+            dataType: "AutoComplete",
+            enabled: true,
             validated: false,
-            warning: "This field is required*"
+            warning: "This field is required*",
+            value: ""
         }
     ];
 
     const props = {
         name: "Booking Profile",
         type: "Booking Profile",
-        enabled: false,
-        dataType: "Text",
+        enabled: true,
+        dataType: "AutoComplete",
         options: "",
         autoCompleteArray: item,
         handleAutoCompleteEnabled: true,
@@ -60,5 +61,44 @@ describe("AutoCompleteComponent component", () => {
             target: { item }
         });
         fireEvent.click(deleteAutoCompleteElementElm, item);
+    });
+    test("autoCompleteSelect change trigger", () => {
+        const { getByPlaceholderText } = render(
+            <AutoCompleteComponent
+                name={props.name}
+                type={props.type}
+                enabled={item.enabled}
+                dataType={props.dataType}
+                options={props.options}
+                autoCompleteArray={item}
+                deleteAutoCompleteElement={props.deleteAutoCompleteElement}
+                handleAutoCompleteEnabled={props.handleAutoCompleteEnabled}
+                createAutoCompleteArray={props.createAutoCompleteArray}
+            />
+        );
+        fireEvent.select(getByPlaceholderText("Select"), {
+            target: { value: [{ key: "ABC", value: "ABC" }] }
+        });
+        const element = getByPlaceholderText("Select");
+        expect(element).toBeInTheDocument;
+    });
+    test("handleAutoCompleteEnabled-check change trigger", () => {
+        const handleAutoCompleteEnabled = jest.fn();
+        const { getByTestId } = render(
+            <AutoCompleteComponent
+                name={props.name}
+                type={props.type}
+                enabled={props.enabled}
+                dataType={props.dataType}
+                options={props.options}
+                autoCompleteArray={item}
+                deleteAutoCompleteElement={props.deleteAutoCompleteElement}
+                handleAutoCompleteEnabled={handleAutoCompleteEnabled}
+                createAutoCompleteArray={props.createAutoCompleteArray}
+            />
+        );
+        fireEvent.click(getByTestId("handleAutoCompleteEnabled-check"));
+        const element = getByTestId("handleAutoCompleteEnabled-check");
+        expect(element).toBeInTheDocument;
     });
 });

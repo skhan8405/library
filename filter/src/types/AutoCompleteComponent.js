@@ -42,12 +42,12 @@ export default function AutoComplete(props) {
                     </div>
                     <div className="filter__control">
                         <Form.Check
+                            data-testid="handleAutoCompleteEnabled-check"
                             type="switch"
                             label=""
                             className={item.type.concat(item.name)}
                             id={item.name.concat(item.type)}
                             checked={item.enabled}
-                            data-testid="handleAutoCompleteEnabled-check"
                             onChange={() => {
                                 props.handleAutoCompleteEnabled(item);
                             }}
@@ -65,6 +65,7 @@ export default function AutoComplete(props) {
                 </div>
                 <div className="displayFlex multiselect">
                     <Multiselect
+                        data-testid="autoCompleteSelect"
                         id={item.type.concat(item.name)}
                         disable={!item.enabled}
                         options={item.objectArray}
