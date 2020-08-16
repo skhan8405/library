@@ -1,12 +1,6 @@
 /* eslint-disable no-undef */
 import React from "react";
-import {
-    render,
-    screen,
-    waitFor,
-    cleanup,
-    fireEvent
-} from "@testing-library/react";
+import { render, waitFor, cleanup, fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import "@testing-library/jest-dom/extend-expect";
 /* eslint-disable no-unused-vars */
@@ -128,7 +122,7 @@ describe("render Customgrid ", () => {
 
     const data = [
         {
-            travelId: 0,
+            travelId: 10,
             flight: {
                 flightno: "XX2225",
                 date: "31-Aug-2016"
@@ -184,9 +178,14 @@ describe("render Customgrid ", () => {
                 volume: "7437 kg / 31 cbm"
             },
             remarks: "Enim aute magna."
-        },
-        {
-            travelId: 1,
+        }
+    ];
+
+    const smallData = [...data];
+
+    for (let i = 0; i < 50; i++) {
+        data.push({
+            travelId: i,
             flight: {
                 flightno: "XX6983",
                 date: "23-May-2016"
@@ -242,8 +241,8 @@ describe("render Customgrid ", () => {
                 volume: "7692 kg / 78 cbm"
             },
             remarks: "Labore irure."
-        }
-    ];
+        });
+    }
 
     const mockGetRowEditOverlay = jest.fn(
         (rowData, DisplayTag, rowUpdateCallBack) => {
@@ -332,12 +331,20 @@ describe("render Customgrid ", () => {
     const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
 
-    function getDataToLoad() {
+    function getDataToLoad(type) {
+        if (type === "small") {
+            return smallData;
+        }
         return data;
     }
 
     const getData = async () => {
         const resp = await getDataToLoad();
+        return resp;
+    };
+
+    const getSmallData = async () => {
+        const resp = await getDataToLoad("small");
         return resp;
     };
 
@@ -350,7 +357,7 @@ describe("render Customgrid ", () => {
 
     it("without row height calculation", async () => {
         mockOffsetSize(600, 600);
-        const { container } = render(
+        const { getByText, container } = render(
             <Grid
                 title={mockTitle}
                 gridHeight={mockGridHeight}
@@ -366,18 +373,17 @@ describe("render Customgrid ", () => {
                 selectBulkData={mockSelectBulkData}
             />
         );
-        await waitFor(() =>
-            expect(screen.getByText("AWBs")).toBeInTheDocument()
-        );
-        const expander = container.getElementsByClassName("expander")[0];
+        const gricContainer = await waitFor(() => container);
+        expect(gricContainer).toBeInTheDocument();
+        const expander = gricContainer.getElementsByClassName("expander")[2];
         act(() => {
             expander.dispatchEvent(new MouseEvent("click", { bubbles: true }));
         });
-        const expandRegion = container.getElementsByClassName("expand");
+        const expandRegion = gricContainer.getElementsByClassName("expand");
         expect(expandRegion.length).toBeGreaterThan(0);
 
         // Column Filter Search
-        const toggleColumnFilter = container.querySelector(
+        const toggleColumnFilter = gricContainer.querySelector(
             "[data-testid='toggleColumnFilter']"
         );
         act(() => {
@@ -386,26 +392,28 @@ describe("render Customgrid ", () => {
             );
         });
         // Flight Column Search
-        const columnInput = container.getElementsByClassName("txt").item(1);
+        const columnInput = gricContainer.getElementsByClassName("txt").item(1);
         fireEvent.change(columnInput, { target: { value: "222" } });
-        await waitFor(() => expect(columnInput.value).toBe("222"));
+        expect(columnInput.value).toBe("222");
         fireEvent.change(columnInput, { target: { value: "" } });
-        await waitFor(() => expect(columnInput.value).toBe(""));
+        expect(columnInput.value).toBe("");
         // SR Column Search
-        const SrInput = container.getElementsByClassName("txt").item(2);
+        const SrInput = gricContainer.getElementsByClassName("txt").item(2);
         fireEvent.change(SrInput, { target: { value: "74" } });
-        await waitFor(() => expect(SrInput.value).toBe("74"));
+        expect(SrInput.value).toBe("74");
         fireEvent.change(SrInput, { target: { value: "" } });
-        await waitFor(() => expect(SrInput.value).toBe(""));
+        expect(SrInput.value).toBe("");
         // ULD Positions column search
-        const positionInput = container.getElementsByClassName("txt").item(3);
+        const positionInput = gricContainer
+            .getElementsByClassName("txt")
+            .item(3);
         fireEvent.change(positionInput, { target: { value: "l1" } });
-        await waitFor(() => expect(positionInput.value).toBe("l1"));
+        expect(positionInput.value).toBe("l1");
         fireEvent.change(positionInput, { target: { value: "" } });
-        await waitFor(() => expect(positionInput.value).toBe(""));
+        expect(positionInput.value).toBe("");
 
-        // Apply Sort
-        const toggleGroupSortOverLay = container.querySelector(
+        // Apply Ascending Sort
+        const toggleGroupSortOverLay = gricContainer.querySelector(
             "[data-testid='toggleGroupSortOverLay']"
         );
         act(() => {
@@ -413,10 +421,10 @@ describe("render Customgrid ", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        let sortOverlay = container.querySelector(
+        let sortOverlay = gricContainer.querySelector(
             "[class='neo-popover__sort']"
         );
-        let addNewSort = sortOverlay.querySelector("[class='sort__txt']");
+        const addNewSort = sortOverlay.querySelector("[class='sort__txt']");
         act(() => {
             addNewSort.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
@@ -430,22 +438,73 @@ describe("render Customgrid ", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        sortOverlay = container.querySelector("[class='neo-popover__sort']");
-        await waitFor(() => expect(sortOverlay).toBeNull());
+        sortOverlay = gricContainer.querySelector(
+            "[class='neo-popover__sort']"
+        );
+        expect(sortOverlay).toBeNull();
+    });
 
-        // Apply Sort
+    it("test descending group order", async () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Grid
+                title={mockTitle}
+                gridHeight={mockGridHeight}
+                gridWidth={mockGridWidth}
+                loadData={getData}
+                columns={gridColumns}
+                columnToExpand={mockAdditionalColumn}
+                rowActions={mockRowActions}
+                rowActionCallback={mockRowActionCallback}
+                getRowEditOverlay={mockGetRowEditOverlay}
+                calculateRowHeight={mockCalculateRowHeight}
+                updateRowData={mockUpdateRowData}
+                deleteRowData={mockDeleteRowData}
+                selectBulkData={mockSelectBulkData}
+            />
+        );
+        const gricContainer = await waitFor(() => container);
+        expect(gricContainer).toBeInTheDocument();
+
+        // Apply Descending Sort
+        const toggleGroupSortOverLay = gricContainer.querySelector(
+            "[data-testid='toggleGroupSortOverLay']"
+        );
         act(() => {
             toggleGroupSortOverLay.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        sortOverlay = container.querySelector("[class='neo-popover__sort']");
-        addNewSort = sortOverlay.querySelector("[class='sort__txt']");
+        let sortOverlay = gricContainer.querySelector(
+            "[class='neo-popover__sort']"
+        );
+        const addNewSort = sortOverlay.querySelector("[class='sort__txt']");
         act(() => {
             addNewSort.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
+        // Change Sort Order
+        const sortOrderSelectList = document
+            .querySelector(".sort__bodyContent")
+            .getElementsByClassName("sort__reorder")[3]
+            .getElementsByTagName("select")[0];
+        fireEvent.change(sortOrderSelectList, {
+            target: { value: "Descending" }
+        });
+        // expect(getByText("Descending")).toBeInTheDocument();
+        const applySortButton = sortOverlay.querySelector(
+            "[class='btns btns__save']"
+        );
+        act(() => {
+            applySortButton.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+        sortOverlay = gricContainer.querySelector(
+            "[class='neo-popover__sort']"
+        );
+        expect(sortOverlay).toBeNull();
     });
 
     it("with row height calculation", async () => {
@@ -467,13 +526,13 @@ describe("render Customgrid ", () => {
                 selectBulkData={mockSelectBulkData}
             />
         );
-        await waitFor(() =>
-            expect(screen.getByText("AWBs")).toBeInTheDocument()
-        );
+        const gricContainer = await waitFor(() => container);
+        expect(gricContainer).toBeInTheDocument();
 
         // Row Options
-        let rowOptionsIcon = container.querySelector("[class=icon-row-options]")
-            .firstChild;
+        let rowOptionsIcon = gricContainer.querySelector(
+            "[class=icon-row-options]"
+        ).firstChild;
         let rowOptionsOverlay = null;
         let rowOptionActionOverlay = null;
         // Do row edit
@@ -482,7 +541,7 @@ describe("render Customgrid ", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionsOverlay = container
+        rowOptionsOverlay = gricContainer
             .getElementsByClassName("row-options-overlay")
             .item(0);
         expect(rowOptionsOverlay).toBeInTheDocument();
@@ -490,7 +549,7 @@ describe("render Customgrid ", () => {
         act(() => {
             EditLink.dispatchEvent(new MouseEvent("click", { bubbles: true }));
         });
-        rowOptionActionOverlay = container
+        rowOptionActionOverlay = gricContainer
             .getElementsByClassName("row-option-action-overlay")
             .item(0);
         expect(rowOptionActionOverlay).toBeInTheDocument();
@@ -506,19 +565,19 @@ describe("render Customgrid ", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionActionOverlay = container
+        rowOptionActionOverlay = gricContainer
             .getElementsByClassName("row-option-action-overlay")
             .item(0);
         expect(rowOptionActionOverlay).toBeNull();
         // Do row delete
-        rowOptionsIcon = container.querySelector("[class=icon-row-options]")
+        rowOptionsIcon = gricContainer.querySelector("[class=icon-row-options]")
             .lastChild;
         act(() => {
             rowOptionsIcon.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionsOverlay = container
+        rowOptionsOverlay = gricContainer
             .getElementsByClassName("row-options-overlay")
             .item(0);
         expect(rowOptionsOverlay).toBeInTheDocument();
@@ -528,7 +587,7 @@ describe("render Customgrid ", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionActionOverlay = container
+        rowOptionActionOverlay = gricContainer
             .getElementsByClassName("row-option-action-overlay")
             .item(0);
         expect(rowOptionActionOverlay).toBeInTheDocument();
@@ -538,23 +597,47 @@ describe("render Customgrid ", () => {
         act(() => {
             rowDelete.dispatchEvent(new MouseEvent("click", { bubbles: true }));
         });
-        rowOptionActionOverlay = container
+        rowOptionActionOverlay = gricContainer
             .getElementsByClassName("row-option-action-overlay")
             .item(0);
         expect(rowOptionActionOverlay).toBeNull();
 
         // Column Sort
-        const flightSort = container.getElementsByClassName("column-heading")[2]
-            .firstChild;
+        const flightSort = gricContainer.getElementsByClassName(
+            "column-heading"
+        )[2].firstChild;
         act(() => {
             flightSort.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        const idSort = container.getElementsByClassName("column-heading")[1]
+        const idSort = gricContainer.getElementsByClassName("column-heading")[1]
             .firstChild;
         act(() => {
             idSort.dispatchEvent(new MouseEvent("click", { bubbles: true }));
         });
+    });
+
+    it("with row height calculation", async () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Grid
+                title={mockTitle}
+                gridHeight={mockGridHeight}
+                gridWidth={mockGridWidth}
+                loadData={getSmallData}
+                columns={gridColumns}
+                columnToExpand={mockAdditionalColumn}
+                rowActions={mockRowActions}
+                rowActionCallback={mockRowActionCallback}
+                getRowEditOverlay={mockGetRowEditOverlay}
+                calculateRowHeight={mockCalculateRowHeight}
+                updateRowData={mockUpdateRowData}
+                deleteRowData={mockDeleteRowData}
+                selectBulkData={mockSelectBulkData}
+            />
+        );
+        const gricContainer = await waitFor(() => container);
+        expect(gricContainer).toBeInTheDocument();
     });
 });
