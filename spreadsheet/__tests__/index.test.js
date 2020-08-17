@@ -2,7 +2,7 @@
 
 import React from "react";
 import ReactTestUtils, { act } from "react-dom/test-utils";
-import Spreadsheet from "../../src/index";
+import Spreadsheet from "../src/index";
 import "@testing-library/jest-dom/extend-expect";
 import "idempotent-babel-polyfill";
 
@@ -108,7 +108,8 @@ const columns = [
         resizable: true,
         filterable: true,
         width: 150,
-        filterType: "autoCompleteFilter"
+        filterType: "autoCompleteFilter",
+        dataSource: []
     },
     {
         key: "revenue",
@@ -144,7 +145,8 @@ const columns = [
         resizable: true,
         filterable: true,
         width: 150,
-        filterType: "autoCompleteFilter"
+        filterType: "autoCompleteFilter",
+        dataSource: []
     },
     {
         key: "flightModel",
@@ -378,7 +380,8 @@ let props = {
     maxLeftPinnedColumn: 3,
     updateCellData,
     selectBulkData,
-    saveRows
+    saveRows,
+    updatedRows: jest.fn()
 };
 
 test("<Spreadsheet />", () => {
@@ -567,7 +570,6 @@ test("Spreadsheet - exportColumnData  ", () => {
             })
             .then(() => {
                 const d = component.exportColumnData();
-                console.log(d);
                 expect(d).not.toBeNull();
             });
     });
@@ -580,7 +582,6 @@ test("Spreadsheet - closeExport", () => {
         );
 
         const d = component.closeExport();
-        console.log(d);
         expect(d).not.toBeNull();
     });
 });
@@ -916,14 +917,21 @@ test("Spreadsheet - onRowsDeselected", () => {
 });
 
 test("Spreadsheet - onGridRowsUpdated", () => {
+    const updatedRows = jest.fn();
     act(() => {
         const component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
+            <Spreadsheet
+                {...props}
+                columns={[...columns]}
+                updatedRows={updatedRows}
+            />
         );
 
         component
             .setStateAsync({
-                rows: [...data.slice(0, pageSize)]
+                rows: [...data.slice(0, pageSize)],
+                tempRows: [...data.slice(0, pageSize)],
+                filteringRows: [...data.slice(0, pageSize)]
             })
             .then(() => {
                 const val = {
@@ -1250,7 +1258,142 @@ test("Spreadsheet - globalSearch - onChange ", () => {
             component,
             "globalSeachInput"
         );
-        console.log(inputElm);
         expect(inputElm).not.toBeNull();
+    });
+});
+test("Spreadsheet - arrayMove", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+
+        let arr = [];
+        for (let i = 0; i < 10; i++) {
+            arr.push({ id: i + 1 });
+        }
+        const d = component.arrayMove(arr, 2, arr.length);
+        expect(d).not.toBeNull();
+    });
+});
+test("Spreadsheet - clearAllFilters", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                dataSet: [...data.slice(0, 1)],
+                pageIndex: 1,
+                pageRowCount: 1
+            })
+            .then(() => {
+                const r = component.clearAllFilters();
+                expect(r).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - globalSearchLogic", async () => {
+    act(async () => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        await component
+            .setStateAsync({
+                subDataSet: [...data.slice(0, pageSize)],
+                dataSet: [...data.slice(0, pageSize)],
+                rows: [...data.slice(0, pageSize)],
+                pageRowCount: 10,
+                searchValue: "CC",
+                pageIndex: 0
+            })
+            .then(async () => {
+                const event = {
+                    target: {
+                        value: "CCC"
+                    }
+                };
+                const d = await component.globalSearchLogic(event, [
+                    ...data.slice(0, pageSize)
+                ]);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - handleScroll", () => {
+    act(async () => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                subDataSet: [...data.slice(0, pageSize)],
+                dataSet: [...data.slice(0, pageSize)],
+                rows: [...data.slice(0, pageSize)],
+                pageRowCount: 1,
+                searchValue: "",
+                pageIndex: 0
+            })
+            .then(async () => {
+                const event = {
+                    target: {
+                        clientHeight: 582,
+                        scrollTop: 25,
+                        scrollHeight: 500
+                    }
+                };
+                const d = await component.handleScroll(event);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+
+test("Spreadsheet - handleFilterChange 5", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        const junk = JSON.parse(
+            '{"segmentto":{"filterTerm":[{"value":"ZYY","label":"ZYY"}],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}}'
+        );
+        const filterVal = JSON.parse(
+            '{"filterTerm":[],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}'
+        );
+        component
+            .setStateAsync({
+                subDataSet: [...data.slice(0, pageSize)],
+                pageRowCount: 10,
+                searchValue: "c",
+                junk: { segmentto: [] },
+                dataSet: [...data.slice(0, pageSize)]
+            })
+            .then(() => {
+                const d = component.handleFilterChange(filterVal);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - handleFilterChange 6 ", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        const junk = JSON.parse(
+            '{"segmentto":{"filterTerm":[{"value":"ZYY","label":"ZYY"}],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}}'
+        );
+        const filterVal = JSON.parse(
+            '{"filterTerm":[],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}'
+        );
+        component
+            .setStateAsync({
+                subDataSet: [...data.slice(0, pageSize)],
+                pageRowCount: 10,
+                searchValue: "test",
+                junk: { segmentto: [] },
+                dataSet: [...data.slice(0, pageSize)]
+            })
+            .then(() => {
+                const d = component.handleFilterChange(filterVal);
+                expect(d).not.toBeNull();
+            });
     });
 });
