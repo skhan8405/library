@@ -24,7 +24,7 @@ describe("FieldComponent component", () => {
                     value: "2020-08-13T10:40"
                 }
             ],
-            validated: true,
+            validated: false,
             warning: ""
         }
     ];
@@ -32,7 +32,7 @@ describe("FieldComponent component", () => {
     const props = {
         dateTimesArray: item,
         deleteDateTimeElement: jest.fn(),
-        handleDateTimeEnabled: true,
+        handleDateTimeEnabled: jest.fn(),
         createDateTimeArray: "",
         addToday: "addtoday",
         addTomorrow: "addTomorrow",
@@ -48,7 +48,7 @@ describe("FieldComponent component", () => {
     it("Should be available in DateTimeComponent ", () => {
         const wrapper = render(
             <FieldComponent
-                dateTimesArray={props.dateTimesArray}
+                dateTimesArray={item}
                 deleteDateTimeElement={props.deleteDateTimeElement}
                 handleDateTimeEnabled={props.handleDateTimeEnabled}
                 createDateTimeArray={props.createDateTimeArray}
@@ -81,5 +81,54 @@ describe("FieldComponent component", () => {
             target: { item }
         });
         fireEvent.click(deleteDateTimeElementElm, item);
+    });
+    test("test handleDateTimeEnabled-check", () => {
+        const handleDateTimeEnabled = jest.fn(() => 1);
+        const { getByTestId } = render(
+            <FieldComponent
+                dateTimesArray={item}
+                deleteDateTimeElement={props.deleteDateTimeElement}
+                handleDateTimeEnabled={handleDateTimeEnabled}
+                createDateTimeArray={props.createDateTimeArray}
+                addToday={props.addToday}
+                addTomorrow={props.addTomorrow}
+                addThisMonth={props.addThisMonth}
+                addForteenDays={props.addForteenDays}
+                addSevenDays={props.addSevenDays}
+                addThisWeek={props.addThisWeek}
+                addThirtyDays={props.addThirtyDays}
+                lastDayChange={props.lastDayChange}
+                nextDayChange={props.nextDayChange}
+            />
+        );
+        fireEvent.click(getByTestId("handleDateTimeEnabled-check"), {
+            target: { checked: true }
+        });
+    });
+    test("test createDateTimeArray-input", () => {
+        const createDateTimeArray = jest.fn(() => {});
+        const { getAllByTestId } = render(
+            <FieldComponent
+                dateTimesArray={item}
+                deleteDateTimeElement={props.deleteDateTimeElement}
+                handleDateTimeEnabled={props.handleDateTimeEnabled}
+                createDateTimeArray={createDateTimeArray}
+                addToday={props.addToday}
+                addTomorrow={props.addTomorrow}
+                addThisMonth={props.addThisMonth}
+                addForteenDays={props.addForteenDays}
+                addSevenDays={props.addSevenDays}
+                addThisWeek={props.addThisWeek}
+                addThirtyDays={props.addThirtyDays}
+                lastDayChange={props.lastDayChange}
+                nextDayChange={props.nextDayChange}
+            />
+        );
+
+        fireEvent.change(getAllByTestId("createDateTimeArray-input")[0], {
+            target: { value: "2020-08-01T13:40" }
+        });
+        const element = getAllByTestId("createDateTimeArray-input")[0];
+        expect(element).toBeInTheDocument;
     });
 });

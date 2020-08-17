@@ -1092,18 +1092,49 @@ if (process.env.NODE_ENV !== 'production') {
 }
 });
 
-const CellDisplayAndEditContext = createContext({});
-const RowEditContext = createContext({});
-const AdditionalColumnContext = createContext({});
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
 
-const checkInnerCells = (column, cellKey) => {
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+var CellDisplayAndEditContext = createContext({});
+var RowEditContext = createContext({});
+var AdditionalColumnContext = createContext({});
+
+var checkInnerCells = function checkInnerCells(column, cellKey) {
   if (column) {
-    const {
-      innerCells
-    } = column;
+    var innerCells = column.innerCells;
 
     if (innerCells) {
-      const innerCellData = innerCells.find(cell => {
+      var innerCellData = innerCells.find(function (cell) {
         return cell.accessor === cellKey;
       });
 
@@ -1116,19 +1147,17 @@ const checkInnerCells = (column, cellKey) => {
   return false;
 };
 
-const CellDisplayAndEditTag = props => {
-  const contextVallues = useContext(CellDisplayAndEditContext);
-  const {
-    column,
-    columns
-  } = contextVallues;
-  const {
-    cellKey,
-    columnKey
-  } = props;
+var CellDisplayAndEditTag = function CellDisplayAndEditTag(props) {
+  var contextVallues = useContext(CellDisplayAndEditContext);
+  var column = contextVallues.column,
+      columns = contextVallues.columns;
+  var cellKey = props.cellKey,
+      columnKey = props.columnKey;
 
   if (columns && columnKey) {
-    const selectedColumn = columns.find(col => col.accessor === columnKey);
+    var selectedColumn = columns.find(function (col) {
+      return col.accessor === columnKey;
+    });
 
     if (checkInnerCells(selectedColumn, cellKey)) {
       return /*#__PURE__*/React__default.createElement(React__default.Fragment, {
@@ -1152,36 +1181,6 @@ CellDisplayAndEditTag.propTypes = {
   children: propTypes.any
 };
 
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-var _ref = /*#__PURE__*/createElement("path", {
-  d: "M1.69 9.155h.706l.6-.6-1.55-1.552-.601.601v.706h.845v.845zm4.112-6.013a.153.153 0 00.046-.112c0-.097-.048-.146-.145-.146a.153.153 0 00-.112.047L2.013 6.508a.153.153 0 00-.046.112c0 .097.048.146.145.146a.153.153 0 00.112-.047l3.578-3.577zM0 7.254l5.492-5.492 2.746 2.746L2.746 10H0V7.254zm9.756-5.459a.845.845 0 01.244.601.809.809 0 01-.244.594L8.66 4.086 5.914 1.34 7.01.25A.784.784 0 017.604 0a.82.82 0 01.6.25l1.552 1.545z",
-  fill: "#80a0a2"
-});
-
-function SvgIconPencil(props) {
-  return /*#__PURE__*/createElement("svg", _extends({
-    width: 10,
-    height: 10
-  }, props), _ref);
-}
-
 function _extends$1() {
   _extends$1 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -1200,17 +1199,16 @@ function _extends$1() {
   return _extends$1.apply(this, arguments);
 }
 
-var _ref$1 = /*#__PURE__*/createElement("path", {
-  d: "M13.747 1.519a.868.868 0 01.253.63.868.868 0 01-.253.629L7.207 9.48l-1.228 1.26a.826.826 0 01-.614.259.826.826 0 01-.614-.26L3.523 9.482.253 6.13A.868.868 0 010 5.5c0-.247.084-.457.253-.63L1.48 3.611a.826.826 0 01.614-.26c.241 0 .446.087.615.26l2.655 2.732L11.29.259A.826.826 0 0111.905 0c.24 0 .445.086.614.26l1.228 1.259z",
-  fill: "#fff",
-  fillOpacity: 0.996
+var _ref = /*#__PURE__*/createElement("path", {
+  d: "M1.69 9.155h.706l.6-.6-1.55-1.552-.601.601v.706h.845v.845zm4.112-6.013a.153.153 0 00.046-.112c0-.097-.048-.146-.145-.146a.153.153 0 00-.112.047L2.013 6.508a.153.153 0 00-.046.112c0 .097.048.146.145.146a.153.153 0 00.112-.047l3.578-3.577zM0 7.254l5.492-5.492 2.746 2.746L2.746 10H0V7.254zm9.756-5.459a.845.845 0 01.244.601.809.809 0 01-.244.594L8.66 4.086 5.914 1.34 7.01.25A.784.784 0 017.604 0a.82.82 0 01.6.25l1.552 1.545z",
+  fill: "#80a0a2"
 });
 
-function SvgIconTick(props) {
+function SvgIconPencil(props) {
   return /*#__PURE__*/createElement("svg", _extends$1({
-    width: 14,
-    height: 11
-  }, props), _ref$1);
+    width: 10,
+    height: 10
+  }, props), _ref);
 }
 
 function _extends$2() {
@@ -1231,6 +1229,37 @@ function _extends$2() {
   return _extends$2.apply(this, arguments);
 }
 
+var _ref$1 = /*#__PURE__*/createElement("path", {
+  d: "M13.747 1.519a.868.868 0 01.253.63.868.868 0 01-.253.629L7.207 9.48l-1.228 1.26a.826.826 0 01-.614.259.826.826 0 01-.614-.26L3.523 9.482.253 6.13A.868.868 0 010 5.5c0-.247.084-.457.253-.63L1.48 3.611a.826.826 0 01.614-.26c.241 0 .446.087.615.26l2.655 2.732L11.29.259A.826.826 0 0111.905 0c.24 0 .445.086.614.26l1.228 1.259z",
+  fill: "#fff",
+  fillOpacity: 0.996
+});
+
+function SvgIconTick(props) {
+  return /*#__PURE__*/createElement("svg", _extends$2({
+    width: 14,
+    height: 11
+  }, props), _ref$1);
+}
+
+function _extends$3() {
+  _extends$3 = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends$3.apply(this, arguments);
+}
+
 var _ref$2 = /*#__PURE__*/createElement("path", {
   d: "M10.74 8.222c.174.173.26.383.26.63a.857.857 0 01-.26.63L9.482 10.74a.857.857 0 01-.63.259.857.857 0 01-.629-.26L5.5 8.02 2.778 10.74a.857.857 0 01-.63.259.857.857 0 01-.63-.26L.26 9.482A.857.857 0 010 8.851c0-.246.086-.456.26-.629L2.98 5.5.26 2.778A.857.857 0 010 2.148c0-.247.086-.457.26-.63L1.518.26A.857.857 0 012.149 0c.246 0 .456.086.629.26L5.5 2.98 8.222.26A.857.857 0 018.852 0c.247 0 .457.086.63.26l1.259 1.259c.173.172.259.382.259.63a.857.857 0 01-.26.629L8.02 5.5l2.722 2.722z",
   fill: "gray",
@@ -1238,43 +1267,44 @@ var _ref$2 = /*#__PURE__*/createElement("path", {
 });
 
 function SvgIconCancel(props) {
-  return /*#__PURE__*/createElement("svg", _extends$2({
+  return /*#__PURE__*/createElement("svg", _extends$3({
     width: 11,
     height: 11
   }, props), _ref$2);
 }
 
-const CellDisplayAndEdit = memo(({
-  row,
-  columns,
-  updateRowInGrid
-}) => {
-  const {
-    column
-  } = row;
+var CellDisplayAndEdit = memo(function (_ref) {
+  var row = _ref.row,
+      columns = _ref.columns,
+      updateRowInGrid = _ref.updateRowInGrid;
+  var column = row.column;
 
   if (column && row.row) {
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const [editedRowValue, setEditedRowValue] = useState(null);
-    const {
-      id
-    } = column;
+    var _useState = useState(false),
+        isEditOpen = _useState[0],
+        setIsEditOpen = _useState[1];
 
-    const closeEdit = () => {
+    var _useState2 = useState(null),
+        editedRowValue = _useState2[0],
+        setEditedRowValue = _useState2[1];
+
+    var id = column.id;
+
+    var closeEdit = function closeEdit() {
       setIsEditOpen(false);
     };
 
-    const openEdit = () => {
+    var openEdit = function openEdit() {
       setIsEditOpen(true);
     };
 
-    const getUpdatedRowValue = value => {
+    var getUpdatedRowValue = function getUpdatedRowValue(value) {
       if (value) {
         setEditedRowValue(value);
       }
     };
 
-    const saveEdit = () => {
+    var saveEdit = function saveEdit() {
       if (editedRowValue) {
         updateRowInGrid(row.row.original, editedRowValue);
       }
@@ -1282,12 +1312,12 @@ const CellDisplayAndEdit = memo(({
       closeEdit();
     };
 
-    const originalRowValue = { ...row.row.original
-    };
-    const cellDisplayContent = column.displayCell(originalRowValue, CellDisplayAndEditTag);
-    const cellEditContent = column.editCell ? column.editCell(originalRowValue, CellDisplayAndEditTag, getUpdatedRowValue) : null;
-    const columnsToPass = columns;
-    const columnToPass = column;
+    var originalRowValue = _extends({}, row.row.original);
+
+    var cellDisplayContent = column.displayCell(originalRowValue, CellDisplayAndEditTag);
+    var cellEditContent = column.editCell ? column.editCell(originalRowValue, CellDisplayAndEditTag, getUpdatedRowValue) : null;
+    var columnsToPass = columns;
+    var columnToPass = column;
     return /*#__PURE__*/React__default.createElement(CellDisplayAndEditContext.Provider, {
       value: {
         columns: columnsToPass,
@@ -1296,7 +1326,7 @@ const CellDisplayAndEdit = memo(({
     }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: closeEdit
     }, /*#__PURE__*/React__default.createElement("div", {
-      className: `table-cell--content table-cell--content__${id}`
+      className: "table-cell--content table-cell--content__" + id
     }, cellEditContent ? /*#__PURE__*/React__default.createElement("div", {
       className: "cell-edit",
       role: "presentation",
@@ -1326,22 +1356,20 @@ CellDisplayAndEdit.propTypes = {
   updateRowInGrid: propTypes.any
 };
 
-const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
-  const filteredColumns = columns.filter(column => {
+var extractColumns = function extractColumns(columns, searchColumn, isDesktop, updateRowInGrid) {
+  var filteredColumns = columns.filter(function (column) {
     return isDesktop ? !column.onlyInTablet : !column.onlyInDesktop;
   });
-  const modifiedColumns = [];
-  filteredColumns.forEach((column, index) => {
-    const {
-      originalInnerCells,
-      innerCells,
-      accessor,
-      sortValue
-    } = column;
-    const isInnerCellsPresent = innerCells && innerCells.length > 0;
-    const isOriginalInnerCellsPresent = originalInnerCells && originalInnerCells.length > 0;
-    const elem = column;
-    elem.columnId = `column_${index}`;
+  var modifiedColumns = [];
+  filteredColumns.forEach(function (column, index) {
+    var originalInnerCells = column.originalInnerCells,
+        innerCells = column.innerCells,
+        accessor = column.accessor,
+        sortValue = column.sortValue;
+    var isInnerCellsPresent = innerCells && innerCells.length > 0;
+    var isOriginalInnerCellsPresent = originalInnerCells && originalInnerCells.length > 0;
+    var elem = column;
+    elem.columnId = "column_" + index;
     elem.displayInExpandedRegion = false;
 
     if (!isOriginalInnerCellsPresent && isInnerCellsPresent) {
@@ -1349,7 +1377,7 @@ const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
     }
 
     if (!elem.Cell && elem.displayCell) {
-      elem.Cell = row => {
+      elem.Cell = function (row) {
         return /*#__PURE__*/React__default.createElement(CellDisplayAndEdit, {
           row: row,
           columns: columns,
@@ -1361,26 +1389,24 @@ const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
     if (!elem.disableSortBy) {
       if (isInnerCellsPresent) {
         if (sortValue) {
-          elem.sortType = (rowA, rowB) => {
+          elem.sortType = function (rowA, rowB) {
             return rowA.original[accessor][sortValue] > rowB.original[accessor][sortValue] ? -1 : 1;
           };
         } else {
           elem.disableSortBy = true;
         }
       } else if (!innerCells) {
-        elem.sortType = (rowA, rowB) => {
+        elem.sortType = function (rowA, rowB) {
           return rowA.original[accessor] > rowB.original[accessor] ? -1 : 1;
         };
       }
     }
 
     if (!elem.disableFilters) {
-      elem.filter = (rows, id, filterValue) => {
-        const searchText = filterValue ? filterValue.toLowerCase() : "";
-        return rows.filter(row => {
-          const {
-            original
-          } = row;
+      elem.filter = function (rows, id, filterValue) {
+        var searchText = filterValue ? filterValue.toLowerCase() : "";
+        return rows.filter(function (row) {
+          var original = row.original;
           return searchColumn(column, original, searchText);
         });
       };
@@ -1390,19 +1416,17 @@ const extractColumns = (columns, searchColumn, isDesktop, updateRowInGrid) => {
   });
   return modifiedColumns;
 };
-const extractAdditionalColumn = (additionalColumn, isDesktop) => {
-  const {
-    originalInnerCells,
-    innerCells
-  } = additionalColumn;
-  const isInnerCellsPresent = innerCells && innerCells.length > 0;
-  const isOriginalInnerCellsPresent = originalInnerCells && originalInnerCells.length > 0;
-  const element = additionalColumn;
-  element.columnId = `ExpandColumn`;
+var extractAdditionalColumn = function extractAdditionalColumn(additionalColumn, isDesktop) {
+  var originalInnerCells = additionalColumn.originalInnerCells,
+      innerCells = additionalColumn.innerCells;
+  var isInnerCellsPresent = innerCells && innerCells.length > 0;
+  var isOriginalInnerCellsPresent = originalInnerCells && originalInnerCells.length > 0;
+  var element = additionalColumn;
+  element.columnId = "ExpandColumn";
   element.displayInExpandedRegion = true;
 
   if (isInnerCellsPresent) {
-    const filteredInnerCells = innerCells.filter(cell => {
+    var filteredInnerCells = innerCells.filter(function (cell) {
       return isDesktop ? !cell.onlyInTablet : !cell.onlyInDesktop;
     });
     element.innerCells = filteredInnerCells;
@@ -1415,14 +1439,10 @@ const extractAdditionalColumn = (additionalColumn, isDesktop) => {
   return additionalColumn;
 };
 
-const AdditionalColumnTag = props => {
-  const contextVallues = useContext(AdditionalColumnContext);
-  const {
-    additionalColumn
-  } = contextVallues;
-  const {
-    cellKey
-  } = props;
+var AdditionalColumnTag = function AdditionalColumnTag(props) {
+  var contextVallues = useContext(AdditionalColumnContext);
+  var additionalColumn = contextVallues.additionalColumn;
+  var cellKey = props.cellKey;
 
   if (additionalColumn && cellKey) {
     if (checkInnerCells(additionalColumn, cellKey)) {
@@ -1440,24 +1460,27 @@ AdditionalColumnTag.propTypes = {
   children: propTypes.any
 };
 
-const RowSelector = memo(forwardRef(({
-  indeterminate,
-  ...rest
-}, ref) => {
-  const [checkValue, setCheckValue] = useState(indeterminate);
-  const defaultRef = useRef();
-  const resolvedRef = ref || defaultRef;
+var RowSelector = memo(forwardRef(function (_ref, ref) {
+  var indeterminate = _ref.indeterminate,
+      rest = _objectWithoutPropertiesLoose(_ref, ["indeterminate"]);
 
-  const onChange = () => {
+  var _useState = useState(indeterminate),
+      checkValue = _useState[0],
+      setCheckValue = _useState[1];
+
+  var defaultRef = useRef();
+  var resolvedRef = ref || defaultRef;
+
+  var onChange = function onChange() {
     setCheckValue(!indeterminate);
   };
 
-  useEffect(() => {
+  useEffect(function () {
     resolvedRef.current.indeterminate = indeterminate;
   }, [resolvedRef, indeterminate]);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "check-wrap"
-  }, /*#__PURE__*/React__default.createElement("input", Object.assign({
+  }, /*#__PURE__*/React__default.createElement("input", _extends({
     type: "checkbox",
     checked: checkValue,
     onChange: onChange,
@@ -1468,16 +1491,14 @@ RowSelector.propTypes = {
   indeterminate: propTypes.any
 };
 
-const DefaultColumnFilter = memo(({
-  column: {
-    filterValue,
-    setFilter
-  }
-}) => {
+var DefaultColumnFilter = memo(function (_ref) {
+  var _ref$column = _ref.column,
+      filterValue = _ref$column.filterValue,
+      setFilter = _ref$column.setFilter;
   return /*#__PURE__*/React__default.createElement("input", {
     className: "txt",
     value: filterValue || "",
-    onChange: e => {
+    onChange: function onChange(e) {
       setFilter(e.target.value || undefined);
     },
     placeholder: "Search"
@@ -1485,63 +1506,6 @@ const DefaultColumnFilter = memo(({
 });
 DefaultColumnFilter.propTypes = {
   column: propTypes.any
-};
-
-function _extends$3() {
-  _extends$3 = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends$3.apply(this, arguments);
-}
-
-var _ref$3 = /*#__PURE__*/createElement("path", {
-  d: "M6.746 6.746c.58-.58.87-1.277.87-2.092 0-.815-.29-1.513-.87-2.092a2.852 2.852 0 00-2.092-.87c-.815 0-1.513.29-2.092.87-.58.58-.87 1.277-.87 2.092 0 .815.29 1.513.87 2.092.58.58 1.277.87 2.092.87.815 0 1.513-.29 2.092-.87zm4.01 2.813a.81.81 0 01.244.595c0 .229-.084.427-.251.595a.813.813 0 01-.595.251.786.786 0 01-.595-.251L7.29 8.488a4.527 4.527 0 01-2.637.82c-.63 0-1.233-.123-1.808-.367a4.653 4.653 0 01-1.488-.992 4.653 4.653 0 01-.991-1.487A4.573 4.573 0 010 4.654c0-.63.122-1.233.367-1.808.244-.575.575-1.071.991-1.488A4.653 4.653 0 012.846.367 4.573 4.573 0 014.654 0c.63 0 1.233.122 1.808.367.575.244 1.07.575 1.487.991.417.417.747.913.992 1.488.244.575.367 1.178.367 1.808 0 .97-.274 1.849-.82 2.637l2.267 2.268z",
-  fill: "#3c476f",
-  fillOpacity: 0.8
-});
-
-function SvgIconSearch(props) {
-  return /*#__PURE__*/createElement("svg", _extends$3({
-    width: 11,
-    height: 11
-  }, props), _ref$3);
-}
-
-const GlobalFilter = memo(({
-  globalFilter,
-  setGlobalFilter
-}) => {
-  const [value, setValue] = useState(globalFilter);
-  const onChange = useAsyncDebounce(changedValue => {
-    setGlobalFilter(changedValue || undefined);
-  }, 200);
-  return /*#__PURE__*/React__default.createElement("div", {
-    className: "txt-wrap"
-  }, /*#__PURE__*/React__default.createElement("input", {
-    type: "text",
-    value: value || "",
-    onChange: e => {
-      setValue(e.target.value);
-      onChange(e.target.value);
-    },
-    className: "txt",
-    placeholder: "Search"
-  }), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconSearch, null)));
-});
-GlobalFilter.propTypes = {
-  globalFilter: propTypes.any,
-  setGlobalFilter: propTypes.any
 };
 
 function _extends$4() {
@@ -1562,17 +1526,49 @@ function _extends$4() {
   return _extends$4.apply(this, arguments);
 }
 
-var _ref$4 = /*#__PURE__*/createElement("path", {
-  d: "M3.93 4.57c.047.047.07.107.07.18v4.5a.243.243 0 01-.07.18.243.243 0 01-.18.07h-.5a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-4.5c0-.073.023-.133.07-.18a.243.243 0 01.18-.07h.5c.073 0 .133.023.18.07zm2 0c.047.047.07.107.07.18v4.5a.243.243 0 01-.07.18.243.243 0 01-.18.07h-.5a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-4.5c0-.073.023-.133.07-.18a.243.243 0 01.18-.07h.5c.073 0 .133.023.18.07zm2 0c.047.047.07.107.07.18v4.5a.243.243 0 01-.07.18.243.243 0 01-.18.07h-.5a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-4.5c0-.073.023-.133.07-.18a.243.243 0 01.18-.07h.5c.073 0 .133.023.18.07zm1.015 6.153A.887.887 0 009 10.406V3H2v7.406a.887.887 0 00.168.528c.039.044.066.066.082.066h6.5c.016 0 .043-.022.082-.066a.7.7 0 00.113-.211zM4.133 1.086L3.75 2h3.5l-.375-.914A.22.22 0 006.742 1H4.266a.22.22 0 00-.133.086zm6.797.984c.047.047.07.107.07.18v.5a.243.243 0 01-.07.18.243.243 0 01-.18.07H10v7.406c0 .433-.122.806-.367 1.121-.245.315-.54.473-.883.473h-6.5c-.344 0-.638-.152-.883-.457C1.122 11.238 1 10.87 1 10.438V3H.25a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-.5c0-.073.023-.133.07-.18A.243.243 0 01.25 2h2.414L3.211.695c.078-.192.219-.356.422-.492C3.836.068 4.042 0 4.25 0h2.5c.208 0 .414.068.617.203.203.136.344.3.422.492L8.336 2h2.414c.073 0 .133.023.18.07z",
-  fill: "#636c8c"
+var _ref$3 = /*#__PURE__*/createElement("path", {
+  d: "M6.746 6.746c.58-.58.87-1.277.87-2.092 0-.815-.29-1.513-.87-2.092a2.852 2.852 0 00-2.092-.87c-.815 0-1.513.29-2.092.87-.58.58-.87 1.277-.87 2.092 0 .815.29 1.513.87 2.092.58.58 1.277.87 2.092.87.815 0 1.513-.29 2.092-.87zm4.01 2.813a.81.81 0 01.244.595c0 .229-.084.427-.251.595a.813.813 0 01-.595.251.786.786 0 01-.595-.251L7.29 8.488a4.527 4.527 0 01-2.637.82c-.63 0-1.233-.123-1.808-.367a4.653 4.653 0 01-1.488-.992 4.653 4.653 0 01-.991-1.487A4.573 4.573 0 010 4.654c0-.63.122-1.233.367-1.808.244-.575.575-1.071.991-1.488A4.653 4.653 0 012.846.367 4.573 4.573 0 014.654 0c.63 0 1.233.122 1.808.367.575.244 1.07.575 1.487.991.417.417.747.913.992 1.488.244.575.367 1.178.367 1.808 0 .97-.274 1.849-.82 2.637l2.267 2.268z",
+  fill: "#3c476f",
+  fillOpacity: 0.8
 });
 
-function SvgRowDelete(props) {
+function SvgIconSearch(props) {
   return /*#__PURE__*/createElement("svg", _extends$4({
     width: 11,
-    height: 12
-  }, props), _ref$4);
+    height: 11
+  }, props), _ref$3);
 }
+
+var GlobalFilter = memo(function (_ref) {
+  var globalFilter = _ref.globalFilter,
+      setGlobalFilter = _ref.setGlobalFilter;
+
+  var _useState = useState(globalFilter),
+      value = _useState[0],
+      setValue = _useState[1];
+
+  var _onChange = useAsyncDebounce(function (changedValue) {
+    setGlobalFilter(changedValue || undefined);
+  }, 200);
+
+  return /*#__PURE__*/React__default.createElement("div", {
+    className: "txt-wrap"
+  }, /*#__PURE__*/React__default.createElement("input", {
+    type: "text",
+    value: value || "",
+    onChange: function onChange(e) {
+      setValue(e.target.value);
+
+      _onChange(e.target.value);
+    },
+    className: "txt",
+    placeholder: "Search"
+  }), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconSearch, null)));
+});
+GlobalFilter.propTypes = {
+  globalFilter: propTypes.any,
+  setGlobalFilter: propTypes.any
+};
 
 function _extends$5() {
   _extends$5 = Object.assign || function (target) {
@@ -1592,50 +1588,80 @@ function _extends$5() {
   return _extends$5.apply(this, arguments);
 }
 
+var _ref$4 = /*#__PURE__*/createElement("path", {
+  d: "M3.93 4.57c.047.047.07.107.07.18v4.5a.243.243 0 01-.07.18.243.243 0 01-.18.07h-.5a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-4.5c0-.073.023-.133.07-.18a.243.243 0 01.18-.07h.5c.073 0 .133.023.18.07zm2 0c.047.047.07.107.07.18v4.5a.243.243 0 01-.07.18.243.243 0 01-.18.07h-.5a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-4.5c0-.073.023-.133.07-.18a.243.243 0 01.18-.07h.5c.073 0 .133.023.18.07zm2 0c.047.047.07.107.07.18v4.5a.243.243 0 01-.07.18.243.243 0 01-.18.07h-.5a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-4.5c0-.073.023-.133.07-.18a.243.243 0 01.18-.07h.5c.073 0 .133.023.18.07zm1.015 6.153A.887.887 0 009 10.406V3H2v7.406a.887.887 0 00.168.528c.039.044.066.066.082.066h6.5c.016 0 .043-.022.082-.066a.7.7 0 00.113-.211zM4.133 1.086L3.75 2h3.5l-.375-.914A.22.22 0 006.742 1H4.266a.22.22 0 00-.133.086zm6.797.984c.047.047.07.107.07.18v.5a.243.243 0 01-.07.18.243.243 0 01-.18.07H10v7.406c0 .433-.122.806-.367 1.121-.245.315-.54.473-.883.473h-6.5c-.344 0-.638-.152-.883-.457C1.122 11.238 1 10.87 1 10.438V3H.25a.243.243 0 01-.18-.07.243.243 0 01-.07-.18v-.5c0-.073.023-.133.07-.18A.243.243 0 01.25 2h2.414L3.211.695c.078-.192.219-.356.422-.492C3.836.068 4.042 0 4.25 0h2.5c.208 0 .414.068.617.203.203.136.344.3.422.492L8.336 2h2.414c.073 0 .133.023.18.07z",
+  fill: "#636c8c"
+});
+
+function SvgRowDelete(props) {
+  return /*#__PURE__*/createElement("svg", _extends$5({
+    width: 11,
+    height: 12
+  }, props), _ref$4);
+}
+
+function _extends$6() {
+  _extends$6 = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends$6.apply(this, arguments);
+}
+
 var _ref$5 = /*#__PURE__*/createElement("path", {
   d: "M1.69 9.155h.706l.6-.6-1.55-1.552-.601.601v.706h.845v.845zm4.112-6.013a.153.153 0 00.046-.112c0-.097-.048-.146-.145-.146a.153.153 0 00-.112.047L2.013 6.508a.153.153 0 00-.046.112c0 .097.048.146.145.146a.153.153 0 00.112-.047l3.578-3.577zM0 7.254l5.492-5.492 2.746 2.746L2.746 10H0V7.254zm9.756-5.459a.845.845 0 01.244.601.809.809 0 01-.244.594L8.66 4.086 5.914 1.34 7.01.25A.784.784 0 017.604 0a.82.82 0 01.6.25l1.552 1.545z",
   fill: "#636c8c"
 });
 
 function SvgRowEdit(props) {
-  return /*#__PURE__*/createElement("svg", _extends$5({
+  return /*#__PURE__*/createElement("svg", _extends$6({
     width: 10,
     height: 10
   }, props), _ref$5);
 }
 
-const RowOptions = memo(({
-  row,
-  rowActions,
-  rowActionCallback,
-  bindRowEditOverlay,
-  bindRowDeleteOverlay
-}) => {
-  const {
-    original
-  } = row;
-  const isAdditionalRowOptionsPresent = rowActions && rowActions.length > 0 && typeof rowActionCallback === "function";
-  const [isRowOptionsOpen, setRowOptionsOpen] = useState(false);
+var RowOptions = memo(function (_ref) {
+  var row = _ref.row,
+      rowActions = _ref.rowActions,
+      rowActionCallback = _ref.rowActionCallback,
+      bindRowEditOverlay = _ref.bindRowEditOverlay,
+      bindRowDeleteOverlay = _ref.bindRowDeleteOverlay;
+  var original = row.original;
+  var isAdditionalRowOptionsPresent = rowActions && rowActions.length > 0 && typeof rowActionCallback === "function";
 
-  const openRowOptionsOverlay = () => {
+  var _useState = useState(false),
+      isRowOptionsOpen = _useState[0],
+      setRowOptionsOpen = _useState[1];
+
+  var openRowOptionsOverlay = function openRowOptionsOverlay() {
     setRowOptionsOpen(true);
   };
 
-  const closeRowOptionsOverlay = () => {
+  var closeRowOptionsOverlay = function closeRowOptionsOverlay() {
     setRowOptionsOpen(false);
   };
 
-  const openRowEditOverlay = () => {
+  var openRowEditOverlay = function openRowEditOverlay() {
     bindRowEditOverlay(original);
     closeRowOptionsOverlay();
   };
 
-  const openDeleteOverlay = () => {
+  var openDeleteOverlay = function openDeleteOverlay() {
     bindRowDeleteOverlay(original);
     closeRowOptionsOverlay();
   };
 
-  const additionalActionClicked = actionValue => {
+  var additionalActionClicked = function additionalActionClicked(actionValue) {
     closeRowOptionsOverlay();
     return rowActionCallback(original, actionValue);
   };
@@ -1656,16 +1682,14 @@ const RowOptions = memo(({
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgRowEdit, null)), /*#__PURE__*/React__default.createElement("span", null, "Edit"))), /*#__PURE__*/React__default.createElement("li", null, /*#__PURE__*/React__default.createElement("span", {
     role: "presentation",
     onClick: openDeleteOverlay
-  }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgRowDelete, null)), /*#__PURE__*/React__default.createElement("span", null, "Delete"))), isAdditionalRowOptionsPresent ? rowActions.map(action => {
-    const {
-      value,
-      label
-    } = action;
+  }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgRowDelete, null)), /*#__PURE__*/React__default.createElement("span", null, "Delete"))), isAdditionalRowOptionsPresent ? rowActions.map(function (action) {
+    var value = action.value,
+        label = action.label;
     return /*#__PURE__*/React__default.createElement("li", {
       key: value
     }, /*#__PURE__*/React__default.createElement("span", {
       role: "presentation",
-      onClick: () => {
+      onClick: function onClick() {
         return additionalActionClicked(value);
       }
     }, /*#__PURE__*/React__default.createElement("i", {
@@ -1685,20 +1709,18 @@ RowOptions.propTypes = {
   bindRowDeleteOverlay: propTypes.any
 };
 
-const RowEditTag = props => {
-  const contextVallues = useContext(RowEditContext);
-  const {
-    columns,
-    additionalColumn,
-    isRowExpandEnabled
-  } = contextVallues;
-  const {
-    cellKey,
-    columnKey
-  } = props;
+var RowEditTag = function RowEditTag(props) {
+  var contextVallues = useContext(RowEditContext);
+  var columns = contextVallues.columns,
+      additionalColumn = contextVallues.additionalColumn,
+      isRowExpandEnabled = contextVallues.isRowExpandEnabled;
+  var cellKey = props.cellKey,
+      columnKey = props.columnKey;
 
   if (columns && columnKey) {
-    const selectedColumn = columns.find(col => col.accessor === columnKey);
+    var selectedColumn = columns.find(function (col) {
+      return col.accessor === columnKey;
+    });
 
     if (selectedColumn && cellKey) {
       if (checkInnerCells(selectedColumn, cellKey)) {
@@ -1724,24 +1746,26 @@ RowEditTag.propTypes = {
   children: propTypes.any
 };
 
-const RowEditOverLay = memo(({
-  row,
-  columns,
-  isRowExpandEnabled,
-  additionalColumn,
-  getRowEditOverlay,
-  closeRowEditOverlay,
-  updateRowInGrid
-}) => {
-  const [editedRowValue, setEditedRowValue] = useState(null);
+var RowEditOverLay = memo(function (_ref) {
+  var row = _ref.row,
+      columns = _ref.columns,
+      isRowExpandEnabled = _ref.isRowExpandEnabled,
+      additionalColumn = _ref.additionalColumn,
+      getRowEditOverlay = _ref.getRowEditOverlay,
+      closeRowEditOverlay = _ref.closeRowEditOverlay,
+      updateRowInGrid = _ref.updateRowInGrid;
 
-  const getUpdatedRowValue = value => {
+  var _useState = useState(null),
+      editedRowValue = _useState[0],
+      setEditedRowValue = _useState[1];
+
+  var getUpdatedRowValue = function getUpdatedRowValue(value) {
     if (value) {
       setEditedRowValue(value);
     }
   };
 
-  const saveRowEdit = () => {
+  var saveRowEdit = function saveRowEdit() {
     if (editedRowValue) {
       updateRowInGrid(row, editedRowValue);
     }
@@ -1749,14 +1773,14 @@ const RowEditOverLay = memo(({
     closeRowEditOverlay();
   };
 
-  const originalRowValue = { ...row
-  };
-  const rowEditContent = getRowEditOverlay(originalRowValue, RowEditTag, getUpdatedRowValue);
+  var originalRowValue = _extends({}, row);
+
+  var rowEditContent = getRowEditOverlay(originalRowValue, RowEditTag, getUpdatedRowValue);
   return /*#__PURE__*/React__default.createElement(RowEditContext.Provider, {
     value: {
-      columns,
-      additionalColumn,
-      isRowExpandEnabled
+      columns: columns,
+      additionalColumn: additionalColumn,
+      isRowExpandEnabled: isRowExpandEnabled
     }
   }, /*#__PURE__*/React__default.createElement(ClickAwayListener, {
     className: "row-option-action-overlay",
@@ -1783,12 +1807,12 @@ RowEditOverLay.propTypes = {
   updateRowInGrid: propTypes.any
 };
 
-const RowDeleteOverLay = memo(({
-  row,
-  closeRowDeleteOverlay,
-  deleteRowFromGrid
-}) => {
-  const deleteRow = () => {
+var RowDeleteOverLay = memo(function (_ref) {
+  var row = _ref.row,
+      closeRowDeleteOverlay = _ref.closeRowDeleteOverlay,
+      deleteRowFromGrid = _ref.deleteRowFromGrid;
+
+  var deleteRow = function deleteRow() {
     if (row) {
       deleteRowFromGrid(row);
     }
@@ -1817,12 +1841,12 @@ RowDeleteOverLay.propTypes = {
   deleteRowFromGrid: propTypes.any
 };
 
-const ItemTypes = {
+var ItemTypes = {
   COLUMN: "column"
 };
 
-function _extends$6() {
-  _extends$6 = Object.assign || function (target) {
+function _extends$7() {
+  _extends$7 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -1836,7 +1860,7 @@ function _extends$6() {
     return target;
   };
 
-  return _extends$6.apply(this, arguments);
+  return _extends$7.apply(this, arguments);
 }
 
 var _ref$6 = /*#__PURE__*/createElement("path", {
@@ -1846,82 +1870,87 @@ var _ref$6 = /*#__PURE__*/createElement("path", {
 });
 
 function SvgIconAlignJustify(props) {
-  return /*#__PURE__*/createElement("svg", _extends$6({
+  return /*#__PURE__*/createElement("svg", _extends$7({
     width: 10,
     height: 9
   }, props), _ref$6);
 }
 
-const ColumnItem = ({
-  id,
-  Header,
-  moveColumn,
-  findColumn,
-  originalInnerCells,
-  isInnerCellSelected,
-  selectInnerCells
-}) => {
-  const originalIndex = findColumn(id).index;
-  const [{
-    isDragging
-  }, drag] = useDrag({
+var ColumnItem = function ColumnItem(_ref) {
+  var id = _ref.id,
+      Header = _ref.Header,
+      moveColumn = _ref.moveColumn,
+      findColumn = _ref.findColumn,
+      originalInnerCells = _ref.originalInnerCells,
+      isInnerCellSelected = _ref.isInnerCellSelected,
+      selectInnerCells = _ref.selectInnerCells;
+  var originalIndex = findColumn(id).index;
+
+  var _useDrag = useDrag({
     item: {
       type: ItemTypes.COLUMN,
-      id,
-      originalIndex
+      id: id,
+      originalIndex: originalIndex
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging()
-    }),
-    end: (dropResult, monitor) => {
-      const monitorGetItemValue = monitor.getItem();
-      const {
-        id: droppedId
-      } = monitorGetItemValue;
-      const newOriginalIndex = monitorGetItemValue.originalIndex;
-      const didDrop = monitor.didDrop();
+    collect: function collect(monitor) {
+      return {
+        isDragging: monitor.isDragging()
+      };
+    },
+    end: function end(dropResult, monitor) {
+      var monitorGetItemValue = monitor.getItem();
+      var droppedId = monitorGetItemValue.id;
+      var newOriginalIndex = monitorGetItemValue.originalIndex;
+      var didDrop = monitor.didDrop();
 
       if (!didDrop) {
         moveColumn(droppedId, newOriginalIndex);
       }
     }
-  });
-  const [, drop] = useDrop({
-    accept: ItemTypes.COLUMN,
-    canDrop: () => false,
+  }),
+      isDragging = _useDrag[0].isDragging,
+      drag = _useDrag[1];
 
-    hover({
-      id: draggedId
-    }) {
+  var _useDrop = useDrop({
+    accept: ItemTypes.COLUMN,
+    canDrop: function canDrop() {
+      return false;
+    },
+    hover: function hover(_ref2) {
+      var draggedId = _ref2.id;
+
       if (draggedId !== id) {
-        const {
-          index: overIndex
-        } = findColumn(id);
+        var _findColumn = findColumn(id),
+            overIndex = _findColumn.index;
+
         moveColumn(draggedId, overIndex);
       }
     }
+  }),
+      drop = _useDrop[1];
 
-  });
-  const opacity = isDragging ? 0.1 : 1;
+  var opacity = isDragging ? 0.1 : 1;
   return /*#__PURE__*/React__default.createElement("div", {
     style: {
-      opacity
+      opacity: opacity
     }
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "column__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
     "data-testid": "columnItem",
-    ref: node => drag(drop(node)),
+    ref: function ref(node) {
+      return drag(drop(node));
+    },
     style: {
       cursor: "move"
     },
     className: "column_drag"
   }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconAlignJustify, null))), /*#__PURE__*/React__default.createElement("div", null, Header), /*#__PURE__*/React__default.createElement("div", {
     className: "column__innerCells__wrap"
-  }, originalInnerCells && originalInnerCells.length > 0 ? originalInnerCells.map(cell => {
+  }, originalInnerCells && originalInnerCells.length > 0 ? originalInnerCells.map(function (cell) {
     return /*#__PURE__*/React__default.createElement("div", {
       className: "column__wrap",
-      key: `${cell.Header}_${cell.accessor}`
+      key: cell.Header + "_" + cell.accessor
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__checkbox"
     }, /*#__PURE__*/React__default.createElement("input", {
@@ -1946,35 +1975,37 @@ ColumnItem.propTypes = {
   selectInnerCells: propTypes.any
 };
 
-const ColumnsList = props => {
-  const {
-    updateColumnsInState,
-    columnsToManage,
-    isInnerCellSelected,
-    selectInnerCells
-  } = props;
+var ColumnsList = function ColumnsList(props) {
+  var updateColumnsInState = props.updateColumnsInState,
+      columnsToManage = props.columnsToManage,
+      isInnerCellSelected = props.isInnerCellSelected,
+      selectInnerCells = props.selectInnerCells;
 
-  const findColumn = columnId => {
-    const column = columnsToManage.filter(c => `${c.columnId}` === columnId)[0];
+  var findColumn = function findColumn(columnId) {
+    var column = columnsToManage.filter(function (c) {
+      return "" + c.columnId === columnId;
+    })[0];
     return {
-      column,
+      column: column,
       index: columnsToManage.indexOf(column)
     };
   };
 
-  const moveColumn = (columnId, atIndex) => {
-    const {
-      column,
-      index
-    } = findColumn(columnId);
+  var moveColumn = function moveColumn(columnId, atIndex) {
+    var _findColumn = findColumn(columnId),
+        column = _findColumn.column,
+        index = _findColumn.index;
+
     updateColumnsInState(update(columnsToManage, {
       $splice: [[index, 1], [atIndex, 0, column]]
     }));
   };
 
-  const [, drop] = useDrop({
+  var _useDrop = useDrop({
     accept: ItemTypes.COLUMN
-  });
+  }),
+      drop = _useDrop[1];
+
   return /*#__PURE__*/React__default.createElement(React__default.Fragment, {
     key: "ColumnManageFragment"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -1983,11 +2014,11 @@ const ColumnsList = props => {
       display: "flex",
       flexWrap: "wrap"
     }
-  }, columnsToManage.map(column => {
+  }, columnsToManage.map(function (column) {
     return /*#__PURE__*/React__default.createElement(ColumnItem, {
       key: column.columnId,
-      id: `${column.columnId}`,
-      Header: `${column.Header}`,
+      id: "" + column.columnId,
+      Header: "" + column.Header,
       moveColumn: moveColumn,
       findColumn: findColumn,
       originalInnerCells: column.originalInnerCells,
@@ -2004,8 +2035,8 @@ ColumnsList.propTypes = {
   selectInnerCells: propTypes.any
 };
 
-function _extends$7() {
-  _extends$7 = Object.assign || function (target) {
+function _extends$8() {
+  _extends$8 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -2019,7 +2050,7 @@ function _extends$7() {
     return target;
   };
 
-  return _extends$7.apply(this, arguments);
+  return _extends$8.apply(this, arguments);
 }
 
 var _ref$7 = /*#__PURE__*/createElement("path", {
@@ -2029,32 +2060,43 @@ var _ref$7 = /*#__PURE__*/createElement("path", {
 });
 
 function SvgIconClose(props) {
-  return /*#__PURE__*/createElement("svg", _extends$7({
+  return /*#__PURE__*/createElement("svg", _extends$8({
     width: 14,
     height: 14
   }, props), _ref$7);
 }
 
-const ColumnReordering = memo(props => {
-  const {
-    isManageColumnOpen,
-    toggleManageColumns,
-    originalColumns,
-    isExpandContentAvailable,
-    additionalColumn
-  } = props;
-  const additionalColumnHeader = additionalColumn && additionalColumn.length ? additionalColumn[0].Header : "";
+var ColumnReordering = memo(function (props) {
+  var isManageColumnOpen = props.isManageColumnOpen,
+      toggleManageColumns = props.toggleManageColumns,
+      originalColumns = props.originalColumns,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      additionalColumn = props.additionalColumn;
+  var additionalColumnHeader = additionalColumn && additionalColumn.length ? additionalColumn[0].Header : "";
 
-  const getRemarksColumnIfAvailable = () => {
+  var getRemarksColumnIfAvailable = function getRemarksColumnIfAvailable() {
     return isExpandContentAvailable ? additionalColumn : [];
   };
 
-  const concatedOriginalColumns = originalColumns.concat(getRemarksColumnIfAvailable());
-  const [managedColumns, setManagedColumns] = useState(originalColumns);
-  const [searchedColumns, setSearchedColumns] = useState(concatedOriginalColumns);
-  const [remarksColumnToManage, setRemarksColumnToManage] = useState(getRemarksColumnIfAvailable);
-  const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
-  const HTML5toTouch = {
+  var concatedOriginalColumns = originalColumns.concat(getRemarksColumnIfAvailable());
+
+  var _useState = useState(originalColumns),
+      managedColumns = _useState[0],
+      setManagedColumns = _useState[1];
+
+  var _useState2 = useState(concatedOriginalColumns),
+      searchedColumns = _useState2[0],
+      setSearchedColumns = _useState2[1];
+
+  var _useState3 = useState(getRemarksColumnIfAvailable),
+      remarksColumnToManage = _useState3[0],
+      setRemarksColumnToManage = _useState3[1];
+
+  var _useState4 = useState(false),
+      isErrorDisplayed = _useState4[0],
+      setIsErrorDisplayed = _useState4[1];
+
+  var HTML5toTouch = {
     backends: [{
       backend: HTML5Backend
     }, {
@@ -2067,16 +2109,16 @@ const ColumnReordering = memo(props => {
     }]
   };
 
-  const filterColumnsList = event => {
-    let {
-      value
-    } = event ? event.target : "";
+  var filterColumnsList = function filterColumnsList(event) {
+    var _ref = event ? event.target : "",
+        value = _ref.value;
+
     value = value ? value.toLowerCase() : "";
 
     if (value !== "") {
-      setSearchedColumns(originalColumns.filter(column => {
+      setSearchedColumns(originalColumns.filter(function (column) {
         return column.Header.toLowerCase().includes(value);
-      }).concat(getRemarksColumnIfAvailable().filter(column => {
+      }).concat(getRemarksColumnIfAvailable().filter(function (column) {
         return column.Header.toLowerCase().includes(value);
       })));
     } else {
@@ -2084,24 +2126,24 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const updateColumnsInState = columns => {
+  var updateColumnsInState = function updateColumnsInState(columns) {
     setManagedColumns(columns);
   };
 
-  const findColumn = (columnList, columnHeader) => {
-    return columnList.find(column => {
+  var findColumn = function findColumn(columnList, columnHeader) {
+    return columnList.find(function (column) {
       return column.Header === columnHeader;
     });
   };
 
-  const isItemPresentInList = (list, headerValue) => {
-    const filteredList = list.filter(item => {
+  var isItemPresentInList = function isItemPresentInList(list, headerValue) {
+    var filteredList = list.filter(function (item) {
       return item.Header === headerValue;
     });
     return filteredList && filteredList.length > 0;
   };
 
-  const isCheckboxSelected = header => {
+  var isCheckboxSelected = function isCheckboxSelected(header) {
     if (header === additionalColumnHeader) {
       return remarksColumnToManage.length > 0;
     }
@@ -2113,25 +2155,25 @@ const ColumnReordering = memo(props => {
     return isItemPresentInList(managedColumns, header);
   };
 
-  const isInnerCellSelected = (columnHeader, header) => {
-    const columnListToSearch = columnHeader === additionalColumnHeader ? remarksColumnToManage : managedColumns;
-    const selectedColumn = findColumn(columnListToSearch, columnHeader);
+  var isInnerCellSelected = function isInnerCellSelected(columnHeader, header) {
+    var columnListToSearch = columnHeader === additionalColumnHeader ? remarksColumnToManage : managedColumns;
+    var selectedColumn = findColumn(columnListToSearch, columnHeader);
     return isItemPresentInList(selectedColumn.innerCells, header);
   };
 
-  const findIndexOfItem = (type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) => {
+  var findIndexOfItem = function findIndexOfItem(type, columnsList, indexOfColumnToAdd, columnHeader, originalInnerCells) {
     if (type === "column") {
-      return columnsList.findIndex(column => {
+      return columnsList.findIndex(function (column) {
         return column.Header === originalColumns[indexOfColumnToAdd].Header;
       });
     }
 
-    return findColumn(columnsList, columnHeader).innerCells.findIndex(cell => {
+    return findColumn(columnsList, columnHeader).innerCells.findIndex(function (cell) {
       return cell.Header === originalInnerCells[indexOfColumnToAdd].Header;
     });
   };
 
-  const selectAllColumns = event => {
+  var selectAllColumns = function selectAllColumns(event) {
     if (event.currentTarget.checked) {
       setManagedColumns(originalColumns);
       setRemarksColumnToManage(getRemarksColumnIfAvailable());
@@ -2141,14 +2183,10 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const selectSingleColumn = event => {
-    const {
-      currentTarget
-    } = event;
-    const {
-      checked,
-      value
-    } = currentTarget;
+  var selectSingleColumn = function selectSingleColumn(event) {
+    var currentTarget = event.currentTarget;
+    var checked = currentTarget.checked,
+        value = currentTarget.value;
 
     if (value === additionalColumnHeader) {
       if (checked) {
@@ -2157,66 +2195,58 @@ const ColumnReordering = memo(props => {
         setRemarksColumnToManage([]);
       }
     } else if (checked) {
-      let indexOfColumnToAdd = originalColumns.findIndex(column => {
+      var indexOfColumnToAdd = originalColumns.findIndex(function (column) {
         return column.Header === value;
       });
-      const itemToAdd = originalColumns[indexOfColumnToAdd];
-      let prevItemIndex = -1;
+      var itemToAdd = originalColumns[indexOfColumnToAdd];
+      var prevItemIndex = -1;
 
       while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
         indexOfColumnToAdd -= 1;
         prevItemIndex = findIndexOfItem("column", managedColumns, indexOfColumnToAdd);
       }
 
-      const newColumnsList = [...managedColumns];
+      var newColumnsList = [].concat(managedColumns);
       newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
       setManagedColumns(newColumnsList);
     } else {
-      setManagedColumns(managedColumns.filter(column => {
+      setManagedColumns(managedColumns.filter(function (column) {
         return column.Header !== value;
       }));
     }
   };
 
-  const findAndSelectInnerCells = (stateColumnList, setStateColumnList, event) => {
-    const {
-      currentTarget
-    } = event;
-    const {
-      checked,
-      dataset,
-      value
-    } = currentTarget;
-    const {
-      columnheader
-    } = dataset;
-    const selectedColumn = findColumn(stateColumnList, columnheader);
-    const {
-      originalInnerCells
-    } = selectedColumn;
+  var findAndSelectInnerCells = function findAndSelectInnerCells(stateColumnList, setStateColumnList, event) {
+    var currentTarget = event.currentTarget;
+    var checked = currentTarget.checked,
+        dataset = currentTarget.dataset,
+        value = currentTarget.value;
+    var columnheader = dataset.columnheader;
+    var selectedColumn = findColumn(stateColumnList, columnheader);
+    var originalInnerCells = selectedColumn.originalInnerCells;
 
     if (originalInnerCells && originalInnerCells.length > 0) {
       if (checked) {
-        let indexOfColumnToAdd = originalInnerCells.findIndex(column => {
+        var indexOfColumnToAdd = originalInnerCells.findIndex(function (column) {
           return column.Header === value;
         });
-        const itemToAdd = originalInnerCells[indexOfColumnToAdd];
-        let prevItemIndex = -1;
+        var itemToAdd = originalInnerCells[indexOfColumnToAdd];
+        var prevItemIndex = -1;
 
         while (indexOfColumnToAdd > 0 && prevItemIndex === -1) {
           indexOfColumnToAdd -= 1;
           prevItemIndex = findIndexOfItem("innercell", stateColumnList, indexOfColumnToAdd, columnheader, originalInnerCells);
         }
 
-        const newColumnsList = [...stateColumnList];
+        var newColumnsList = [].concat(stateColumnList);
         findColumn(newColumnsList, columnheader).innerCells.splice(prevItemIndex + 1, 0, itemToAdd);
         setStateColumnList(newColumnsList);
       } else {
-        setStateColumnList(stateColumnList.map(column => {
-          const updatedColumn = column;
+        setStateColumnList(stateColumnList.map(function (column) {
+          var updatedColumn = column;
 
           if (column.Header === columnheader) {
-            updatedColumn.innerCells = column.innerCells.filter(cell => {
+            updatedColumn.innerCells = column.innerCells.filter(function (cell) {
               return cell.Header !== value;
             });
           }
@@ -2227,15 +2257,15 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const selectInnerCells = event => {
+  var selectInnerCells = function selectInnerCells(event) {
     findAndSelectInnerCells(managedColumns, setManagedColumns, event);
   };
 
-  const selectRemarksInnerCells = event => {
+  var selectRemarksInnerCells = function selectRemarksInnerCells(event) {
     findAndSelectInnerCells(remarksColumnToManage, setRemarksColumnToManage, event);
   };
 
-  const doColumnUpdate = () => {
+  var doColumnUpdate = function doColumnUpdate() {
     setIsErrorDisplayed(false);
 
     if (managedColumns && managedColumns.length > 0) {
@@ -2247,10 +2277,10 @@ const ColumnReordering = memo(props => {
     }
   };
 
-  const resetInnerCells = columnList => {
+  var resetInnerCells = function resetInnerCells(columnList) {
     if (columnList && columnList.length) {
-      return columnList.map(column => {
-        const newColumn = column;
+      return columnList.map(function (column) {
+        var newColumn = column;
         newColumn.innerCells = column.originalInnerCells;
         return column;
       });
@@ -2259,7 +2289,7 @@ const ColumnReordering = memo(props => {
     return columnList;
   };
 
-  const resetColumnUpdate = () => {
+  var resetColumnUpdate = function resetColumnUpdate() {
     setManagedColumns(resetInnerCells(originalColumns));
     setSearchedColumns(originalColumns.concat(getRemarksColumnIfAvailable()));
     setRemarksColumnToManage(resetInnerCells(getRemarksColumnIfAvailable()));
@@ -2298,7 +2328,7 @@ const ColumnReordering = memo(props => {
       onChange: selectAllColumns
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "column__selectTxt"
-    }, "Select All")), searchedColumns.map(column => {
+    }, "Select All")), searchedColumns.map(function (column) {
       return /*#__PURE__*/React__default.createElement("div", {
         className: "column__wrap",
         key: column.columnId
@@ -2341,10 +2371,10 @@ const ColumnReordering = memo(props => {
       className: "column__reorder full-width"
     }, /*#__PURE__*/React__default.createElement("div", null, remarksColumnToManage[0].Header), /*#__PURE__*/React__default.createElement("div", {
       className: "column__innerCells__wrap"
-    }, remarksColumnToManage[0].originalInnerCells && remarksColumnToManage[0].originalInnerCells.length > 0 ? remarksColumnToManage[0].originalInnerCells.map(cell => {
+    }, remarksColumnToManage[0].originalInnerCells && remarksColumnToManage[0].originalInnerCells.length > 0 ? remarksColumnToManage[0].originalInnerCells.map(function (cell) {
       return /*#__PURE__*/React__default.createElement("div", {
         className: "column__wrap",
-        key: `${cell.Header}_${cell.accessor}`
+        key: cell.Header + "_" + cell.accessor
       }, /*#__PURE__*/React__default.createElement("div", {
         className: "column__checkbox"
       }, /*#__PURE__*/React__default.createElement("input", {
@@ -2387,39 +2417,9 @@ ColumnReordering.propTypes = {
   updateColumnStructure: propTypes.any
 };
 
-const ItemTypes$1 = {
+var ItemTypes$1 = {
   SORT_ITEM: "SORT_ITEM"
 };
-
-function _extends$8() {
-  _extends$8 = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends$8.apply(this, arguments);
-}
-
-var _ref$8 = /*#__PURE__*/createElement("path", {
-  d: "M12.84 8.963c.106.11.16.238.16.387v1.1a.533.533 0 01-.16.387.517.517 0 01-.382.163H.542a.517.517 0 01-.381-.163A.533.533 0 010 10.45v-1.1c0-.149.054-.278.16-.387A.517.517 0 01.543 8.8h11.916c.147 0 .274.054.381.163zm0-4.4c.106.11.16.238.16.387v1.1a.533.533 0 01-.16.387.517.517 0 01-.382.163H.542a.517.517 0 01-.381-.163A.533.533 0 010 6.05v-1.1c0-.149.054-.278.16-.387A.517.517 0 01.543 4.4h11.916c.147 0 .274.054.381.163zm0-4.4c.106.11.16.238.16.387v1.1a.533.533 0 01-.16.387.517.517 0 01-.382.163H.542a.517.517 0 01-.381-.163A.533.533 0 010 1.65V.55C0 .401.054.272.16.163A.517.517 0 01.543 0h11.916c.147 0 .274.054.381.163z",
-  fillOpacity: 0.11
-});
-
-function SvgIconNav(props) {
-  return /*#__PURE__*/createElement("svg", _extends$8({
-    width: 13,
-    height: 11
-  }, props), _ref$8);
-}
 
 function _extends$9() {
   _extends$9 = Object.assign || function (target) {
@@ -2437,6 +2437,36 @@ function _extends$9() {
   };
 
   return _extends$9.apply(this, arguments);
+}
+
+var _ref$8 = /*#__PURE__*/createElement("path", {
+  d: "M12.84 8.963c.106.11.16.238.16.387v1.1a.533.533 0 01-.16.387.517.517 0 01-.382.163H.542a.517.517 0 01-.381-.163A.533.533 0 010 10.45v-1.1c0-.149.054-.278.16-.387A.517.517 0 01.543 8.8h11.916c.147 0 .274.054.381.163zm0-4.4c.106.11.16.238.16.387v1.1a.533.533 0 01-.16.387.517.517 0 01-.382.163H.542a.517.517 0 01-.381-.163A.533.533 0 010 6.05v-1.1c0-.149.054-.278.16-.387A.517.517 0 01.543 4.4h11.916c.147 0 .274.054.381.163zm0-4.4c.106.11.16.238.16.387v1.1a.533.533 0 01-.16.387.517.517 0 01-.382.163H.542a.517.517 0 01-.381-.163A.533.533 0 010 1.65V.55C0 .401.054.272.16.163A.517.517 0 01.543 0h11.916c.147 0 .274.054.381.163z",
+  fillOpacity: 0.11
+});
+
+function SvgIconNav(props) {
+  return /*#__PURE__*/createElement("svg", _extends$9({
+    width: 13,
+    height: 11
+  }, props), _ref$8);
+}
+
+function _extends$a() {
+  _extends$a = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends$a.apply(this, arguments);
 }
 
 var _ref$9 = /*#__PURE__*/createElement("defs", null, /*#__PURE__*/createElement("linearGradient", {
@@ -2482,14 +2512,14 @@ var _ref4 = /*#__PURE__*/createElement("path", {
 });
 
 function SvgSortCopy(props) {
-  return /*#__PURE__*/createElement("svg", _extends$9({
+  return /*#__PURE__*/createElement("svg", _extends$a({
     width: 13,
     height: 16
   }, props), _ref$9, _ref2, _ref3, _ref4);
 }
 
-function _extends$a() {
-  _extends$a = Object.assign || function (target) {
+function _extends$b() {
+  _extends$b = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -2503,7 +2533,7 @@ function _extends$a() {
     return target;
   };
 
-  return _extends$a.apply(this, arguments);
+  return _extends$b.apply(this, arguments);
 }
 
 var _ref$a = /*#__PURE__*/createElement("path", {
@@ -2513,105 +2543,109 @@ var _ref$a = /*#__PURE__*/createElement("path", {
 });
 
 function SvgSortDelete(props) {
-  return /*#__PURE__*/createElement("svg", _extends$a({
+  return /*#__PURE__*/createElement("svg", _extends$b({
     width: 15,
     height: 16
   }, props), _ref$a);
 }
 
-const SortItem = ({
-  id,
-  sortOption,
-  originalColumns,
-  moveSort,
-  findSort,
-  updateSingleSortingOption,
-  copySortOption,
-  deleteSortOption
-}) => {
-  const originalIndex = findSort(id).index;
-  const [{
-    isDragging
-  }, drag] = useDrag({
+var SortItem = function SortItem(_ref) {
+  var id = _ref.id,
+      sortOption = _ref.sortOption,
+      originalColumns = _ref.originalColumns,
+      moveSort = _ref.moveSort,
+      findSort = _ref.findSort,
+      updateSingleSortingOption = _ref.updateSingleSortingOption,
+      copySortOption = _ref.copySortOption,
+      deleteSortOption = _ref.deleteSortOption;
+  var originalIndex = findSort(id).index;
+
+  var _useDrag = useDrag({
     item: {
       type: ItemTypes$1.SORT_ITEM,
-      id,
-      originalIndex
+      id: id,
+      originalIndex: originalIndex
     },
-    collect: monitor => ({
-      isDragging: monitor.isDragging()
-    }),
-    end: (dropResult, monitor) => {
-      const monitorGetItemValue = monitor.getItem();
-      const {
-        id: droppedId
-      } = monitorGetItemValue;
-      const newOriginalIndex = monitorGetItemValue.originalIndex;
-      const didDrop = monitor.didDrop();
+    collect: function collect(monitor) {
+      return {
+        isDragging: monitor.isDragging()
+      };
+    },
+    end: function end(dropResult, monitor) {
+      var monitorGetItemValue = monitor.getItem();
+      var droppedId = monitorGetItemValue.id;
+      var newOriginalIndex = monitorGetItemValue.originalIndex;
+      var didDrop = monitor.didDrop();
 
       if (!didDrop) {
         moveSort(droppedId, newOriginalIndex);
       }
     }
-  });
-  const [, drop] = useDrop({
-    accept: ItemTypes$1.SORT_ITEM,
-    canDrop: () => false,
+  }),
+      isDragging = _useDrag[0].isDragging,
+      drag = _useDrag[1];
 
-    hover({
-      id: draggedId
-    }) {
+  var _useDrop = useDrop({
+    accept: ItemTypes$1.SORT_ITEM,
+    canDrop: function canDrop() {
+      return false;
+    },
+    hover: function hover(_ref2) {
+      var draggedId = _ref2.id;
+
       if (draggedId !== id) {
-        const {
-          index: overIndex
-        } = findSort(id);
+        var _findSort = findSort(id),
+            overIndex = _findSort.index;
+
         moveSort(draggedId, overIndex);
       }
     }
+  }),
+      drop = _useDrop[1];
 
-  });
-
-  const getInncerCellsOfColumn = columnAccessor => {
-    return originalColumns.find(column => {
+  var getInncerCellsOfColumn = function getInncerCellsOfColumn(columnAccessor) {
+    return originalColumns.find(function (column) {
       return column.accessor === columnAccessor;
     }).innerCells;
   };
 
-  const changeSortByOptions = event => {
-    const newSortByValue = event.target.value;
-    const innerCellsList = getInncerCellsOfColumn(newSortByValue);
+  var changeSortByOptions = function changeSortByOptions(event) {
+    var newSortByValue = event.target.value;
+    var innerCellsList = getInncerCellsOfColumn(newSortByValue);
     updateSingleSortingOption(id, newSortByValue, innerCellsList && innerCellsList.length > 0 ? innerCellsList[0].accessor : "value", sortOption.order);
   };
 
-  const changeSortOnOptions = event => {
-    const newSortOnValue = event.target.value;
+  var changeSortOnOptions = function changeSortOnOptions(event) {
+    var newSortOnValue = event.target.value;
     updateSingleSortingOption(id, sortOption.sortBy, newSortOnValue, sortOption.order);
   };
 
-  const changeSortOrderOptions = event => {
-    const newSortOrderValue = event.target.value;
+  var changeSortOrderOptions = function changeSortOrderOptions(event) {
+    var newSortOrderValue = event.target.value;
     updateSingleSortingOption(id, sortOption.sortBy, sortOption.sortOn, newSortOrderValue);
   };
 
-  const copySort = () => {
+  var copySort = function copySort() {
     copySortOption(id);
   };
 
-  const deleteSort = () => {
+  var deleteSort = function deleteSort() {
     deleteSortOption(id);
   };
 
-  const opacity = isDragging ? 0.5 : 1;
+  var opacity = isDragging ? 0.5 : 1;
   return /*#__PURE__*/React__default.createElement("div", {
     className: "sort__bodyContent",
     style: {
-      opacity
+      opacity: opacity
     }
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
     "data-testid": "sortItem",
-    ref: node => drag(drop(node)),
+    ref: function ref(node) {
+      return drag(drop(node));
+    },
     style: {
       cursor: "move"
     }
@@ -2623,10 +2657,12 @@ const SortItem = ({
     className: "custom__ctrl",
     onChange: changeSortByOptions,
     value: sortOption.sortBy
-  }, originalColumns.map(orgItem => /*#__PURE__*/React__default.createElement("option", {
-    key: orgItem.columnId,
-    value: orgItem.accessor
-  }, orgItem.Header))))), /*#__PURE__*/React__default.createElement("div", {
+  }, originalColumns.map(function (orgItem) {
+    return /*#__PURE__*/React__default.createElement("option", {
+      key: orgItem.columnId,
+      value: orgItem.accessor
+    }, orgItem.Header);
+  })))), /*#__PURE__*/React__default.createElement("div", {
     className: "sort__reorder"
   }, /*#__PURE__*/React__default.createElement("div", {
     className: "sort__file"
@@ -2634,10 +2670,12 @@ const SortItem = ({
     className: "custom__ctrl",
     onChange: changeSortOnOptions,
     value: sortOption.sortOn
-  }, getInncerCellsOfColumn(sortOption.sortBy) && getInncerCellsOfColumn(sortOption.sortBy).length > 0 ? getInncerCellsOfColumn(sortOption.sortBy).map(innerCellItem => /*#__PURE__*/React__default.createElement("option", {
-    key: `${innerCellItem.Header}_${innerCellItem.accessor}`,
-    value: innerCellItem.accessor
-  }, innerCellItem.Header)) : /*#__PURE__*/React__default.createElement("option", {
+  }, getInncerCellsOfColumn(sortOption.sortBy) && getInncerCellsOfColumn(sortOption.sortBy).length > 0 ? getInncerCellsOfColumn(sortOption.sortBy).map(function (innerCellItem) {
+    return /*#__PURE__*/React__default.createElement("option", {
+      key: innerCellItem.Header + "_" + innerCellItem.accessor,
+      value: innerCellItem.accessor
+    }, innerCellItem.Header);
+  }) : /*#__PURE__*/React__default.createElement("option", {
     key: 0,
     value: "value"
   }, "Value")))), /*#__PURE__*/React__default.createElement("div", {
@@ -2674,33 +2712,35 @@ SortItem.propTypes = {
   deleteSortOption: propTypes.any
 };
 
-const SortingList = props => {
-  const {
-    updateSortingOptions,
-    sortOptions
-  } = props;
+var SortingList = function SortingList(props) {
+  var updateSortingOptions = props.updateSortingOptions,
+      sortOptions = props.sortOptions;
 
-  const findSort = sortId => {
-    const sort = sortOptions.filter((c, index) => index === sortId)[0];
+  var findSort = function findSort(sortId) {
+    var sort = sortOptions.filter(function (c, index) {
+      return index === sortId;
+    })[0];
     return {
-      sort,
+      sort: sort,
       index: sortOptions.indexOf(sort)
     };
   };
 
-  const moveSort = (sortId, atIndex) => {
-    const {
-      sort,
-      index
-    } = findSort(sortId);
+  var moveSort = function moveSort(sortId, atIndex) {
+    var _findSort = findSort(sortId),
+        sort = _findSort.sort,
+        index = _findSort.index;
+
     updateSortingOptions(update(sortOptions, {
       $splice: [[index, 1], [atIndex, 0, sort]]
     }));
   };
 
-  const [, drop] = useDrop({
+  var _useDrop = useDrop({
     accept: ItemTypes$1.SORT_ITEM
-  });
+  }),
+      drop = _useDrop[1];
+
   return /*#__PURE__*/React__default.createElement(React__default.Fragment, {
     key: "SortingListFragment"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -2709,7 +2749,7 @@ const SortingList = props => {
       display: "flex",
       flexWrap: "wrap"
     }
-  }, sortOptions && sortOptions.length > 0 ? /*#__PURE__*/React__default.createElement("ul", null, /*#__PURE__*/React__default.createElement("li", null, "Sort By"), /*#__PURE__*/React__default.createElement("li", null, "Sort On"), /*#__PURE__*/React__default.createElement("li", null, "Order")) : null, sortOptions.map((sortOption, index) => {
+  }, sortOptions && sortOptions.length > 0 ? /*#__PURE__*/React__default.createElement("ul", null, /*#__PURE__*/React__default.createElement("li", null, "Sort By"), /*#__PURE__*/React__default.createElement("li", null, "Sort On"), /*#__PURE__*/React__default.createElement("li", null, "Order")) : null, sortOptions.map(function (sortOption, index) {
     return /*#__PURE__*/React__default.createElement(SortItem, {
       id: index,
       key: index,
@@ -2733,22 +2773,27 @@ SortingList.propTypes = {
   updateSingleSortingOption: propTypes.any
 };
 
-const GroupSort = memo(props => {
-  const {
-    isGroupSortOverLayOpen,
-    toggleGroupSortOverLay,
-    applyGroupSort,
-    originalColumns
-  } = props;
-  const sortingOrders = ["Ascending", "Descending"];
-  const defaultSortingOption = [{
+var GroupSort = memo(function (props) {
+  var isGroupSortOverLayOpen = props.isGroupSortOverLayOpen,
+      toggleGroupSortOverLay = props.toggleGroupSortOverLay,
+      applyGroupSort = props.applyGroupSort,
+      originalColumns = props.originalColumns;
+  var sortingOrders = ["Ascending", "Descending"];
+  var defaultSortingOption = [{
     sortBy: originalColumns[0].accessor,
     sortOn: originalColumns[0].innerCells ? originalColumns[0].innerCells[0].accessor : "value",
     order: sortingOrders[0]
   }];
-  const [sortOptions, setSortOptions] = useState([]);
-  const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
-  const HTML5toTouch = {
+
+  var _useState = useState([]),
+      sortOptions = _useState[0],
+      setSortOptions = _useState[1];
+
+  var _useState2 = useState(false),
+      isErrorDisplayed = _useState2[0],
+      setIsErrorDisplayed = _useState2[1];
+
+  var HTML5toTouch = {
     backends: [{
       backend: HTML5Backend
     }, {
@@ -2761,50 +2806,50 @@ const GroupSort = memo(props => {
     }]
   };
 
-  const updateSortingOptions = sortingOptions => {
+  var updateSortingOptions = function updateSortingOptions(sortingOptions) {
     setSortOptions(sortingOptions);
   };
 
-  const addSortingOptions = () => {
-    setSortOptions([...sortOptions, ...defaultSortingOption]);
+  var addSortingOptions = function addSortingOptions() {
+    setSortOptions([].concat(sortOptions, defaultSortingOption));
   };
 
-  const clearSortingOptions = () => {
+  var clearSortingOptions = function clearSortingOptions() {
     setSortOptions([]);
     applyGroupSort([]);
   };
 
-  const updateSingleSortingOption = (sortIndex, sortByValue, sortOnValue, sortOrder) => {
-    const newOptionsList = sortOptions.slice(0);
-    const newSortingOption = {
+  var updateSingleSortingOption = function updateSingleSortingOption(sortIndex, sortByValue, sortOnValue, sortOrder) {
+    var newOptionsList = sortOptions.slice(0);
+    var newSortingOption = {
       sortBy: sortByValue,
       sortOn: sortOnValue,
       order: sortOrder
     };
-    const updatedSortOptions = newOptionsList.map((option, index) => index === sortIndex ? newSortingOption : option);
+    var updatedSortOptions = newOptionsList.map(function (option, index) {
+      return index === sortIndex ? newSortingOption : option;
+    });
     updateSortingOptions(updatedSortOptions);
   };
 
-  const copySortOption = sortIndex => {
-    const newOption = sortOptions.slice(0)[sortIndex];
+  var copySortOption = function copySortOption(sortIndex) {
+    var newOption = sortOptions.slice(0)[sortIndex];
     setSortOptions(sortOptions.concat(newOption));
   };
 
-  const deleteSortOption = sortIndex => {
-    setSortOptions(sortOptions.filter((option, index) => {
+  var deleteSortOption = function deleteSortOption(sortIndex) {
+    setSortOptions(sortOptions.filter(function (option, index) {
       return index !== sortIndex;
     }));
   };
 
-  const applySort = () => {
-    let isError = false;
-    sortOptions.map((option, index) => {
-      const {
-        sortBy,
-        sortOn
-      } = option;
-      const optionIndex = index;
-      const duplicateSort = sortOptions.find((opt, optIndex) => {
+  var applySort = function applySort() {
+    var isError = false;
+    sortOptions.map(function (option, index) {
+      var sortBy = option.sortBy,
+          sortOn = option.sortOn;
+      var optionIndex = index;
+      var duplicateSort = sortOptions.find(function (opt, optIndex) {
         return sortBy === opt.sortBy && sortOn === opt.sortOn && optionIndex !== optIndex;
       });
 
@@ -2883,36 +2928,6 @@ GroupSort.propTypes = {
   applyGroupSort: propTypes.any
 };
 
-function _extends$b() {
-  _extends$b = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends$b.apply(this, arguments);
-}
-
-var _ref$b = /*#__PURE__*/createElement("path", {
-  d: "M17.31 1.025l4.672 4.7c.28.282.519.663.719 1.146.2.482.299.924.299 1.325v17.358a1.4 1.4 0 01-.42 1.024c-.279.281-.618.422-1.017.422H1.438c-.4 0-.74-.14-1.019-.422A1.4 1.4 0 010 25.554V1.446C0 1.045.14.703.42.422.698.14 1.037 0 1.437 0h13.416c.4 0 .839.1 1.318.301.479.201.858.442 1.138.724zM15.947 2.38c-.12-.121-.324-.231-.614-.332v5.665h5.63c-.1-.291-.21-.497-.329-.617L15.947 2.38zM2 25h19V9.643h-6.146c-.4 0-.739-.14-1.018-.422a1.4 1.4 0 01-.42-1.025V2H2v23zm3.75-11.982v-.964a.47.47 0 01.135-.347c.09-.09.204-.136.344.293h10.542c.14-.429.254-.383.344-.293a.47.47 0 01.135.347v.964a.47.47 0 01-.135.346c-.09.09-.204.136-.344-.364H6.229c-.14.5-.254.455-.344.364a.47.47 0 01-.135-.346zM6.23 15h10.54c.14.429.255.474.345.564a.47.47 0 01.135.347v.964a.47.47 0 01-.135.347c-.09.09-.204.135-.344-.222H6.229c-.14.357-.254.312-.344.222a.47.47 0 01-.135-.347v-.964a.47.47 0 01.135-.347c.09-.09.204-.135.344-.564zm0 4h10.54c.14.286.255.33.345.421a.47.47 0 01.135.347v.964a.47.47 0 01-.135.347c-.09.09-.204.135-.344-.079H6.229c-.14.214-.254.17-.344.079a.47.47 0 01-.135-.347v-.964a.47.47 0 01.135-.347c.09-.09.204-.135.344-.421z",
-  fill: "#1a4869"
-});
-
-function SvgIconCsv(props) {
-  return /*#__PURE__*/createElement("svg", _extends$b({
-    width: 23,
-    height: 27
-  }, props), _ref$b);
-}
-
 function _extends$c() {
   _extends$c = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -2931,16 +2946,16 @@ function _extends$c() {
   return _extends$c.apply(this, arguments);
 }
 
-var _ref$c = /*#__PURE__*/createElement("path", {
-  d: "M17.31 1.025l4.672 4.7c.28.282.519.663.719 1.146.2.482.299.924.299 1.325v17.358a1.4 1.4 0 01-.42 1.024c-.279.281-.618.422-1.017.422H1.438c-.4 0-.74-.14-1.019-.422A1.4 1.4 0 010 25.554V1.446C0 1.045.14.703.42.422.698.14 1.037 0 1.437 0h13.416c.4 0 .839.1 1.318.301.479.201.858.442 1.138.724zM15.947 2.38c-.12-.121-.324-.231-.614-.332v5.665h5.63c-.1-.291-.21-.497-.329-.617L15.947 2.38zM2 25h19V9.643h-6.146c-.4 0-.739-.14-1.018-.422a1.4 1.4 0 01-.42-1.025V2H2v23zm5.442-3.454H6.424v1.597h4.208v-1.597H9.508l1.543-2.426c.05-.07.1-.153.15-.249.05-.095.087-.163.112-.203.025-.04.042-.06.052-.06h.03c.01.04.035.09.075.15.02.04.042.078.067.113.025.036.055.076.09.12l.098.129 1.602 2.426h-1.138v1.597h4.357v-1.597h-1.018l-2.875-4.114 2.92-4.248h1.003V11.57h-4.178v1.613h1.109l-1.543 2.395a6.727 6.727 0 01-.284.452l-.03.045h-.03a.52.52 0 00-.075-.15 1.797 1.797 0 00-.255-.347l-1.587-2.395h1.138V11.57H6.5v1.613h1.018l2.83 4.098-2.905 4.264z",
-  fill: "#3da751"
+var _ref$b = /*#__PURE__*/createElement("path", {
+  d: "M17.31 1.025l4.672 4.7c.28.282.519.663.719 1.146.2.482.299.924.299 1.325v17.358a1.4 1.4 0 01-.42 1.024c-.279.281-.618.422-1.017.422H1.438c-.4 0-.74-.14-1.019-.422A1.4 1.4 0 010 25.554V1.446C0 1.045.14.703.42.422.698.14 1.037 0 1.437 0h13.416c.4 0 .839.1 1.318.301.479.201.858.442 1.138.724zM15.947 2.38c-.12-.121-.324-.231-.614-.332v5.665h5.63c-.1-.291-.21-.497-.329-.617L15.947 2.38zM2 25h19V9.643h-6.146c-.4 0-.739-.14-1.018-.422a1.4 1.4 0 01-.42-1.025V2H2v23zm3.75-11.982v-.964a.47.47 0 01.135-.347c.09-.09.204-.136.344.293h10.542c.14-.429.254-.383.344-.293a.47.47 0 01.135.347v.964a.47.47 0 01-.135.346c-.09.09-.204.136-.344-.364H6.229c-.14.5-.254.455-.344.364a.47.47 0 01-.135-.346zM6.23 15h10.54c.14.429.255.474.345.564a.47.47 0 01.135.347v.964a.47.47 0 01-.135.347c-.09.09-.204.135-.344-.222H6.229c-.14.357-.254.312-.344.222a.47.47 0 01-.135-.347v-.964a.47.47 0 01.135-.347c.09-.09.204-.135.344-.564zm0 4h10.54c.14.286.255.33.345.421a.47.47 0 01.135.347v.964a.47.47 0 01-.135.347c-.09.09-.204.135-.344-.079H6.229c-.14.214-.254.17-.344.079a.47.47 0 01-.135-.347v-.964a.47.47 0 01.135-.347c.09-.09.204-.135.344-.421z",
+  fill: "#1a4869"
 });
 
-function SvgIconExcel(props) {
+function SvgIconCsv(props) {
   return /*#__PURE__*/createElement("svg", _extends$c({
     width: 23,
     height: 27
-  }, props), _ref$c);
+  }, props), _ref$b);
 }
 
 function _extends$d() {
@@ -2961,54 +2976,95 @@ function _extends$d() {
   return _extends$d.apply(this, arguments);
 }
 
+var _ref$c = /*#__PURE__*/createElement("path", {
+  d: "M17.31 1.025l4.672 4.7c.28.282.519.663.719 1.146.2.482.299.924.299 1.325v17.358a1.4 1.4 0 01-.42 1.024c-.279.281-.618.422-1.017.422H1.438c-.4 0-.74-.14-1.019-.422A1.4 1.4 0 010 25.554V1.446C0 1.045.14.703.42.422.698.14 1.037 0 1.437 0h13.416c.4 0 .839.1 1.318.301.479.201.858.442 1.138.724zM15.947 2.38c-.12-.121-.324-.231-.614-.332v5.665h5.63c-.1-.291-.21-.497-.329-.617L15.947 2.38zM2 25h19V9.643h-6.146c-.4 0-.739-.14-1.018-.422a1.4 1.4 0 01-.42-1.025V2H2v23zm5.442-3.454H6.424v1.597h4.208v-1.597H9.508l1.543-2.426c.05-.07.1-.153.15-.249.05-.095.087-.163.112-.203.025-.04.042-.06.052-.06h.03c.01.04.035.09.075.15.02.04.042.078.067.113.025.036.055.076.09.12l.098.129 1.602 2.426h-1.138v1.597h4.357v-1.597h-1.018l-2.875-4.114 2.92-4.248h1.003V11.57h-4.178v1.613h1.109l-1.543 2.395a6.727 6.727 0 01-.284.452l-.03.045h-.03a.52.52 0 00-.075-.15 1.797 1.797 0 00-.255-.347l-1.587-2.395h1.138V11.57H6.5v1.613h1.018l2.83 4.098-2.905 4.264z",
+  fill: "#3da751"
+});
+
+function SvgIconExcel(props) {
+  return /*#__PURE__*/createElement("svg", _extends$d({
+    width: 23,
+    height: 27
+  }, props), _ref$c);
+}
+
+function _extends$e() {
+  _extends$e = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends$e.apply(this, arguments);
+}
+
 var _ref$d = /*#__PURE__*/createElement("path", {
   d: "M18.063 1.063l4.875 4.875c.291.291.541.687.75 1.187.208.5.312.958.312 1.375v18c0 .417-.146.77-.438 1.063A1.447 1.447 0 0122.5 28h-21c-.417 0-.77-.146-1.063-.438A1.447 1.447 0 010 26.5v-25C0 1.083.146.73.438.437A1.447 1.447 0 011.5 0h14c.417 0 .875.104 1.375.313.5.208.896.458 1.188.75zM16.64 2.468c-.125-.125-.339-.24-.641-.344V8h5.875c-.104-.302-.219-.516-.344-.64l-4.89-4.891zM2 26h20V10h-6.5c-.417 0-.77-.146-1.063-.438A1.447 1.447 0 0114 8.5V2H2v24zm9.688-12.984c.572 1.708 1.333 2.948 2.28 3.718.345.271.782.563 1.313.875.615-.073 1.224-.109 1.828-.109 1.532 0 2.453.255 2.766.766.167.229.177.5.031.812 0 .01-.005.021-.015.031l-.032.032v.015c-.062.396-.432.594-1.109.594-.5 0-1.099-.104-1.797-.313a11.391 11.391 0 01-2.031-.828c-2.302.25-4.344.683-6.125 1.297C7.203 22.636 5.943 24 5.016 24a.909.909 0 01-.438-.11l-.375-.187a1.671 1.671 0 00-.094-.078c-.104-.104-.135-.292-.093-.563.093-.416.385-.893.875-1.43.49-.536 1.177-1.038 2.062-1.507.146-.094.266-.063.36.094.02.02.03.041.03.062a38.204 38.204 0 001.673-3.078c.708-1.417 1.25-2.781 1.625-4.094a12.63 12.63 0 01-.477-2.492c-.068-.807-.034-1.471.102-1.992.114-.417.333-.625.656-.625H11.266c.24 0 .421.078.546.234.188.22.235.573.141 1.063a.34.34 0 01-.062.125c.01.031.015.073.015.125v.469c-.02 1.28-.094 2.28-.219 3zM5.742 22c-.38.458-.638.844-.773 1.156.541-.25 1.255-1.073 2.14-2.468A8.908 8.908 0 005.742 22zm5.446-13.25v.031c-.157.438-.167 1.125-.032 2.063.01-.073.047-.302.11-.688 0-.031.036-.255.109-.672a.352.352 0 01.063-.125c-.01-.01-.016-.02-.016-.03a.12.12 0 01-.016-.048.9.9 0 00-.203-.562c0 .01-.005.02-.015.031zm-1.235 9.063a106.31 106.31 0 01-.703 1.296 22.918 22.918 0 014.438-1.265c-.021-.01-.089-.06-.204-.149a2.793 2.793 0 01-.25-.21c-.791-.699-1.453-1.615-1.984-2.75-.281.895-.714 1.921-1.297 3.078zm9.422 1.093c0-.01-.01-.026-.031-.047-.25-.25-.98-.375-2.188-.375.792.292 1.438.438 1.938.438.146 0 .24-.005.281-.016z",
   fill: "#ff4a4a"
 });
 
 function SvgIconPdf(props) {
-  return /*#__PURE__*/createElement("svg", _extends$d({
+  return /*#__PURE__*/createElement("svg", _extends$e({
     width: 24,
     height: 28
   }, props), _ref$d);
 }
 
-const ExportData = memo(props => {
-  const {
-    isExportOverlayOpen,
-    toggleExportDataOverlay,
-    rows,
-    originalColumns,
-    columns,
-    isRowExpandEnabled,
-    isExpandContentAvailable,
-    additionalColumn
-  } = props;
+var ExportData = memo(function (props) {
+  var isExportOverlayOpen = props.isExportOverlayOpen,
+      toggleExportDataOverlay = props.toggleExportDataOverlay,
+      rows = props.rows,
+      originalColumns = props.originalColumns,
+      columns = props.columns,
+      isRowExpandEnabled = props.isRowExpandEnabled,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      additionalColumn = props.additionalColumn;
 
-  const getRemarksColumnIfAvailable = () => {
+  var getRemarksColumnIfAvailable = function getRemarksColumnIfAvailable() {
     return isExpandContentAvailable ? additionalColumn : [];
   };
 
-  const getRemarksColumnIfSelectedByUser = () => {
+  var getRemarksColumnIfSelectedByUser = function getRemarksColumnIfSelectedByUser() {
     return isRowExpandEnabled ? additionalColumn : [];
   };
 
-  const updatedColumns = [...originalColumns].concat(getRemarksColumnIfAvailable());
-  const updatedColumnsPerUserSelection = [...columns].concat(getRemarksColumnIfSelectedByUser());
-  const [managedColumns, setManagedColumns] = useState(updatedColumnsPerUserSelection);
-  const [searchedColumns, setSearchedColumns] = useState(updatedColumns);
-  const [downloadTypes, setDownloadTypes] = useState([]);
-  const [warning, setWarning] = useState("");
-  let isDownload = false;
+  var updatedColumns = [].concat(originalColumns).concat(getRemarksColumnIfAvailable());
+  var updatedColumnsPerUserSelection = [].concat(columns).concat(getRemarksColumnIfSelectedByUser());
 
-  const downloadPDF = (rowFilteredValues, rowFilteredHeader) => {
-    const unit = "pt";
-    const size = "A4";
-    const orientation = "landscape";
-    const doc = new JsPdf(orientation, unit, size);
+  var _useState = useState(updatedColumnsPerUserSelection),
+      managedColumns = _useState[0],
+      setManagedColumns = _useState[1];
+
+  var _useState2 = useState(updatedColumns),
+      searchedColumns = _useState2[0],
+      setSearchedColumns = _useState2[1];
+
+  var _useState3 = useState([]),
+      downloadTypes = _useState3[0],
+      setDownloadTypes = _useState3[1];
+
+  var _useState4 = useState(""),
+      warning = _useState4[0],
+      setWarning = _useState4[1];
+
+  var isDownload = false;
+
+  var downloadPDF = function downloadPDF(rowFilteredValues, rowFilteredHeader) {
+    var unit = "pt";
+    var size = "A4";
+    var orientation = "landscape";
+    var doc = new JsPdf(orientation, unit, size);
     doc.setFontSize(12);
-    const title = "iCargo Neo Report";
-    const content = {
+    var title = "iCargo Neo Report";
+    var content = {
       startY: 50,
       head: rowFilteredHeader,
       body: rowFilteredValues,
@@ -3030,92 +3086,90 @@ const ExportData = memo(props => {
     isDownload = false;
   };
 
-  const downloadCSVFile = filteredRowValue => {
-    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-    const fileExtension = ".csv";
-    const fileName = "iCargo Neo Report";
-    const ws = utils.json_to_sheet(filteredRowValue);
-    const wb = {
+  var downloadCSVFile = function downloadCSVFile(filteredRowValue) {
+    var fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    var fileExtension = ".csv";
+    var fileName = "iCargo Neo Report";
+    var ws = utils.json_to_sheet(filteredRowValue);
+    var wb = {
       Sheets: {
         data: ws
       },
       SheetNames: ["data"]
     };
-    const excelBuffer = write(wb, {
+    var excelBuffer = write(wb, {
       bookType: "csv",
       type: "array"
     });
-    const data = new Blob([excelBuffer], {
+    var data = new Blob([excelBuffer], {
       type: fileType
     });
     saveAs(data, fileName + fileExtension);
   };
 
-  const downloadXLSFile = filteredRowValue => {
-    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-    const fileExtension = ".xlsx";
-    const fileName = "iCargo Neo Report";
-    const ws = utils.json_to_sheet(filteredRowValue);
-    const wb = {
+  var downloadXLSFile = function downloadXLSFile(filteredRowValue) {
+    var fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    var fileExtension = ".xlsx";
+    var fileName = "iCargo Neo Report";
+    var ws = utils.json_to_sheet(filteredRowValue);
+    var wb = {
       Sheets: {
         data: ws
       },
       SheetNames: ["data"]
     };
-    const excelBuffer = write(wb, {
+    var excelBuffer = write(wb, {
       bookType: "xlsx",
       type: "array"
     });
-    const data = new Blob([excelBuffer], {
+    var data = new Blob([excelBuffer], {
       type: fileType
     });
     saveAs(data, fileName + fileExtension);
   };
 
-  const exportRowData = () => {
+  var exportRowData = function exportRowData() {
     isDownload = true;
-    const filteredRow = [];
-    const filteredRowValues = [];
-    const filteredRowHeader = [];
+    var filteredRow = [];
+    var filteredRowValues = [];
+    var filteredRowHeader = [];
     setWarning("");
 
     if (managedColumns.length > 0 && downloadTypes.length > 0) {
-      const rowLength = rows && rows.length > 0 ? rows.length : 0;
-      rows.forEach((rowDetails, index) => {
-        const row = rowDetails.original;
-        const filteredColumnVal = {};
-        const rowFilteredValues = [];
-        const rowFilteredHeader = [];
-        managedColumns.forEach(columnName => {
-          const {
-            Header,
-            accessor,
-            originalInnerCells,
-            displayInExpandedRegion
-          } = columnName;
-          const isInnerCellsPresent = originalInnerCells && originalInnerCells.length > 0;
-          const accessorRowValue = row[accessor];
-          let columnValue = "";
-          let columnHeader = "";
+      var rowLength = rows && rows.length > 0 ? rows.length : 0;
+      rows.forEach(function (rowDetails, index) {
+        var row = rowDetails.original;
+        var filteredColumnVal = {};
+        var rowFilteredValues = [];
+        var rowFilteredHeader = [];
+        managedColumns.forEach(function (columnName) {
+          var Header = columnName.Header,
+              accessor = columnName.accessor,
+              originalInnerCells = columnName.originalInnerCells,
+              displayInExpandedRegion = columnName.displayInExpandedRegion;
+          var isInnerCellsPresent = originalInnerCells && originalInnerCells.length > 0;
+          var accessorRowValue = row[accessor];
+          var columnValue = "";
+          var columnHeader = "";
 
           if (accessor) {
             if (isInnerCellsPresent && typeof accessorRowValue === "object") {
-              originalInnerCells.forEach(cell => {
-                const innerCellAccessor = cell.accessor;
-                const innerCellHeader = cell.Header;
-                const innerCellAccessorValue = accessorRowValue[innerCellAccessor];
+              originalInnerCells.forEach(function (cell) {
+                var innerCellAccessor = cell.accessor;
+                var innerCellHeader = cell.Header;
+                var innerCellAccessorValue = accessorRowValue[innerCellAccessor];
 
                 if (accessorRowValue.length > 0) {
-                  accessorRowValue.forEach((item, itemIndex) => {
+                  accessorRowValue.forEach(function (item, itemIndex) {
                     columnValue = item[innerCellAccessor].toString();
-                    columnHeader = `${Header} - ${innerCellHeader}_${itemIndex}`;
+                    columnHeader = Header + " - " + innerCellHeader + "_" + itemIndex;
                     filteredColumnVal[columnHeader] = columnValue;
                     rowFilteredValues.push(columnValue);
                     rowFilteredHeader.push(columnHeader);
                   });
                 } else if (innerCellAccessorValue) {
                   columnValue = innerCellAccessorValue;
-                  columnHeader = `${Header} - ${innerCellHeader}`;
+                  columnHeader = Header + " - " + innerCellHeader;
                   filteredColumnVal[columnHeader] = columnValue;
                   rowFilteredValues.push(columnValue);
                   rowFilteredHeader.push(columnHeader);
@@ -3129,16 +3183,16 @@ const ExportData = memo(props => {
               rowFilteredHeader.push(columnHeader);
             }
           } else if (displayInExpandedRegion && isInnerCellsPresent) {
-            originalInnerCells.forEach(expandedCell => {
-              const expandedCellAccessor = expandedCell.accessor;
-              const expandedCellHeader = expandedCell.Header;
-              const expandedCellValue = row[expandedCellAccessor];
-              let formattedValue = expandedCellValue;
+            originalInnerCells.forEach(function (expandedCell) {
+              var expandedCellAccessor = expandedCell.accessor;
+              var expandedCellHeader = expandedCell.Header;
+              var expandedCellValue = row[expandedCellAccessor];
+              var formattedValue = expandedCellValue;
 
               if (typeof expandedCellValue === "object") {
                 if (expandedCellValue.length > 0) {
-                  const newValues = [];
-                  expandedCellValue.forEach(cellValue => {
+                  var newValues = [];
+                  expandedCellValue.forEach(function (cellValue) {
                     newValues.push(Object.values(cellValue).join("--"));
                   });
                   formattedValue = newValues.join("||");
@@ -3159,7 +3213,7 @@ const ExportData = memo(props => {
         filteredRowValues.push(rowFilteredValues);
         if (rowLength === index + 1) filteredRowHeader.push(rowFilteredHeader);
       });
-      downloadTypes.forEach(item => {
+      downloadTypes.forEach(function (item) {
         if (item === "pdf") {
           downloadPDF(filteredRowValues, filteredRowHeader);
         } else if (item === "excel") {
@@ -3177,16 +3231,16 @@ const ExportData = memo(props => {
     }
   };
 
-  const filterColumnsList = event => {
-    let {
-      value
-    } = event ? event.target : "";
+  var filterColumnsList = function filterColumnsList(event) {
+    var _ref = event ? event.target : "",
+        value = _ref.value;
+
     value = value ? value.toLowerCase() : "";
 
     if (value !== "") {
-      setSearchedColumns(originalColumns.filter(column => {
+      setSearchedColumns(originalColumns.filter(function (column) {
         return column.Header.toLowerCase().includes(value);
-      }).concat(getRemarksColumnIfAvailable().filter(column => {
+      }).concat(getRemarksColumnIfAvailable().filter(function (column) {
         return column.Header.toLowerCase().includes(value);
       })));
     } else {
@@ -3194,18 +3248,18 @@ const ExportData = memo(props => {
     }
   };
 
-  const isCheckboxSelected = header => {
+  var isCheckboxSelected = function isCheckboxSelected(header) {
     if (header === "Select All") {
       return managedColumns.length === searchedColumns.length;
     }
 
-    const selectedColumn = managedColumns.filter(column => {
+    var selectedColumn = managedColumns.filter(function (column) {
       return column.Header === header;
     });
     return selectedColumn && selectedColumn.length > 0;
   };
 
-  const selectAllColumns = event => {
+  var selectAllColumns = function selectAllColumns(event) {
     if (event.target.checked) {
       setManagedColumns(updatedColumns);
     } else {
@@ -3213,56 +3267,53 @@ const ExportData = memo(props => {
     }
   };
 
-  const selectSingleColumn = event => {
-    const {
-      currentTarget
-    } = event;
-    const {
-      checked,
-      value
-    } = currentTarget;
+  var selectSingleColumn = function selectSingleColumn(event) {
+    var currentTarget = event.currentTarget;
+    var checked = currentTarget.checked,
+        value = currentTarget.value;
 
     if (checked) {
-      const indexOfColumnToAdd = updatedColumns.findIndex(column => {
-        return column.Header === value;
-      });
-      const itemToAdd = updatedColumns[indexOfColumnToAdd];
-      let prevItemIndex = -1;
+      (function () {
+        var indexOfColumnToAdd = updatedColumns.findIndex(function (column) {
+          return column.Header === value;
+        });
+        var itemToAdd = updatedColumns[indexOfColumnToAdd];
+        var prevItemIndex = -1;
 
-      for (let i = indexOfColumnToAdd; i > 0; i--) {
-        if (prevItemIndex === -1) {
-          prevItemIndex = managedColumns.findIndex(column => {
-            return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
-          });
+        for (var i = indexOfColumnToAdd; i > 0; i--) {
+          if (prevItemIndex === -1) {
+            prevItemIndex = managedColumns.findIndex(function (column) {
+              return column.Header === updatedColumns[indexOfColumnToAdd - 1].Header;
+            });
+          }
         }
-      }
 
-      const newColumnsList = managedColumns.slice(0);
-      newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
-      setManagedColumns(newColumnsList);
+        var newColumnsList = managedColumns.slice(0);
+        newColumnsList.splice(prevItemIndex + 1, 0, itemToAdd);
+        setManagedColumns(newColumnsList);
+      })();
     } else {
-      setManagedColumns(managedColumns.filter(column => {
+      setManagedColumns(managedColumns.filter(function (column) {
         return column.Header !== value;
       }));
     }
   };
 
-  const changeDownloadType = event => {
-    const {
-      value,
-      checked
-    } = event ? event.currentTarget : "";
+  var changeDownloadType = function changeDownloadType(event) {
+    var _ref2 = event ? event.currentTarget : "",
+        value = _ref2.value,
+        checked = _ref2.checked;
 
     if (checked) {
       setDownloadTypes(downloadTypes.concat([value]));
     } else {
-      setDownloadTypes(downloadTypes.filter(type => {
+      setDownloadTypes(downloadTypes.filter(function (type) {
         return type !== value;
       }));
     }
   };
 
-  useEffect(() => {
+  useEffect(function () {
     setManagedColumns(updatedColumnsPerUserSelection);
   }, [columns, isRowExpandEnabled]);
 
@@ -3297,7 +3348,7 @@ const ExportData = memo(props => {
       onChange: selectAllColumns
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "export__txt"
-    }, "Select All")), searchedColumns.map(column => {
+    }, "Select All")), searchedColumns.map(function (column) {
       return /*#__PURE__*/React__default.createElement("div", {
         className: "export__wrap",
         key: column.columnId
@@ -3305,7 +3356,7 @@ const ExportData = memo(props => {
         className: "export__checkbox"
       }, /*#__PURE__*/React__default.createElement("input", {
         type: "checkbox",
-        "data-testid": `${column.Header}`,
+        "data-testid": "" + column.Header,
         value: column.Header,
         checked: isCheckboxSelected(column.Header),
         onChange: selectSingleColumn
@@ -3404,37 +3455,6 @@ ExportData.propTypes = {
   isRowExpandEnabled: propTypes.any
 };
 
-function _extends$e() {
-  _extends$e = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends$e.apply(this, arguments);
-}
-
-var _ref$e = /*#__PURE__*/createElement("path", {
-  d: "M.992 11.836c.045.054.1.08.162.08h4.384v-9.75H.923v9.48c0 .073.023.137.069.19zm10.016 0a.284.284 0 00.069-.19v-9.48H6.462v9.75h4.384a.207.207 0 00.162-.08zM11.661.398c.226.265.339.584.339.956v10.292c0 .372-.113.691-.339.956-.226.265-.498.398-.815.398H1.154c-.317 0-.59-.133-.815-.398A1.426 1.426 0 010 11.646V1.354C0 .982.113.663.339.398.565.133.837 0 1.154 0h9.692c.317 0 .59.133.815.398z",
-  fill: "#3c476f",
-  fillOpacity: 0.8
-});
-
-function SvgIconColumns(props) {
-  return /*#__PURE__*/createElement("svg", _extends$e({
-    width: 12,
-    height: 13
-  }, props), _ref$e);
-}
-
 function _extends$f() {
   _extends$f = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -3453,17 +3473,17 @@ function _extends$f() {
   return _extends$f.apply(this, arguments);
 }
 
-var _ref$f = /*#__PURE__*/createElement("path", {
-  d: "M11.88.722a.38.38 0 010 .553L6.277 6.88a.38.38 0 01-.554 0L.12 1.275a.38.38 0 010-.553L.721.12a.38.38 0 01.554 0L6 4.847 10.725.12a.38.38 0 01.554 0l.6.602z",
-  fill: "#0e415e",
-  fillOpacity: 0.4
+var _ref$e = /*#__PURE__*/createElement("path", {
+  d: "M.992 11.836c.045.054.1.08.162.08h4.384v-9.75H.923v9.48c0 .073.023.137.069.19zm10.016 0a.284.284 0 00.069-.19v-9.48H6.462v9.75h4.384a.207.207 0 00.162-.08zM11.661.398c.226.265.339.584.339.956v10.292c0 .372-.113.691-.339.956-.226.265-.498.398-.815.398H1.154c-.317 0-.59-.133-.815-.398A1.426 1.426 0 010 11.646V1.354C0 .982.113.663.339.398.565.133.837 0 1.154 0h9.692c.317 0 .59.133.815.398z",
+  fill: "#3c476f",
+  fillOpacity: 0.8
 });
 
-function SvgIconAngle(props) {
+function SvgIconColumns(props) {
   return /*#__PURE__*/createElement("svg", _extends$f({
     width: 12,
-    height: 7
-  }, props), _ref$f);
+    height: 13
+  }, props), _ref$e);
 }
 
 function _extends$g() {
@@ -3484,16 +3504,17 @@ function _extends$g() {
   return _extends$g.apply(this, arguments);
 }
 
-var _ref$g = /*#__PURE__*/createElement("path", {
-  d: "M10.486 0c.218 0 .371.102.46.305.088.213.051.396-.11.547l-3.84 3.851V10.5a.467.467 0 01-.304.46.54.54 0 01-.195.04.462.462 0 01-.35-.148l-1.995-2a.481.481 0 01-.148-.352V4.703L.164.852C.003.7-.034.518.054.305A.466.466 0 01.515 0h9.972z",
-  fill: "#636c8c"
+var _ref$f = /*#__PURE__*/createElement("path", {
+  d: "M11.88.722a.38.38 0 010 .553L6.277 6.88a.38.38 0 01-.554 0L.12 1.275a.38.38 0 010-.553L.721.12a.38.38 0 01.554 0L6 4.847 10.725.12a.38.38 0 01.554 0l.6.602z",
+  fill: "#0e415e",
+  fillOpacity: 0.4
 });
 
-function SvgIconFilter(props) {
+function SvgIconAngle(props) {
   return /*#__PURE__*/createElement("svg", _extends$g({
-    width: 11,
-    height: 11
-  }, props), _ref$g);
+    width: 12,
+    height: 7
+  }, props), _ref$f);
 }
 
 function _extends$h() {
@@ -3514,16 +3535,16 @@ function _extends$h() {
   return _extends$h.apply(this, arguments);
 }
 
-var _ref$h = /*#__PURE__*/createElement("path", {
-  d: "M7.797 7.672A2.41 2.41 0 019.5 7a2.41 2.41 0 011.77.73A2.41 2.41 0 0112 9.5a2.41 2.41 0 01-.73 1.77A2.41 2.41 0 019.5 12a2.41 2.41 0 01-1.77-.73A2.41 2.41 0 017 9.5c0-.063.005-.151.016-.266L4.203 7.828A2.41 2.41 0 012.5 8.5a2.41 2.41 0 01-1.77-.73A2.41 2.41 0 010 6c0-.693.243-1.283.73-1.77A2.41 2.41 0 012.5 3.5a2.41 2.41 0 011.703.672l2.813-1.406A3.146 3.146 0 017 2.5c0-.693.243-1.283.73-1.77A2.41 2.41 0 019.5 0a2.41 2.41 0 011.77.73A2.41 2.41 0 0112 2.5a2.41 2.41 0 01-.73 1.77A2.41 2.41 0 019.5 5a2.41 2.41 0 01-1.703-.672L4.984 5.734C4.994 5.85 5 5.938 5 6c0 .063-.005.151-.016.266l2.813 1.406z",
+var _ref$g = /*#__PURE__*/createElement("path", {
+  d: "M10.486 0c.218 0 .371.102.46.305.088.213.051.396-.11.547l-3.84 3.851V10.5a.467.467 0 01-.304.46.54.54 0 01-.195.04.462.462 0 01-.35-.148l-1.995-2a.481.481 0 01-.148-.352V4.703L.164.852C.003.7-.034.518.054.305A.466.466 0 01.515 0h9.972z",
   fill: "#636c8c"
 });
 
-function SvgIconShare(props) {
+function SvgIconFilter(props) {
   return /*#__PURE__*/createElement("svg", _extends$h({
-    width: 12,
-    height: 12
-  }, props), _ref$h);
+    width: 11,
+    height: 11
+  }, props), _ref$g);
 }
 
 function _extends$i() {
@@ -3544,17 +3565,16 @@ function _extends$i() {
   return _extends$i.apply(this, arguments);
 }
 
-var _ref$i = /*#__PURE__*/createElement("path", {
-  d: "M8.013 10.346c.041.04.061.092.061.154v1.286a.207.207 0 01-.218.214H6.112a.207.207 0 01-.218-.214V10.5a.207.207 0 01.218-.214h1.744c.064 0 .116.02.157.06zm-3.271-.857c.04.04.061.091.061.154a.25.25 0 01-.068.16L2.561 11.94a.23.23 0 01-.157.06.247.247 0 01-.156-.06L.067 9.797c-.068-.072-.084-.15-.048-.235.036-.089.104-.133.204-.133h1.309V.214A.207.207 0 011.75 0h1.309a.207.207 0 01.218.214V9.43h1.308c.064 0 .116.02.157.06zm4.58-2.572c.04.04.061.092.061.154v1.286a.207.207 0 01-.218.214H6.112a.207.207 0 01-.218-.214V7.071a.207.207 0 01.218-.214h3.053c.064 0 .116.02.157.06zM10.63 3.49c.041.04.061.091.061.154v1.286a.207.207 0 01-.218.214H6.112a.207.207 0 01-.218-.214V3.643a.207.207 0 01.218-.214h4.361c.064 0 .116.02.157.06zM11.94.06c.04.04.061.092.061.154V1.5a.207.207 0 01-.218.214h-5.67a.207.207 0 01-.218-.214V.214A.207.207 0 016.112 0h5.67c.064 0 .116.02.157.06z",
-  fill: "#3c476f",
-  fillOpacity: 0.8
+var _ref$h = /*#__PURE__*/createElement("path", {
+  d: "M7.797 7.672A2.41 2.41 0 019.5 7a2.41 2.41 0 011.77.73A2.41 2.41 0 0112 9.5a2.41 2.41 0 01-.73 1.77A2.41 2.41 0 019.5 12a2.41 2.41 0 01-1.77-.73A2.41 2.41 0 017 9.5c0-.063.005-.151.016-.266L4.203 7.828A2.41 2.41 0 012.5 8.5a2.41 2.41 0 01-1.77-.73A2.41 2.41 0 010 6c0-.693.243-1.283.73-1.77A2.41 2.41 0 012.5 3.5a2.41 2.41 0 011.703.672l2.813-1.406A3.146 3.146 0 017 2.5c0-.693.243-1.283.73-1.77A2.41 2.41 0 019.5 0a2.41 2.41 0 011.77.73A2.41 2.41 0 0112 2.5a2.41 2.41 0 01-.73 1.77A2.41 2.41 0 019.5 5a2.41 2.41 0 01-1.703-.672L4.984 5.734C4.994 5.85 5 5.938 5 6c0 .063-.005.151-.016.266l2.813 1.406z",
+  fill: "#636c8c"
 });
 
-function SvgIconGroupSort(props) {
+function SvgIconShare(props) {
   return /*#__PURE__*/createElement("svg", _extends$i({
     width: 12,
     height: 12
-  }, props), _ref$i);
+  }, props), _ref$h);
 }
 
 function _extends$j() {
@@ -3575,16 +3595,17 @@ function _extends$j() {
   return _extends$j.apply(this, arguments);
 }
 
-var _ref$j = /*#__PURE__*/createElement("path", {
-  d: "M0 0l4 5 4-5H0z",
-  fill: "#4f6475"
+var _ref$i = /*#__PURE__*/createElement("path", {
+  d: "M8.013 10.346c.041.04.061.092.061.154v1.286a.207.207 0 01-.218.214H6.112a.207.207 0 01-.218-.214V10.5a.207.207 0 01.218-.214h1.744c.064 0 .116.02.157.06zm-3.271-.857c.04.04.061.091.061.154a.25.25 0 01-.068.16L2.561 11.94a.23.23 0 01-.157.06.247.247 0 01-.156-.06L.067 9.797c-.068-.072-.084-.15-.048-.235.036-.089.104-.133.204-.133h1.309V.214A.207.207 0 011.75 0h1.309a.207.207 0 01.218.214V9.43h1.308c.064 0 .116.02.157.06zm4.58-2.572c.04.04.061.092.061.154v1.286a.207.207 0 01-.218.214H6.112a.207.207 0 01-.218-.214V7.071a.207.207 0 01.218-.214h3.053c.064 0 .116.02.157.06zM10.63 3.49c.041.04.061.091.061.154v1.286a.207.207 0 01-.218.214H6.112a.207.207 0 01-.218-.214V3.643a.207.207 0 01.218-.214h4.361c.064 0 .116.02.157.06zM11.94.06c.04.04.061.092.061.154V1.5a.207.207 0 01-.218.214h-5.67a.207.207 0 01-.218-.214V.214A.207.207 0 016.112 0h5.67c.064 0 .116.02.157.06z",
+  fill: "#3c476f",
+  fillOpacity: 0.8
 });
 
-function SvgIconSort(props) {
+function SvgIconGroupSort(props) {
   return /*#__PURE__*/createElement("svg", _extends$j({
-    width: 8,
-    height: 5
-  }, props), _ref$j);
+    width: 12,
+    height: 12
+  }, props), _ref$i);
 }
 
 function _extends$k() {
@@ -3605,12 +3626,42 @@ function _extends$k() {
   return _extends$k.apply(this, arguments);
 }
 
+var _ref$j = /*#__PURE__*/createElement("path", {
+  d: "M0 0l4 5 4-5H0z",
+  fill: "#4f6475"
+});
+
+function SvgIconSort(props) {
+  return /*#__PURE__*/createElement("svg", _extends$k({
+    width: 8,
+    height: 5
+  }, props), _ref$j);
+}
+
+function _extends$l() {
+  _extends$l = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends$l.apply(this, arguments);
+}
+
 var _ref$k = /*#__PURE__*/createElement("path", {
   d: "M888 1184l116-116-152-152-116 116v56h96v96h56zm440-720q-16-16-33 1L945 815q-17 17-1 33t33-1l350-350q17-17 1-33zm80 594v190q0 119-84.5 203.5T1120 1536H288q-119 0-203.5-84.5T0 1248V416q0-119 84.5-203.5T288 128h832q63 0 117 25 15 7 18 23 3 17-9 29l-49 49q-14 14-32 8-23-6-45-6H288q-66 0-113 47t-47 113v832q0 66 47 113t113 47h832q66 0 113-47t47-113v-126q0-13 9-22l64-64q15-15 35-7t20 29zm-96-738l288 288-672 672H640V992zm444 132l-92 92-288-288 92-92q28-28 68-28t68 28l152 152q28 28 28 68t-28 68z"
 });
 
 function SvgIconEdit(props) {
-  return /*#__PURE__*/createElement("svg", _extends$k({
+  return /*#__PURE__*/createElement("svg", _extends$l({
     height: 1792,
     width: 1792,
     style: {
@@ -3619,206 +3670,233 @@ function SvgIconEdit(props) {
   }, props), _ref$k);
 }
 
-const listRef = createRef(null);
-const Customgrid = memo(props => {
-  const {
-    title,
-    gridHeight,
-    gridWidth,
-    managableColumns,
-    originalColumns,
-    additionalColumn,
-    data,
-    getRowEditOverlay,
-    updateRowInGrid,
-    deleteRowFromGrid,
-    globalSearchLogic,
-    selectBulkData,
-    calculateRowHeight,
-    isExpandContentAvailable,
-    displayExpandedContent,
-    rowActions,
-    rowActionCallback,
-    hasNextPage,
-    isNextPageLoading,
-    loadNextPage,
-    doGroupSort
-  } = props;
-  const [columns, setColumns] = useState(managableColumns);
-  const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(isExpandContentAvailable);
-  const itemCount = hasNextPage ? data.length + 1 : data.length;
-  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage || (() => {});
+var listRef = createRef(null);
+var Customgrid = memo(function (props) {
+  var title = props.title,
+      gridHeight = props.gridHeight,
+      gridWidth = props.gridWidth,
+      managableColumns = props.managableColumns,
+      originalColumns = props.originalColumns,
+      additionalColumn = props.additionalColumn,
+      data = props.data,
+      getRowEditOverlay = props.getRowEditOverlay,
+      updateRowInGrid = props.updateRowInGrid,
+      deleteRowFromGrid = props.deleteRowFromGrid,
+      searchColumn = props.searchColumn,
+      selectBulkData = props.selectBulkData,
+      calculateRowHeight = props.calculateRowHeight,
+      isExpandContentAvailable = props.isExpandContentAvailable,
+      displayExpandedContent = props.displayExpandedContent,
+      rowActions = props.rowActions,
+      rowActionCallback = props.rowActionCallback,
+      hasNextPage = props.hasNextPage,
+      isNextPageLoading = props.isNextPageLoading,
+      loadNextPage = props.loadNextPage,
+      doGroupSort = props.doGroupSort;
 
-  const isItemLoaded = index => !hasNextPage || index < data.length;
+  var _useState = useState(managableColumns),
+      columns = _useState[0],
+      setColumns = _useState[1];
 
-  const [isFilterOpen, setFilterOpen] = useState(false);
+  var _useState2 = useState(isExpandContentAvailable),
+      isRowExpandEnabled = _useState2[0],
+      setIsRowExpandEnabled = _useState2[1];
 
-  const toggleColumnFilter = () => {
+  var itemCount = hasNextPage ? data.length + 1 : data.length;
+  var loadMoreItems = isNextPageLoading ? function () {} : loadNextPage || function () {};
+
+  var isItemLoaded = function isItemLoaded(index) {
+    return !hasNextPage || index < data.length;
+  };
+
+  var _useState3 = useState(false),
+      isFilterOpen = _useState3[0],
+      setFilterOpen = _useState3[1];
+
+  var toggleColumnFilter = function toggleColumnFilter() {
     setFilterOpen(!isFilterOpen);
   };
 
-  const [isRowEditOverlyOpen, setIsRowEditOverlyOpen] = useState(false);
-  const [editedRowData, setEditedRowData] = useState(null);
+  var _useState4 = useState(false),
+      isRowEditOverlyOpen = _useState4[0],
+      setIsRowEditOverlyOpen = _useState4[1];
 
-  const bindRowEditOverlay = rowValue => {
+  var _useState5 = useState(null),
+      editedRowData = _useState5[0],
+      setEditedRowData = _useState5[1];
+
+  var bindRowEditOverlay = function bindRowEditOverlay(rowValue) {
     setEditedRowData(rowValue);
     setIsRowEditOverlyOpen(true);
   };
 
-  const closeRowEditOverlay = () => {
+  var closeRowEditOverlay = function closeRowEditOverlay() {
     setEditedRowData(null);
     setIsRowEditOverlyOpen(false);
   };
 
-  const [isRowDeleteOverlyOpen, setIsRowDeleteOverlyOpen] = useState(false);
-  const [deletedRowData, setDeletedRowData] = useState(null);
+  var _useState6 = useState(false),
+      isRowDeleteOverlyOpen = _useState6[0],
+      setIsRowDeleteOverlyOpen = _useState6[1];
 
-  const bindRowDeleteOverlay = rowValue => {
+  var _useState7 = useState(null),
+      deletedRowData = _useState7[0],
+      setDeletedRowData = _useState7[1];
+
+  var bindRowDeleteOverlay = function bindRowDeleteOverlay(rowValue) {
     setDeletedRowData(rowValue);
     setIsRowDeleteOverlyOpen(true);
   };
 
-  const closeRowDeleteOverlay = () => {
+  var closeRowDeleteOverlay = function closeRowDeleteOverlay() {
     setDeletedRowData(null);
     setIsRowDeleteOverlyOpen(false);
   };
 
-  const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
+  var _useState8 = useState(false),
+      isGroupSortOverLayOpen = _useState8[0],
+      setGroupSortOverLay = _useState8[1];
 
-  const toggleGroupSortOverLay = () => {
+  var toggleGroupSortOverLay = function toggleGroupSortOverLay() {
     setGroupSortOverLay(!isGroupSortOverLayOpen);
   };
 
-  const applyGroupSort = sortOptions => {
+  var applyGroupSort = function applyGroupSort(sortOptions) {
     doGroupSort(sortOptions);
   };
 
-  const [isManageColumnOpen, setManageColumnOpen] = useState(false);
+  var _useState9 = useState(false),
+      isManageColumnOpen = _useState9[0],
+      setManageColumnOpen = _useState9[1];
 
-  const toggleManageColumns = () => {
+  var toggleManageColumns = function toggleManageColumns() {
     setManageColumnOpen(!isManageColumnOpen);
   };
 
-  const updateColumnStructure = (newColumnStructure, remarksColumn) => {
-    setColumns([...newColumnStructure]);
+  var updateColumnStructure = function updateColumnStructure(newColumnStructure, remarksColumn) {
+    setColumns([].concat(newColumnStructure));
     setIsRowExpandEnabled(!!(remarksColumn && remarksColumn.length > 0));
   };
 
-  const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
+  var _useState10 = useState(false),
+      isExportOverlayOpen = _useState10[0],
+      setIsExportOverlayOpen = _useState10[1];
 
-  const toggleExportDataOverlay = () => {
+  var toggleExportDataOverlay = function toggleExportDataOverlay() {
     setIsExportOverlayOpen(!isExportOverlayOpen);
   };
 
-  const defaultColumn = useMemo(() => ({
-    Filter: DefaultColumnFilter
-  }), []);
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    selectedFlatRows,
-    state,
-    setGlobalFilter
-  } = useTable({
-    columns,
-    data,
-    defaultColumn,
-    globalFilter: (rowsToFilter, columnsToFilter, filterValue) => {
-      if (globalSearchLogic && typeof globalSearchLogic === "function") {
-        return globalSearchLogic(rowsToFilter, filterValue);
-      }
+  var defaultColumn = useMemo(function () {
+    return {
+      Filter: DefaultColumnFilter
+    };
+  }, []);
 
-      return rowsToFilter;
+  var _useTable = useTable({
+    columns: columns,
+    data: data,
+    defaultColumn: defaultColumn,
+    globalFilter: function globalFilter(rowsToFilter, columnsToFilter, filterValue) {
+      var searchText = filterValue ? filterValue.toLowerCase() : "";
+      return rowsToFilter.filter(function (row) {
+        var original = row.original;
+        var returnValue = false;
+        originalColumns.forEach(function (column) {
+          returnValue = returnValue || searchColumn(column, original, searchText);
+        });
+        return returnValue;
+      });
     },
     autoResetFilters: false,
     autoResetGlobalFilter: false,
     autoResetSortBy: false,
     autoResetExpanded: false,
     autoResetSelectedRows: false
-  }, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns, hooks => {
-    hooks.allColumns.push(hookColumns => [{
-      id: "selection",
-      columnId: "column_custom_0",
-      disableResizing: true,
-      disableFilters: true,
-      disableSortBy: true,
-      minWidth: 35,
-      width: 35,
-      maxWidth: 35,
-      Header: ({
-        getToggleAllRowsSelectedProps
-      }) => {
-        return /*#__PURE__*/React__default.createElement(RowSelector, getToggleAllRowsSelectedProps());
-      },
-      Cell: ({
-        row
-      }) => /*#__PURE__*/React__default.createElement(RowSelector, row.getToggleRowSelectedProps())
-    }, ...hookColumns, {
-      id: "custom",
-      columnId: "column_custom_1",
-      disableResizing: true,
-      disableFilters: true,
-      disableSortBy: true,
-      minWidth: 35,
-      width: 35,
-      maxWidth: 35,
-      Cell: ({
-        row
-      }) => {
-        return /*#__PURE__*/React__default.createElement("div", {
-          className: "action"
-        }, /*#__PURE__*/React__default.createElement(RowOptions, {
-          row: row,
-          rowActions: rowActions,
-          rowActionCallback: rowActionCallback,
-          bindRowEditOverlay: bindRowEditOverlay,
-          bindRowDeleteOverlay: bindRowDeleteOverlay
-        }), isRowExpandEnabled ? /*#__PURE__*/React__default.createElement("span", Object.assign({
-          className: "expander"
-        }, row.getToggleRowExpandedProps()), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconAngle, {
-          className: row.isExpanded ? "icon-arrow-up" : "icon-arrow-down"
-        }))) : null);
-      }
-    }]);
-  });
+  }, useFilters, useGlobalFilter, useSortBy, useExpanded, useRowSelect, useFlexLayout, useResizeColumns, function (hooks) {
+    hooks.allColumns.push(function (hookColumns) {
+      return [{
+        id: "selection",
+        columnId: "column_custom_0",
+        disableResizing: true,
+        disableFilters: true,
+        disableSortBy: true,
+        minWidth: 35,
+        width: 35,
+        maxWidth: 35,
+        Header: function Header(_ref) {
+          var getToggleAllRowsSelectedProps = _ref.getToggleAllRowsSelectedProps;
+          return /*#__PURE__*/React__default.createElement(RowSelector, getToggleAllRowsSelectedProps());
+        },
+        Cell: function Cell(_ref2) {
+          var row = _ref2.row;
+          return /*#__PURE__*/React__default.createElement(RowSelector, row.getToggleRowSelectedProps());
+        }
+      }].concat(hookColumns, [{
+        id: "custom",
+        columnId: "column_custom_1",
+        disableResizing: true,
+        disableFilters: true,
+        disableSortBy: true,
+        minWidth: 35,
+        width: 35,
+        maxWidth: 35,
+        Cell: function Cell(_ref3) {
+          var row = _ref3.row;
+          return /*#__PURE__*/React__default.createElement("div", {
+            className: "action"
+          }, /*#__PURE__*/React__default.createElement(RowOptions, {
+            row: row,
+            rowActions: rowActions,
+            rowActionCallback: rowActionCallback,
+            bindRowEditOverlay: bindRowEditOverlay,
+            bindRowDeleteOverlay: bindRowDeleteOverlay
+          }), isRowExpandEnabled ? /*#__PURE__*/React__default.createElement("span", _extends({
+            className: "expander"
+          }, row.getToggleRowExpandedProps()), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconAngle, {
+            className: row.isExpanded ? "icon-arrow-up" : "icon-arrow-down"
+          }))) : null);
+        }
+      }]);
+    });
+  }),
+      getTableProps = _useTable.getTableProps,
+      getTableBodyProps = _useTable.getTableBodyProps,
+      headerGroups = _useTable.headerGroups,
+      rows = _useTable.rows,
+      prepareRow = _useTable.prepareRow,
+      selectedFlatRows = _useTable.selectedFlatRows,
+      state = _useTable.state,
+      setGlobalFilter = _useTable.setGlobalFilter;
 
-  const bulkSelector = () => {
+  var bulkSelector = function bulkSelector() {
     if (selectBulkData) {
       selectBulkData(selectedFlatRows);
     }
   };
 
-  useEffect(() => {
+  useEffect(function () {
     if (listRef && listRef.current) {
       listRef.current.resetAfterIndex(0, true);
     }
   });
-  const RenderRow = useCallback(({
-    index,
-    style
-  }) => {
-    if (isItemLoaded(index)) {
-      const row = rows[index];
-      prepareRow(row);
-      return /*#__PURE__*/React__default.createElement("div", Object.assign({}, row.getRowProps({
-        style
-      }), {
-        className: "table-row tr"
-      }), /*#__PURE__*/React__default.createElement("div", {
-        className: "table-row-wrap"
-      }, row.cells.map(cell => {
-        return /*#__PURE__*/React__default.createElement("div", Object.assign({}, cell.getCellProps(), {
-          className: "table-cell td"
-        }), cell.render("Cell"));
-      })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
-        className: "expand"
-      }, displayExpandedContent ? displayExpandedContent(row) : null) : null);
-    }
-
-    return null;
+  var RenderRow = useCallback(function (_ref4) {
+    var index = _ref4.index,
+        style = _ref4.style;
+    var row = rows[index];
+    prepareRow(row);
+    return /*#__PURE__*/React__default.createElement("div", _extends({}, row.getRowProps({
+      style: style
+    }), {
+      className: "table-row tr"
+    }), /*#__PURE__*/React__default.createElement("div", {
+      className: "table-row-wrap"
+    }, row.cells.map(function (cell) {
+      return /*#__PURE__*/React__default.createElement("div", _extends({}, cell.getCellProps(), {
+        className: "table-cell td"
+      }), cell.render("Cell"));
+    })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
+      className: "expand"
+    }, displayExpandedContent ? displayExpandedContent(row) : null) : null);
   }, [prepareRow, rows, displayExpandedContent]);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "table-wrapper",
@@ -3908,47 +3986,54 @@ const Customgrid = memo(props => {
   }, /*#__PURE__*/React__default.createElement(AutoSizer, {
     disableWidth: true,
     disableResizing: true
-  }, ({
-    height
-  }) => /*#__PURE__*/React__default.createElement("div", Object.assign({}, getTableProps(), {
-    className: "table"
-  }), /*#__PURE__*/React__default.createElement("div", {
-    className: "thead table-row table-row--head"
-  }, headerGroups.map(headerGroup => /*#__PURE__*/React__default.createElement("div", Object.assign({}, headerGroup.getHeaderGroupProps(), {
-    className: "tr"
-  }), headerGroup.headers.map(column => /*#__PURE__*/React__default.createElement("div", Object.assign({}, column.getHeaderProps(), {
-    className: "table-cell column-heading th"
-  }), /*#__PURE__*/React__default.createElement("div", column.getSortByToggleProps(), column.render("Header"), /*#__PURE__*/React__default.createElement("span", null, column.isSorted ? /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconSort, {
-    className: column.isSortedDesc ? "sort-asc" : "sort-desc"
-  })) : "")), /*#__PURE__*/React__default.createElement("div", {
-    className: `txt-wrap column-filter ${isFilterOpen ? "open" : ""}`
-  }, !column.disableFilters ? column.render("Filter") : null), column.canResize && /*#__PURE__*/React__default.createElement("div", Object.assign({}, column.getResizerProps(), {
-    className: "resizer"
-  }))))))), /*#__PURE__*/React__default.createElement("div", Object.assign({}, getTableBodyProps(), {
-    className: "tbody"
-  }), /*#__PURE__*/React__default.createElement(InfiniteLoader, {
-    isItemLoaded: isItemLoaded,
-    itemCount: itemCount,
-    loadMoreItems: loadMoreItems
-  }, ({
-    onItemsRendered,
-    ref
-  }) => /*#__PURE__*/React__default.createElement(VariableSizeList, {
-    ref: list => {
-      ref(list);
-      listRef.current = list;
-    },
-    style: {
-      overflowX: "hidden"
-    },
-    height: height - 60,
-    itemCount: rows.length,
-    itemSize: index => {
-      return calculateRowHeight(rows[index], headerGroups && headerGroups.length ? headerGroups[0].headers : []);
-    },
-    onItemsRendered: onItemsRendered,
-    overscanCount: 20
-  }, RenderRow)))))));
+  }, function (_ref5) {
+    var height = _ref5.height;
+    return /*#__PURE__*/React__default.createElement("div", _extends({}, getTableProps(), {
+      className: "table"
+    }), /*#__PURE__*/React__default.createElement("div", {
+      className: "thead table-row table-row--head"
+    }, headerGroups.map(function (headerGroup) {
+      return /*#__PURE__*/React__default.createElement("div", _extends({}, headerGroup.getHeaderGroupProps(), {
+        className: "tr"
+      }), headerGroup.headers.map(function (column) {
+        return /*#__PURE__*/React__default.createElement("div", _extends({}, column.getHeaderProps(), {
+          className: "table-cell column-heading th"
+        }), /*#__PURE__*/React__default.createElement("div", column.getSortByToggleProps(), column.render("Header"), /*#__PURE__*/React__default.createElement("span", null, column.isSorted ? /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconSort, {
+          className: column.isSortedDesc ? "sort-asc" : "sort-desc"
+        })) : "")), /*#__PURE__*/React__default.createElement("div", {
+          className: "txt-wrap column-filter " + (isFilterOpen ? "open" : "")
+        }, !column.disableFilters ? column.render("Filter") : null), column.canResize && /*#__PURE__*/React__default.createElement("div", _extends({}, column.getResizerProps(), {
+          className: "resizer"
+        })));
+      }));
+    })), /*#__PURE__*/React__default.createElement("div", _extends({}, getTableBodyProps(), {
+      className: "tbody"
+    }), /*#__PURE__*/React__default.createElement(InfiniteLoader, {
+      isItemLoaded: isItemLoaded,
+      itemCount: itemCount,
+      loadMoreItems: loadMoreItems
+    }, function (_ref6) {
+      var onItemsRendered = _ref6.onItemsRendered,
+          _ref7 = _ref6.ref;
+      return /*#__PURE__*/React__default.createElement(VariableSizeList, {
+        ref: function ref(list) {
+          _ref7(list);
+
+          listRef.current = list;
+        },
+        style: {
+          overflowX: "hidden"
+        },
+        height: height - 60,
+        itemCount: rows.length,
+        itemSize: function itemSize(index) {
+          return calculateRowHeight(rows[index], headerGroups && headerGroups.length ? headerGroups[0].headers : []);
+        },
+        onItemsRendered: onItemsRendered,
+        overscanCount: 20
+      }, RenderRow);
+    })));
+  })));
 });
 Customgrid.propTypes = {
   title: propTypes.any,
@@ -3960,7 +4045,7 @@ Customgrid.propTypes = {
   getRowEditOverlay: propTypes.any,
   updateRowInGrid: propTypes.any,
   deleteRowFromGrid: propTypes.any,
-  globalSearchLogic: propTypes.any,
+  searchColumn: propTypes.any,
   selectBulkData: propTypes.any,
   calculateRowHeight: propTypes.any,
   isExpandContentAvailable: propTypes.any,
@@ -3976,43 +4061,54 @@ Customgrid.propTypes = {
   rowActionCallback: propTypes.any
 };
 
-const Grid = memo(props => {
-  const {
-    title,
-    gridHeight,
-    gridWidth,
-    loadData,
-    columns,
-    columnToExpand,
-    rowActions,
-    rowActionCallback,
-    getRowEditOverlay,
-    updateRowData,
-    deleteRowData,
-    selectBulkData,
-    calculateRowHeight
-  } = props;
-  const isDesktop = window.innerWidth > 1024;
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
-  const [groupSortOptions, setGroupSortOptions] = useState([]);
+var Grid = memo(function (props) {
+  var title = props.title,
+      gridHeight = props.gridHeight,
+      gridWidth = props.gridWidth,
+      loadData = props.loadData,
+      columns = props.columns,
+      columnToExpand = props.columnToExpand,
+      rowActions = props.rowActions,
+      rowActionCallback = props.rowActionCallback,
+      getRowEditOverlay = props.getRowEditOverlay,
+      updateRowData = props.updateRowData,
+      deleteRowData = props.deleteRowData,
+      selectBulkData = props.selectBulkData,
+      calculateRowHeight = props.calculateRowHeight;
+  var isDesktop = window.innerWidth > 1024;
 
-  const searchColumn = (column, original, searchText) => {
-    let isValuePresent = false;
-    const {
-      accessor,
-      innerCells
-    } = column;
-    const rowAccessorValue = original[accessor];
-    const isInnerCellsPresent = innerCells && innerCells.length > 0;
+  var _useState = useState(true),
+      hasNextPage = _useState[0],
+      setHasNextPage = _useState[1];
+
+  var _useState2 = useState(false),
+      isNextPageLoading = _useState2[0],
+      setIsNextPageLoading = _useState2[1];
+
+  var _useState3 = useState(false),
+      isLoading = _useState3[0],
+      setIsLoading = _useState3[1];
+
+  var _useState4 = useState([]),
+      items = _useState4[0],
+      setItems = _useState4[1];
+
+  var _useState5 = useState([]),
+      groupSortOptions = _useState5[0],
+      setGroupSortOptions = _useState5[1];
+
+  var searchColumn = function searchColumn(column, original, searchText) {
+    var isValuePresent = false;
+    var accessor = column.accessor,
+        innerCells = column.innerCells;
+    var rowAccessorValue = original[accessor];
+    var isInnerCellsPresent = innerCells && innerCells.length > 0;
 
     if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
       if (rowAccessorValue.length > 0) {
-        rowAccessorValue.forEach(value => {
-          innerCells.forEach(cell => {
-            const dataAccessor = value[cell.accessor];
+        rowAccessorValue.forEach(function (value) {
+          innerCells.forEach(function (cell) {
+            var dataAccessor = value[cell.accessor];
 
             if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
               isValuePresent = true;
@@ -4020,8 +4116,8 @@ const Grid = memo(props => {
           });
         });
       } else {
-        innerCells.forEach(cell => {
-          const dataAccessor = original[accessor][cell.accessor];
+        innerCells.forEach(function (cell) {
+          var dataAccessor = original[accessor][cell.accessor];
 
           if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
             isValuePresent = true;
@@ -4029,7 +4125,7 @@ const Grid = memo(props => {
         });
       }
     } else {
-      const dataAccessor = original[accessor];
+      var dataAccessor = original[accessor];
 
       if (dataAccessor && dataAccessor.toString().toLowerCase().includes(searchText)) {
         isValuePresent = true;
@@ -4039,94 +4135,71 @@ const Grid = memo(props => {
     return isValuePresent;
   };
 
-  const updateRowInGrid = (original, updatedRow) => {
-    setItems(old => old.map(row => {
-      let newRow = row;
+  var updateRowInGrid = function updateRowInGrid(original, updatedRow) {
+    setItems(function (old) {
+      return old.map(function (row) {
+        var newRow = row;
 
-      if (Object.entries(row).toString() === Object.entries(original).toString()) {
-        newRow = updatedRow;
-      }
+        if (Object.entries(row).toString() === Object.entries(original).toString()) {
+          newRow = updatedRow;
+        }
 
-      return newRow;
-    }));
+        return newRow;
+      });
+    });
 
     if (updateRowData) {
       updateRowData(updatedRow);
     }
   };
 
-  const deleteRowFromGrid = original => {
-    setItems(old => old.filter(row => {
-      return row !== original;
-    }));
+  var deleteRowFromGrid = function deleteRowFromGrid(original) {
+    setItems(function (old) {
+      return old.filter(function (row) {
+        return row !== original;
+      });
+    });
 
     if (deleteRowData) {
       deleteRowData(original);
     }
   };
 
-  const processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
-  const additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop);
-  const gridColumns = useMemo(() => processedColumns, []);
-  const renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
+  var processedColumns = extractColumns(columns, searchColumn, isDesktop, updateRowInGrid);
+  var additionalColumn = extractAdditionalColumn(columnToExpand, isDesktop);
+  var gridColumns = useMemo(function () {
+    return processedColumns;
+  }, []);
+  var renderExpandedContent = additionalColumn ? additionalColumn.displayCell : null;
 
-  const displayExpandedContent = row => {
-    const {
-      original
-    } = row;
-    const additionalColumnObj = additionalColumn;
-
-    if (original) {
-      return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
-        value: {
-          additionalColumn: additionalColumnObj
-        }
-      }, renderExpandedContent(original, AdditionalColumnTag));
-    }
-
-    return null;
+  var displayExpandedContent = function displayExpandedContent(row) {
+    var original = row.original;
+    var additionalColumnObj = additionalColumn;
+    return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
+      value: {
+        additionalColumn: additionalColumnObj
+      }
+    }, renderExpandedContent(original, AdditionalColumnTag));
   };
 
-  const globalSearchLogic = (rows, filterValue) => {
-    if (filterValue && processedColumns.length > 0) {
-      const searchText = filterValue.toLowerCase();
-      return rows.filter(row => {
-        const {
-          original
-        } = row;
-        let returnValue = false;
-        processedColumns.forEach(column => {
-          returnValue = returnValue || searchColumn(column, original, searchText);
-        });
-        return returnValue;
-      });
-    }
-
-    return rows;
-  };
-
-  const calculateDefaultRowHeight = (row, columnsInGrid) => {
-    let rowHeight = 50;
+  var calculateDefaultRowHeight = function calculateDefaultRowHeight(row, columnsInGrid) {
+    var rowHeight = 50;
 
     if (columnsInGrid && columnsInGrid.length > 0 && row) {
-      const {
-        original,
-        isExpanded
-      } = row;
-      const columnWithMaxWidth = [...columnsInGrid].sort((a, b) => {
+      var original = row.original,
+          isExpanded = row.isExpanded;
+      var columnWithMaxWidth = [].concat(columnsInGrid).sort(function (a, b) {
         return b.width - a.width;
       })[0];
-      const {
-        id,
-        width,
-        totalFlexWidth
-      } = columnWithMaxWidth;
-      const rowValue = original[id];
+      var id = columnWithMaxWidth.id,
+          width = columnWithMaxWidth.width,
+          totalFlexWidth = columnWithMaxWidth.totalFlexWidth;
+      var rowValue = original[id];
 
       if (rowValue) {
-        const textLength = Object.values(rowValue).join(",").length;
+        var textLength = Object.values(rowValue).join(",").length;
         rowHeight += Math.ceil(80 * textLength / totalFlexWidth);
-        const widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
+        var widthVariable = totalFlexWidth > width ? totalFlexWidth - width : width - totalFlexWidth;
         rowHeight += widthVariable / 1000;
       }
 
@@ -4138,8 +4211,8 @@ const Grid = memo(props => {
     return rowHeight;
   };
 
-  const compareValues = (compareOrder, v1, v2) => {
-    let returnValue = 0;
+  var compareValues = function compareValues(compareOrder, v1, v2) {
+    var returnValue = 0;
 
     if (compareOrder === "Ascending") {
       if (v1 > v2) {
@@ -4160,31 +4233,29 @@ const Grid = memo(props => {
     return returnValue;
   };
 
-  const getSortedData = originalData => {
-    return originalData.sort((x, y) => {
-      let compareResult = 0;
-      groupSortOptions.forEach(option => {
-        const {
-          sortBy,
-          sortOn,
-          order
-        } = option;
-        const newResult = sortOn === "value" ? compareValues(order, x[sortBy], y[sortBy]) : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
+  var getSortedData = function getSortedData(originalData) {
+    return originalData.sort(function (x, y) {
+      var compareResult = 0;
+      groupSortOptions.forEach(function (option) {
+        var sortBy = option.sortBy,
+            sortOn = option.sortOn,
+            order = option.order;
+        var newResult = sortOn === "value" ? compareValues(order, x[sortBy], y[sortBy]) : compareValues(order, x[sortBy][sortOn], y[sortBy][sortOn]);
         compareResult = compareResult || newResult;
       });
       return compareResult;
     });
   };
 
-  const doGroupSort = sortOptions => {
+  var doGroupSort = function doGroupSort(sortOptions) {
     setGroupSortOptions(sortOptions);
   };
 
-  const loadNextPage = () => {
+  var loadNextPage = function loadNextPage() {
     if (hasNextPage) {
       setIsLoading(true);
       setIsNextPageLoading(true);
-      loadData().then(data => {
+      loadData().then(function (data) {
         setIsLoading(false);
         setHasNextPage(data && data.length > 0);
         setIsNextPageLoading(false);
@@ -4193,9 +4264,9 @@ const Grid = memo(props => {
     }
   };
 
-  useEffect(() => {
-    processedColumns.map(column => {
-      const columnTpProcess = column;
+  useEffect(function () {
+    processedColumns.map(function (column) {
+      var columnTpProcess = column;
 
       if (column.innerCells) {
         columnTpProcess.originalInnerCells = column.innerCells;
@@ -4205,9 +4276,7 @@ const Grid = memo(props => {
     });
 
     if (additionalColumn) {
-      const {
-        innerCells
-      } = additionalColumn;
+      var innerCells = additionalColumn.innerCells;
 
       if (innerCells) {
         additionalColumn.originalInnerCells = innerCells;
@@ -4215,12 +4284,12 @@ const Grid = memo(props => {
     }
 
     setIsLoading(true);
-    loadData().then(data => {
+    loadData().then(function (data) {
       setIsLoading(false);
       setItems(data);
     });
   }, []);
-  const data = getSortedData([...items]);
+  var data = getSortedData([].concat(items));
   return /*#__PURE__*/React__default.createElement("div", {
     className: "grid-component-container"
   }, data && data.length > 0 && processedColumns && processedColumns.length > 0 ? /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement(Customgrid, {
@@ -4234,7 +4303,7 @@ const Grid = memo(props => {
     getRowEditOverlay: getRowEditOverlay,
     updateRowInGrid: updateRowInGrid,
     deleteRowFromGrid: deleteRowFromGrid,
-    globalSearchLogic: globalSearchLogic,
+    searchColumn: searchColumn,
     selectBulkData: selectBulkData,
     calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
     isExpandContentAvailable: typeof renderExpandedContent === "function",

@@ -3686,7 +3686,7 @@ var Customgrid = React.memo(function (props) {
       getRowEditOverlay = props.getRowEditOverlay,
       updateRowInGrid = props.updateRowInGrid,
       deleteRowFromGrid = props.deleteRowFromGrid,
-      globalSearchLogic = props.globalSearchLogic,
+      searchColumn = props.searchColumn,
       selectBulkData = props.selectBulkData,
       calculateRowHeight = props.calculateRowHeight,
       isExpandContentAvailable = props.isExpandContentAvailable,
@@ -3801,11 +3801,15 @@ var Customgrid = React.memo(function (props) {
     data: data,
     defaultColumn: defaultColumn,
     globalFilter: function globalFilter(rowsToFilter, columnsToFilter, filterValue) {
-      if (globalSearchLogic && typeof globalSearchLogic === "function") {
-        return globalSearchLogic(rowsToFilter, filterValue);
-      }
-
-      return rowsToFilter;
+      var searchText = filterValue ? filterValue.toLowerCase() : "";
+      return rowsToFilter.filter(function (row) {
+        var original = row.original;
+        var returnValue = false;
+        originalColumns.forEach(function (column) {
+          returnValue = returnValue || searchColumn(column, original, searchText);
+        });
+        return returnValue;
+      });
     },
     autoResetFilters: false,
     autoResetGlobalFilter: false,
@@ -3882,26 +3886,21 @@ var Customgrid = React.memo(function (props) {
   var RenderRow = React.useCallback(function (_ref4) {
     var index = _ref4.index,
         style = _ref4.style;
-
-    if (isItemLoaded(index)) {
-      var row = rows[index];
-      prepareRow(row);
-      return /*#__PURE__*/React__default.createElement("div", _extends({}, row.getRowProps({
-        style: style
-      }), {
-        className: "table-row tr"
-      }), /*#__PURE__*/React__default.createElement("div", {
-        className: "table-row-wrap"
-      }, row.cells.map(function (cell) {
-        return /*#__PURE__*/React__default.createElement("div", _extends({}, cell.getCellProps(), {
-          className: "table-cell td"
-        }), cell.render("Cell"));
-      })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
-        className: "expand"
-      }, displayExpandedContent ? displayExpandedContent(row) : null) : null);
-    }
-
-    return null;
+    var row = rows[index];
+    prepareRow(row);
+    return /*#__PURE__*/React__default.createElement("div", _extends({}, row.getRowProps({
+      style: style
+    }), {
+      className: "table-row tr"
+    }), /*#__PURE__*/React__default.createElement("div", {
+      className: "table-row-wrap"
+    }, row.cells.map(function (cell) {
+      return /*#__PURE__*/React__default.createElement("div", _extends({}, cell.getCellProps(), {
+        className: "table-cell td"
+      }), cell.render("Cell"));
+    })), isRowExpandEnabled && row.isExpanded ? /*#__PURE__*/React__default.createElement("div", {
+      className: "expand"
+    }, displayExpandedContent ? displayExpandedContent(row) : null) : null);
   }, [prepareRow, rows, displayExpandedContent]);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "table-wrapper",
@@ -4050,7 +4049,7 @@ Customgrid.propTypes = {
   getRowEditOverlay: propTypes.any,
   updateRowInGrid: propTypes.any,
   deleteRowFromGrid: propTypes.any,
-  globalSearchLogic: propTypes.any,
+  searchColumn: propTypes.any,
   selectBulkData: propTypes.any,
   calculateRowHeight: propTypes.any,
   isExpandContentAvailable: propTypes.any,
@@ -4180,32 +4179,11 @@ var Grid = React.memo(function (props) {
   var displayExpandedContent = function displayExpandedContent(row) {
     var original = row.original;
     var additionalColumnObj = additionalColumn;
-
-    if (original) {
-      return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
-        value: {
-          additionalColumn: additionalColumnObj
-        }
-      }, renderExpandedContent(original, AdditionalColumnTag));
-    }
-
-    return null;
-  };
-
-  var globalSearchLogic = function globalSearchLogic(rows, filterValue) {
-    if (filterValue && processedColumns.length > 0) {
-      var searchText = filterValue.toLowerCase();
-      return rows.filter(function (row) {
-        var original = row.original;
-        var returnValue = false;
-        processedColumns.forEach(function (column) {
-          returnValue = returnValue || searchColumn(column, original, searchText);
-        });
-        return returnValue;
-      });
-    }
-
-    return rows;
+    return /*#__PURE__*/React__default.createElement(AdditionalColumnContext.Provider, {
+      value: {
+        additionalColumn: additionalColumnObj
+      }
+    }, renderExpandedContent(original, AdditionalColumnTag));
   };
 
   var calculateDefaultRowHeight = function calculateDefaultRowHeight(row, columnsInGrid) {
@@ -4329,7 +4307,7 @@ var Grid = React.memo(function (props) {
     getRowEditOverlay: getRowEditOverlay,
     updateRowInGrid: updateRowInGrid,
     deleteRowFromGrid: deleteRowFromGrid,
-    globalSearchLogic: globalSearchLogic,
+    searchColumn: searchColumn,
     selectBulkData: selectBulkData,
     calculateRowHeight: calculateRowHeight && typeof calculateRowHeight === "function" ? calculateRowHeight : calculateDefaultRowHeight,
     isExpandContentAvailable: typeof renderExpandedContent === "function",
