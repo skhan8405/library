@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { checkInnerCells } from "../../../src/Utilities/TagUtilities";
+import { checkInnerCells } from "../../src/Utilities/TagUtilities";
 
 test("Test checkInnerCells without column", () => {
     const mockCheckInnerCells = jest.fn().mockImplementation(checkInnerCells);

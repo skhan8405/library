@@ -5,7 +5,7 @@ import { act } from "react-dom/test-utils";
 import "@testing-library/jest-dom/extend-expect";
 /* eslint-disable no-unused-vars */
 import regeneratorRuntime from "regenerator-runtime";
-import Grid from "../../src/index";
+import Grid from "../src/index";
 
 describe("render Customgrid ", () => {
     jest.setTimeout(30000);

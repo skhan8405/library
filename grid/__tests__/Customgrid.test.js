@@ -5,7 +5,7 @@ import { act } from "react-dom/test-utils";
 import "@testing-library/jest-dom/extend-expect";
 /* eslint-disable no-unused-vars */
 import regeneratorRuntime from "regenerator-runtime";
-import Customgrid from "../../src/Customgrid";
+import Customgrid from "../src/Customgrid";
 
 describe("render CustomgridCustomgrid", () => {
     function mockOffsetSize(width, height) {

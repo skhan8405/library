@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import DefaultColumnFilter from "../../../src/Functions/DefaultColumnFilter";
+import DefaultColumnFilter from "../../src/Functions/DefaultColumnFilter";
 import "@testing-library/jest-dom/extend-expect";
 
 describe("DefaultColumnFilter component", () => {
