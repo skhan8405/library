@@ -1,0 +1,45 @@
+[{
+    "awbId": "012-0213 1242",
+    "discrepancy": "",
+    "routedetails" : [{
+      "Origin": "LAX",
+      "Destination": "LHR",
+      "CarrierFlightNo": "VA - 1635",
+      "FlightDate": "13-Aug-2020",
+      "Truck": false,
+      "Pieces": 10,
+      "Weight": "120 kg",
+      "AgreementType": "Type",
+      "Source": "Booking"
+    }]
+  },
+  {
+    "awbId": "012-0213 1243",
+    "discrepancy": "",
+    "routedetails" : [{
+      "Origin": "LAX",
+      "Destination": "LHR",
+      "CarrierFlightNo": "VA - 1645",
+      "FlightDate": "13-Aug-2020",
+      "Truck": true,
+      "Pieces": 10,
+      "Weight": "120 kg",
+      "AgreementType": "Type",
+      "Source": "Booking"
+    }]
+  },
+  {
+    "awbId": "012-0213 1244",
+    "discrepancy": "",
+    "routedetails" : [{
+      "Origin": "LAX",
+      "Destination": "LHR",
+      "CarrierFlightNo": "VA - 1655",
+      "FlightDate": "13-Aug-2020",
+      "Truck": false,
+      "Pieces": 10,
+      "Weight": "120 kg",
+      "AgreementType": "Type",
+      "Source": "Booking"
+    }]
+  }]

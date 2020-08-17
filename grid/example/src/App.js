@@ -87,425 +87,66 @@ const App = () => {
     //Configure columns and its related functions
     let columns = [
         {
-            Header: "Id",
-            accessor: "travelId",
+            Header: "AWB Details",
+            accessor: "awbId",
             width: 50,
             disableFilters: true
         },
         {
-            Header: "Flight",
-            accessor: "flight",
+            Header: "Discrepancy",
+            accessor: "discrepancy",
             width: 100,
-            innerCells: [
-                {
-                    Header: "Flight No",
-                    accessor: "flightno"
-                },
-                {
-                    Header: "Date",
-                    accessor: "date"
-                }
-            ],
-            sortValue: "flightno",
-            displayCell: (rowData, DisplayTag) => {
-                const { flightno, date } = rowData.flight;
-                return (
-                    <div className="flight-details">
-                        <DisplayTag columnKey="flight" cellKey="flightno">
-                            <strong>{flightno}</strong>
-                        </DisplayTag>
-                        <DisplayTag columnKey="flight" cellKey="date">
-                            <span>{getValueOfDate(date, "cell")}</span>
-                        </DisplayTag>
-                    </div>
-                );
-            },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
-                return (
-                    <FlightEdit
-                        rowData={rowData}
-                        DisplayTag={DisplayTag}
-                        rowUpdateCallBack={rowUpdateCallBack}
-                    />
-                );
-            }
+            disableFilters: true
         },
         {
-            Header: "Segment",
-            accessor: "segment",
-            width: 100,
-            innerCells: [
-                {
-                    Header: "From",
-                    accessor: "from"
-                },
-                {
-                    Header: "To",
-                    accessor: "to"
-                }
-            ],
-            disableSortBy: true,
-            displayCell: (rowData, DisplayTag) => {
-                const { from, to } = rowData.segment;
-                return (
-                    <div className="segment-details">
-                        <DisplayTag columnKey="segment" cellKey="from">
-                            <span>{from}</span>
-                        </DisplayTag>
-                        <i>
-                            <img src={FlightIcon} alt="segment" />
-                        </i>
-                        <DisplayTag columnKey="segment" cellKey="to">
-                            <span>{to}</span>
-                        </DisplayTag>
-                    </div>
-                );
-            },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
-                return (
-                    <SegmentEdit
-                        airportCodeList={airportCodeList}
-                        rowData={rowData}
-                        DisplayTag={DisplayTag}
-                        rowUpdateCallBack={rowUpdateCallBack}
-                    />
-                );
-            }
-        },
-        {
-            Header: "Details",
-            accessor: "details",
-            onlyInDesktop: true,
-            width: 300,
-            innerCells: [
-                {
-                    Header: "Flight Model",
-                    accessor: "flightModel"
-                },
-                {
-                    Header: "Body Type",
-                    accessor: "bodyType"
-                },
-                {
-                    Header: "Type",
-                    accessor: "type"
-                },
-                {
-                    Header: "Start Time",
-                    accessor: "startTime"
-                },
-                {
-                    Header: "End Time",
-                    accessor: "endTime"
-                },
-                {
-                    Header: "Status",
-                    accessor: "status"
-                },
-                {
-                    Header: "Additional Status",
-                    accessor: "additionalStatus"
-                },
-                {
-                    Header: "Time Status",
-                    accessor: "timeStatus"
-                }
-            ],
-            disableSortBy: true,
-            displayCell: (rowData, DisplayTag) => {
-                const {
-                    startTime,
-                    endTime,
-                    status,
-                    additionalStatus,
-                    flightModel,
-                    bodyType,
-                    type,
-                    timeStatus
-                } = rowData.details;
-                const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
-                const timeValue = timeStatusArray.shift();
-                const timeText = timeStatusArray.join(" ");
-                return (
-                    <div className="details-wrap">
-                        <ul>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="startTime"
-                                >
-                                    {startTime}
-                                </DisplayTag>
-                                -
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="endTime"
-                                >
-                                    {endTime}
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="status"
-                                >
-                                    <span>{status}</span>
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="additionalStatus"
-                                >
-                                    {additionalStatus}
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="flightModel"
-                                >
-                                    {flightModel}
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="bodyType"
-                                >
-                                    {bodyType}
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="type"
-                                    >
-                                        {type}
-                                    </DisplayTag>
-                                </span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="timeStatus"
-                                >
-                                    <strong>{timeValue} </strong>
-                                    <span>{timeText}</span>
-                                </DisplayTag>
-                            </li>
-                        </ul>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "Weight",
-            accessor: "weight",
-            width: 130,
-            innerCells: [
-                {
-                    Header: "Percentage",
-                    accessor: "percentage"
-                },
-                {
-                    Header: "Value",
-                    accessor: "value"
-                }
-            ],
-            sortValue: "percentage",
-            displayCell: (rowData, DisplayTag) => {
-                const { percentage, value } = rowData.weight;
-                const splitValue = value ? value.split("/") : [];
-                let valuePrefix,
-                    valueSuffix = "";
-                if (splitValue.length === 2) {
-                    valuePrefix = splitValue[0];
-                    valueSuffix = splitValue[1];
-                }
-                return (
-                    <div className="weight-details">
-                        <DisplayTag columnKey="weight" cellKey="percentage">
-                            <strong className="per">{percentage}</strong>
-                        </DisplayTag>
-                        <DisplayTag columnKey="weight" cellKey="value">
-                            <span>
-                                <strong>{valuePrefix}/</strong>
-                                {valueSuffix}
-                            </span>
-                        </DisplayTag>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "Volume",
-            accessor: "volume",
-            width: 100,
-            innerCells: [
-                {
-                    Header: "Percentage",
-                    accessor: "percentage"
-                },
-                {
-                    Header: "Value",
-                    accessor: "value"
-                }
-            ],
-            sortValue: "percentage",
-            displayCell: (rowData, DisplayTag) => {
-                const { percentage, value } = rowData.volume;
-                const splitValue = value ? value.split("/") : [];
-                let valuePrefix,
-                    valueSuffix = "";
-                if (splitValue.length === 2) {
-                    valuePrefix = splitValue[0];
-                    valueSuffix = splitValue[1];
-                }
-                return (
-                    <div className="weight-details">
-                        <DisplayTag columnKey="volume" cellKey="percentage">
-                            <strong className="per">{percentage}</strong>
-                        </DisplayTag>
-                        <DisplayTag columnKey="volume" cellKey="value">
-                            <span>
-                                <strong>{valuePrefix}/</strong>
-                                {valueSuffix}
-                            </span>
-                        </DisplayTag>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "ULD Positions",
-            accessor: "uldPositions",
+            Header: "Route Details",
+            accessor: "routedetails",
             width: 120,
             innerCells: [
                 {
-                    Header: "Position",
-                    accessor: "position"
+                    Header: "Origin",
+                    accessor: "Origin"
                 },
                 {
-                    Header: "Value",
-                    accessor: "value"
+                    Header: "Destination",
+                    accessor: "Destination"
+                },                
+                {
+                    Header: "CarrierFlightNo",
+                    accessor: "CarrierFlightNo"
                 }
             ],
             disableSortBy: true,
             displayCell: (rowData, DisplayTag) => {
-                const { uldPositions } = rowData;
+                const { routedetails } = rowData;
                 return (
                     <div className="uld-details">
                         <ul>
-                            {uldPositions.map((positions, index) => {
+                            {routedetails.map((routes, index) => {
                                 return (
                                     <li key={index}>
                                         <DisplayTag
-                                            columnKey="uldPositions"
-                                            cellKey="position"
+                                            columnKey="routedetails"
+                                            cellKey="Origin"
                                         >
-                                            <span>{positions.position}</span>
+                                            <span>{routes.Origin}</span>
                                         </DisplayTag>
                                         <DisplayTag
-                                            columnKey="uldPositions"
-                                            cellKey="value"
+                                            columnKey="routedetails"
+                                            cellKey="Destination"
                                         >
-                                            <strong>{positions.value}</strong>
+                                            <strong>{routes.Destination}</strong>
+                                        </DisplayTag>
+                                        <DisplayTag
+                                            columnKey="routedetails"
+                                            cellKey="CarrierFlightNo"
+                                        >
+                                            <strong>{routes.CarrierFlightNo}</strong>
                                         </DisplayTag>
                                     </li>
                                 );
                             })}
                         </ul>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "Revenue/Yield",
-            accessor: "revenue",
-            width: 120,
-            innerCells: [
-                {
-                    Header: "Revenue",
-                    accessor: "revenue"
-                },
-                {
-                    Header: "Yeild",
-                    accessor: "yeild"
-                }
-            ],
-            displayCell: (rowData, DisplayTag) => {
-                const { revenue, yeild } = rowData.revenue;
-                return (
-                    <div className="revenue-details">
-                        <DisplayTag columnKey="revenue" cellKey="revenue">
-                            <span className="large">{revenue}</span>
-                        </DisplayTag>
-                        <DisplayTag columnKey="revenue" cellKey="yeild">
-                            <span>{yeild}</span>
-                        </DisplayTag>
-                    </div>
-                );
-            },
-            sortValue: "revenue"
-        },
-        {
-            Header: "SR",
-            accessor: "sr",
-            width: 90,
-            displayCell: (rowData) => {
-                const { sr } = rowData;
-                return (
-                    <div className="sr-details">
-                        <span>{sr}</span>
-                    </div>
-                );
-            },
-            editCell: (rowData, rowUpdateCallBack) => {
-                return (
-                    <SrEdit
-                        rowData={rowData}
-                        rowUpdateCallBack={rowUpdateCallBack}
-                    />
-                );
-            }
-        },
-        {
-            Header: "Queued Booking",
-            accessor: "queuedBooking",
-            width: 130,
-            innerCells: [
-                {
-                    Header: "Sr",
-                    accessor: "sr"
-                },
-                {
-                    Header: "Volume",
-                    accessor: "volume"
-                }
-            ],
-            disableSortBy: true,
-            displayCell: (rowData, DisplayTag) => {
-                const { sr, volume } = rowData.queuedBooking;
-                return (
-                    <div className="queued-details">
-                        <DisplayTag columnKey="queuedBooking" cellKey="sr">
-                            <span>
-                                <strong>{sr}</strong>
-                            </span>
-                        </DisplayTag>
-                        <DisplayTag columnKey="queuedBooking" cellKey="volume">
-                            <span>
-                                <strong>{volume}</strong>
-                            </span>
-                        </DisplayTag>
                     </div>
                 );
             }

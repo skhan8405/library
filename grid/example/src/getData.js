@@ -1,4 +1,6 @@
 import axios from "axios";
+import routes from './routes.json';
+import flights from './flights.json';
 
 export const fetchData = async (index, pageSize) => {
     const pageNumber = Math.floor(index / pageSize) + 1;
@@ -9,7 +11,7 @@ export const fetchData = async (index, pageSize) => {
     if (response && response.data && response.data.data) {
         const { result } = response.data.data;
         if (result) {
-            return result;
+            return routes;
         }
     }
     return [];
