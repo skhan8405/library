@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-fragments */
-/* eslint-disable react/destructuring-assignment */
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import PropTypes from "prop-types";
@@ -8,7 +6,8 @@ import { ItemTypes } from "./ItemTypes";
 import ColumnItem from "./columnItem";
 
 const ColumnsList = (props) => {
-    const [columns, setColumns] = useState([...props.columnsArray]);
+    const { columnsArray } = props;
+    const [columns, setColumns] = useState([...columnsArray]);
 
     const findColumn = (id) => {
         const column = columns.filter((c) => `${c.id}` === id)[0];
@@ -46,21 +45,19 @@ const ColumnsList = (props) => {
 
     React.useEffect(() => {
         setColumns(props.columnsArray);
-    }, [props.columnsArray]);
+    }, [columnsArray]);
     return (
-        <Fragment>
-            <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
-                {columns.map((column) => (
-                    <ColumnItem
-                        key={column.id}
-                        id={`${column.id}`}
-                        text={column.text}
-                        moveColumn={moveColumn}
-                        findColumn={findColumn}
-                    />
-                ))}
-            </div>
-        </Fragment>
+        <div ref={drop} style={{ display: "flex", flexWrap: "wrap" }}>
+            {columns.map((column) => (
+                <ColumnItem
+                    key={column.id}
+                    id={`${column.id}`}
+                    text={column.text}
+                    moveColumn={moveColumn}
+                    findColumn={findColumn}
+                />
+            ))}
+        </div>
     );
 };
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import React from "react";
 import JsPdf from "jspdf";
 import "jspdf-autotable";
@@ -10,17 +9,17 @@ import { ReactComponent as IconExcel } from "../../images/icon-excel.svg";
 import { ReactComponent as IconPdf } from "../../images/icon-pdf.svg";
 import { ReactComponent as IconClose } from "../../images/icon-close.svg";
 
-let downLaodFileType = [];
 class ExportData extends React.Component {
     constructor(props) {
         super(props);
+        const { columnsList } = this.props;
         this.state = {
-            columnValueList: this.props.columnsList,
-            columnEntityList: this.props.columnsList,
+            columnValueList: columnsList,
+            columnEntityList: columnsList,
             isAllSelected: true,
             downLaodFileType: [],
             // eslint-disable-next-line react/no-unused-state
-            warning: " ",
+            warning: "",
             clickTag: "none"
         };
         this.handleClick = this.handleClick.bind(this);
@@ -36,20 +35,18 @@ class ExportData extends React.Component {
     };
 
     selectAllToColumnList = () => {
+        const { isAllSelected } = this.state;
+        const { columnsList } = this.props;
         this.resetColumnExportList();
         this.setState({
-            // eslint-disable-next-line react/no-access-state-in-setstate
-            columnEntityList: !this.state.isAllSelected
-                ? this.props.columnsList
-                : [],
-            // eslint-disable-next-line react/no-access-state-in-setstate
-            isAllSelected: !this.state.isAllSelected
+            columnEntityList: !isAllSelected ? columnsList : [],
+            isAllSelected: !isAllSelected
         });
     };
 
     addToColumnEntityList = (typeToBeAdded) => {
-        // eslint-disable-next-line react/no-access-state-in-setstate
-        let existingColumnEntityList = this.state.columnEntityList;
+        const { columnEntityList } = this.state;
+        let existingColumnEntityList = columnEntityList;
         if (!existingColumnEntityList.includes(typeToBeAdded)) {
             existingColumnEntityList.push(typeToBeAdded);
         } else {
@@ -66,9 +63,11 @@ class ExportData extends React.Component {
     };
 
     selectDownLoadType = (event) => {
+        // eslint-disable-next-line no-shadow
+        let { downLaodFileType } = this.state;
         if (
             event.target.checked &&
-            !this.state.downLaodFileType.includes(event.target.value)
+            !downLaodFileType.includes(event.target.value)
         ) {
             downLaodFileType.push(event.target.value);
             this.setState({ downLaodFileType });
@@ -83,15 +82,14 @@ class ExportData extends React.Component {
     };
 
     exportRowData = () => {
-        const columnValueList = this.state.columnEntityList;
+        // eslint-disable-next-line no-shadow
+        const { columnEntityList, downLaodFileType } = this.state;
+        const columnValueList = columnEntityList;
         const filteredRow = [];
         const filteredRowValues = [];
         const filteredRowHeader = [];
 
-        if (
-            columnValueList.length > 0 &&
-            this.state.downLaodFileType.length > 0
-        ) {
+        if (columnValueList.length > 0 && downLaodFileType.length > 0) {
             const { rows } = this.props;
             const rowLength = rows && rows.length > 0 ? rows.length : 0;
             rows.forEach((row, index) => {
@@ -110,7 +108,7 @@ class ExportData extends React.Component {
                     filteredRowHeader.push(rowFilteredHeader);
             });
 
-            this.state.downLaodFileType.forEach((item) => {
+            downLaodFileType.forEach((item) => {
                 if (item === "pdf") {
                     this.downloadPDF(filteredRowValues, filteredRowHeader);
                 } else if (item === "excel") {
@@ -184,13 +182,14 @@ class ExportData extends React.Component {
     };
 
     exportValidation = () => {
-        const columnLength = this.state.columnEntityList.length;
-        const fileLength = this.state.downLaodFileType.length;
+        // eslint-disable-next-line no-shadow
+        const { columnEntityList, downLaodFileType } = this.state;
+        const columnLength = columnEntityList.length;
+        const fileLength = downLaodFileType.length;
         if (columnLength > 0 && fileLength > 0) {
             this.exportRowData();
             this.setState({ clickTag: "none" });
         } else if (columnLength === 0) {
-            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "Column" });
             this.setState({ clickTag: "" });
         } else if (fileLength === 0) {
@@ -206,10 +205,18 @@ class ExportData extends React.Component {
     };
 
     handleClick() {
-        this.props.closeExport();
+        const { closeExport } = this.props;
+        closeExport();
     }
 
     render() {
+        const {
+            isAllSelected,
+            columnValueList,
+            columnEntityList,
+            clickTag
+        } = this.state;
+        const { closeExport } = this.props;
         return (
             <ClickAwayListener
                 onClickAway={this.handleClick}
@@ -241,14 +248,13 @@ class ExportData extends React.Component {
                                         onChange={() =>
                                             this.selectAllToColumnList()
                                         }
-                                        checked={this.state.isAllSelected}
+                                        checked={isAllSelected}
                                     />
                                 </div>
                                 <div className="export__txt">Select All</div>
                             </div>
-                            {this.state.columnValueList &&
-                            this.state.columnValueList.length > 0
-                                ? this.state.columnValueList.map((column) => {
+                            {columnValueList && columnValueList.length > 0
+                                ? columnValueList.map((column) => {
                                       return (
                                           <div
                                               className="export__wrap"
@@ -258,7 +264,7 @@ class ExportData extends React.Component {
                                                   <input
                                                       data-testid="addToColumn"
                                                       type="checkbox"
-                                                      checked={this.state.columnEntityList.includes(
+                                                      checked={columnEntityList.includes(
                                                           column
                                                       )}
                                                       onChange={() =>
@@ -281,10 +287,7 @@ class ExportData extends React.Component {
                         <div className="export__header">
                             <div className="export__headerTxt" />
                             <div className="export__close">
-                                <i
-                                    role="presentation"
-                                    onClick={this.props.closeExport}
-                                >
+                                <i role="presentation" onClick={closeExport}>
                                     <IconClose />
                                 </i>
                             </div>
@@ -342,7 +345,7 @@ class ExportData extends React.Component {
                                 </div>
                             </div>
                             <div className="exportWarning">
-                                <span style={{ display: this.state.clickTag }}>
+                                <span style={{ display: clickTag }}>
                                     <strong>
                                         Select at least one file type
                                     </strong>
@@ -355,7 +358,7 @@ class ExportData extends React.Component {
                                     data-testid="closeExport"
                                     type="button"
                                     className="btns"
-                                    onClick={() => this.props.closeExport()}
+                                    onClick={() => closeExport()}
                                 >
                                     Cancel
                                 </button>
