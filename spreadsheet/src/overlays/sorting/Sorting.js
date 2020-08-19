@@ -1,6 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint no-unused-expressions: ["error", {"allowTernary": true }] */
-/* eslint-disable react/no-access-state-in-setstate */
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -27,56 +24,66 @@ const HTML5toTouch = {
         }
     ]
 };
+
 class App extends React.Component {
     constructor(props) {
         super(props);
+        const { sortingParamsObjectList } = this.props;
         this.state = {
             rowList: [true],
             sortingOrderList:
-                this.props.sortingParamsObjectList === undefined
+                sortingParamsObjectList === undefined
                     ? []
-                    : this.props.sortingParamsObjectList,
+                    : sortingParamsObjectList,
             errorMessage: false
         };
-        this.handleClick = this.handleClick.bind(this);
     }
 
     add = () => {
-        const rowList = [...this.state.rowList];
-        rowList.push(true);
-        const existingSortingOrderList = this.state.sortingOrderList;
+        const { rowList, sortingOrderList } = this.state;
+        const { columnFieldValue } = this.props;
+        const rowLists = [...rowList];
+        rowLists.push(true);
+        const existingSortingOrderList = sortingOrderList;
         existingSortingOrderList.push({
-            sortBy: this.props.columnFieldValue[0],
+            sortBy: columnFieldValue[0],
             order: "Ascending",
             sortOn: "Value"
         });
         this.setState({
-            rowList,
+            rowList: rowLists,
             sortingOrderList: existingSortingOrderList
         });
     };
 
     copy = (i) => {
-        const rowList = [...this.state.sortingOrderList];
+        const { sortingOrderList } = this.state;
+        const rowList = [...sortingOrderList];
         rowList.push(JSON.parse(JSON.stringify(rowList[i])));
         this.setState({ sortingOrderList: rowList });
     };
 
     clearAll = () => {
-        this.setState({ sortingOrderList: [], errorMessage: false });
-        this.props.clearAllSortingParams();
+        const { clearAllSortingParams } = this.props;
+        this.setState({
+            sortingOrderList: [],
+            errorMessage: false
+        });
+        clearAllSortingParams();
     };
 
     remove = (i) => {
-        const sortingOrderList = [...this.state.sortingOrderList];
-        sortingOrderList.splice(i, 1);
-        this.setState({ sortingOrderList });
+        const { sortingOrderList } = this.state;
+        const sortingOrderLists = [...sortingOrderList];
+        sortingOrderLists.splice(i, 1);
+        this.setState({ sortingOrderList: sortingOrderLists });
         if (sortingOrderList.length <= 1) {
             this.setState({ errorMessage: false });
         }
     };
 
     createColumnsArrayFromProps = (rowsValue) => {
+        const { columnFieldValue } = this.props;
         return rowsValue.map((row, index) => {
             return {
                 id: index,
@@ -113,7 +120,7 @@ class App extends React.Component {
                                     }
                                     value={row.sortBy}
                                 >
-                                    {this.props.columnFieldValue.map((item) => (
+                                    {columnFieldValue.map((item) => (
                                         <option key={item}>{item}</option>
                                     ))}
                                 </select>
@@ -205,7 +212,8 @@ class App extends React.Component {
     };
 
     captureSortingFeildValues = (event, index, sortingKey) => {
-        const existingSortingOrderList = this.state.sortingOrderList;
+        const { sortingOrderList } = this.state;
+        const existingSortingOrderList = sortingOrderList;
 
         if (sortingKey === "sortBy") {
             existingSortingOrderList[index].sortBy = event.target.value;
@@ -225,19 +233,17 @@ class App extends React.Component {
     };
 
     updateTableAsPerSortCondition = () => {
+        const { sortingOrderList } = this.state;
         const unique = new Set();
-        const showError = this.state.sortingOrderList.some(
+        const showError = sortingOrderList.some(
             (element) => unique.size === unique.add(element.sortBy).size
         );
-        showError
-            ? this.setState({
-                  errorMessage: true
-              })
-            : this.setState({
-                  errorMessage: false
-              });
-        if (!showError) {
-            this.props.setTableAsPerSortingParams(this.state.sortingOrderList);
+        const { setTableAsPerSortingParams } = this.props;
+        if (showError) {
+            this.setState({ errorMessage: true });
+        } else {
+            this.setState({ errorMessage: false });
+            setTableAsPerSortingParams(sortingOrderList);
         }
     };
 
@@ -246,14 +252,18 @@ class App extends React.Component {
      * @param {*} reOrderedSortingList
      */
     handleReorderListOfSort = (reOrderedIndexList) => {
-        this.props.handleTableSortSwap(reOrderedIndexList);
+        const { handleTableSortSwap } = this.props;
+        handleTableSortSwap(reOrderedIndexList);
     };
 
-    handleClick() {
-        this.props.closeSorting();
-    }
+    handleClick = () => {
+        const { closeSorting } = this.props;
+        closeSorting();
+    };
 
     render() {
+        const { sortingOrderList, errorMessage } = this.state;
+        const { closeSorting } = this.props;
         return (
             <ClickAwayListener onClickAway={this.handleClick}>
                 <div className="neo-popover">
@@ -264,7 +274,7 @@ class App extends React.Component {
                                 <i
                                     role="presentation"
                                     data-testid="closeSorting"
-                                    onClick={() => this.props.closeSorting()}
+                                    onClick={() => closeSorting()}
                                 >
                                     <IconClose />
                                 </i>
@@ -281,13 +291,13 @@ class App extends React.Component {
                                         this.handleReorderListOfSort
                                     }
                                     sortsArray={this.createColumnsArrayFromProps(
-                                        this.state.sortingOrderList
+                                        sortingOrderList
                                     )}
                                 />
                             </DndProvider>
                         </div>
                         <div className="sort-warning">
-                            {this.state.errorMessage ? (
+                            {errorMessage ? (
                                 <span className="alert alert-danger">
                                     Sort by opted are same, Please choose
                                     different one.

@@ -11,13 +11,13 @@ export const applyFormula = (obj, columnName) => {
             case "=ADD":
             case "=sum":
             case "=add":
-                val[columnName] = value.reduce(function (a, b) {
+                val[columnName] = value.reduce((a, b) => {
                     return Number(a) + Number(b);
                 });
                 break;
             case "=MUL":
             case "=mul":
-                val[columnName] = value.reduce(function (a, b) {
+                val[columnName] = value.reduce((a, b) => {
                     return Number(a) * Number(b);
                 });
                 break;
@@ -25,22 +25,19 @@ export const applyFormula = (obj, columnName) => {
             case "=sub":
             case "=DIFF":
             case "=diff":
-                val[columnName] = value.reduce(function (a, b) {
+                val[columnName] = value.reduce((a, b) => {
                     return Number(a) - Number(b);
                 });
                 break;
             case "=min":
             case "=MIN":
-                // eslint-disable-next-line prefer-spread
-                val[columnName] = Math.min.apply(Math, value);
+                val[columnName] = Math.min(...value);
                 break;
             case "=max":
             case "=MAX":
-                // eslint-disable-next-line prefer-spread
-                val[columnName] = Math.max.apply(Math, value);
+                val[columnName] = Math.max(...value);
                 break;
             default:
-                console.log("No Calculation");
         }
     }
     return val;
