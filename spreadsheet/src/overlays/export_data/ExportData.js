@@ -190,6 +190,7 @@ class ExportData extends React.Component {
             this.exportRowData();
             this.setState({ clickTag: "none" });
         } else if (columnLength === 0) {
+            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "Column" });
             this.setState({ clickTag: "" });
         } else if (fileLength === 0) {
