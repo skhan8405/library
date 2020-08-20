@@ -295,7 +295,7 @@ const Grid = memo((props) => {
     const data = getSortedData([...items]);
 
     return (
-        <div className="grid-component-container">
+        <div className="grid-component-container iCargo__custom">
             {data &&
             data.length > 0 &&
             processedColumns &&

@@ -1232,7 +1232,7 @@ class Spreadsheet extends Component {
             selectedIndexes
         } = this.state;
         return (
-            <div onScroll={this.handleScroll}>
+            <div onScroll={this.handleScroll} className="iCargo__custom">
                 <div className="neo-grid-header">
                     <div className="neo-grid-header__results">
                         Showing &nbsp;<strong> {count} </strong> &nbsp; records
