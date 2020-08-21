@@ -128,6 +128,7 @@ const MainFilterPanel = (props) => {
                     </span>
                     {chips}
                     <div
+                        style={{ cursor: "pointer" }}
                         role="presentation"
                         data-testid="showDrawer-check"
                         onClick={() => {

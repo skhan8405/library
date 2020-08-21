@@ -29,9 +29,19 @@ export default function AutoComplete(props) {
     };
     const autoCompleteDiv = autoCompleteArr.map((item) => {
         let validationClass = "";
+        let displayCondition = "none";
+        let condition = "";
         if (item.validated === false) {
             validationClass = "text-danger";
         }
+        if (item.condition.length > 0) {
+            condition = item.condition.map((cond) => {
+                return <option key={cond}>{cond}</option>;
+            });
+        }
+        if (item.enabled === false) {
+            displayCondition = "none";
+        } else displayCondition = "";
         return (
             <div className="filter__input" key={item}>
                 <div className="filter__input-title">
@@ -67,7 +77,6 @@ export default function AutoComplete(props) {
                     <Multiselect
                         data-testid="autoCompleteSelect"
                         id={item.type.concat(item.name)}
-                        disable={!item.enabled}
                         options={item.objectArray}
                         closeIcon="close"
                         displayValue="key"
@@ -78,6 +87,13 @@ export default function AutoComplete(props) {
                         }}
                     />
                 </div>
+                <div
+                    className="displayFlex conditional"
+                    style={{ display: displayCondition }}
+                >
+                    <select>{condition}</select>
+                </div>
+
                 <span id="fieldWarning" className={validationClass}>
                     {item.warning}
                 </span>
