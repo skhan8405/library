@@ -1,6 +1,12 @@
+/* eslint-disable lines-between-class-members */
+/* eslint-disable react/no-access-state-in-setstate */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/destructuring-assignment */
+
 import React, { Component } from "react";
 import { Toolbar, Data, Filters, Editors } from "react-data-grid-addons";
-import PropTypes from "prop-types";
+import PropTypes, { number } from "prop-types";
 import ExtDataGrid from "./common/extDataGrid";
 import { applyFormula } from "./utilities/utils";
 import DatePicker from "./functions/DatePicker";
@@ -12,6 +18,7 @@ import { ReactComponent as IconColumns } from "./images/icon-columns.svg";
 import { ReactComponent as IconShare } from "./images/icon-share.svg";
 import { ReactComponent as IconGroupSort } from "./images/icon-group-sort.svg";
 import { ReactComponent as IconSearch } from "./images/icon-search.svg";
+import FormulaProcessor from "./functions/FormulaProcessor";
 
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
@@ -22,75 +29,11 @@ let swapList = [];
 let swapSortList = [];
 const { AutoCompleteFilter, NumericFilter } = Filters;
 
-/**
- * Global Method To Sort The Grid.
- */
-let sortBy;
-(() => {
-    // utility functions
-    const defaultCmp = (a, b) => {
-        if (a === b) return 0;
-        return a < b ? -1 : 1;
-    };
-    const getCmpFunc = (primer, reverse) => {
-        let cmp = defaultCmp;
-        if (primer) {
-            cmp = (a, b) => {
-                return defaultCmp(primer(a), primer(b));
-            };
-        }
-        if (reverse) {
-            return (a, b) => {
-                return -1 * cmp(a, b);
-            };
-        }
-        return cmp;
-    };
-
-    // actual implementation
-    sortBy = function () {
-        const fields = [];
-        const nFields = arguments.length;
-        let field;
-        let name;
-        let cmp;
-
-        // preprocess sorting options
-        for (let i = 0; i < nFields; i++) {
-            // eslint-disable-next-line prefer-rest-params
-            field = arguments[i];
-            if (typeof field === "string") {
-                name = field;
-                cmp = defaultCmp;
-            } else {
-                name = field.name;
-                cmp = getCmpFunc(field.primer, field.reverse);
-            }
-            fields.push({
-                name,
-                cmp
-            });
-        }
-
-        return function (A, B) {
-            let result = 0;
-            for (let i = 0, l = nFields; i < l; i++) {
-                field = fields[i];
-                name = field.name;
-                cmp = field.cmp;
-
-                result = cmp(A[name], B[name]);
-                if (result !== 0) break;
-            }
-            return result;
-        };
-    };
-})();
-
 class Spreadsheet extends Component {
     constructor(props) {
         super(props);
-        const { dataSet, pageSize, rows, columns } = this.props;
+        const { dataSet, pageSize } = this.props;
+
         const dataSetVar = JSON.parse(JSON.stringify(dataSet));
         this.state = {
             warningStatus: "",
@@ -107,15 +50,19 @@ class Spreadsheet extends Component {
             junk: {},
             columnReorderingComponent: null,
             exportComponent: null,
-            filteringRows: rows,
-            tempRows: rows,
+            filteringRows: this.props.rows,
+            tempRows: this.props.rows,
             sortingPanelComponent: null,
-            count: rows.length,
+            count: this.props.rows.length,
             sortingOrderSwapList: [],
             sortingParamsObjectList: [],
+            prevRow: null,
+            prevAction: null,
+            columnKeyArray: [],
+
             // eslint-disable-next-line react/no-unused-state
             pinnedReorder: false,
-            columns: columns.map((item) => {
+            columns: this.props.columns.map((item) => {
                 const colItem = item;
                 if (colItem.editor === "DatePicker") {
                     colItem.editor = DatePicker;
@@ -145,7 +92,7 @@ class Spreadsheet extends Component {
         this.clearSearchValue = this.clearSearchValue.bind(this);
         this.handleFilterChange = this.handleFilterChange.bind(this);
 
-        this.formulaAppliedCols = columns.filter((item) => {
+        this.formulaAppliedCols = this.props.columns.filter((item) => {
             return item.formulaApplicable;
         });
     }
@@ -233,13 +180,6 @@ class Spreadsheet extends Component {
         });
     }
 
-    componentDidUpdate() {
-        // Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
-        const resizeEvent = document.createEvent("HTMLEvents");
-        resizeEvent.initEvent("resize", true, false);
-        window.dispatchEvent(resizeEvent);
-    }
-
     /**
      * Method To render the filter values for filtering rows
      * @param {*} rows is the row data to be considered for filtering
@@ -294,8 +234,7 @@ class Spreadsheet extends Component {
         inComingColumnsHeaderList,
         pinnedColumnsList
     ) => {
-        const { columns } = this.props;
-        let existingColumnsHeaderList = columns;
+        let existingColumnsHeaderList = this.props.columns;
         existingColumnsHeaderList = existingColumnsHeaderList.filter((item) => {
             return inComingColumnsHeaderList.includes(item.name);
         });
@@ -394,19 +333,17 @@ class Spreadsheet extends Component {
      * Method to render the column Selector Pannel
      */
     columnReorderingPannel = () => {
-        const { columns } = this.state;
-        const { maxLeftPinnedColumn } = this.props;
         this.setState({ selectedIndexes: [] });
         const headerNameList = [];
         const existingPinnedHeadersList = [];
-        columns
+        this.state.columns
             .filter((item) => item.frozen !== undefined && item.frozen === true)
             .map((item) => existingPinnedHeadersList.push(item.name));
-        columns.map((item) => headerNameList.push(item.name));
+        this.state.columns.map((item) => headerNameList.push(item.name));
         this.setState({
             columnReorderingComponent: (
                 <ColumnReordering
-                    maxLeftPinnedColumn={maxLeftPinnedColumn}
+                    maxLeftPinnedColumn={this.props.maxLeftPinnedColumn}
                     updateTableAsPerRowChooser={this.updateTableAsPerRowChooser}
                     headerKeys={headerNameList}
                     closeColumnReOrdering={this.closeColumnReOrdering}
@@ -432,23 +369,21 @@ class Spreadsheet extends Component {
     };
 
     clearSearchValue = () => {
-        const { filteringRows } = this.state;
         this.setState({ searchValue: "" });
-        this.setState({ filteringRows });
+        this.setState({ filteringRows: this.state.filteringRows });
     };
 
     sortingPanel = () => {
-        const { columns, sortingParamsObjectList } = this.state;
         this.setState({ selectedIndexes: [] });
         const columnField = [];
-        columns.map((item) => columnField.push(item.name));
+        this.state.columns.map((item) => columnField.push(item.name));
         this.setState({
             sortingPanelComponent: (
                 <Sorting
                     setTableAsPerSortingParams={(args) =>
                         this.setTableAsPerSortingParams(args)
                     }
-                    sortingParamsObjectList={sortingParamsObjectList}
+                    sortingParamsObjectList={this.state.sortingParamsObjectList}
                     handleTableSortSwap={this.handleTableSortSwap}
                     clearAllSortingParams={this.clearAllSortingParams}
                     columnFieldValue={columnField}
@@ -467,18 +402,12 @@ class Spreadsheet extends Component {
     };
 
     clearAllSortingParams = () => {
-        const {
-            sortDirection,
-            sortColumn,
-            dataSet,
-            searchValue,
-            pageIndex,
-            pageRowCount
-        } = this.state;
-        const hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
-        let dataRows = this.getFilterResult([...dataSet]);
-        if (searchValue !== "") {
-            const searchKey = String(searchValue).toLowerCase();
+        const hasSingleSortkey =
+            this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
+
+        let dataRows = this.getFilterResult([...this.state.dataSet]);
+        if (this.state.searchValue !== "") {
+            const searchKey = String(this.state.searchValue).toLowerCase();
             dataRows = dataRows.filter((item) => {
                 return Object.values(item)
                     .toString()
@@ -490,24 +419,26 @@ class Spreadsheet extends Component {
             dataRows = this.getSingleSortResult(dataRows);
         }
         this.setState({
-            rows: dataRows.slice(0, pageIndex * pageRowCount),
+            rows: dataRows.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            ),
             subDataSet: dataRows
         });
     };
 
     // Export Data Logic
     exportColumnData = () => {
-        const { columns, dataSet, subDataSet } = this.state;
-        let exportData = dataSet;
+        let exportData = this.state.dataSet;
         if (this.isSubset()) {
-            exportData = subDataSet;
+            exportData = this.state.subDataSet;
         }
         this.setState({ selectedIndexes: [] });
         this.setState({
             exportComponent: (
                 <ExportData
                     rows={exportData}
-                    columnsList={columns}
+                    columnsList={this.state.columns}
                     closeExport={this.closeExport}
                 />
             )
@@ -521,30 +452,20 @@ class Spreadsheet extends Component {
     };
 
     setTableAsPerSortingParams = (tableSortList) => {
-        const {
-            sortDirection,
-            sortColumn,
-            dataSet,
-            searchValue,
-            subDataSet,
-            junk,
-            rows,
-            sortingOrderSwapList,
-            pageIndex,
-            pageRowCount
-        } = this.state;
-        const hasFilter = Object.keys(junk).length > 0;
-        const hasSearchKey = String(searchValue).toLowerCase() !== "";
-        const hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
-        let existingRows = [...dataSet];
+        const hasFilter = Object.keys(this.state.junk).length > 0;
+        const hasSearchKey =
+            String(this.state.searchValue).toLowerCase() !== "";
+        const hasSingleSortkey =
+            this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
+        let existingRows = [...this.state.dataSet];
         if (hasFilter || hasSearchKey || hasSingleSortkey) {
-            existingRows = [...subDataSet];
+            existingRows = [...this.state.subDataSet];
         }
 
         let sortingOrderNameList = [];
         tableSortList.forEach((item) => {
             let nameOfItem = "";
-            Object.keys(rows[0]).forEach((rowItem) => {
+            Object.keys(this.state.rows[0]).forEach((rowItem) => {
                 if (
                     rowItem.toLowerCase() ===
                     this.toCamelCase(item.sortBy).toLowerCase()
@@ -552,7 +473,7 @@ class Spreadsheet extends Component {
                     nameOfItem = rowItem;
                 }
             });
-            const typeOfItem = rows[0][item.sortBy === nameOfItem];
+            const typeOfItem = this.state.rows[0][item.sortBy === nameOfItem];
             if (typeof typeOfItem === "number") {
                 sortingOrderNameList.push({
                     name: nameOfItem,
@@ -568,7 +489,8 @@ class Spreadsheet extends Component {
         });
 
         if (swapSortList.length > 0) {
-            const existingSortingOrderSwapList = sortingOrderSwapList;
+            const existingSortingOrderSwapList = this.state
+                .sortingOrderSwapList;
             swapSortList.forEach((item, index) => {
                 const stringOfItemIndex = `${item}${index}`;
                 if (
@@ -592,9 +514,13 @@ class Spreadsheet extends Component {
             });
         }
 
+        // eslint-disable-next-line no-use-before-define
         existingRows.sort(sortBy(...sortingOrderNameList));
         this.setState({
-            rows: existingRows.slice(0, pageIndex * pageRowCount),
+            rows: existingRows.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            ),
             subDataSet: existingRows,
             sortingParamsObjectList: tableSortList
         });
@@ -604,11 +530,10 @@ class Spreadsheet extends Component {
 
     // Group sort - while updating conditions like search, filter or sorting; copy of setTableAsPerSortingParams.
     groupSort = (tableSortList, existingRows) => {
-        const { rows, sortingOrderSwapList } = this.state;
         let sortingOrderNameList = [];
         tableSortList.forEach((item) => {
             let nameOfItem = "";
-            Object.keys(rows[0]).forEach((rowItem) => {
+            Object.keys(this.state.rows[0]).forEach((rowItem) => {
                 if (
                     rowItem.toLowerCase() ===
                     this.toCamelCase(item.sortBy).toLowerCase()
@@ -616,7 +541,7 @@ class Spreadsheet extends Component {
                     nameOfItem = rowItem;
                 }
             });
-            const typeOfItem = rows[0][item.sortBy === nameOfItem];
+            const typeOfItem = this.state.rows[0][item.sortBy === nameOfItem];
             if (typeof typeOfItem === "number") {
                 sortingOrderNameList.push({
                     name: nameOfItem,
@@ -632,7 +557,8 @@ class Spreadsheet extends Component {
         });
 
         if (swapSortList.length > 0) {
-            const existingSortingOrderSwapList = sortingOrderSwapList;
+            const existingSortingOrderSwapList = this.state
+                .sortingOrderSwapList;
             swapSortList.forEach((item, index) => {
                 const stringOfItemIndex = `${item}${index}`;
                 if (
@@ -656,6 +582,7 @@ class Spreadsheet extends Component {
             });
         }
 
+        // eslint-disable-next-line no-use-before-define
         return existingRows.sort(sortBy(...sortingOrderNameList));
     };
 
@@ -670,31 +597,32 @@ class Spreadsheet extends Component {
             });
     };
 
+    // eslint-disable-next-line react/sort-comp
+    componentDidUpdate() {
+        // Fix for column re-order and pin left issue (functionality was working only after doing a window re-size)
+        const resizeEvent = document.createEvent("HTMLEvents");
+        resizeEvent.initEvent("resize", true, false);
+        window.dispatchEvent(resizeEvent);
+    }
+
     getSearchRecords(e) {
-        const {
-            sortDirection,
-            sortColumn,
-            dataSet,
-            searchValue,
-            subDataSet,
-            junk,
-            sortingParamsObjectList
-        } = this.state;
         const searchKey = String(e.target.value).toLowerCase();
-        const hasFilter = Object.keys(junk).length > 0;
-        const hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
+        const hasFilter = Object.keys(this.state.junk).length > 0;
+        const hasSingleSortkey =
+            this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
         const hasGropSortKeys =
-            sortingParamsObjectList && sortingParamsObjectList.length > 0;
+            this.state.sortingParamsObjectList &&
+            this.state.sortingParamsObjectList.length > 0;
         let rowsToSearch = [];
         // Remove search key
-        if (searchValue.startsWith(searchKey) || searchKey === "") {
-            rowsToSearch = this.getFilterResult([...dataSet]);
+        if (this.state.searchValue.startsWith(searchKey) || searchKey === "") {
+            rowsToSearch = this.getFilterResult([...this.state.dataSet]);
             if (hasSingleSortkey) {
                 rowsToSearch = this.getSingleSortResult(rowsToSearch);
             }
             if (hasGropSortKeys) {
                 rowsToSearch = this.groupSort(
-                    sortingParamsObjectList,
+                    this.state.sortingParamsObjectList,
                     rowsToSearch
                 );
             }
@@ -708,8 +636,8 @@ class Spreadsheet extends Component {
             searchKey.length > 1 ||
             hasGropSortKeys
         )
-            return subDataSet;
-        return dataSet;
+            return this.state.subDataSet;
+        return this.state.dataSet;
     }
 
     /**
@@ -721,21 +649,25 @@ class Spreadsheet extends Component {
     };
 
     getSingleSortResult = (data) => {
-        const { sortDirection, sortColumn } = this.state;
-        if (sortDirection !== "NONE" && sortColumn !== "") {
-            const sortColumns = sortColumn;
-            const sortDirections = sortDirection;
+        if (
+            this.state.sortDirection !== "NONE" &&
+            this.state.sortColumn !== ""
+        ) {
+            // eslint-disable-next-line prefer-destructuring
+            const sortColumn = this.state.sortColumn;
+            // eslint-disable-next-line prefer-destructuring
+            const sortDirection = this.state.sortDirection;
             this.setState({ selectedIndexes: [] });
             const comparer = (a, b) => {
                 if (sortDirection === "ASC") {
-                    return a[sortColumns] > b[sortColumns] ? 1 : -1;
+                    return a[sortColumn] > b[sortColumn] ? 1 : -1;
                 }
                 if (sortDirection === "DESC") {
-                    return a[sortColumns] < b[sortColumns] ? 1 : -1;
+                    return a[sortColumn] < b[sortColumn] ? 1 : -1;
                 }
                 return 0;
             };
-            return sortDirections === "NONE" ? data : [...data].sort(comparer);
+            return sortDirection === "NONE" ? data : [...data].sort(comparer);
         }
         return data;
     };
@@ -747,16 +679,6 @@ class Spreadsheet extends Component {
      * @param {*} sortDirection is the type of sort
      */
     sortRows = (data, sortColumn, sortDirection) => {
-        const {
-            junk,
-            searchValue,
-            sortingParamsObjectList,
-            dataSet,
-            subDataSet,
-            pageIndex,
-            pageRowCount,
-            rows
-        } = this.state;
         this.setState({ selectedIndexes: [] });
         // eslint-disable-next-line consistent-return
         const comparer = (a, b) => {
@@ -767,34 +689,33 @@ class Spreadsheet extends Component {
                 return a[sortColumn] < b[sortColumn] ? 1 : -1;
             }
         };
-        const hasFilter = Object.keys(junk).length > 0;
-        const hasSearchKey = String(searchValue).toLowerCase() !== "";
+        const hasFilter = Object.keys(this.state.junk).length > 0;
+        const hasSearchKey =
+            String(this.state.searchValue).toLowerCase() !== "";
         const hasGropSortKeys =
-            sortingParamsObjectList && sortingParamsObjectList.length > 0;
+            this.state.sortingParamsObjectList &&
+            this.state.sortingParamsObjectList.length > 0;
         let dtRows = [];
         if (hasFilter || hasSearchKey || hasGropSortKeys) {
-            dtRows = subDataSet;
+            dtRows = this.state.subDataSet;
         } else {
-            dtRows = dataSet;
+            dtRows = this.state.dataSet;
         }
         const result = [...dtRows].sort(comparer);
         this.setState({
-            rows: result.slice(0, pageIndex * pageRowCount),
+            rows: result.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            ),
             subDataSet: result,
             selectedIndexes: [],
             sortColumn: sortDirection === "NONE" ? "" : sortColumn,
             sortDirection
         });
-        return sortDirection === "NONE" ? data : rows;
+        return sortDirection === "NONE" ? data : this.state.rows;
     };
 
     getSlicedRows = async (filters, rowsToSplit, firstResult) => {
-        const {
-            searchValue,
-            sortingParamsObjectList,
-            pageIndex,
-            pageRowCount
-        } = this.state;
         let data = [];
         if (rowsToSplit.length > 0) {
             const chunks = [];
@@ -808,8 +729,10 @@ class Spreadsheet extends Component {
                     data = [...data, ...dt];
                     if (index === chunks.length) {
                         let dtSet = [...firstResult, ...data];
-                        if (searchValue !== "") {
-                            const searchKey = String(searchValue).toLowerCase();
+                        if (this.state.searchValue !== "") {
+                            const searchKey = String(
+                                this.state.searchValue
+                            ).toLowerCase();
                             dtSet = dtSet.filter((item) => {
                                 return Object.values(item)
                                     .toString()
@@ -820,15 +743,18 @@ class Spreadsheet extends Component {
 
                         dtSet = this.getSingleSortResult(dtSet);
                         if (
-                            sortingParamsObjectList &&
-                            sortingParamsObjectList.length > 0
+                            this.state.sortingParamsObjectList &&
+                            this.state.sortingParamsObjectList.length > 0
                         ) {
                             dtSet = this.groupSort(
-                                sortingParamsObjectList,
+                                this.state.sortingParamsObjectList,
                                 dtSet
                             );
                         }
-                        const rw = dtSet.slice(0, pageIndex * pageRowCount);
+                        const rw = dtSet.slice(
+                            0,
+                            this.state.pageIndex * this.state.pageRowCount
+                        );
                         await this.setStateAsync({
                             subDataSet: dtSet,
                             rows: rw,
@@ -871,10 +797,9 @@ class Spreadsheet extends Component {
      * @param {*} rows is the deselected row
      */
     onRowsDeselected = (rows) => {
-        const { selectedIndexes } = this.state;
         const rowIndexes = rows.map((r) => r.rowIdx);
         this.setState({
-            selectedIndexes: selectedIndexes.filter(
+            selectedIndexes: this.state.selectedIndexes.filter(
                 (i) => rowIndexes.indexOf(i) === -1
             )
         });
@@ -888,68 +813,161 @@ class Spreadsheet extends Component {
      * @param {*} action is type of edit action performed
      */
     onGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
-        const { tempRows } = this.state;
-        const { updatedRows, updateCellData } = this.props;
-        let columnName = "";
-        const filter = this.formulaAppliedCols.filter((item) => {
-            if (updated[item.key] !== null && updated[item.key] !== undefined) {
-                columnName = item.key;
-                return true;
+        let updatedArray = [];
+        let updatedValue = "";
+        console.log({ fromRow, toRow, updated, action });
+        console.log("change", updated);
+        for (let update in updated) {
+            updatedValue = updated[update];
+        }
+        if (action === "CELL_UPDATE") {
+            const arr = FormulaProcessor(updatedValue);
+            let colKeyArray = [];
+            if (arr.length > 0) {
+                arr.forEach((ar) => {
+                    this.state.columns.forEach((item, index) => {
+                        if (index === ar - 1) {
+                            colKeyArray.push(item.key);
+                        }
+                    });
+                });
+                let tempSum = 0;
+                colKeyArray.forEach((item) => {
+                    tempSum += Number(this.state.rows[fromRow][item]);
+                });
+                updated[Object.keys(updated)] = tempSum;
+                console.log(updated[Object.keys(updated)]);
+                this.setState({
+                    prevRow: fromRow,
+                    prevAction: action,
+                    columnKeyArray: colKeyArray
+                });
             }
-            return false;
-        });
-
-        if (filter.length > 0) {
-            // eslint-disable-next-line no-param-reassign
-            updated = applyFormula(updated, columnName);
         }
+        if (action === "CELL_DRAG") {
+            if (this.state.prevAction === "CELL_UPDATE") {
+                for (let i = fromRow; i <= toRow; i++) {
+                    console.log(this.state.columnKeyArray);
+                    updatedArray = [...this.state.columnKeyArray];
+                    this.setState({ prevRow: fromRow, prevAction: action });
+                }
+                let columnName = "";
+                const filter = this.formulaAppliedCols.filter((item) => {
+                    if (
+                        updated[item.key] !== null &&
+                        updated[item.key] !== undefined
+                    ) {
+                        columnName = item.key;
+                        return true;
+                    }
+                    return false;
+                });
 
+                if (filter.length > 0) {
+                    // eslint-disable-next-line no-param-reassign
+
+                    updated = applyFormula(updated, columnName);
+                }
+            }
+        }
         if (action !== "COPY_PASTE") {
-            updatedRows({ fromRow, toRow, updated, action });
-            this.setState((state) => {
-                const rows = state.rows.slice();
-                for (let i = fromRow; i <= toRow; i++) {
-                    rows[i] = {
-                        ...rows[i],
-                        ...updated
+            if (
+                action === "CELL_DRAG" &&
+                this.state.prevAction === "CELL_UPDATE"
+            ) {
+                this.setState((state) => {
+                    const rows = state.rows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        let tempSum = 0;
+                        updatedArray.forEach((item) => {
+                            tempSum += Number(rows[i][item]);
+                        });
+                        rows[i][Object.keys(updated)] = tempSum;
+                    }
+                    return {
+                        rows
                     };
-                }
+                });
 
-                return {
-                    rows
-                };
-            });
+                this.setState((state) => {
+                    const filteringRows = state.filteringRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        let tempSum = 0;
+                        updatedArray.forEach((item) => {
+                            tempSum += Number(filteringRows[i][item]);
+                        });
+                        filteringRows[i][Object.keys(updated)] = tempSum;
+                    }
 
-            this.setState((state) => {
-                const filteringRows = state.filteringRows.slice();
-                for (let i = fromRow; i <= toRow; i++) {
-                    filteringRows[i] = {
-                        ...filteringRows[i],
-                        ...updated
+                    return {
+                        filteringRows
                     };
-                }
+                });
+                this.setState((state) => {
+                    const tempRows = state.tempRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        let tempSum = 0;
+                        updatedArray.forEach((item) => {
+                            tempSum += Number(tempRows[i][item]);
+                        });
+                        tempRows[i][Object.keys(updated)] = tempSum;
+                    }
 
-                return {
-                    filteringRows
-                };
-            });
-            this.setState((state) => {
-                // eslint-disable-next-line no-shadow
-                const tempRows = state.tempRows.slice();
-                for (let i = fromRow; i <= toRow; i++) {
-                    tempRows[i] = {
-                        ...tempRows[i],
-                        ...updated
+                    return {
+                        tempRows
                     };
-                }
+                });
+            } else {
+                this.props.updatedRows({ fromRow, toRow, updated, action });
+                this.setState((state) => {
+                    const rows = state.rows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        rows[i] = {
+                            ...rows[i],
+                            ...updated
+                        };
+                    }
 
-                return {
-                    tempRows
-                };
-            });
+                    return {
+                        rows
+                    };
+                });
+
+                this.setState((state) => {
+                    const filteringRows = state.filteringRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        filteringRows[i] = {
+                            ...filteringRows[i],
+                            ...updated
+                        };
+                    }
+
+                    return {
+                        filteringRows
+                    };
+                });
+                this.setState((state) => {
+                    const tempRows = state.tempRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        tempRows[i] = {
+                            ...tempRows[i],
+                            ...updated
+                        };
+                    }
+
+                    return {
+                        tempRows
+                    };
+                });
+            }
         }
-        if (updateCellData) {
-            updateCellData(tempRows[fromRow], tempRows[toRow], updated, action);
+        if (this.props.updateCellData) {
+            this.props.updateCellData(
+                this.state.tempRows[fromRow],
+                this.state.tempRows[toRow],
+                updated,
+                action
+            );
         }
     };
 
@@ -958,13 +976,13 @@ class Spreadsheet extends Component {
      * @param {*} rows is the selected row
      */
     onRowsSelected = (rows) => {
-        const { selectedIndexes } = this.state;
-        const { selectBulkData } = this.props;
         this.setState({
-            selectedIndexes: selectedIndexes.concat(rows.map((r) => r.rowIdx))
+            selectedIndexes: this.state.selectedIndexes.concat(
+                rows.map((r) => r.rowIdx)
+            )
         });
-        if (selectBulkData) {
-            selectBulkData(rows);
+        if (this.props.selectBulkData) {
+            this.props.selectBulkData(rows);
         }
     };
 
@@ -973,14 +991,7 @@ class Spreadsheet extends Component {
      * @param {*} value is the  incoming filtering event
      */
     handleFilterChange = async (value) => {
-        const {
-            dataSet,
-            pageRowCount,
-            junk,
-            pageIndex,
-            searchValue,
-            sortingParamsObjectList
-        } = this.state;
+        const { junk } = this.state;
         if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
             junk[value.column.key] = value;
         } else {
@@ -988,22 +999,25 @@ class Spreadsheet extends Component {
         }
         this.setState({ junk });
         const hasFilter = Object.keys(junk).length > 0;
-        const firstPage = dataSet.slice(0, pageRowCount);
-        let data = this.getrows(firstPage, junk);
+        const firstPage = this.state.dataSet.slice(0, this.state.pageRowCount);
+        let data = this.getrows(firstPage, this.state.junk);
         await this.setStateAsync({
             rows: data,
             tempRows: data,
             count: data.length,
             subDataSet: hasFilter ? data : [],
-            pageIndex: hasFilter ? pageIndex : 1
+            pageIndex: hasFilter ? this.state.pageIndex : 1
         });
         if (hasFilter) {
-            const rowsRemaining = dataSet.slice(pageRowCount, dataSet.length);
-            this.getSlicedRows(junk, rowsRemaining, data);
+            const rowsRemaining = this.state.dataSet.slice(
+                this.state.pageRowCount,
+                this.state.dataSet.length
+            );
+            this.getSlicedRows(this.state.junk, rowsRemaining, data);
         } else {
-            let rowsRemaining = dataSet; // .slice(this.state.pageRowCount, this.state.dataSet.length);
-            if (searchValue !== "") {
-                const searchKey = String(searchValue).toLowerCase();
+            let rowsRemaining = this.state.dataSet; // .slice(this.state.pageRowCount, this.state.dataSet.length);
+            if (this.state.searchValue !== "") {
+                const searchKey = String(this.state.searchValue).toLowerCase();
                 rowsRemaining = rowsRemaining.filter((item) => {
                     return Object.values(item)
                         .toString()
@@ -1013,14 +1027,19 @@ class Spreadsheet extends Component {
             }
             rowsRemaining = this.getSingleSortResult(rowsRemaining);
 
-            if (sortingParamsObjectList && sortingParamsObjectList.length > 0) {
+            if (
+                this.state.sortingParamsObjectList &&
+                this.state.sortingParamsObjectList.length > 0
+            ) {
                 rowsRemaining = this.groupSort(
-                    sortingParamsObjectList,
+                    this.state.sortingParamsObjectList,
                     rowsRemaining
                 );
             }
-
-            const rw = rowsRemaining.slice(0, pageIndex * pageRowCount);
+            const rw = rowsRemaining.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            );
             await this.setStateAsync({
                 subDataSet: rowsRemaining,
                 rows: rw,
@@ -1044,17 +1063,12 @@ class Spreadsheet extends Component {
     };
 
     isSubset() {
-        const {
-            junk,
-            searchValue,
-            sortingParamsObjectList,
-            sortDirection
-        } = this.state;
         if (
-            Object.keys(junk).length > 0 ||
-            sortDirection !== "NONE" ||
-            searchValue !== "" ||
-            (sortingParamsObjectList && sortingParamsObjectList.length > 0)
+            Object.keys(this.state.junk).length > 0 ||
+            this.state.sortDirection !== "NONE" ||
+            this.state.searchValue !== "" ||
+            (this.state.sortingParamsObjectList &&
+                this.state.sortingParamsObjectList.length > 0)
         ) {
             return true;
         }
@@ -1064,23 +1078,24 @@ class Spreadsheet extends Component {
     loadMoreRows = (from, newRowsCount) => {
         return new Promise((resolve) => {
             // const hasFilter = Object.keys(this.state.junk).length > 0;
-            const { dataSet, subDataSet } = this.state;
             let to = from + newRowsCount;
-            if (this.isSubset() && subDataSet.length > 0) {
-                to = to < subDataSet.length ? to : subDataSet.length;
-                resolve(subDataSet.slice(from, to));
+            if (this.isSubset() && this.state.subDataSet.length > 0) {
+                to =
+                    to < this.state.subDataSet.length
+                        ? to
+                        : this.state.subDataSet.length;
+                resolve(this.state.subDataSet.slice(from, to));
             } else {
-                resolve(dataSet.slice(from, to));
+                resolve(this.state.dataSet.slice(from, to));
             }
         });
     };
 
     handleScroll = async (event) => {
         if (!this.isAtBottom(event)) return;
-        const { pageIndex, pageRowCount, rows } = this.state;
         const newRows = await this.loadMoreRows(
-            pageIndex * pageRowCount,
-            pageRowCount
+            this.state.pageIndex * this.state.pageRowCount,
+            this.state.pageRowCount
         );
         if (newRows && newRows.length > 0) {
             let length = 0;
@@ -1088,15 +1103,14 @@ class Spreadsheet extends Component {
                 length = prev.rows.length + newRows.length;
             });
             this.setState({
-                rows: [...rows, ...newRows],
+                rows: [...this.state.rows, ...newRows],
                 count: length,
-                pageIndex: pageIndex + 1
+                pageIndex: this.state.pageIndex + 1
             });
         }
     };
 
     globalSearchLogic = (e, updatedRows) => {
-        const { pageIndex, pageRowCount } = this.state;
         const searchKey = String(e.target.value).toLowerCase();
         const filteredRows = updatedRows.filter((item) => {
             return Object.values(item)
@@ -1107,7 +1121,10 @@ class Spreadsheet extends Component {
         if (!filteredRows.length) {
             this.setState({ warningStatus: "invalid", rows: [], count: 0 });
         } else {
-            const rowSlice = filteredRows.slice(0, pageIndex * pageRowCount);
+            const rowSlice = filteredRows.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            );
             this.setState({
                 warningStatus: "",
                 rows: rowSlice,
@@ -1122,71 +1139,64 @@ class Spreadsheet extends Component {
     };
 
     closeWarningStatus = (val) => {
-        const {
-            pageIndex,
-            pageRowCount,
-            dataSet,
-            sortDirection,
-            sortColumn,
-            sortingParamsObjectList
-        } = this.state;
         let rVal = val;
         if (!rVal) {
             const hasSingleSortkey =
-                sortDirection !== "NONE" && sortColumn !== "";
+                this.state.sortDirection !== "NONE" &&
+                this.state.sortColumn !== "";
             const hasGropSortKeys =
-                sortingParamsObjectList && sortingParamsObjectList.length > 0;
+                this.state.sortingParamsObjectList &&
+                this.state.sortingParamsObjectList.length > 0;
 
-            let dataRows = this.getFilterResult([...dataSet]);
+            let dataRows = this.getFilterResult([...this.state.dataSet]);
             if (hasSingleSortkey) {
                 dataRows = this.getSingleSortResult(dataRows);
             }
             if (hasGropSortKeys) {
-                dataRows = this.groupSort(sortingParamsObjectList, dataRows);
+                dataRows = this.groupSort(
+                    this.state.sortingParamsObjectList,
+                    dataRows
+                );
             }
-            rVal = dataRows.slice(0, pageIndex * pageRowCount);
+            rVal = dataRows.slice(
+                0,
+                this.state.pageIndex * this.state.pageRowCount
+            );
         }
         this.setState({ warningStatus: "", rows: rVal, count: rVal.length });
     };
 
     save = () => {
-        const { saveRows } = this.props;
-        const { dataSet } = this.state;
-        saveRows(dataSet);
+        this.props.saveRows(this.state.dataSet);
     };
 
     clearAllFilters = () => {
-        const {
-            pageIndex,
-            pageRowCount,
-            dataSet,
-            sortDirection,
-            sortColumn,
-            sortingParamsObjectList
-        } = this.state;
-        const hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
+        const hasSingleSortkey =
+            this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
         const hasGropSortKeys =
-            sortingParamsObjectList && sortingParamsObjectList.length > 0;
+            this.state.sortingParamsObjectList &&
+            this.state.sortingParamsObjectList.length > 0;
 
-        let dtSet = this.getSearchResult(dataSet);
+        let dtSet = this.getSearchResult(this.state.dataSet);
         if (hasSingleSortkey) {
             dtSet = this.getSingleSortResult(dtSet);
         }
         if (hasGropSortKeys) {
-            dtSet = this.groupSort(sortingParamsObjectList, dtSet);
+            dtSet = this.groupSort(this.state.sortingParamsObjectList, dtSet);
         }
-        const rVal = dtSet.slice(0, pageIndex * pageRowCount);
+        const rVal = dtSet.slice(
+            0,
+            this.state.pageIndex * this.state.pageRowCount
+        );
         this.setState({
             rows: rVal,
             count: rVal.length,
             subDataSet: dtSet
         });
     };
-
     getSearchResult = (data) => {
-        const { searchValue } = this.state;
         let dtSet = data;
-        const searchKey = String(searchValue).toLowerCase();
+        const searchKey = String(this.state.searchValue).toLowerCase();
         if (searchKey !== "") {
             dtSet = dtSet.filter((item) => {
                 return Object.values(item)
@@ -1197,18 +1207,16 @@ class Spreadsheet extends Component {
         }
         return dtSet;
     };
-
     getFilterResult = (data) => {
-        const { junk } = this.state;
         let dataRows = [];
-        if (Object.keys(junk).length > 0) {
+        if (Object.keys(this.state.junk).length > 0) {
             const rowsToSplit = [...data];
             const chunks = [];
             while (rowsToSplit.length) {
                 chunks.push(rowsToSplit.splice(0, 500));
             }
             chunks.forEach((arr) => {
-                const dt = this.getrows(arr, junk);
+                const dt = this.getrows(arr, this.state.junk);
                 dataRows = [...dataRows, ...dt];
             });
         } else {
@@ -1216,26 +1224,13 @@ class Spreadsheet extends Component {
         }
         return dataRows;
     };
-
     render() {
-        const {
-            count,
-            searchValue,
-            sortingPanelComponent,
-            columnReorderingComponent,
-            exportComponent,
-            warningStatus,
-            filteringRows,
-            height,
-            columns,
-            rows,
-            selectedIndexes
-        } = this.state;
         return (
             <div onScroll={this.handleScroll}>
                 <div className="neo-grid-header">
                     <div className="neo-grid-header__results">
-                        Showing &nbsp;<strong> {count} </strong> &nbsp; records
+                        Showing &nbsp;<strong> {this.state.count} </strong>{" "}
+                        &nbsp; records
                     </div>
                     <div className="neo-grid-header__utilities">
                         <div className="txt-wrap">
@@ -1247,7 +1242,7 @@ class Spreadsheet extends Component {
                                     const srchRows = this.getSearchRecords(e);
                                     this.globalSearchLogic(e, srchRows);
                                 }}
-                                value={searchValue}
+                                value={this.state.searchValue}
                                 className="txt"
                                 placeholder="Search"
                             />
@@ -1256,35 +1251,32 @@ class Spreadsheet extends Component {
                             </i>
                         </div>
                         <div
-                            role="presentation"
                             id="openSorting"
                             className="filterIcons"
                             onClick={this.sortingPanel}
                         >
                             <IconGroupSort />
                         </div>
-                        {sortingPanelComponent}
+                        {this.state.sortingPanelComponent}
                         <div
-                            role="presentation"
                             className="filterIcons"
                             onClick={this.columnReorderingPannel}
                         >
                             <IconColumns />
                         </div>
-                        {columnReorderingComponent}
+                        {this.state.columnReorderingComponent}
                         <div
-                            role="presentation"
                             className="filterIcons"
                             onClick={this.exportColumnData}
                         >
                             <IconShare />
                         </div>
-                        {exportComponent}
+                        {this.state.exportComponent}
                     </div>
                 </div>
                 <ErrorMessage
                     className="errorDiv"
-                    status={warningStatus}
+                    status={this.state.warningStatus}
                     closeWarningStatus={() => {
                         this.closeWarningStatus();
                     }}
@@ -1293,13 +1285,18 @@ class Spreadsheet extends Component {
                 <ExtDataGrid
                     toolbar={<Toolbar enableFilter />}
                     getValidFilterValues={(columnKey) =>
-                        this.getValidFilterValues(filteringRows, columnKey)
+                        this.getValidFilterValues(
+                            this.state.filteringRows,
+                            columnKey
+                        )
                     }
-                    minHeight={height}
-                    columns={columns}
-                    rowGetter={(i) => rows[i]}
-                    rowsCount={rows.length}
-                    onGridRowsUpdated={this.onGridRowsUpdated}
+                    minHeight={this.state.height}
+                    columns={this.state.columns}
+                    rowGetter={(i) => this.state.rows[i]}
+                    rowsCount={this.state.rows.length}
+                    onGridRowsUpdated={(e) => {
+                        this.onGridRowsUpdated(e);
+                    }}
                     enableCellSelect
                     onClearFilters={() => {
                         this.setState({ junk: {} });
@@ -1317,11 +1314,15 @@ class Spreadsheet extends Component {
                         onRowsSelected: this.onRowsSelected,
                         onRowsDeselected: this.onRowsDeselected,
                         selectBy: {
-                            indexes: selectedIndexes
+                            indexes: this.state.selectedIndexes
                         }
                     }}
                     onGridSort={(sortColumn, sortDirection) =>
-                        this.sortRows(filteringRows, sortColumn, sortDirection)
+                        this.sortRows(
+                            this.state.filteringRows,
+                            sortColumn,
+                            sortDirection
+                        )
                     }
                     globalSearch={this.globalSearchLogic}
                     handleWarningStatus={this.handleWarningStatus}
@@ -1334,6 +1335,70 @@ class Spreadsheet extends Component {
         );
     }
 }
+
+/**
+ * Global Method To Sort The Grid.
+ */
+let sortBy;
+(function () {
+    // utility functions
+    const defaultCmp = function (a, b) {
+        if (a === b) return 0;
+        return a < b ? -1 : 1;
+    };
+    const getCmpFunc = function (primer, reverse) {
+        let cmp = defaultCmp;
+        if (primer) {
+            cmp = function (a, b) {
+                return defaultCmp(primer(a), primer(b));
+            };
+        }
+        if (reverse) {
+            return function (a, b) {
+                return -1 * cmp(a, b);
+            };
+        }
+        return cmp;
+    };
+
+    // actual implementation
+    sortBy = function () {
+        const fields = [];
+        const nFields = arguments.length;
+        let field;
+        let name;
+        let cmp;
+        // preprocess sorting options
+        for (let i = 0; i < nFields; i++) {
+            // eslint-disable-next-line prefer-rest-params
+            field = arguments[i];
+            if (typeof field === "string") {
+                name = field;
+                cmp = defaultCmp;
+            } else {
+                name = field.name;
+                cmp = getCmpFunc(field.primer, field.reverse);
+            }
+            fields.push({
+                name,
+                cmp
+            });
+        }
+
+        return function (A, B) {
+            let result = 0;
+            for (let i = 0, l = nFields; i < l; i++) {
+                field = fields[i];
+                name = field.name;
+                cmp = field.cmp;
+
+                result = cmp(A[name], B[name]);
+                if (result !== 0) break;
+            }
+            return result;
+        };
+    };
+})();
 
 Spreadsheet.propTypes = {
     airportCodes: PropTypes.any,
