@@ -34,7 +34,7 @@ export default function AutoComplete(props) {
         if (item.validated === false) {
             validationClass = "text-danger";
         }
-        if (item.condition.length > 0) {
+        if (item.condition && item.condition.length > 0) {
             condition = item.condition.map((cond) => {
                 return <option key={cond}>{cond}</option>;
             });
@@ -91,7 +91,10 @@ export default function AutoComplete(props) {
                     className="displayFlex conditional"
                     style={{ display: displayCondition }}
                 >
-                    <select>{condition}</select>
+                    <Form.Group controlId="selectOptions">
+                        <Form.Label>Condition</Form.Label>
+                        <Form.Control as="select">{condition}</Form.Control>
+                    </Form.Group>
                 </div>
 
                 <span id="fieldWarning" className={validationClass}>
