@@ -44,8 +44,7 @@
                     "condition": ["equal to", "greater than", "less than"]
                 }
             ],
-            "field": [],
-            "condition": []
+            "field": []
         },
         {
             "name": "Arrival Port",
@@ -91,8 +90,7 @@
                     "condition": ["equal to", "greater than", "less than"]
                 }
             ],
-            "field": [],
-            "condition": []
+            "field": []
         },
         {
             "name": "Date",
@@ -109,8 +107,8 @@
                 }
             ],
             "types": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Booking Profile",
@@ -118,8 +116,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Flight Group",
@@ -127,8 +125,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Flight No",
@@ -136,8 +134,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Yeild",
@@ -145,8 +143,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Service Recovery",
@@ -154,8 +152,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Queued Bookings",
@@ -163,8 +161,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Weight",
@@ -172,8 +170,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Volume",
@@ -181,8 +179,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Aircraft",
@@ -190,8 +188,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Aircraft Classification",
@@ -199,17 +197,16 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Flight Type",
             "enabled": false,
             "dataType": "Text",
             "types": [],
-            "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Flight Status",
@@ -217,8 +214,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Segment Status",
@@ -226,8 +223,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         },
         {
             "name": "Milestone Status",
@@ -235,8 +232,8 @@
             "dataType": "Text",
             "types": [],
             "field": [],
-            "condition": [],
-            "validationMessage": "This field is required*"
+            "validationMessage": "This field is required*",
+            "condition": ["equal to", "greater than", "less than"]
         }
     ]
 }
