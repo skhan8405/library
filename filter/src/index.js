@@ -443,6 +443,7 @@ export default function Filter(props) {
                         type,
                         dataType,
                         enabled,
+                        condition,
                         objectArray: options,
                         validated: false,
                         warning
@@ -454,6 +455,7 @@ export default function Filter(props) {
                     type,
                     dataType,
                     enabled,
+                    condition,
                     objectArray: options,
                     validated: false,
                     warning

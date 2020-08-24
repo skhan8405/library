@@ -56,7 +56,7 @@ export default function LeftDrawer(props) {
     const accordianHeads = leftDrawData.map((item) => {
         if (item.types.length) {
             return (
-                <div key={item}>
+                <div>
                     <Accordion>
                         <Card>
                             <Accordion.Toggle
@@ -84,7 +84,7 @@ export default function LeftDrawer(props) {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey="1">
                                 <Card.Body>
-                                    <ul className="firstAccordion" key={item}>
+                                    <ul className="firstAccordion">
                                         {item.types &&
                                             item.types.map((type) => {
                                                 return (
@@ -102,14 +102,14 @@ export default function LeftDrawer(props) {
                                                                 type.enabled,
                                                                 type.name,
                                                                 item.field,
-                                                                item.condition,
+                                                                type.condition,
                                                                 type.dataSource,
                                                                 type.validationMessage,
                                                                 type.options
                                                             );
                                                             // props.addedFilterCount();
                                                         }}
-                                                        key={type}
+                                                        key={type.name}
                                                     >
                                                         {type.name}
                                                     </li>
@@ -123,13 +123,14 @@ export default function LeftDrawer(props) {
                 </div>
             );
         }
-        return <div key={item} />;
+        return <div key={item.name} />;
     });
     const fieldHeads = leftDrawData.map((item) => {
         if (item.field.length) {
             return (
-                <div className="fieldHeads" key={item}>
+                <div className="fieldHeads">
                     <li
+                        key={item.name}
                         role="presentation"
                         style={{ fontWeight: item.weight }}
                         data-testid="fieldHeads"
@@ -153,7 +154,7 @@ export default function LeftDrawer(props) {
                 </div>
             );
         }
-        return <div key={item} />;
+        return <div key={item.name} />;
     });
     // const conditionHeads = leftDrawData.map((item, index) => {
     //     if (item.condition.length) {
@@ -185,12 +186,11 @@ export default function LeftDrawer(props) {
     //     return <div key={index} />;
     // });
     const normalHeads = leftDrawData.map((item) => {
-        if (
-            !(item.condition.length || item.types.length || item.field.length)
-        ) {
+        if (!(item.types.length || item.field.length)) {
             return (
-                <div className="normalHeads" key={item}>
+                <div className="normalHeads">
                     <li
+                        key={item.name}
                         role="presentation"
                         style={{ fontWeight: item.weight }}
                         data-testid="normalHeads"
@@ -214,7 +214,7 @@ export default function LeftDrawer(props) {
                 </div>
             );
         }
-        return <div key={item} />;
+        return <div key={item.dataType} />;
     });
     return (
         <div>
