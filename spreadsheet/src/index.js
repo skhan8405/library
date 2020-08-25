@@ -14,7 +14,7 @@ import { ReactComponent as IconSearch } from "./images/icon-search.svg";
 import FormulaProcessor from "./functions/FormulaProcessor";
 import { range } from "lodash";
 
-//import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const defaultParsePaste = (str) =>
     str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
