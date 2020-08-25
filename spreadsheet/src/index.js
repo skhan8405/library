@@ -891,7 +891,6 @@ class Spreadsheet extends Component {
      * @param {*} action is type of edit action performed
      */
     onGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
-        console.log({ fromRow, toRow, updated, action });
         let updatedArray = [];
         let updatedValue = "";
         for (let update in updated) {
