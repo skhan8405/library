@@ -9,11 +9,6 @@ export default function FormulaProcessor(expression) {
             /^=(sum|mul|diff|add|prod|sub|max|min)\((?<one>.\w*?),(?<more>(.\w*?)*?)\)$/i
         )
     ) {
-        console.log(
-            expression.match(
-                /^=(sum|mul|diff|add|prod|sub|max|min)\((?<one>.\w*?),(?<more>(.\w*?)*?)\)$/i
-            )
-        );
         const RegCode = /^=(sum|mul|diff|add|prod|sub|max|min)\((?<one>.\w*?),(?<more>(.\w*?)*?)\)$/i;
         const exp = RegCode.exec(expression);
         const parameter1 = exp.groups.one;
@@ -68,7 +63,6 @@ export default function FormulaProcessor(expression) {
             calculationObject.operation = "MIN";
         }
         calculationObject.columnArray = [...columnArray];
-        console.log(calculationObject);
         return calculationObject;
     } else return [];
 }
