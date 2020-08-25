@@ -23,7 +23,7 @@ export default function FieldComponent(props) {
             validationClass = "text-danger";
         }
         return (
-            <div className="filter__input" key={item}>
+            <div className="filter__input" key={item.name}>
                 <div className="filter__input-title" key={1}>
                     <div className="filter__label">
                         <Form.Label>
@@ -61,7 +61,7 @@ export default function FieldComponent(props) {
                             >
                                 <Form.Text>{field.column}</Form.Text>
                             </div>
-                            <div className="filter__split" key={field}>
+                            <div className="filter__split" key={field.name}>
                                 <div className="date-wrap">
                                     <Form.Control
                                         disabled={!item.enabled}

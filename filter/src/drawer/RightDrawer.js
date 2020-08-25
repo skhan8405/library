@@ -67,7 +67,7 @@ const RightDrawer = (props) => {
                 role="presentation"
                 className="recentFilters"
                 data-testid="recentFilters-div"
-                key={filterArray}
+                key={Object.keys(filterArray)[0]}
                 onClick={() => {
                     props.addSavedFilters(filterArray);
                 }}

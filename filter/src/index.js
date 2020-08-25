@@ -443,6 +443,7 @@ export default function Filter(props) {
                         type,
                         dataType,
                         enabled,
+                        condition,
                         objectArray: options,
                         validated: false,
                         warning
@@ -454,6 +455,7 @@ export default function Filter(props) {
                     type,
                     dataType,
                     enabled,
+                    condition,
                     objectArray: options,
                     validated: false,
                     warning
@@ -1464,7 +1466,7 @@ export default function Filter(props) {
     return (
         <ClickAwayListener onClickAway={handleClickAway}>
             {showApplyFilter && (
-                <div className="neo-filter filter--grid">
+                <div className="neo-filter filter--grid iCargo__custom">
                     <div className="filter__wrap">
                         <div className="filter__list">
                             <LeftDrawer

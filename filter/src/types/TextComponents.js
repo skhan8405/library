@@ -17,7 +17,7 @@ export default function TextComponents(props) {
             validationClass = "text-danger";
         }
         return (
-            <div key={item}>
+            <div key={item.name}>
                 <div className="filter__input">
                     <div className="filter__input-title">
                         <div className="filter__label">
