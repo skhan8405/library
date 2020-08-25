@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Toolbar, Data, Filters, Editors } from "react-data-grid-addons";
 import PropTypes from "prop-types";
 import ExtDataGrid from "./common/extDataGrid";
-import { applyFormula } from "./utilities/utils";
 import DatePicker from "./functions/DatePicker";
 import ErrorMessage from "./common/ErrorMessage";
 import ColumnReordering from "./overlays/column_chooser/Chooser";
@@ -15,8 +14,7 @@ import { ReactComponent as IconSearch } from "./images/icon-search.svg";
 import FormulaProcessor from "./functions/FormulaProcessor";
 import { range } from "lodash";
 
-// eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+//import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const defaultParsePaste = (str) =>
     str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
@@ -117,6 +115,10 @@ class Spreadsheet extends Component {
             count: rows.length,
             sortingOrderSwapList: [],
             sortingParamsObjectList: [],
+            prevRow: "",
+            prevAction: "",
+            columnKeyArray: [],
+            operation: "",
             // eslint-disable-next-line react/no-unused-state
             pinnedReorder: false,
             columns: columns.map((item) => {
@@ -929,15 +931,15 @@ class Spreadsheet extends Component {
     onGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
         let updatedArray = [];
         let updatedValue = "";
-        console.log({ fromRow, toRow, updated, action });
-        console.log("change", updated);
         for (let update in updated) {
             updatedValue = updated[update];
         }
         if (action === "CELL_UPDATE") {
-            const arr = FormulaProcessor(updatedValue);
+            const calculationObject = FormulaProcessor(updatedValue);
+            const arr = calculationObject.columnArray;
+            const operation = calculationObject.operation;
             let colKeyArray = [];
-            if (arr.length > 0) {
+            if (arr && arr.length > 0) {
                 arr.forEach((ar) => {
                     this.state.columns.forEach((item, index) => {
                         if (index === ar - 1) {
@@ -945,42 +947,51 @@ class Spreadsheet extends Component {
                         }
                     });
                 });
-                let tempSum = 0;
-                colKeyArray.forEach((item) => {
-                    tempSum += Number(this.state.rows[fromRow][item]);
-                });
-                updated[Object.keys(updated)] = tempSum;
-                console.log(updated[Object.keys(updated)]);
+                let tempResult = 0;
+                if (operation === "SUM") {
+                    colKeyArray.forEach((item) => {
+                        tempResult += Number(this.state.rows[fromRow][item]);
+                    });
+                } else if (operation === "DIFF") {
+                    tempResult = Number(
+                        this.state.rows[fromRow][colKeyArray[0]]
+                    );
+                    for (let i = 1; i < colKeyArray.length; i++) {
+                        tempResult -= Number(
+                            this.state.rows[fromRow][colKeyArray[i]]
+                        );
+                    }
+                } else if (operation === "MUL") {
+                    tempResult = 1;
+                    colKeyArray.forEach((item) => {
+                        tempResult *= Number(this.state.rows[fromRow][item]);
+                    });
+                } else if (operation === "MAX") {
+                    let tempArray = [];
+                    colKeyArray.forEach((item) => {
+                        tempArray.push(Number(this.state.rows[fromRow][item]));
+                    });
+                    tempResult = Math.max(...tempArray);
+                } else if (operation === "MIN") {
+                    let tempArray = [];
+                    colKeyArray.forEach((item) => {
+                        tempArray.push(Number(this.state.rows[fromRow][item]));
+                    });
+                    tempResult = Math.min(...tempArray);
+                }
+                updated[Object.keys(updated)] = tempResult;
                 this.setState({
                     prevRow: fromRow,
                     prevAction: action,
-                    columnKeyArray: colKeyArray
+                    columnKeyArray: colKeyArray,
+                    operation: operation
                 });
             }
         }
         if (action === "CELL_DRAG") {
             if (this.state.prevAction === "CELL_UPDATE") {
                 for (let i = fromRow; i <= toRow; i++) {
-                    console.log(this.state.columnKeyArray);
                     updatedArray = [...this.state.columnKeyArray];
-                    this.setState({ prevRow: fromRow, prevAction: action });
-                }
-                let columnName = "";
-                const filter = this.formulaAppliedCols.filter((item) => {
-                    if (
-                        updated[item.key] !== null &&
-                        updated[item.key] !== undefined
-                    ) {
-                        columnName = item.key;
-                        return true;
-                    }
-                    return false;
-                });
-
-                if (filter.length > 0) {
-                    // eslint-disable-next-line no-param-reassign
-
-                    updated = applyFormula(updated, columnName);
                 }
             }
         }
@@ -992,11 +1003,58 @@ class Spreadsheet extends Component {
                 this.setState((state) => {
                     const rows = state.rows.slice();
                     for (let i = fromRow; i <= toRow; i++) {
-                        let tempSum = 0;
-                        updatedArray.forEach((item) => {
-                            tempSum += Number(rows[i][item]);
-                        });
-                        rows[i][Object.keys(updated)] = tempSum;
+                        let tempResult = 0;
+                        if (this.state.operation === "SUM") {
+                            updatedArray.forEach((item) => {
+                                tempResult += Number(rows[i][item]);
+                            });
+                            if (isNaN(tempResult)) {
+                                tempResult = rows[i][Object.keys(updated)];
+                            }
+                            rows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "DIFF") {
+                            tempResult = Number(
+                                this.state.rows[i][updatedArray[0]]
+                            );
+                            for (let j = 1; j < updatedArray.length; j++) {
+                                tempResult -= Number(
+                                    this.state.rows[i][updatedArray[j]]
+                                );
+                            }
+                            if (isNaN(tempResult)) {
+                                tempResult = rows[i][Object.keys(updated)];
+                            }
+                            rows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MUL") {
+                            tempResult = 1;
+                            updatedArray.forEach((item) => {
+                                tempResult *= Number(rows[i][item]);
+                            });
+                            if (isNaN(tempResult)) {
+                                tempResult = rows[i][Object.keys(updated)];
+                            }
+                            rows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MAX") {
+                            let tempArray = [];
+                            updatedArray.forEach((item) => {
+                                tempArray.push(Number(rows[i][item]));
+                            });
+                            tempResult = Math.max(...tempArray);
+                            if (isNaN(tempResult)) {
+                                tempResult = rows[i][Object.keys(updated)];
+                            }
+                            rows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MIN") {
+                            let tempArray = [];
+                            updatedArray.forEach((item) => {
+                                tempArray.push(Number(rows[i][item]));
+                            });
+                            tempResult = Math.min(...tempArray);
+                            if (isNaN(tempResult)) {
+                                tempResult = rows[i][Object.keys(updated)];
+                            }
+                            rows[i][Object.keys(updated)] = tempResult;
+                        }
                     }
                     return {
                         rows
@@ -1006,13 +1064,64 @@ class Spreadsheet extends Component {
                 this.setState((state) => {
                     const filteringRows = state.filteringRows.slice();
                     for (let i = fromRow; i <= toRow; i++) {
-                        let tempSum = 0;
-                        updatedArray.forEach((item) => {
-                            tempSum += Number(filteringRows[i][item]);
-                        });
-                        filteringRows[i][Object.keys(updated)] = tempSum;
+                        let tempResult = 0;
+                        if (this.state.operation === "SUM") {
+                            updatedArray.forEach((item) => {
+                                tempResult += Number(filteringRows[i][item]);
+                            });
+                            if (isNaN(tempResult)) {
+                                tempResult =
+                                    filteringRows[i][Object.keys(updated)];
+                            }
+                            filteringRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "DIFF") {
+                            tempResult = Number(
+                                this.state.filteringRows[i][updatedArray[0]]
+                            );
+                            for (let j = 1; j < updatedArray.length; j++) {
+                                tempResult -= Number(
+                                    this.state.filteringRows[i][updatedArray[j]]
+                                );
+                            }
+                            if (isNaN(tempResult)) {
+                                tempResult =
+                                    filteringRows[i][Object.keys(updated)];
+                            }
+                            filteringRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MUL") {
+                            tempResult = 1;
+                            updatedArray.forEach((item) => {
+                                tempResult *= Number(filteringRows[i][item]);
+                            });
+                            if (isNaN(tempResult)) {
+                                tempResult =
+                                    filteringRows[i][Object.keys(updated)];
+                            }
+                            filteringRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MAX") {
+                            let tempArray = [];
+                            updatedArray.forEach((item) => {
+                                tempArray.push(Number(filteringRows[i][item]));
+                            });
+                            tempResult = Math.max(...tempArray);
+                            if (isNaN(tempResult)) {
+                                tempResult =
+                                    filteringRows[i][Object.keys(updated)];
+                            }
+                            filteringRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MIN") {
+                            let tempArray = [];
+                            updatedArray.forEach((item) => {
+                                tempArray.push(Number(filteringRows[i][item]));
+                            });
+                            tempResult = Math.min(...tempArray);
+                            if (isNaN(tempResult)) {
+                                tempResult =
+                                    filteringRows[i][Object.keys(updated)];
+                            }
+                            filteringRows[i][Object.keys(updated)] = tempResult;
+                        }
                     }
-
                     return {
                         filteringRows
                     };
@@ -1020,16 +1129,66 @@ class Spreadsheet extends Component {
                 this.setState((state) => {
                     const tempRows = state.tempRows.slice();
                     for (let i = fromRow; i <= toRow; i++) {
-                        let tempSum = 0;
-                        updatedArray.forEach((item) => {
-                            tempSum += Number(tempRows[i][item]);
-                        });
-                        tempRows[i][Object.keys(updated)] = tempSum;
+                        let tempResult = 0;
+                        if (this.state.operation === "SUM") {
+                            updatedArray.forEach((item) => {
+                                tempResult += Number(tempRows[i][item]);
+                            });
+                            if (isNaN(tempResult)) {
+                                tempResult = tempRows[i][Object.keys(updated)];
+                            }
+                            tempRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "DIFF") {
+                            tempResult = Number(
+                                this.state.tempRows[i][updatedArray[0]]
+                            );
+                            for (let j = 1; j < updatedArray.length; j++) {
+                                tempResult -= Number(
+                                    this.state.tempRows[i][updatedArray[j]]
+                                );
+                            }
+                            if (isNaN(tempResult)) {
+                                tempResult = tempRows[i][Object.keys(updated)];
+                            }
+                            tempRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MUL") {
+                            tempResult = 1;
+                            updatedArray.forEach((item) => {
+                                tempResult *= Number(tempRows[i][item]);
+                            });
+                            if (isNaN(tempResult)) {
+                                tempResult = tempRows[i][Object.keys(updated)];
+                            }
+                            tempRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MAX") {
+                            let tempArray = [];
+                            updatedArray.forEach((item) => {
+                                tempArray.push(Number(tempRows[i][item]));
+                            });
+                            tempResult = Math.max(...tempArray);
+                            if (isNaN(tempResult)) {
+                                tempResult = tempRows[i][Object.keys(updated)];
+                            }
+                            tempRows[i][Object.keys(updated)] = tempResult;
+                        } else if (this.state.operation === "MIN") {
+                            let tempArray = [];
+                            updatedArray.forEach((item) => {
+                                tempArray.push(Number(tempRows[i][item]));
+                            });
+                            tempResult = Math.min(...tempArray);
+                            if (isNaN(tempResult)) {
+                                tempResult = tempRows[i][Object.keys(updated)];
+                            }
+                            tempRows[i][Object.keys(updated)] = tempResult;
+                        }
                     }
-
                     return {
                         tempRows
                     };
+                });
+                this.setState({
+                    prevRow: fromRow,
+                    prevAction: action
                 });
             } else {
                 this.props.updatedRows({ fromRow, toRow, updated, action });
