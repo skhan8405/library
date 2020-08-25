@@ -1,9 +1,7 @@
 import React, { useState, memo } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import PropTypes from "prop-types";
-import { ReactComponent as RowDelete } from "../Images/RowDelete.svg";
-import { ReactComponent as RowEdit } from "../Images/RowEdit.svg";
-import { ReactComponent as IconCancel } from "../Images/icon-cancel.svg";
+import { RowDelete, RowEdit, IconCancel } from "../Utilities/SvgUtilities";
 
 const RowOptions = memo(
     ({
