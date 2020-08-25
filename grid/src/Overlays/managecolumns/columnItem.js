@@ -2,7 +2,7 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import PropTypes from "prop-types";
 import { ItemTypes } from "./ItemTypes";
-import { ReactComponent as IconJustify } from "../../Images/icon-align-justify.svg";
+import { IconJustify } from "../../Utilities/SvgUtilities";
 
 const ColumnItem = ({
     id,
