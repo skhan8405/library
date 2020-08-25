@@ -13,10 +13,13 @@ import { ReactComponent as IconShare } from "./images/icon-share.svg";
 import { ReactComponent as IconGroupSort } from "./images/icon-group-sort.svg";
 import { ReactComponent as IconSearch } from "./images/icon-search.svg";
 import FormulaProcessor from "./functions/FormulaProcessor";
+import { range } from "lodash";
 
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
+const defaultParsePaste = (str) =>
+    str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
 const { DropDownEditor } = Editors;
 const selectors = Data.Selectors;
 let swapList = [];
@@ -140,8 +143,8 @@ class Spreadsheet extends Component {
                 return colItem;
             })
         };
-        // document.addEventListener("copy", this.handleCopy);
-        // document.addEventListener("paste", this.handlePaste);
+        document.addEventListener("copy", this.handleCopy);
+        document.addEventListener("paste", this.handlePaste);
         this.handleSearchValue = this.handleSearchValue.bind(this);
         this.clearSearchValue = this.clearSearchValue.bind(this);
         this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -151,73 +154,108 @@ class Spreadsheet extends Component {
         });
     }
 
-    // updateRows = (startIdx, newRows) => {
-    //   this.setState((state) => {
-    //     const rows = state.rows.slice();
-    //     for (let i = 0; i < newRows.length; i++) {
-    //       if (startIdx + i < rows.length) {
-    //         rows[startIdx + i] = {
-    //           ...rows[startIdx + i],
-    //           ...newRows[i],
-    //         };
-    //       }
-    //     }
-    //     return {
-    //       rows,
-    //     };
-    //   });
-    // };
+    updateRows = (startIdx, newRows) => {
+        const {
+            pageIndex,
+            pageRowCount,
+            dataSet,
+            subDataSet,
+            junk,
+            searchValue,
+            sortDirection,
+            sortColumn,
+            sortingParamsObjectList
+        } = this.state;
+        const hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
+        const hasGroupSortKeys =
+            sortingParamsObjectList && sortingParamsObjectList.length > 0;
+        const hasFilter = Object.keys(junk).length > 0;
+        const hasSearchkey = searchValue && searchValue != "";
 
-    // rowGetter = (i) => {
-    // console.log(i)
-    //   const { rows } = this.state;
-    //   return rows[i];
-    // };
+        let data =
+            hasFilter || hasSearchkey || hasSingleSortkey || hasGroupSortKeys
+                ? [...subDataSet]
+                : [...dataSet];
+        for (let i = 0; i < newRows.length; i++) {
+            if (startIdx + i < data.length) {
+                data[startIdx + i] = {
+                    ...data[startIdx + i],
+                    ...newRows[i]
+                };
+            } else {
+                data[startIdx + i] = {
+                    ...newRows[i]
+                };
+            }
+        }
+        let rw = data.slice(0, pageIndex * pageRowCount);
+        if (hasFilter || hasSearchkey || hasSingleSortkey || hasGroupSortKeys) {
+            this.setState({
+                subDataSet: data,
+                rows: rw,
+                count: rw.length
+            });
+        } else {
+            this.setState({
+                dataSet: data,
+                rows: rw,
+                count: rw.length
+            });
+        }
+        return data.slice(0, pageIndex * pageRowCount);
+    };
 
-    // handleCopy = (e) => {
-    //   e.preventDefault();
-    //   const { topLeft, botRight } = this.state;
-    //   const text = range(topLeft.rowIdx, botRight.rowIdx + 1)
-    //     .map((rowIdx) =>
-    //       this.state.columns
-    //         .slice(topLeft.colIdx - 1, botRight.colIdx)
-    //         .map((col) => this.rowGetter(rowIdx)[col.key])
-    //         .join("\t")
-    //     )
-    //     .join("\n");
-    //   e.clipboardData.setData("text/plain", text);
-    // };
+    rowGetter = (i) => {
+        const { rows } = this.state;
+        return rows[i];
+    };
 
-    // handlePaste = (e) => {
-    //   e.preventDefault();
-    //   const { topLeft } = this.state;
-    //   const newRows = [];
-    //   const pasteData = defaultParsePaste(e.clipboardData.getData("text/plain"));
-    //   pasteData.forEach((row) => {
-    //     const rowData = {};
-    //     // Merge the values from pasting and the keys from the columns
-    //     this.state.columns
-    //       .slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length)
-    //       .forEach((col, j) => {
-    //         rowData[col.key] = row[j];
-    //       });
-    //     newRows.push(rowData);
-    //   });
-    //   this.updateRows(topLeft.rowIdx, newRows);
-    // };
+    handleCopy = (e) => {
+        e.preventDefault();
+        const { topLeft, botRight } = this.state;
+        const text = range(topLeft.rowIdx, botRight.rowIdx + 1)
+            .map((rowIdx) =>
+                this.state.columns
+                    .slice(topLeft.colIdx - 1, botRight.colIdx)
+                    .map((col) => this.rowGetter(rowIdx)[col.key])
+                    .join("\t")
+            )
+            .join("\n");
+        e.clipboardData.setData("text/plain", text);
+    };
 
-    // setSelection = (args) => {
-    //   this.setState({
-    //     topLeft: {
-    //       rowIdx: args.topLeft.rowIdx,
-    //       colIdx: args.topLeft.idx,
-    //     },
-    //     botRight: {
-    //       rowIdx: args.bottomRight.rowIdx,
-    //       colIdx: args.bottomRight.idx,
-    //     },
-    //   });
-    // };
+    handlePaste = (e) => {
+        e.preventDefault();
+        const { topLeft } = this.state;
+        const newRows = [];
+        const pasteData = defaultParsePaste(
+            e.clipboardData.getData("text/plain")
+        );
+        pasteData.forEach((row) => {
+            const rowData = {};
+            // Merge the values from pasting and the keys from the columns
+            this.state.columns
+                .slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length)
+                .forEach((col, j) => {
+                    rowData[col.key] = row[j];
+                });
+            newRows.push(rowData);
+        });
+        this.updateRows(topLeft.rowIdx, newRows);
+    };
+
+    setSelection = (args) => {
+        this.setState({
+            topLeft: {
+                rowIdx: args.topLeft.rowIdx,
+                colIdx: args.topLeft.idx
+            },
+            botRight: {
+                rowIdx: args.bottomRight.rowIdx,
+                colIdx: args.bottomRight.idx
+            }
+        });
+    };
 
     // eslint-disable-next-line camelcase
     UNSAFE_componentWillReceiveProps(props) {
@@ -1420,9 +1458,9 @@ class Spreadsheet extends Component {
                     globalSearch={this.globalSearchLogic}
                     handleWarningStatus={this.handleWarningStatus}
                     closeWarningStatus={this.closeWarningStatus}
-                    // cellRangeSelection={{
-                    //   onComplete: this.setSelection,
-                    // }}
+                    cellRangeSelection={{
+                        onComplete: this.setSelection
+                    }}
                 />
             </div>
         );
