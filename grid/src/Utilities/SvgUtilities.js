@@ -2,7 +2,9 @@
 // @flow
 import React from "react";
 
-const Svg = (p: Object): React$Element<*> => <svg width="12" height="13" {...p} />;
+const Svg = (p: Object): React$Element<*> => (
+    <svg width="12" height="13" {...p} />
+);
 const SvgEdit = (p: Object): React$Element<*> => (
     <svg width="12" height="13" viewBox="0 0 1792 1792" {...p} />
 );
