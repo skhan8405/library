@@ -35,10 +35,109 @@ function _extends() {
   return _extends.apply(this, arguments);
 }
 
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
   subClass.__proto__ = superClass;
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _construct(Parent, args, Class) {
+  if (_isNativeReflectConstruct()) {
+    _construct = Reflect.construct;
+  } else {
+    _construct = function _construct(Parent, args, Class) {
+      var a = [null];
+      a.push.apply(a, args);
+      var Constructor = Function.bind.apply(Parent, a);
+      var instance = new Constructor();
+      if (Class) _setPrototypeOf(instance, Class.prototype);
+      return instance;
+    };
+  }
+
+  return _construct.apply(null, arguments);
+}
+
+function _isNativeFunction(fn) {
+  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+}
+
+function _wrapNativeSuper(Class) {
+  var _cache = typeof Map === "function" ? new Map() : undefined;
+
+  _wrapNativeSuper = function _wrapNativeSuper(Class) {
+    if (Class === null || !_isNativeFunction(Class)) return Class;
+
+    if (typeof Class !== "function") {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    if (typeof _cache !== "undefined") {
+      if (_cache.has(Class)) return _cache.get(Class);
+
+      _cache.set(Class, Wrapper);
+    }
+
+    function Wrapper() {
+      return _construct(Class, arguments, _getPrototypeOf(this).constructor);
+    }
+
+    Wrapper.prototype = Object.create(Class.prototype, {
+      constructor: {
+        value: Wrapper,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    return _setPrototypeOf(Wrapper, Class);
+  };
+
+  return _wrapNativeSuper(Class);
 }
 
 function _assertThisInitialized(self) {
@@ -47,6 +146,71 @@ function _assertThisInitialized(self) {
   }
 
   return self;
+}
+
+function _wrapRegExp(re, groups) {
+  _wrapRegExp = function (re, groups) {
+    return new BabelRegExp(re, undefined, groups);
+  };
+
+  var _RegExp = _wrapNativeSuper(RegExp);
+
+  var _super = RegExp.prototype;
+
+  var _groups = new WeakMap();
+
+  function BabelRegExp(re, flags, groups) {
+    var _this = _RegExp.call(this, re, flags);
+
+    _groups.set(_this, groups || _groups.get(re));
+
+    return _this;
+  }
+
+  _inherits(BabelRegExp, _RegExp);
+
+  BabelRegExp.prototype.exec = function (str) {
+    var result = _super.exec.call(this, str);
+
+    if (result) result.groups = buildGroups(result, this);
+    return result;
+  };
+
+  BabelRegExp.prototype[Symbol.replace] = function (str, substitution) {
+    if (typeof substitution === "string") {
+      var groups = _groups.get(this);
+
+      return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) {
+        return "$" + groups[name];
+      }));
+    } else if (typeof substitution === "function") {
+      var _this = this;
+
+      return _super[Symbol.replace].call(this, str, function () {
+        var args = [];
+        args.push.apply(args, arguments);
+
+        if (typeof args[args.length - 1] !== "object") {
+          args.push(buildGroups(args, _this));
+        }
+
+        return substitution.apply(this, args);
+      });
+    } else {
+      return _super[Symbol.replace].call(this, str, substitution);
+    }
+  };
+
+  function buildGroups(result, re) {
+    var g = _groups.get(re);
+
+    return Object.keys(g).reduce(function (groups, name) {
+      groups[name] = result[g[name]];
+      return groups;
+    }, Object.create(null));
+  }
+
+  return _wrapRegExp.apply(this, arguments);
 }
 
 var ExtDataGrid = /*#__PURE__*/function (_ReactDataGrid) {
@@ -117,9 +281,6 @@ var applyFormula = function applyFormula(obj, columnName) {
       case "=MAX":
         val[columnName] = Math.max.apply(Math, value);
         break;
-
-      default:
-        console.log("No Calculation");
     }
   }
 
@@ -332,7 +493,9 @@ ColumnItem.propTypes = {
 };
 
 var ColumnsList = function ColumnsList(props) {
-  var _useState = React.useState([].concat(props.columnsArray)),
+  var columnsArray = props.columnsArray;
+
+  var _useState = React.useState([].concat(columnsArray)),
       columns = _useState[0],
       setColumns = _useState[1];
 
@@ -372,8 +535,8 @@ var ColumnsList = function ColumnsList(props) {
 
   React__default.useEffect(function () {
     setColumns(props.columnsArray);
-  }, [props.columnsArray]);
-  return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+  }, [columnsArray]);
+  return /*#__PURE__*/React__default.createElement("div", {
     ref: drop,
     style: {
       display: "flex",
@@ -387,7 +550,7 @@ var ColumnsList = function ColumnsList(props) {
       moveColumn: moveColumn,
       findColumn: findColumn
     });
-  })));
+  }));
 };
 
 ColumnsList.propTypes = {
@@ -448,8 +611,10 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
     _this = _React$Component.call(this, props) || this;
 
     _this.resetColumnReorderList = function () {
+      var columns = _this.props.columns;
+
       _this.setState({
-        columnReorderEntityList: _this.props.columns.map(function (item) {
+        columnReorderEntityList: columns.map(function (item) {
           return item.name;
         }),
         leftPinnedColumList: [],
@@ -458,10 +623,14 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.selectAllToColumnReOrderList = function () {
+      var _this$state = _this.state,
+          columnReorderEntityList = _this$state.columnReorderEntityList,
+          isAllSelected = _this$state.isAllSelected;
+
       _this.resetColumnReorderList();
 
-      var existingColumnReorderEntityList = _this.state.columnReorderEntityList;
-      var isExistingAllSelect = _this.state.isAllSelected;
+      var existingColumnReorderEntityList = columnReorderEntityList;
+      var isExistingAllSelect = isAllSelected;
 
       if (isExistingAllSelect) {
         existingColumnReorderEntityList = [];
@@ -476,20 +645,24 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.addToColumnReorderEntityList = function (typeToBeAdded) {
-      var existingColumnReorderEntityList = _this.state.columnReorderEntityList;
-      var existingLeftPinnedList = _this.state.leftPinnedColumList;
+      var _this$state2 = _this.state,
+          columnReorderEntityList = _this$state2.columnReorderEntityList,
+          leftPinnedColumList = _this$state2.leftPinnedColumList,
+          columnSelectList = _this$state2.columnSelectList;
+      var existingColumnReorderEntityList = columnReorderEntityList;
+      var existingLeftPinnedList = leftPinnedColumList;
 
       if (!existingColumnReorderEntityList.includes(typeToBeAdded)) {
         (function () {
-          var indexOfInsertion = _this.state.columnSelectList.findIndex(function (item) {
+          var indexOfInsertion = columnSelectList.findIndex(function (item) {
             return item === typeToBeAdded;
           });
 
           while (indexOfInsertion > 0) {
-            if (existingColumnReorderEntityList.includes(_this.state.columnSelectList[indexOfInsertion - 1])) {
-              if (!existingLeftPinnedList.includes(_this.state.columnSelectList[indexOfInsertion - 1])) {
+            if (existingColumnReorderEntityList.includes(columnSelectList[indexOfInsertion - 1])) {
+              if (!existingLeftPinnedList.includes(columnSelectList[indexOfInsertion - 1])) {
                 indexOfInsertion = existingColumnReorderEntityList.findIndex(function (item) {
-                  return item === _this.state.columnSelectList[indexOfInsertion - 1];
+                  return item === columnSelectList[indexOfInsertion - 1];
                 });
                 indexOfInsertion += 1;
                 break;
@@ -505,7 +678,8 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
         })();
       } else {
         existingColumnReorderEntityList = existingColumnReorderEntityList.filter(function (item) {
-          if (item !== typeToBeAdded) return item;else return "";
+          if (item !== typeToBeAdded) return item;
+          return "";
         });
 
         if (existingLeftPinnedList.includes(typeToBeAdded)) {
@@ -523,12 +697,11 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.filterColumnReorderList = function (e) {
+      var columns = _this.props.columns;
       var searchKey = String(e.target.value).toLowerCase();
-
-      var existingList = _this.props.columns.map(function (item) {
+      var existingList = columns.map(function (item) {
         return item.name;
       });
-
       var filtererdColumnReorderList = [];
 
       if (searchKey.length > 0) {
@@ -536,7 +709,7 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
           return item.toLowerCase().includes(searchKey);
         });
       } else {
-        filtererdColumnReorderList = _this.props.columns.map(function (item) {
+        filtererdColumnReorderList = columns.map(function (item) {
           return item.name;
         });
       }
@@ -547,6 +720,9 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.createColumnsArrayFromProps = function (colsList) {
+      var _this$state3 = _this.state,
+          leftPinnedColumList = _this$state3.leftPinnedColumList,
+          maxLeftPinnedColumns = _this$state3.maxLeftPinnedColumns;
       return colsList.map(function (item) {
         return {
           id: item,
@@ -571,8 +747,8 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
             role: "button",
             type: "checkbox",
             id: "checkBoxToPinLeft_" + item,
-            checked: _this.state.leftPinnedColumList.includes(item),
-            disabled: _this.state.maxLeftPinnedColumn - _this.state.leftPinnedColumList.length <= 0 ? !_this.state.leftPinnedColumList.includes(item) : false,
+            checked: leftPinnedColumList.includes(item),
+            disabled: maxLeftPinnedColumns - leftPinnedColumList.length <= 0 ? !leftPinnedColumList.includes(item) : false,
             onChange: function onChange() {
               return _this.reArrangeLeftPinnedColumn(item);
             }
@@ -584,8 +760,11 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.reArrangeLeftPinnedColumn = function (columHeaderName) {
-      var existingLeftPinnedList = _this.state.leftPinnedColumList;
-      var existingColumnReorderEntityList = _this.state.columnReorderEntityList;
+      var _this$state4 = _this.state,
+          leftPinnedColumList = _this$state4.leftPinnedColumList,
+          columnReorderEntityList = _this$state4.columnReorderEntityList;
+      var existingLeftPinnedList = leftPinnedColumList;
+      var existingColumnReorderEntityList = columnReorderEntityList;
 
       if (!existingLeftPinnedList.includes(columHeaderName)) {
         existingLeftPinnedList.unshift(columHeaderName);
@@ -613,17 +792,23 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.handleReorderList = function (reordered) {
-      _this.props.handleheaderNameList(reordered);
+      var handleheaderNameList = _this.props.handleheaderNameList;
+      handleheaderNameList(reordered);
     };
 
+    var _this$props = _this.props,
+        headerKeys = _this$props.headerKeys,
+        _columns = _this$props.columns,
+        existingPinnedHeadersList = _this$props.existingPinnedHeadersList,
+        maxLeftPinnedColumn = _this$props.maxLeftPinnedColumn;
     _this.state = {
-      columnReorderEntityList: _this.props.headerKeys,
-      columnSelectList: _this.props.columns.map(function (item) {
+      columnReorderEntityList: headerKeys,
+      columnSelectList: _columns.map(function (item) {
         return item.name;
       }),
-      leftPinnedColumList: _this.props.existingPinnedHeadersList,
+      leftPinnedColumList: existingPinnedHeadersList,
       isAllSelected: true,
-      maxLeftPinnedColumn: _this.props.maxLeftPinnedColumn
+      maxLeftPinnedColumns: maxLeftPinnedColumn
     };
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
@@ -632,12 +817,22 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
   var _proto = ColumnReordering.prototype;
 
   _proto.handleClick = function handleClick() {
-    this.props.closeColumnReOrdering();
+    var closeColumnReOrdering = this.props.closeColumnReOrdering;
+    closeColumnReOrdering();
   };
 
   _proto.render = function render() {
     var _this2 = this;
 
+    var _this$state5 = this.state,
+        columnReorderEntityList = _this$state5.columnReorderEntityList,
+        columnSelectList = _this$state5.columnSelectList,
+        maxLeftPinnedColumns = _this$state5.maxLeftPinnedColumns,
+        leftPinnedColumList = _this$state5.leftPinnedColumList;
+    var _this$props2 = this.props,
+        columns = _this$props2.columns,
+        closeColumnReOrdering = _this$props2.closeColumnReOrdering,
+        updateTableAsPerRowChooser = _this$props2.updateTableAsPerRowChooser;
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: this.handleClick
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -668,10 +863,10 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
       onChange: function onChange() {
         return _this2.selectAllToColumnReOrderList();
       },
-      checked: this.state.columnReorderEntityList.length === this.props.columns.length
+      checked: columnReorderEntityList.length === columns.length
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "column__txt"
-    }, "Select all")), this.state.columnSelectList.map(function (item) {
+    }, "Select all")), columnSelectList.map(function (item) {
       return /*#__PURE__*/React__default.createElement("div", {
         className: "column__wrap",
         key: item
@@ -681,7 +876,7 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
         "data-testid": "addToColumnReorderEntityList",
         type: "checkbox",
         id: "checkboxtoselectreorder_" + item,
-        checked: _this2.state.columnReorderEntityList.includes(item),
+        checked: columnReorderEntityList.includes(item),
         onChange: function onChange() {
           return _this2.addToColumnReorderEntityList(item);
         }
@@ -699,13 +894,13 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
       "data-testid": "closeColumnReordering",
       className: "column__close",
       onClick: function onClick() {
-        return _this2.props.closeColumnReOrdering();
+        return closeColumnReOrdering();
       }
     }, /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconClose, null)))), /*#__PURE__*/React__default.createElement("div", {
       className: "column__body"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "column__info"
-    }, /*#__PURE__*/React__default.createElement("strong", null, "\xA0 \xA0 Selected Column Count :", " ", this.state.columnReorderEntityList.length), this.state.maxLeftPinnedColumn - this.state.leftPinnedColumList.length > 0 ? /*#__PURE__*/React__default.createElement("strong", null, "\xA0 \xA0 Left Pinned Column Count Remaining :", " ", this.state.maxLeftPinnedColumn - this.state.leftPinnedColumList.length) : /*#__PURE__*/React__default.createElement("strong", {
+    }, /*#__PURE__*/React__default.createElement("strong", null, "\xA0 \xA0 Selected Column Count :", " ", columnReorderEntityList.length), maxLeftPinnedColumns - leftPinnedColumList.length > 0 ? /*#__PURE__*/React__default.createElement("strong", null, "\xA0 \xA0 Left Pinned Column Count Remaining :", " ", maxLeftPinnedColumns - leftPinnedColumList.length) : /*#__PURE__*/React__default.createElement("strong", {
       style: {
         color: "red"
       }
@@ -713,7 +908,7 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
       backend: MultiBackend__default,
       options: HTML5toTouch
     }, /*#__PURE__*/React__default.createElement(ColumnsList, {
-      columnsArray: this.createColumnsArrayFromProps(this.state.columnReorderEntityList),
+      columnsArray: this.createColumnsArrayFromProps(columnReorderEntityList),
       handleReorderList: this.handleReorderList
     }))), /*#__PURE__*/React__default.createElement("div", {
       className: "column__footer"
@@ -731,14 +926,14 @@ var ColumnReordering = /*#__PURE__*/function (_React$Component) {
       type: "button",
       className: "btns",
       onClick: function onClick() {
-        return _this2.props.closeColumnReOrdering();
+        return closeColumnReOrdering();
       }
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
       "data-testid": "saveButton",
       type: "button",
       className: "btns btns__save",
       onClick: function onClick() {
-        return _this2.props.updateTableAsPerRowChooser(_this2.state.columnReorderEntityList, _this2.state.leftPinnedColumList);
+        return updateTableAsPerRowChooser(columnReorderEntityList, leftPinnedColumList);
       }
     }, "Save")))))));
   };
@@ -835,7 +1030,9 @@ Card.propTypes = {
 };
 
 var SortingList = function SortingList(props) {
-  var _useState = React.useState([].concat(props.sortsArray)),
+  var sortsArray = props.sortsArray;
+
+  var _useState = React.useState([].concat(sortsArray)),
       cards = _useState[0],
       setCards = _useState[1];
 
@@ -875,8 +1072,8 @@ var SortingList = function SortingList(props) {
 
   React__default.useEffect(function () {
     setCards(props.sortsArray);
-  }, [props.sortsArray]);
-  return /*#__PURE__*/React__default.createElement(React.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+  }, [sortsArray]);
+  return /*#__PURE__*/React__default.createElement("div", {
     ref: drop,
     style: {
       display: "flex",
@@ -890,7 +1087,7 @@ var SortingList = function SortingList(props) {
       moveCard: moveCard,
       findCard: findCard
     });
-  })));
+  }));
 };
 
 SortingList.propTypes = {
@@ -1048,23 +1245,28 @@ var App = /*#__PURE__*/function (_React$Component) {
     _this = _React$Component.call(this, props) || this;
 
     _this.add = function () {
-      var rowList = [].concat(_this.state.rowList);
-      rowList.push(true);
-      var existingSortingOrderList = _this.state.sortingOrderList;
+      var _this$state = _this.state,
+          rowList = _this$state.rowList,
+          sortingOrderList = _this$state.sortingOrderList;
+      var columnFieldValue = _this.props.columnFieldValue;
+      var rowLists = [].concat(rowList);
+      rowLists.push(true);
+      var existingSortingOrderList = sortingOrderList;
       existingSortingOrderList.push({
-        sortBy: _this.props.columnFieldValue[0],
+        sortBy: columnFieldValue[0],
         order: "Ascending",
         sortOn: "Value"
       });
 
       _this.setState({
-        rowList: rowList,
+        rowList: rowLists,
         sortingOrderList: existingSortingOrderList
       });
     };
 
     _this.copy = function (i) {
-      var rowList = [].concat(_this.state.sortingOrderList);
+      var sortingOrderList = _this.state.sortingOrderList;
+      var rowList = [].concat(sortingOrderList);
       rowList.push(JSON.parse(JSON.stringify(rowList[i])));
 
       _this.setState({
@@ -1073,20 +1275,23 @@ var App = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.clearAll = function () {
+      var clearAllSortingParams = _this.props.clearAllSortingParams;
+
       _this.setState({
         sortingOrderList: [],
         errorMessage: false
       });
 
-      _this.props.clearAllSortingParams();
+      clearAllSortingParams();
     };
 
     _this.remove = function (i) {
-      var sortingOrderList = [].concat(_this.state.sortingOrderList);
-      sortingOrderList.splice(i, 1);
+      var sortingOrderList = _this.state.sortingOrderList;
+      var sortingOrderLists = [].concat(sortingOrderList);
+      sortingOrderLists.splice(i, 1);
 
       _this.setState({
-        sortingOrderList: sortingOrderList
+        sortingOrderList: sortingOrderLists
       });
 
       if (sortingOrderList.length <= 1) {
@@ -1097,6 +1302,7 @@ var App = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.createColumnsArrayFromProps = function (rowsValue) {
+      var columnFieldValue = _this.props.columnFieldValue;
       return rowsValue.map(function (row, index) {
         return {
           id: index,
@@ -1123,7 +1329,7 @@ var App = /*#__PURE__*/function (_React$Component) {
               return _this.captureSortingFeildValues(e, index, "sortBy");
             },
             value: row.sortBy
-          }, _this.props.columnFieldValue.map(function (item) {
+          }, columnFieldValue.map(function (item) {
             return /*#__PURE__*/React__default.createElement("option", {
               key: item
             }, item);
@@ -1183,7 +1389,8 @@ var App = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.captureSortingFeildValues = function (event, index, sortingKey) {
-      var existingSortingOrderList = _this.state.sortingOrderList;
+      var sortingOrderList = _this.state.sortingOrderList;
+      var existingSortingOrderList = sortingOrderList;
 
       if (sortingKey === "sortBy") {
         existingSortingOrderList[index].sortBy = event.target.value;
@@ -1203,45 +1410,54 @@ var App = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.updateTableAsPerSortCondition = function () {
+      var sortingOrderList = _this.state.sortingOrderList;
       var unique = new Set();
-
-      var showError = _this.state.sortingOrderList.some(function (element) {
+      var showError = sortingOrderList.some(function (element) {
         return unique.size === unique.add(element.sortBy).size;
       });
+      var setTableAsPerSortingParams = _this.props.setTableAsPerSortingParams;
 
-      showError ? _this.setState({
-        errorMessage: true
-      }) : _this.setState({
-        errorMessage: false
-      });
+      if (showError) {
+        _this.setState({
+          errorMessage: true
+        });
+      } else {
+        _this.setState({
+          errorMessage: false
+        });
 
-      if (!showError) {
-        _this.props.setTableAsPerSortingParams(_this.state.sortingOrderList);
+        setTableAsPerSortingParams(sortingOrderList);
       }
     };
 
     _this.handleReorderListOfSort = function (reOrderedIndexList) {
-      _this.props.handleTableSortSwap(reOrderedIndexList);
+      var handleTableSortSwap = _this.props.handleTableSortSwap;
+      handleTableSortSwap(reOrderedIndexList);
     };
 
+    _this.handleClick = function () {
+      var closeSorting = _this.props.closeSorting;
+      closeSorting();
+    };
+
+    var sortingParamsObjectList = _this.props.sortingParamsObjectList;
     _this.state = {
       rowList: [true],
-      sortingOrderList: _this.props.sortingParamsObjectList === undefined ? [] : _this.props.sortingParamsObjectList,
+      sortingOrderList: sortingParamsObjectList === undefined ? [] : sortingParamsObjectList,
       errorMessage: false
     };
-    _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   var _proto = App.prototype;
 
-  _proto.handleClick = function handleClick() {
-    this.props.closeSorting();
-  };
-
   _proto.render = function render() {
     var _this2 = this;
 
+    var _this$state2 = this.state,
+        sortingOrderList = _this$state2.sortingOrderList,
+        errorMessage = _this$state2.errorMessage;
+    var closeSorting = this.props.closeSorting;
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: this.handleClick
     }, /*#__PURE__*/React__default.createElement("div", {
@@ -1256,7 +1472,7 @@ var App = /*#__PURE__*/function (_React$Component) {
       role: "presentation",
       "data-testid": "closeSorting",
       onClick: function onClick() {
-        return _this2.props.closeSorting();
+        return closeSorting();
       }
     }, /*#__PURE__*/React__default.createElement(SvgIconClose, null)))), /*#__PURE__*/React__default.createElement("div", {
       className: "neo-popover__content"
@@ -1265,10 +1481,10 @@ var App = /*#__PURE__*/function (_React$Component) {
       options: HTML5toTouch$1
     }, /*#__PURE__*/React__default.createElement(SortingList, {
       handleReorderListOfSort: this.handleReorderListOfSort,
-      sortsArray: this.createColumnsArrayFromProps(this.state.sortingOrderList)
+      sortsArray: this.createColumnsArrayFromProps(sortingOrderList)
     }))), /*#__PURE__*/React__default.createElement("div", {
       className: "sort-warning"
-    }, this.state.errorMessage ? /*#__PURE__*/React__default.createElement("span", {
+    }, errorMessage ? /*#__PURE__*/React__default.createElement("span", {
       className: "alert alert-danger"
     }, "Sort by opted are same, Please choose different one.") : ""), /*#__PURE__*/React__default.createElement("div", {
       className: "sort__new"
@@ -1404,8 +1620,6 @@ function SvgIconPdf(props) {
   }, props), _ref$7);
 }
 
-var downLaodFileType = [];
-
 var ExportData = /*#__PURE__*/function (_React$Component) {
   _inheritsLoose(ExportData, _React$Component);
 
@@ -1422,16 +1636,20 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.selectAllToColumnList = function () {
+      var isAllSelected = _this.state.isAllSelected;
+      var columnsList = _this.props.columnsList;
+
       _this.resetColumnExportList();
 
       _this.setState({
-        columnEntityList: !_this.state.isAllSelected ? _this.props.columnsList : [],
-        isAllSelected: !_this.state.isAllSelected
+        columnEntityList: !isAllSelected ? columnsList : [],
+        isAllSelected: !isAllSelected
       });
     };
 
     _this.addToColumnEntityList = function (typeToBeAdded) {
-      var existingColumnEntityList = _this.state.columnEntityList;
+      var columnEntityList = _this.state.columnEntityList;
+      var existingColumnEntityList = columnEntityList;
 
       if (!existingColumnEntityList.includes(typeToBeAdded)) {
         existingColumnEntityList.push(typeToBeAdded);
@@ -1448,7 +1666,9 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.selectDownLoadType = function (event) {
-      if (event.target.checked && !_this.state.downLaodFileType.includes(event.target.value)) {
+      var downLaodFileType = _this.state.downLaodFileType;
+
+      if (event.target.checked && !downLaodFileType.includes(event.target.value)) {
         downLaodFileType.push(event.target.value);
 
         _this.setState({
@@ -1468,12 +1688,15 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.exportRowData = function () {
-      var columnValueList = _this.state.columnEntityList;
+      var _this$state = _this.state,
+          columnEntityList = _this$state.columnEntityList,
+          downLaodFileType = _this$state.downLaodFileType;
+      var columnValueList = columnEntityList;
       var filteredRow = [];
       var filteredRowValues = [];
       var filteredRowHeader = [];
 
-      if (columnValueList.length > 0 && _this.state.downLaodFileType.length > 0) {
+      if (columnValueList.length > 0 && downLaodFileType.length > 0) {
         var rows = _this.props.rows;
         var rowLength = rows && rows.length > 0 ? rows.length : 0;
         rows.forEach(function (row, index) {
@@ -1491,8 +1714,7 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
           filteredRowValues.push(rowFilteredValues);
           if (rowLength === index + 1) filteredRowHeader.push(rowFilteredHeader);
         });
-
-        _this.state.downLaodFileType.forEach(function (item) {
+        downLaodFileType.forEach(function (item) {
           if (item === "pdf") {
             _this.downloadPDF(filteredRowValues, filteredRowHeader);
           } else if (item === "excel") {
@@ -1597,8 +1819,11 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
     };
 
     _this.exportValidation = function () {
-      var columnLength = _this.state.columnEntityList.length;
-      var fileLength = _this.state.downLaodFileType.length;
+      var _this$state2 = _this.state,
+          columnEntityList = _this$state2.columnEntityList,
+          downLaodFileType = _this$state2.downLaodFileType;
+      var columnLength = columnEntityList.length;
+      var fileLength = downLaodFileType.length;
 
       if (columnLength > 0 && fileLength > 0) {
         _this.exportRowData();
@@ -1635,12 +1860,13 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
       }
     };
 
+    var _columnsList = _this.props.columnsList;
     _this.state = {
-      columnValueList: _this.props.columnsList,
-      columnEntityList: _this.props.columnsList,
+      columnValueList: _columnsList,
+      columnEntityList: _columnsList,
       isAllSelected: true,
       downLaodFileType: [],
-      warning: " ",
+      warning: "",
       clickTag: "none"
     };
     _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_this));
@@ -1652,12 +1878,19 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
   var _proto = ExportData.prototype;
 
   _proto.handleClick = function handleClick() {
-    this.props.closeExport();
+    var closeExport = this.props.closeExport;
+    closeExport();
   };
 
   _proto.render = function render() {
     var _this2 = this;
 
+    var _this$state3 = this.state,
+        isAllSelected = _this$state3.isAllSelected,
+        columnValueList = _this$state3.columnValueList,
+        columnEntityList = _this$state3.columnEntityList,
+        clickTag = _this$state3.clickTag;
+    var closeExport = this.props.closeExport;
     return /*#__PURE__*/React__default.createElement(ClickAwayListener, {
       onClickAway: this.handleClick,
       className: "neo-popover neo-popover--exports exports--grid"
@@ -1688,10 +1921,10 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
       onChange: function onChange() {
         return _this2.selectAllToColumnList();
       },
-      checked: this.state.isAllSelected
+      checked: isAllSelected
     })), /*#__PURE__*/React__default.createElement("div", {
       className: "export__txt"
-    }, "Select All")), this.state.columnValueList && this.state.columnValueList.length > 0 ? this.state.columnValueList.map(function (column) {
+    }, "Select All")), columnValueList && columnValueList.length > 0 ? columnValueList.map(function (column) {
       return /*#__PURE__*/React__default.createElement("div", {
         className: "export__wrap",
         key: column.key
@@ -1700,7 +1933,7 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
       }, /*#__PURE__*/React__default.createElement("input", {
         "data-testid": "addToColumn",
         type: "checkbox",
-        checked: _this2.state.columnEntityList.includes(column),
+        checked: columnEntityList.includes(column),
         onChange: function onChange() {
           return _this2.addToColumnEntityList(column);
         }
@@ -1717,7 +1950,7 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
       className: "export__close"
     }, /*#__PURE__*/React__default.createElement("i", {
       role: "presentation",
-      onClick: this.props.closeExport
+      onClick: closeExport
     }, /*#__PURE__*/React__default.createElement(SvgIconClose, null)))), /*#__PURE__*/React__default.createElement("div", {
       className: "export__as"
     }, "Export as"), /*#__PURE__*/React__default.createElement("div", {
@@ -1760,7 +1993,7 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
       className: "exportWarning"
     }, /*#__PURE__*/React__default.createElement("span", {
       style: {
-        display: this.state.clickTag
+        display: clickTag
       }
     }, /*#__PURE__*/React__default.createElement("strong", null, "Select at least one file type")))), /*#__PURE__*/React__default.createElement("div", {
       className: "export__footer"
@@ -1771,7 +2004,7 @@ var ExportData = /*#__PURE__*/function (_React$Component) {
       type: "button",
       className: "btns",
       onClick: function onClick() {
-        return _this2.props.closeExport();
+        return closeExport();
       }
     }, "Cancel"), /*#__PURE__*/React__default.createElement("button", {
       "data-testid": "exportValidationClick",
@@ -1915,12 +2148,137 @@ function SvgIconSearch(props) {
   }, props), _ref$b);
 }
 
+function FormulaProcessor(expression) {
+  var columnArray = [];
+
+  if (expression.match( /*#__PURE__*/_wrapRegExp(/^=sum\((.[0-9A-Z_a-z]*?),((.[0-9A-Z_a-z]*?)*?)\)$/g, {
+    one: 1,
+    more: 2
+  }))) {
+    console.log(expression.match( /*#__PURE__*/_wrapRegExp(/^=sum\((.[0-9A-Z_a-z]*?),((.[0-9A-Z_a-z]*?)*?)\)$/g, {
+      one: 1,
+      more: 2
+    })));
+
+    var RegCode = /*#__PURE__*/_wrapRegExp(/^=sum\((.[0-9A-Z_a-z]*?),((.[0-9A-Z_a-z]*?)*?)\)$$/g, {
+      one: 1,
+      more: 2
+    });
+
+    var exp = RegCode.exec(expression);
+    var parameter1 = exp.groups.one;
+    var parameter2 = exp.groups.more;
+
+    if (parameter1.match(/^(c\d*?)$/i)) {
+      var RegCode1 = /*#__PURE__*/_wrapRegExp(/^c([0-9]*?)$/g, {
+        column: 1
+      });
+
+      var exper1 = RegCode1.exec(parameter1);
+      columnArray.push(Number(exper1.groups.column));
+    }
+
+    if (parameter2.length > 1) {
+      var moreParameters = parameter2.split(",");
+      moreParameters.forEach(function (item) {
+        if (item.match(/^(c\d*?)$/i)) {
+          var RegCodes = /*#__PURE__*/_wrapRegExp(/^c([0-9]*?)$/g, {
+            column: 1
+          });
+
+          var expers = RegCodes.exec(item);
+          columnArray.push(Number(expers.groups.column));
+        }
+      });
+    } else {
+      if (parameter2.match(/^(c\d*?)$/i)) {
+        var RegCode2 = /*#__PURE__*/_wrapRegExp(/^c([0-9]*?)$/g, {
+          column: 1
+        });
+
+        var exper2 = RegCode2.exec(parameter2);
+        columnArray.push(Number(exper2.groups.column));
+      }
+    }
+  }
+
+  if (columnArray.length > 1) {
+    console.log(columnArray);
+    return columnArray;
+  } else return [];
+}
+
 var DropDownEditor = reactDataGridAddons.Editors.DropDownEditor;
 var selectors = reactDataGridAddons.Data.Selectors;
 var swapList = [];
 var swapSortList = [];
 var AutoCompleteFilter = reactDataGridAddons.Filters.AutoCompleteFilter,
     NumericFilter = reactDataGridAddons.Filters.NumericFilter;
+var sortBy;
+
+(function () {
+  var defaultCmp = function defaultCmp(a, b) {
+    if (a === b) return 0;
+    return a < b ? -1 : 1;
+  };
+
+  var getCmpFunc = function getCmpFunc(primer, reverse) {
+    var cmp = defaultCmp;
+
+    if (primer) {
+      cmp = function cmp(a, b) {
+        return defaultCmp(primer(a), primer(b));
+      };
+    }
+
+    if (reverse) {
+      return function (a, b) {
+        return -1 * cmp(a, b);
+      };
+    }
+
+    return cmp;
+  };
+
+  sortBy = function sortBy() {
+    var fields = [];
+    var nFields = arguments.length;
+    var field;
+    var name;
+    var cmp;
+
+    for (var i = 0; i < nFields; i++) {
+      field = arguments[i];
+
+      if (typeof field === "string") {
+        name = field;
+        cmp = defaultCmp;
+      } else {
+        name = field.name;
+        cmp = getCmpFunc(field.primer, field.reverse);
+      }
+
+      fields.push({
+        name: name,
+        cmp: cmp
+      });
+    }
+
+    return function (A, B) {
+      var result = 0;
+
+      for (var _i = 0, l = nFields; _i < l; _i++) {
+        field = fields[_i];
+        name = field.name;
+        cmp = field.cmp;
+        result = cmp(A[name], B[name]);
+        if (result !== 0) break;
+      }
+
+      return result;
+    };
+  };
+})();
 
 var Spreadsheet = /*#__PURE__*/function (_Component) {
   _inheritsLoose(Spreadsheet, _Component);
@@ -1935,7 +2293,8 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.updateTableAsPerRowChooser = function (inComingColumnsHeaderList, pinnedColumnsList) {
-      var existingColumnsHeaderList = _this.props.columns;
+      var columns = _this.props.columns;
+      var existingColumnsHeaderList = columns;
       existingColumnsHeaderList = existingColumnsHeaderList.filter(function (item) {
         return inComingColumnsHeaderList.includes(item.name);
       });
@@ -2019,26 +2378,27 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.columnReorderingPannel = function () {
+      var columns = _this.state.columns;
+      var maxLeftPinnedColumn = _this.props.maxLeftPinnedColumn;
+
       _this.setState({
         selectedIndexes: []
       });
 
       var headerNameList = [];
       var existingPinnedHeadersList = [];
-
-      _this.state.columns.filter(function (item) {
+      columns.filter(function (item) {
         return item.frozen !== undefined && item.frozen === true;
       }).map(function (item) {
         return existingPinnedHeadersList.push(item.name);
       });
-
-      _this.state.columns.map(function (item) {
+      columns.map(function (item) {
         return headerNameList.push(item.name);
       });
 
       _this.setState({
         columnReorderingComponent: /*#__PURE__*/React__default.createElement(ColumnReordering, _extends({
-          maxLeftPinnedColumn: _this.props.maxLeftPinnedColumn,
+          maxLeftPinnedColumn: maxLeftPinnedColumn,
           updateTableAsPerRowChooser: _this.updateTableAsPerRowChooser,
           headerKeys: headerNameList,
           closeColumnReOrdering: _this.closeColumnReOrdering,
@@ -2061,23 +2421,28 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.clearSearchValue = function () {
+      var filteringRows = _this.state.filteringRows;
+
       _this.setState({
         searchValue: ""
       });
 
       _this.setState({
-        filteringRows: _this.state.filteringRows
+        filteringRows: filteringRows
       });
     };
 
     _this.sortingPanel = function () {
+      var _this$state = _this.state,
+          columns = _this$state.columns,
+          sortingParamsObjectList = _this$state.sortingParamsObjectList;
+
       _this.setState({
         selectedIndexes: []
       });
 
       var columnField = [];
-
-      _this.state.columns.map(function (item) {
+      columns.map(function (item) {
         return columnField.push(item.name);
       });
 
@@ -2086,7 +2451,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
           setTableAsPerSortingParams: function setTableAsPerSortingParams(args) {
             return _this.setTableAsPerSortingParams(args);
           },
-          sortingParamsObjectList: _this.state.sortingParamsObjectList,
+          sortingParamsObjectList: sortingParamsObjectList,
           handleTableSortSwap: _this.handleTableSortSwap,
           clearAllSortingParams: _this.clearAllSortingParams,
           columnFieldValue: columnField,
@@ -2105,12 +2470,19 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.clearAllSortingParams = function () {
-      var hasSingleSortkey = _this.state.sortDirection !== "NONE" && _this.state.sortColumn !== "";
+      var _this$state2 = _this.state,
+          sortDirection = _this$state2.sortDirection,
+          sortColumn = _this$state2.sortColumn,
+          dataSet = _this$state2.dataSet,
+          searchValue = _this$state2.searchValue,
+          pageIndex = _this$state2.pageIndex,
+          pageRowCount = _this$state2.pageRowCount;
+      var hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
 
-      var dataRows = _this.getFilterResult([].concat(_this.state.dataSet));
+      var dataRows = _this.getFilterResult([].concat(dataSet));
 
-      if (_this.state.searchValue !== "") {
-        var searchKey = String(_this.state.searchValue).toLowerCase();
+      if (searchValue !== "") {
+        var searchKey = String(searchValue).toLowerCase();
         dataRows = dataRows.filter(function (item) {
           return Object.values(item).toString().toLowerCase().includes(searchKey);
         });
@@ -2121,16 +2493,20 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
       }
 
       _this.setState({
-        rows: dataRows.slice(0, _this.state.pageIndex * _this.state.pageRowCount),
+        rows: dataRows.slice(0, pageIndex * pageRowCount),
         subDataSet: dataRows
       });
     };
 
     _this.exportColumnData = function () {
-      var exportData = _this.state.dataSet;
+      var _this$state3 = _this.state,
+          columns = _this$state3.columns,
+          dataSet = _this$state3.dataSet,
+          subDataSet = _this$state3.subDataSet;
+      var exportData = dataSet;
 
       if (_this.isSubset()) {
-        exportData = _this.state.subDataSet;
+        exportData = subDataSet;
       }
 
       _this.setState({
@@ -2140,7 +2516,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
       _this.setState({
         exportComponent: /*#__PURE__*/React__default.createElement(ExportData, {
           rows: exportData,
-          columnsList: _this.state.columns,
+          columnsList: columns,
           closeExport: _this.closeExport
         })
       });
@@ -2153,24 +2529,35 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.setTableAsPerSortingParams = function (tableSortList) {
-      var hasFilter = Object.keys(_this.state.junk).length > 0;
-      var hasSearchKey = String(_this.state.searchValue).toLowerCase() !== "";
-      var hasSingleSortkey = _this.state.sortDirection !== "NONE" && _this.state.sortColumn !== "";
-      var existingRows = [].concat(_this.state.dataSet);
+      var _this$state4 = _this.state,
+          sortDirection = _this$state4.sortDirection,
+          sortColumn = _this$state4.sortColumn,
+          dataSet = _this$state4.dataSet,
+          searchValue = _this$state4.searchValue,
+          subDataSet = _this$state4.subDataSet,
+          junk = _this$state4.junk,
+          rows = _this$state4.rows,
+          sortingOrderSwapList = _this$state4.sortingOrderSwapList,
+          pageIndex = _this$state4.pageIndex,
+          pageRowCount = _this$state4.pageRowCount;
+      var hasFilter = Object.keys(junk).length > 0;
+      var hasSearchKey = String(searchValue).toLowerCase() !== "";
+      var hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
+      var existingRows = [].concat(dataSet);
 
       if (hasFilter || hasSearchKey || hasSingleSortkey) {
-        existingRows = [].concat(_this.state.subDataSet);
+        existingRows = [].concat(subDataSet);
       }
 
       var sortingOrderNameList = [];
       tableSortList.forEach(function (item) {
         var nameOfItem = "";
-        Object.keys(_this.state.rows[0]).forEach(function (rowItem) {
+        Object.keys(rows[0]).forEach(function (rowItem) {
           if (rowItem.toLowerCase() === _this.toCamelCase(item.sortBy).toLowerCase()) {
             nameOfItem = rowItem;
           }
         });
-        var typeOfItem = _this.state.rows[0][item.sortBy === nameOfItem];
+        var typeOfItem = rows[0][item.sortBy === nameOfItem];
 
         if (typeof typeOfItem === "number") {
           sortingOrderNameList.push({
@@ -2187,7 +2574,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
       });
 
       if (swapSortList.length > 0) {
-        var existingSortingOrderSwapList = _this.state.sortingOrderSwapList;
+        var existingSortingOrderSwapList = sortingOrderSwapList;
         swapSortList.forEach(function (item, index) {
           var stringOfItemIndex = "" + item + index;
 
@@ -2206,7 +2593,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
       existingRows.sort(sortBy.apply(void 0, sortingOrderNameList));
 
       _this.setState({
-        rows: existingRows.slice(0, _this.state.pageIndex * _this.state.pageRowCount),
+        rows: existingRows.slice(0, pageIndex * pageRowCount),
         subDataSet: existingRows,
         sortingParamsObjectList: tableSortList
       });
@@ -2215,15 +2602,18 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.groupSort = function (tableSortList, existingRows) {
+      var _this$state5 = _this.state,
+          rows = _this$state5.rows,
+          sortingOrderSwapList = _this$state5.sortingOrderSwapList;
       var sortingOrderNameList = [];
       tableSortList.forEach(function (item) {
         var nameOfItem = "";
-        Object.keys(_this.state.rows[0]).forEach(function (rowItem) {
+        Object.keys(rows[0]).forEach(function (rowItem) {
           if (rowItem.toLowerCase() === _this.toCamelCase(item.sortBy).toLowerCase()) {
             nameOfItem = rowItem;
           }
         });
-        var typeOfItem = _this.state.rows[0][item.sortBy === nameOfItem];
+        var typeOfItem = rows[0][item.sortBy === nameOfItem];
 
         if (typeof typeOfItem === "number") {
           sortingOrderNameList.push({
@@ -2240,7 +2630,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
       });
 
       if (swapSortList.length > 0) {
-        var existingSortingOrderSwapList = _this.state.sortingOrderSwapList;
+        var existingSortingOrderSwapList = sortingOrderSwapList;
         swapSortList.forEach(function (item, index) {
           var stringOfItemIndex = "" + item + index;
 
@@ -2272,9 +2662,13 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.getSingleSortResult = function (data) {
-      if (_this.state.sortDirection !== "NONE" && _this.state.sortColumn !== "") {
-        var sortColumn = _this.state.sortColumn;
-        var sortDirection = _this.state.sortDirection;
+      var _this$state6 = _this.state,
+          sortDirection = _this$state6.sortDirection,
+          sortColumn = _this$state6.sortColumn;
+
+      if (sortDirection !== "NONE" && sortColumn !== "") {
+        var sortColumns = sortColumn;
+        var sortDirections = sortDirection;
 
         _this.setState({
           selectedIndexes: []
@@ -2282,23 +2676,33 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
 
         var comparer = function comparer(a, b) {
           if (sortDirection === "ASC") {
-            return a[sortColumn] > b[sortColumn] ? 1 : -1;
+            return a[sortColumns] > b[sortColumns] ? 1 : -1;
           }
 
           if (sortDirection === "DESC") {
-            return a[sortColumn] < b[sortColumn] ? 1 : -1;
+            return a[sortColumns] < b[sortColumns] ? 1 : -1;
           }
 
           return 0;
         };
 
-        return sortDirection === "NONE" ? data : [].concat(data).sort(comparer);
+        return sortDirections === "NONE" ? data : [].concat(data).sort(comparer);
       }
 
       return data;
     };
 
     _this.sortRows = function (data, sortColumn, sortDirection) {
+      var _this$state7 = _this.state,
+          junk = _this$state7.junk,
+          searchValue = _this$state7.searchValue,
+          sortingParamsObjectList = _this$state7.sortingParamsObjectList,
+          dataSet = _this$state7.dataSet,
+          subDataSet = _this$state7.subDataSet,
+          pageIndex = _this$state7.pageIndex,
+          pageRowCount = _this$state7.pageRowCount,
+          rows = _this$state7.rows;
+
       _this.setState({
         selectedIndexes: []
       });
@@ -2313,32 +2717,37 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
         }
       };
 
-      var hasFilter = Object.keys(_this.state.junk).length > 0;
-      var hasSearchKey = String(_this.state.searchValue).toLowerCase() !== "";
-      var hasGropSortKeys = _this.state.sortingParamsObjectList && _this.state.sortingParamsObjectList.length > 0;
+      var hasFilter = Object.keys(junk).length > 0;
+      var hasSearchKey = String(searchValue).toLowerCase() !== "";
+      var hasGropSortKeys = sortingParamsObjectList && sortingParamsObjectList.length > 0;
       var dtRows = [];
 
       if (hasFilter || hasSearchKey || hasGropSortKeys) {
-        dtRows = _this.state.subDataSet;
+        dtRows = subDataSet;
       } else {
-        dtRows = _this.state.dataSet;
+        dtRows = dataSet;
       }
 
       var result = [].concat(dtRows).sort(comparer);
 
       _this.setState({
-        rows: result.slice(0, _this.state.pageIndex * _this.state.pageRowCount),
+        rows: result.slice(0, pageIndex * pageRowCount),
         subDataSet: result,
         selectedIndexes: [],
         sortColumn: sortDirection === "NONE" ? "" : sortColumn,
         sortDirection: sortDirection
       });
 
-      return sortDirection === "NONE" ? data : _this.state.rows;
+      return sortDirection === "NONE" ? data : rows;
     };
 
     _this.getSlicedRows = function (filters, rowsToSplit, firstResult) {
       try {
+        var _this$state8 = _this.state,
+            searchValue = _this$state8.searchValue,
+            sortingParamsObjectList = _this$state8.sortingParamsObjectList,
+            pageIndex = _this$state8.pageIndex,
+            pageRowCount = _this$state8.pageRowCount;
         var data = [];
 
         if (rowsToSplit.length > 0) {
@@ -2360,8 +2769,8 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
                     if (index === chunks.length) {
                       var dtSet = [].concat(firstResult, data);
 
-                      if (_this.state.searchValue !== "") {
-                        var searchKey = String(_this.state.searchValue).toLowerCase();
+                      if (searchValue !== "") {
+                        var searchKey = String(searchValue).toLowerCase();
                         dtSet = dtSet.filter(function (item) {
                           return Object.values(item).toString().toLowerCase().includes(searchKey);
                         });
@@ -2369,11 +2778,11 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
 
                       dtSet = _this.getSingleSortResult(dtSet);
 
-                      if (_this.state.sortingParamsObjectList && _this.state.sortingParamsObjectList.length > 0) {
-                        dtSet = _this.groupSort(_this.state.sortingParamsObjectList, dtSet);
+                      if (sortingParamsObjectList && sortingParamsObjectList.length > 0) {
+                        dtSet = _this.groupSort(sortingParamsObjectList, dtSet);
                       }
 
-                      var rw = dtSet.slice(0, _this.state.pageIndex * _this.state.pageRowCount);
+                      var rw = dtSet.slice(0, pageIndex * pageRowCount);
                       return Promise.resolve(_this.setStateAsync({
                         subDataSet: dtSet,
                         rows: rw,
@@ -2447,12 +2856,13 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.onRowsDeselected = function (rows) {
+      var selectedIndexes = _this.state.selectedIndexes;
       var rowIndexes = rows.map(function (r) {
         return r.rowIdx;
       });
 
       _this.setState({
-        selectedIndexes: _this.state.selectedIndexes.filter(function (i) {
+        selectedIndexes: selectedIndexes.filter(function (i) {
           return rowIndexes.indexOf(i) === -1;
         })
       });
@@ -2463,64 +2873,181 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
           toRow = _ref.toRow,
           updated = _ref.updated,
           action = _ref.action;
-      var columnName = "";
-
-      var filter = _this.formulaAppliedCols.filter(function (item) {
-        if (updated[item.key] !== null && updated[item.key] !== undefined) {
-          columnName = item.key;
-          return true;
-        }
-
-        return false;
+      var updatedArray = [];
+      var updatedValue = "";
+      console.log({
+        fromRow: fromRow,
+        toRow: toRow,
+        updated: updated,
+        action: action
       });
+      console.log("change", updated);
 
-      if (filter.length > 0) {
-        updated = applyFormula(updated, columnName);
+      for (var update in updated) {
+        updatedValue = updated[update];
+      }
+
+      if (action === "CELL_UPDATE") {
+        var arr = FormulaProcessor(updatedValue);
+        var colKeyArray = [];
+
+        if (arr.length > 0) {
+          arr.forEach(function (ar) {
+            _this.state.columns.forEach(function (item, index) {
+              if (index === ar - 1) {
+                colKeyArray.push(item.key);
+              }
+            });
+          });
+          var tempSum = 0;
+          colKeyArray.forEach(function (item) {
+            tempSum += Number(_this.state.rows[fromRow][item]);
+          });
+          updated[Object.keys(updated)] = tempSum;
+          console.log(updated[Object.keys(updated)]);
+
+          _this.setState({
+            prevRow: fromRow,
+            prevAction: action,
+            columnKeyArray: colKeyArray
+          });
+        }
+      }
+
+      if (action === "CELL_DRAG") {
+        if (_this.state.prevAction === "CELL_UPDATE") {
+          for (var i = fromRow; i <= toRow; i++) {
+            console.log(_this.state.columnKeyArray);
+            updatedArray = [].concat(_this.state.columnKeyArray);
+
+            _this.setState({
+              prevRow: fromRow,
+              prevAction: action
+            });
+          }
+
+          var columnName = "";
+
+          var filter = _this.formulaAppliedCols.filter(function (item) {
+            if (updated[item.key] !== null && updated[item.key] !== undefined) {
+              columnName = item.key;
+              return true;
+            }
+
+            return false;
+          });
+
+          if (filter.length > 0) {
+            updated = applyFormula(updated, columnName);
+          }
+        }
       }
 
       if (action !== "COPY_PASTE") {
-        _this.props.updatedRows({
-          fromRow: fromRow,
-          toRow: toRow,
-          updated: updated,
-          action: action
-        });
+        if (action === "CELL_DRAG" && _this.state.prevAction === "CELL_UPDATE") {
+          _this.setState(function (state) {
+            var rows = state.rows.slice();
 
-        _this.setState(function (state) {
-          var rows = state.rows.slice();
+            var _loop = function _loop(_i2) {
+              var tempSum = 0;
+              updatedArray.forEach(function (item) {
+                tempSum += Number(rows[_i2][item]);
+              });
+              rows[_i2][Object.keys(updated)] = tempSum;
+            };
 
-          for (var i = fromRow; i <= toRow; i++) {
-            rows[i] = _extends({}, rows[i], updated);
-          }
+            for (var _i2 = fromRow; _i2 <= toRow; _i2++) {
+              _loop(_i2);
+            }
 
-          return {
-            rows: rows
-          };
-        });
+            return {
+              rows: rows
+            };
+          });
 
-        _this.setState(function (state) {
-          var filteringRows = state.filteringRows.slice();
+          _this.setState(function (state) {
+            var filteringRows = state.filteringRows.slice();
 
-          for (var i = fromRow; i <= toRow; i++) {
-            filteringRows[i] = _extends({}, filteringRows[i], updated);
-          }
+            var _loop2 = function _loop2(_i3) {
+              var tempSum = 0;
+              updatedArray.forEach(function (item) {
+                tempSum += Number(filteringRows[_i3][item]);
+              });
+              filteringRows[_i3][Object.keys(updated)] = tempSum;
+            };
 
-          return {
-            filteringRows: filteringRows
-          };
-        });
+            for (var _i3 = fromRow; _i3 <= toRow; _i3++) {
+              _loop2(_i3);
+            }
 
-        _this.setState(function (state) {
-          var tempRows = state.tempRows.slice();
+            return {
+              filteringRows: filteringRows
+            };
+          });
 
-          for (var i = fromRow; i <= toRow; i++) {
-            tempRows[i] = _extends({}, tempRows[i], updated);
-          }
+          _this.setState(function (state) {
+            var tempRows = state.tempRows.slice();
 
-          return {
-            tempRows: tempRows
-          };
-        });
+            var _loop3 = function _loop3(_i4) {
+              var tempSum = 0;
+              updatedArray.forEach(function (item) {
+                tempSum += Number(tempRows[_i4][item]);
+              });
+              tempRows[_i4][Object.keys(updated)] = tempSum;
+            };
+
+            for (var _i4 = fromRow; _i4 <= toRow; _i4++) {
+              _loop3(_i4);
+            }
+
+            return {
+              tempRows: tempRows
+            };
+          });
+        } else {
+          _this.props.updatedRows({
+            fromRow: fromRow,
+            toRow: toRow,
+            updated: updated,
+            action: action
+          });
+
+          _this.setState(function (state) {
+            var rows = state.rows.slice();
+
+            for (var _i5 = fromRow; _i5 <= toRow; _i5++) {
+              rows[_i5] = _extends({}, rows[_i5], updated);
+            }
+
+            return {
+              rows: rows
+            };
+          });
+
+          _this.setState(function (state) {
+            var filteringRows = state.filteringRows.slice();
+
+            for (var _i6 = fromRow; _i6 <= toRow; _i6++) {
+              filteringRows[_i6] = _extends({}, filteringRows[_i6], updated);
+            }
+
+            return {
+              filteringRows: filteringRows
+            };
+          });
+
+          _this.setState(function (state) {
+            var tempRows = state.tempRows.slice();
+
+            for (var _i7 = fromRow; _i7 <= toRow; _i7++) {
+              tempRows[_i7] = _extends({}, tempRows[_i7], updated);
+            }
+
+            return {
+              tempRows: tempRows
+            };
+          });
+        }
       }
 
       if (_this.props.updateCellData) {
@@ -2529,20 +3056,29 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.onRowsSelected = function (rows) {
+      var selectedIndexes = _this.state.selectedIndexes;
+      var selectBulkData = _this.props.selectBulkData;
+
       _this.setState({
-        selectedIndexes: _this.state.selectedIndexes.concat(rows.map(function (r) {
+        selectedIndexes: selectedIndexes.concat(rows.map(function (r) {
           return r.rowIdx;
         }))
       });
 
-      if (_this.props.selectBulkData) {
-        _this.props.selectBulkData(rows);
+      if (selectBulkData) {
+        selectBulkData(rows);
       }
     };
 
     _this.handleFilterChange = function (value) {
       try {
-        var junk = _this.state.junk;
+        var _this$state9 = _this.state,
+            dataSet = _this$state9.dataSet,
+            pageRowCount = _this$state9.pageRowCount,
+            junk = _this$state9.junk,
+            pageIndex = _this$state9.pageIndex,
+            searchValue = _this$state9.searchValue,
+            sortingParamsObjectList = _this$state9.sortingParamsObjectList;
 
         if (!(value.filterTerm == null) && !(value.filterTerm.length <= 0)) {
           junk[value.column.key] = value;
@@ -2555,17 +3091,16 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
         });
 
         var hasFilter = Object.keys(junk).length > 0;
+        var firstPage = dataSet.slice(0, pageRowCount);
 
-        var firstPage = _this.state.dataSet.slice(0, _this.state.pageRowCount);
-
-        var data = _this.getrows(firstPage, _this.state.junk);
+        var data = _this.getrows(firstPage, junk);
 
         return Promise.resolve(_this.setStateAsync({
           rows: data,
           tempRows: data,
           count: data.length,
           subDataSet: hasFilter ? data : [],
-          pageIndex: hasFilter ? _this.state.pageIndex : 1
+          pageIndex: hasFilter ? pageIndex : 1
         })).then(function () {
           function _temp4() {
             if (data.length === 0) {
@@ -2577,14 +3112,14 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
 
           var _temp3 = function () {
             if (hasFilter) {
-              var rowsRemaining = _this.state.dataSet.slice(_this.state.pageRowCount, _this.state.dataSet.length);
+              var rowsRemaining = dataSet.slice(pageRowCount, dataSet.length);
 
-              _this.getSlicedRows(_this.state.junk, rowsRemaining, data);
+              _this.getSlicedRows(junk, rowsRemaining, data);
             } else {
-              var _rowsRemaining = _this.state.dataSet;
+              var _rowsRemaining = dataSet;
 
-              if (_this.state.searchValue !== "") {
-                var searchKey = String(_this.state.searchValue).toLowerCase();
+              if (searchValue !== "") {
+                var searchKey = String(searchValue).toLowerCase();
                 _rowsRemaining = _rowsRemaining.filter(function (item) {
                   return Object.values(item).toString().toLowerCase().includes(searchKey);
                 });
@@ -2592,11 +3127,11 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
 
               _rowsRemaining = _this.getSingleSortResult(_rowsRemaining);
 
-              if (_this.state.sortingParamsObjectList && _this.state.sortingParamsObjectList.length > 0) {
-                _rowsRemaining = _this.groupSort(_this.state.sortingParamsObjectList, _rowsRemaining);
+              if (sortingParamsObjectList && sortingParamsObjectList.length > 0) {
+                _rowsRemaining = _this.groupSort(sortingParamsObjectList, _rowsRemaining);
               }
 
-              var rw = _rowsRemaining.slice(0, _this.state.pageIndex * _this.state.pageRowCount);
+              var rw = _rowsRemaining.slice(0, pageIndex * pageRowCount);
 
               return Promise.resolve(_this.setStateAsync({
                 subDataSet: _rowsRemaining,
@@ -2624,13 +3159,16 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
 
     _this.loadMoreRows = function (from, newRowsCount) {
       return new Promise(function (resolve) {
+        var _this$state10 = _this.state,
+            dataSet = _this$state10.dataSet,
+            subDataSet = _this$state10.subDataSet;
         var to = from + newRowsCount;
 
-        if (_this.isSubset() && _this.state.subDataSet.length > 0) {
-          to = to < _this.state.subDataSet.length ? to : _this.state.subDataSet.length;
-          resolve(_this.state.subDataSet.slice(from, to));
+        if (_this.isSubset() && subDataSet.length > 0) {
+          to = to < subDataSet.length ? to : subDataSet.length;
+          resolve(subDataSet.slice(from, to));
         } else {
-          resolve(_this.state.dataSet.slice(from, to));
+          resolve(dataSet.slice(from, to));
         }
       });
     };
@@ -2638,7 +3176,11 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     _this.handleScroll = function (event) {
       try {
         if (!_this.isAtBottom(event)) return Promise.resolve();
-        return Promise.resolve(_this.loadMoreRows(_this.state.pageIndex * _this.state.pageRowCount, _this.state.pageRowCount)).then(function (newRows) {
+        var _this$state11 = _this.state,
+            pageIndex = _this$state11.pageIndex,
+            pageRowCount = _this$state11.pageRowCount,
+            rows = _this$state11.rows;
+        return Promise.resolve(_this.loadMoreRows(pageIndex * pageRowCount, pageRowCount)).then(function (newRows) {
           if (newRows && newRows.length > 0) {
             var length = 0;
 
@@ -2647,9 +3189,9 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
             });
 
             _this.setState({
-              rows: [].concat(_this.state.rows, newRows),
+              rows: [].concat(rows, newRows),
               count: length,
-              pageIndex: _this.state.pageIndex + 1
+              pageIndex: pageIndex + 1
             });
           }
         });
@@ -2659,6 +3201,9 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.globalSearchLogic = function (e, updatedRows) {
+      var _this$state12 = _this.state,
+          pageIndex = _this$state12.pageIndex,
+          pageRowCount = _this$state12.pageRowCount;
       var searchKey = String(e.target.value).toLowerCase();
       var filteredRows = updatedRows.filter(function (item) {
         return Object.values(item).toString().toLowerCase().includes(searchKey);
@@ -2671,7 +3216,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
           count: 0
         });
       } else {
-        var rowSlice = filteredRows.slice(0, _this.state.pageIndex * _this.state.pageRowCount);
+        var rowSlice = filteredRows.slice(0, pageIndex * pageRowCount);
 
         _this.setState({
           warningStatus: "",
@@ -2689,23 +3234,30 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.closeWarningStatus = function (val) {
+      var _this$state13 = _this.state,
+          pageIndex = _this$state13.pageIndex,
+          pageRowCount = _this$state13.pageRowCount,
+          dataSet = _this$state13.dataSet,
+          sortDirection = _this$state13.sortDirection,
+          sortColumn = _this$state13.sortColumn,
+          sortingParamsObjectList = _this$state13.sortingParamsObjectList;
       var rVal = val;
 
       if (!rVal) {
-        var hasSingleSortkey = _this.state.sortDirection !== "NONE" && _this.state.sortColumn !== "";
-        var hasGropSortKeys = _this.state.sortingParamsObjectList && _this.state.sortingParamsObjectList.length > 0;
+        var hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
+        var hasGropSortKeys = sortingParamsObjectList && sortingParamsObjectList.length > 0;
 
-        var dataRows = _this.getFilterResult([].concat(_this.state.dataSet));
+        var dataRows = _this.getFilterResult([].concat(dataSet));
 
         if (hasSingleSortkey) {
           dataRows = _this.getSingleSortResult(dataRows);
         }
 
         if (hasGropSortKeys) {
-          dataRows = _this.groupSort(_this.state.sortingParamsObjectList, dataRows);
+          dataRows = _this.groupSort(sortingParamsObjectList, dataRows);
         }
 
-        rVal = dataRows.slice(0, _this.state.pageIndex * _this.state.pageRowCount);
+        rVal = dataRows.slice(0, pageIndex * pageRowCount);
       }
 
       _this.setState({
@@ -2716,24 +3268,33 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.save = function () {
-      _this.props.saveRows(_this.state.dataSet);
+      var saveRows = _this.props.saveRows;
+      var dataSet = _this.state.dataSet;
+      saveRows(dataSet);
     };
 
     _this.clearAllFilters = function () {
-      var hasSingleSortkey = _this.state.sortDirection !== "NONE" && _this.state.sortColumn !== "";
-      var hasGropSortKeys = _this.state.sortingParamsObjectList && _this.state.sortingParamsObjectList.length > 0;
+      var _this$state14 = _this.state,
+          pageIndex = _this$state14.pageIndex,
+          pageRowCount = _this$state14.pageRowCount,
+          dataSet = _this$state14.dataSet,
+          sortDirection = _this$state14.sortDirection,
+          sortColumn = _this$state14.sortColumn,
+          sortingParamsObjectList = _this$state14.sortingParamsObjectList;
+      var hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
+      var hasGropSortKeys = sortingParamsObjectList && sortingParamsObjectList.length > 0;
 
-      var dtSet = _this.getSearchResult(_this.state.dataSet);
+      var dtSet = _this.getSearchResult(dataSet);
 
       if (hasSingleSortkey) {
         dtSet = _this.getSingleSortResult(dtSet);
       }
 
       if (hasGropSortKeys) {
-        dtSet = _this.groupSort(_this.state.sortingParamsObjectList, dtSet);
+        dtSet = _this.groupSort(sortingParamsObjectList, dtSet);
       }
 
-      var rVal = dtSet.slice(0, _this.state.pageIndex * _this.state.pageRowCount);
+      var rVal = dtSet.slice(0, pageIndex * pageRowCount);
 
       _this.setState({
         rows: rVal,
@@ -2743,8 +3304,9 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.getSearchResult = function (data) {
+      var searchValue = _this.state.searchValue;
       var dtSet = data;
-      var searchKey = String(_this.state.searchValue).toLowerCase();
+      var searchKey = String(searchValue).toLowerCase();
 
       if (searchKey !== "") {
         dtSet = dtSet.filter(function (item) {
@@ -2756,9 +3318,10 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     _this.getFilterResult = function (data) {
+      var junk = _this.state.junk;
       var dataRows = [];
 
-      if (Object.keys(_this.state.junk).length > 0) {
+      if (Object.keys(junk).length > 0) {
         var rowsToSplit = [].concat(data);
         var chunks = [];
 
@@ -2767,7 +3330,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
         }
 
         chunks.forEach(function (arr) {
-          var dt = _this.getrows(arr, _this.state.junk);
+          var dt = _this.getrows(arr, junk);
 
           dataRows = [].concat(dataRows, dt);
         });
@@ -2779,9 +3342,11 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     };
 
     var _this$props = _this.props,
-        dataSet = _this$props.dataSet,
-        pageSize = _this$props.pageSize;
-    var dataSetVar = JSON.parse(JSON.stringify(dataSet));
+        _dataSet = _this$props.dataSet,
+        pageSize = _this$props.pageSize,
+        _rows = _this$props.rows,
+        _columns = _this$props.columns;
+    var dataSetVar = JSON.parse(JSON.stringify(_dataSet));
     _this.state = {
       warningStatus: "",
       height: 680,
@@ -2797,14 +3362,14 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
       junk: {},
       columnReorderingComponent: null,
       exportComponent: null,
-      filteringRows: _this.props.rows,
-      tempRows: _this.props.rows,
+      filteringRows: _rows,
+      tempRows: _rows,
       sortingPanelComponent: null,
-      count: _this.props.rows.length,
+      count: _rows.length,
       sortingOrderSwapList: [],
       sortingParamsObjectList: [],
       pinnedReorder: false,
-      columns: _this.props.columns.map(function (item) {
+      columns: _columns.map(function (item) {
         var colItem = item;
 
         if (colItem.editor === "DatePicker") {
@@ -2831,7 +3396,7 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     _this.handleSearchValue = _this.handleSearchValue.bind(_assertThisInitialized(_this));
     _this.clearSearchValue = _this.clearSearchValue.bind(_assertThisInitialized(_this));
     _this.handleFilterChange = _this.handleFilterChange.bind(_assertThisInitialized(_this));
-    _this.formulaAppliedCols = _this.props.columns.filter(function (item) {
+    _this.formulaAppliedCols = _columns.filter(function (item) {
       return item.formulaApplicable;
     });
     return _this;
@@ -2855,6 +3420,12 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     });
   };
 
+  _proto.componentDidUpdate = function componentDidUpdate() {
+    var resizeEvent = document.createEvent("HTMLEvents");
+    resizeEvent.initEvent("resize", true, false);
+    window.dispatchEvent(resizeEvent);
+  };
+
   _proto.getValidFilterValues = function getValidFilterValues(rows, columnId) {
     this.setState({
       selectedIndexes: []
@@ -2866,39 +3437,47 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
     });
   };
 
-  _proto.componentDidUpdate = function componentDidUpdate() {
-    var resizeEvent = document.createEvent("HTMLEvents");
-    resizeEvent.initEvent("resize", true, false);
-    window.dispatchEvent(resizeEvent);
-  };
-
   _proto.getSearchRecords = function getSearchRecords(e) {
+    var _this$state15 = this.state,
+        sortDirection = _this$state15.sortDirection,
+        sortColumn = _this$state15.sortColumn,
+        dataSet = _this$state15.dataSet,
+        searchValue = _this$state15.searchValue,
+        subDataSet = _this$state15.subDataSet,
+        junk = _this$state15.junk,
+        sortingParamsObjectList = _this$state15.sortingParamsObjectList;
     var searchKey = String(e.target.value).toLowerCase();
-    var hasFilter = Object.keys(this.state.junk).length > 0;
-    var hasSingleSortkey = this.state.sortDirection !== "NONE" && this.state.sortColumn !== "";
-    var hasGropSortKeys = this.state.sortingParamsObjectList && this.state.sortingParamsObjectList.length > 0;
+    var hasFilter = Object.keys(junk).length > 0;
+    var hasSingleSortkey = sortDirection !== "NONE" && sortColumn !== "";
+    var hasGropSortKeys = sortingParamsObjectList && sortingParamsObjectList.length > 0;
     var rowsToSearch = [];
 
-    if (this.state.searchValue.startsWith(searchKey) || searchKey === "") {
-      rowsToSearch = this.getFilterResult([].concat(this.state.dataSet));
+    if (searchValue.startsWith(searchKey) || searchKey === "") {
+      rowsToSearch = this.getFilterResult([].concat(dataSet));
 
       if (hasSingleSortkey) {
         rowsToSearch = this.getSingleSortResult(rowsToSearch);
       }
 
       if (hasGropSortKeys) {
-        rowsToSearch = this.groupSort(this.state.sortingParamsObjectList, rowsToSearch);
+        rowsToSearch = this.groupSort(sortingParamsObjectList, rowsToSearch);
       }
 
       return rowsToSearch;
     }
 
-    if (hasFilter || hasSingleSortkey || searchKey.length > 1 || hasGropSortKeys) return this.state.subDataSet;
-    return this.state.dataSet;
+    if (hasFilter || hasSingleSortkey || searchKey.length > 1 || hasGropSortKeys) return subDataSet;
+    return dataSet;
   };
 
   _proto.isSubset = function isSubset() {
-    if (Object.keys(this.state.junk).length > 0 || this.state.sortDirection !== "NONE" || this.state.searchValue !== "" || this.state.sortingParamsObjectList && this.state.sortingParamsObjectList.length > 0) {
+    var _this$state16 = this.state,
+        junk = _this$state16.junk,
+        searchValue = _this$state16.searchValue,
+        sortingParamsObjectList = _this$state16.sortingParamsObjectList,
+        sortDirection = _this$state16.sortDirection;
+
+    if (Object.keys(junk).length > 0 || sortDirection !== "NONE" || searchValue !== "" || sortingParamsObjectList && sortingParamsObjectList.length > 0) {
       return true;
     }
 
@@ -2908,13 +3487,26 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
   _proto.render = function render() {
     var _this3 = this;
 
+    var _this$state17 = this.state,
+        count = _this$state17.count,
+        searchValue = _this$state17.searchValue,
+        sortingPanelComponent = _this$state17.sortingPanelComponent,
+        columnReorderingComponent = _this$state17.columnReorderingComponent,
+        exportComponent = _this$state17.exportComponent,
+        warningStatus = _this$state17.warningStatus,
+        filteringRows = _this$state17.filteringRows,
+        height = _this$state17.height,
+        columns = _this$state17.columns,
+        rows = _this$state17.rows,
+        selectedIndexes = _this$state17.selectedIndexes;
     return /*#__PURE__*/React__default.createElement("div", {
-      onScroll: this.handleScroll
+      onScroll: this.handleScroll,
+      className: "iCargo__custom"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "neo-grid-header"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "neo-grid-header__results"
-    }, "Showing \xA0", /*#__PURE__*/React__default.createElement("strong", null, " ", this.state.count, " "), " ", "\xA0 records"), /*#__PURE__*/React__default.createElement("div", {
+    }, "Showing \xA0", /*#__PURE__*/React__default.createElement("strong", null, " ", count, " "), " \xA0 records"), /*#__PURE__*/React__default.createElement("div", {
       className: "neo-grid-header__utilities"
     }, /*#__PURE__*/React__default.createElement("div", {
       className: "txt-wrap"
@@ -2928,22 +3520,25 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
 
         _this3.globalSearchLogic(e, srchRows);
       },
-      value: this.state.searchValue,
+      value: searchValue,
       className: "txt",
       placeholder: "Search"
     }), /*#__PURE__*/React__default.createElement("i", null, /*#__PURE__*/React__default.createElement(SvgIconSearch, null))), /*#__PURE__*/React__default.createElement("div", {
+      role: "presentation",
       id: "openSorting",
       className: "filterIcons",
       onClick: this.sortingPanel
-    }, /*#__PURE__*/React__default.createElement(SvgIconGroupSort, null)), this.state.sortingPanelComponent, /*#__PURE__*/React__default.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement(SvgIconGroupSort, null)), sortingPanelComponent, /*#__PURE__*/React__default.createElement("div", {
+      role: "presentation",
       className: "filterIcons",
       onClick: this.columnReorderingPannel
-    }, /*#__PURE__*/React__default.createElement(SvgIconColumns, null)), this.state.columnReorderingComponent, /*#__PURE__*/React__default.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement(SvgIconColumns, null)), columnReorderingComponent, /*#__PURE__*/React__default.createElement("div", {
+      role: "presentation",
       className: "filterIcons",
       onClick: this.exportColumnData
-    }, /*#__PURE__*/React__default.createElement(SvgIconShare, null)), this.state.exportComponent)), /*#__PURE__*/React__default.createElement(ErrorMessage, {
+    }, /*#__PURE__*/React__default.createElement(SvgIconShare, null)), exportComponent)), /*#__PURE__*/React__default.createElement(ErrorMessage, {
       className: "errorDiv",
-      status: this.state.warningStatus,
+      status: warningStatus,
       closeWarningStatus: function closeWarningStatus() {
         _this3.closeWarningStatus();
       },
@@ -2953,14 +3548,14 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
         enableFilter: true
       }),
       getValidFilterValues: function getValidFilterValues(columnKey) {
-        return _this3.getValidFilterValues(_this3.state.filteringRows, columnKey);
+        return _this3.getValidFilterValues(filteringRows, columnKey);
       },
-      minHeight: this.state.height,
-      columns: this.state.columns,
+      minHeight: height,
+      columns: columns,
       rowGetter: function rowGetter(i) {
-        return _this3.state.rows[i];
+        return rows[i];
       },
-      rowsCount: this.state.rows.length,
+      rowsCount: rows.length,
       onGridRowsUpdated: this.onGridRowsUpdated,
       enableCellSelect: true,
       onClearFilters: function onClearFilters() {
@@ -2982,11 +3577,11 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
         onRowsSelected: this.onRowsSelected,
         onRowsDeselected: this.onRowsDeselected,
         selectBy: {
-          indexes: this.state.selectedIndexes
+          indexes: selectedIndexes
         }
       },
       onGridSort: function onGridSort(sortColumn, sortDirection) {
-        return _this3.sortRows(_this3.state.filteringRows, sortColumn, sortDirection);
+        return _this3.sortRows(filteringRows, sortColumn, sortDirection);
       },
       globalSearch: this.globalSearchLogic,
       handleWarningStatus: this.handleWarningStatus,
@@ -2996,72 +3591,6 @@ var Spreadsheet = /*#__PURE__*/function (_Component) {
 
   return Spreadsheet;
 }(React.Component);
-
-var sortBy;
-
-(function () {
-  var defaultCmp = function defaultCmp(a, b) {
-    if (a === b) return 0;
-    return a < b ? -1 : 1;
-  };
-
-  var getCmpFunc = function getCmpFunc(primer, reverse) {
-    var cmp = defaultCmp;
-
-    if (primer) {
-      cmp = function cmp(a, b) {
-        return defaultCmp(primer(a), primer(b));
-      };
-    }
-
-    if (reverse) {
-      return function (a, b) {
-        return -1 * cmp(a, b);
-      };
-    }
-
-    return cmp;
-  };
-
-  sortBy = function sortBy() {
-    var fields = [];
-    var nFields = arguments.length;
-    var field;
-    var name;
-    var cmp;
-
-    for (var i = 0; i < nFields; i++) {
-      field = arguments[i];
-
-      if (typeof field === "string") {
-        name = field;
-        cmp = defaultCmp;
-      } else {
-        name = field.name;
-        cmp = getCmpFunc(field.primer, field.reverse);
-      }
-
-      fields.push({
-        name: name,
-        cmp: cmp
-      });
-    }
-
-    return function (A, B) {
-      var result = 0;
-
-      for (var _i = 0, l = nFields; _i < l; _i++) {
-        field = fields[_i];
-        name = field.name;
-        cmp = field.cmp;
-        result = cmp(A[name], B[name]);
-        if (result !== 0) break;
-      }
-
-      return result;
-    };
-  };
-})();
 
 Spreadsheet.propTypes = {
   airportCodes: PropTypes.any,

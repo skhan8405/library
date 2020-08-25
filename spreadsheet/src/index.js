@@ -12,6 +12,7 @@ import { ReactComponent as IconColumns } from "./images/icon-columns.svg";
 import { ReactComponent as IconShare } from "./images/icon-share.svg";
 import { ReactComponent as IconGroupSort } from "./images/icon-group-sort.svg";
 import { ReactComponent as IconSearch } from "./images/icon-search.svg";
+import FormulaProcessor from "./functions/FormulaProcessor";
 
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
@@ -888,68 +889,161 @@ class Spreadsheet extends Component {
      * @param {*} action is type of edit action performed
      */
     onGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
-        const { tempRows } = this.state;
-        const { updatedRows, updateCellData } = this.props;
-        let columnName = "";
-        const filter = this.formulaAppliedCols.filter((item) => {
-            if (updated[item.key] !== null && updated[item.key] !== undefined) {
-                columnName = item.key;
-                return true;
+        let updatedArray = [];
+        let updatedValue = "";
+        console.log({ fromRow, toRow, updated, action });
+        console.log("change", updated);
+        for (let update in updated) {
+            updatedValue = updated[update];
+        }
+        if (action === "CELL_UPDATE") {
+            const arr = FormulaProcessor(updatedValue);
+            let colKeyArray = [];
+            if (arr.length > 0) {
+                arr.forEach((ar) => {
+                    this.state.columns.forEach((item, index) => {
+                        if (index === ar - 1) {
+                            colKeyArray.push(item.key);
+                        }
+                    });
+                });
+                let tempSum = 0;
+                colKeyArray.forEach((item) => {
+                    tempSum += Number(this.state.rows[fromRow][item]);
+                });
+                updated[Object.keys(updated)] = tempSum;
+                console.log(updated[Object.keys(updated)]);
+                this.setState({
+                    prevRow: fromRow,
+                    prevAction: action,
+                    columnKeyArray: colKeyArray
+                });
             }
-            return false;
-        });
-
-        if (filter.length > 0) {
-            // eslint-disable-next-line no-param-reassign
-            updated = applyFormula(updated, columnName);
         }
+        if (action === "CELL_DRAG") {
+            if (this.state.prevAction === "CELL_UPDATE") {
+                for (let i = fromRow; i <= toRow; i++) {
+                    console.log(this.state.columnKeyArray);
+                    updatedArray = [...this.state.columnKeyArray];
+                    this.setState({ prevRow: fromRow, prevAction: action });
+                }
+                let columnName = "";
+                const filter = this.formulaAppliedCols.filter((item) => {
+                    if (
+                        updated[item.key] !== null &&
+                        updated[item.key] !== undefined
+                    ) {
+                        columnName = item.key;
+                        return true;
+                    }
+                    return false;
+                });
 
+                if (filter.length > 0) {
+                    // eslint-disable-next-line no-param-reassign
+
+                    updated = applyFormula(updated, columnName);
+                }
+            }
+        }
         if (action !== "COPY_PASTE") {
-            updatedRows({ fromRow, toRow, updated, action });
-            this.setState((state) => {
-                const rows = state.rows.slice();
-                for (let i = fromRow; i <= toRow; i++) {
-                    rows[i] = {
-                        ...rows[i],
-                        ...updated
+            if (
+                action === "CELL_DRAG" &&
+                this.state.prevAction === "CELL_UPDATE"
+            ) {
+                this.setState((state) => {
+                    const rows = state.rows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        let tempSum = 0;
+                        updatedArray.forEach((item) => {
+                            tempSum += Number(rows[i][item]);
+                        });
+                        rows[i][Object.keys(updated)] = tempSum;
+                    }
+                    return {
+                        rows
                     };
-                }
+                });
 
-                return {
-                    rows
-                };
-            });
+                this.setState((state) => {
+                    const filteringRows = state.filteringRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        let tempSum = 0;
+                        updatedArray.forEach((item) => {
+                            tempSum += Number(filteringRows[i][item]);
+                        });
+                        filteringRows[i][Object.keys(updated)] = tempSum;
+                    }
 
-            this.setState((state) => {
-                const filteringRows = state.filteringRows.slice();
-                for (let i = fromRow; i <= toRow; i++) {
-                    filteringRows[i] = {
-                        ...filteringRows[i],
-                        ...updated
+                    return {
+                        filteringRows
                     };
-                }
+                });
+                this.setState((state) => {
+                    const tempRows = state.tempRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        let tempSum = 0;
+                        updatedArray.forEach((item) => {
+                            tempSum += Number(tempRows[i][item]);
+                        });
+                        tempRows[i][Object.keys(updated)] = tempSum;
+                    }
 
-                return {
-                    filteringRows
-                };
-            });
-            this.setState((state) => {
-                // eslint-disable-next-line no-shadow
-                const tempRows = state.tempRows.slice();
-                for (let i = fromRow; i <= toRow; i++) {
-                    tempRows[i] = {
-                        ...tempRows[i],
-                        ...updated
+                    return {
+                        tempRows
                     };
-                }
+                });
+            } else {
+                this.props.updatedRows({ fromRow, toRow, updated, action });
+                this.setState((state) => {
+                    const rows = state.rows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        rows[i] = {
+                            ...rows[i],
+                            ...updated
+                        };
+                    }
 
-                return {
-                    tempRows
-                };
-            });
+                    return {
+                        rows
+                    };
+                });
+
+                this.setState((state) => {
+                    const filteringRows = state.filteringRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        filteringRows[i] = {
+                            ...filteringRows[i],
+                            ...updated
+                        };
+                    }
+
+                    return {
+                        filteringRows
+                    };
+                });
+                this.setState((state) => {
+                    const tempRows = state.tempRows.slice();
+                    for (let i = fromRow; i <= toRow; i++) {
+                        tempRows[i] = {
+                            ...tempRows[i],
+                            ...updated
+                        };
+                    }
+
+                    return {
+                        tempRows
+                    };
+                });
+            }
         }
-        if (updateCellData) {
-            updateCellData(tempRows[fromRow], tempRows[toRow], updated, action);
+        if (this.props.updateCellData) {
+            this.props.updateCellData(
+                this.state.tempRows[fromRow],
+                this.state.tempRows[toRow],
+                updated,
+                action
+            );
         }
     };
 
@@ -1232,7 +1326,7 @@ class Spreadsheet extends Component {
             selectedIndexes
         } = this.state;
         return (
-            <div onScroll={this.handleScroll}>
+            <div onScroll={this.handleScroll} className="iCargo__custom">
                 <div className="neo-grid-header">
                     <div className="neo-grid-header__results">
                         Showing &nbsp;<strong> {count} </strong> &nbsp; records
