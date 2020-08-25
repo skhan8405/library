@@ -1519,3 +1519,261 @@ test("Spreadsheet - getSlicedRows 3", () => {
             });
     });
 });
+test("Spreadsheet - onGridRowsUpdated drag calculation add", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "=sum(c1,c2)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculation subtraction", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "=sub(c1,c2)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculation multiplication", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "=mul(c1,c2)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculation maximum", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "=max(c1,c2)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculation of minimum", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "=min(c1,c2)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculation of minimum 1", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "=min(c1,c2,c3)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculations of drag", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                prevAction: "CELL_UPDATE",
+                operation: "SUM",
+                columnKeyArray: ["flightNo", "date"]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "1000" },
+                    action: "CELL_DRAG",
+                    columnKeyArray: ["flightNo", "date"]
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculations of drag differnce", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                prevAction: "CELL_UPDATE",
+                operation: "DIFF",
+                columnKeyArray: ["flightNo", "date"]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "1000" },
+                    action: "CELL_DRAG"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculations of drag Multiplication", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                prevAction: "CELL_UPDATE",
+                operation: "MUL",
+                columnKeyArray: ["flightNo", "date"]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "1000" },
+                    action: "CELL_DRAG"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculations of Maximum", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                prevAction: "CELL_UPDATE",
+                operation: "MAX",
+                columnKeyArray: ["flightNo", "date"]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "1000" },
+                    action: "CELL_DRAG"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated drag calculations of Minimum", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                prevAction: "CELL_UPDATE",
+                operation: "MIN",
+                columnKeyArray: ["flightNo", "date"]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 1,
+                    updated: { flightno: "1000" },
+                    action: "CELL_DRAG"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});

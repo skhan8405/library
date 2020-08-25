@@ -103,6 +103,7 @@ const MainFilterPanel = (props) => {
             <div className="displayFlex">
                 <div className="alignLeft">
                     <div
+                        style={{ cursor: "pointer" }}
                         role="presentation"
                         className="iconLeft"
                         data-testid="handleListFilterCheck"
