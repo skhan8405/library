@@ -4,10 +4,12 @@ import PropTypes from "prop-types";
 import JsPdf from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { ReactComponent as IconCsv } from "../../Images/icon-csv.svg";
-import { ReactComponent as IconExcel } from "../../Images/icon-excel.svg";
-import { ReactComponent as IconPdf } from "../../Images/icon-pdf.svg";
-import { ReactComponent as IconClose } from "../../Images/icon-close.svg";
+import {
+    IconCsv,
+    IconExcel,
+    IconClose,
+    IconPdf
+} from "../../Utilities/SvgUtilities";
 
 const ExportData = memo((props) => {
     const {
