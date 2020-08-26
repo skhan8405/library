@@ -94,6 +94,7 @@ class Spreadsheet extends Component {
         super(props);
         const { dataSet, pageSize, rows, columns } = this.props;
         const dataSetVar = JSON.parse(JSON.stringify(dataSet));
+        dataSetVar.forEach((el, index) => (el.index = index));
         this.state = {
             warningStatus: "",
             height: 680,
@@ -178,22 +179,38 @@ class Spreadsheet extends Component {
             hasFilter || hasSearchkey || hasSingleSortkey || hasGroupSortKeys
                 ? [...subDataSet]
                 : [...dataSet];
+        let newIndex = dataSet.length;
+        let dtSetRows = dataSet;
         for (let i = 0; i < newRows.length; i++) {
             if (startIdx + i < data.length) {
                 data[startIdx + i] = {
                     ...data[startIdx + i],
                     ...newRows[i]
                 };
+                if (
+                    hasFilter ||
+                    hasSearchkey ||
+                    hasSingleSortkey ||
+                    hasGroupSortKeys
+                ) {
+                    dtSetRows[data[startIdx + i].index] = {
+                        ...data[startIdx + i]
+                    };
+                }
             } else {
                 data[startIdx + i] = {
                     ...newRows[i]
                 };
+                data[startIdx + i].index = newIndex;
+                newIndex++;
+                dtSetRows.push({ ...data[startIdx + i] });
             }
         }
         let rw = data.slice(0, pageIndex * pageRowCount);
         if (hasFilter || hasSearchkey || hasSingleSortkey || hasGroupSortKeys) {
             this.setState({
                 subDataSet: data,
+                dataSet: dtSetRows,
                 rows: rw,
                 count: rw.length
             });
@@ -234,14 +251,16 @@ class Spreadsheet extends Component {
             e.clipboardData.getData("text/plain")
         );
         pasteData.forEach((row) => {
-            const rowData = {};
-            // Merge the values from pasting and the keys from the columns
-            this.state.columns
-                .slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length)
-                .forEach((col, j) => {
-                    rowData[col.key] = row[j];
-                });
-            newRows.push(rowData);
+            if (row != "") {
+                const rowData = {};
+                // Merge the values from pasting and the keys from the columns
+                this.state.columns
+                    .slice(topLeft.colIdx - 1, topLeft.colIdx - 1 + row.length)
+                    .forEach((col, j) => {
+                        rowData[col.key] = row[j];
+                    });
+                newRows.push(rowData);
+            }
         });
         this.updateRows(topLeft.rowIdx, newRows);
     };
