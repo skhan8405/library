@@ -2,9 +2,8 @@ import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import PropTypes from "prop-types";
 import { ItemTypes } from "./ItemTypes";
-import { ReactComponent as IconNav } from "../../Images/icon-nav.svg";
-import { ReactComponent as SortCopy } from "../../Images/SortCopy.svg";
-import { ReactComponent as SortDelete } from "../../Images/SortDelete.svg";
+
+import { IconNav, SortCopy, SortDelete } from "../../Utilities/SvgUtilities";
 
 const SortItem = ({
     id,

@@ -29,13 +29,15 @@ import RowDeleteOverLay from "./Functions/RowDeleteOverLay";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
 import ExportData from "./Overlays/exportdata";
-import { ReactComponent as IconColumns } from "./Images/icon-columns.svg";
-import { ReactComponent as IconAngle } from "./Images/icon-angle.svg";
-import { ReactComponent as IconFilter } from "./Images/icon-filter.svg";
-import { ReactComponent as IconShare } from "./Images/icon-share.svg";
-import { ReactComponent as IconGroupSort } from "./Images/icon-group-sort.svg";
-import { ReactComponent as IconSort } from "./Images/icon-sort.svg";
-import { ReactComponent as IconEdit } from "./Images/icon-edit.svg";
+import {
+    IconColumns,
+    IconAngle,
+    IconFilter,
+    IconShare,
+    IconGroupSort,
+    IconSort,
+    IconEdit
+} from "./Utilities/SvgUtilities";
 
 const listRef = createRef(null);
 

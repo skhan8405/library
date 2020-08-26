@@ -6,7 +6,7 @@ import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import ClickAwayListener from "react-click-away-listener";
 import PropTypes from "prop-types";
 import SortingList from "./sortingList";
-import { ReactComponent as IconClose } from "../../Images/icon-close.svg";
+import { IconClose } from "../../Utilities/SvgUtilities";
 
 const GroupSort = memo((props) => {
     const {
