@@ -1,7 +1,83 @@
 import React from "react";
+import "./example.css";
 
 import Grid from "../src/index";
+
+import FlightIcon from "./images/FlightIcon.png";
 import { fetchData } from "../example/src/getData";
+import { getValueOfDate } from "./utils/DateUtility";
+import FlightEdit from "./cells/FlightEdit";
+import SrEdit from "./cells/SrEdit";
+import SegmentEdit from "./cells/SegmentEdit";
+import RowEdit from "./cells/RowEdit";
+
+const { search } = window.location;
+const urlPageSize = search ? parseInt(search.replace("?pagesize=", "")) : NaN;
+const pageSize = !isNaN(urlPageSize) ? urlPageSize : 300;
+
+let index = 0;
+
+const airportCodeList = [
+    "AAA",
+    "AAB",
+    "AAC",
+    "ABA",
+    "ABB",
+    "ABC",
+    "ACA",
+    "ACB",
+    "ACC",
+    "BAA",
+    "BAB",
+    "BAC",
+    "BBA",
+    "BBB",
+    "BBC",
+    "BCA",
+    "BCB",
+    "BCC",
+    "CAA",
+    "CAB",
+    "CAC",
+    "CBA",
+    "CBB",
+    "CBC",
+    "CCA",
+    "CCB",
+    "CCC",
+    "XXX",
+    "XXY",
+    "XXZ",
+    "XYX",
+    "XYY",
+    "XYZ",
+    "XZX",
+    "XZY",
+    "XZZ",
+    "YXX",
+    "YXY",
+    "YXZ",
+    "YYX",
+    "YYY",
+    "YYZ",
+    "YZX",
+    "YZY",
+    "YZZ",
+    "ZXX",
+    "ZXY",
+    "ZXZ",
+    "ZYX",
+    "ZYY",
+    "ZYZ",
+    "ZZX",
+    "ZZY",
+    "ZZZ"
+];
+
+const loadData = async () => {
+    index = index + pageSize;
+    return await fetchData(index, pageSize);
+};
 
 let columns = [
     {
@@ -39,7 +115,13 @@ let columns = [
             );
         },
         editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
-            return <div />;
+            return (
+                <FlightEdit
+                    rowData={rowData}
+                    DisplayTag={DisplayTag}
+                    rowUpdateCallBack={rowUpdateCallBack}
+                />
+            );
         }
     },
     {
@@ -74,7 +156,14 @@ let columns = [
             );
         },
         editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
-            return <div />;
+            return (
+                <SegmentEdit
+                    airportCodeList={airportCodeList}
+                    rowData={rowData}
+                    DisplayTag={DisplayTag}
+                    rowUpdateCallBack={rowUpdateCallBack}
+                />
+            );
         }
     },
     {
@@ -359,7 +448,12 @@ let columns = [
             );
         },
         editCell: (rowData, rowUpdateCallBack) => {
-            return <div />;
+            return (
+                <SrEdit
+                    rowData={rowData}
+                    rowUpdateCallBack={rowUpdateCallBack}
+                />
+            );
         }
     },
     {
@@ -455,29 +549,31 @@ const columnToExpand = {
         );
     }
 };
+
+const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
+    return (
+        <RowEdit
+            airportCodeList={airportCodeList}
+            DisplayTag={DisplayTag}
+            rowData={rowData}
+            rowUpdateCallBack={rowUpdateCallBack}
+        />
+    );
+};
+
 const rowActions = [
     { label: "Send SCR", value: "SCR" },
     { label: "Segment Summary", value: "SegmentSummary" },
     { label: "Open Summary", value: "OpenSummary" },
     { label: "Close Summary", value: "CloseSummary" }
 ];
-export const rowActionCallback = (rowData, actionValue) => {
+
+const rowActionCallback = (rowData, actionValue) => {
     console.log("Row action: " + actionValue);
     console.log(rowData);
 };
-export const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
-    console.log("Row action: " + DisplayTag);
-    console.log(rowData);
-    // return (
-    //     <RowEdit
-    //         airportCodeList={airportCodeList}
-    //         DisplayTag={DisplayTag}
-    //         rowData={rowData}
-    //         rowUpdateCallBack={rowUpdateCallBack}
-    //     />
-    // );
-};
-export const calculateRowHeight = (row, gridColumns) => {
+
+const calculateRowHeight = (row, gridColumns) => {
     //Minimum height for each row
     let rowHeight = 50;
     if (gridColumns && gridColumns.length > 0 && row) {
@@ -516,84 +612,20 @@ export const calculateRowHeight = (row, gridColumns) => {
     }
     return rowHeight;
 };
-export const updateRowData = (row) => {
+
+const updateRowData = (row) => {
     console.log("Row updated: ");
     console.log(row);
 };
-export const deleteRowData = (row) => {
+
+const deleteRowData = (row) => {
     console.log("Row deleted: ");
     console.log(row);
 };
-export const selectBulkData = (selectedRows) => {
+
+const selectBulkData = (selectedRows) => {
     console.log("Rows selected: ");
     console.log(selectedRows);
-};
-const data = [
-    {
-        travelId: 10,
-        flight: {
-            flightno: "XX2225",
-            date: "31-Aug-2016"
-        },
-        segment: {
-            from: "BCC",
-            to: "ZZY"
-        },
-        details: {
-            flightModel: 6518,
-            bodyType: "Big Body",
-            type: "Van",
-            startTime: "01:23 (S)",
-            endTime: "11:29 (E)",
-            status: "To Be Cancelled",
-            additionalStatus:
-                "Elit est consectetur deserunt et sit officia eu. Qui minim quis exercitation in irure elit velit nisi officia cillum laborum reprehenderit.aliqua ex sint cupidatat non",
-            timeStatus: "10:02 hrs to depart"
-        },
-        weight: {
-            percentage: "16%",
-            value: "35490/20000 kg"
-        },
-        volume: {
-            percentage: "54%",
-            value: "31/60 cbm"
-        },
-        uldPositions: [
-            {
-                position: "L1",
-                value: "7/9"
-            },
-            {
-                position: "Q1",
-                value: "9/3"
-            },
-            {
-                position: "L6",
-                value: "8/4"
-            },
-            {
-                position: "Q7",
-                value: "4/9"
-            }
-        ],
-        revenue: {
-            revenue: "$63,474.27",
-            yeild: "$7.90"
-        },
-        sr: "74/ AWBs",
-        queuedBooking: {
-            sr: "88/ AWBs",
-            volume: "7437 kg / 31 cbm"
-        },
-        remarks: "Enim aute magna."
-    }
-];
-// const [index, setIndex] = useState(0);
-export const loadData = async () => {
-    debugger;
-    // return await data;
-    // setIndex(index + pageSize);
-    return await fetchData(1, 10);
 };
 
 export default {
@@ -603,7 +635,6 @@ export default {
 };
 
 const Template = (args) => {
-    debugger;
     console.log(args.loadData);
     return (
         <Grid
@@ -613,53 +644,20 @@ const Template = (args) => {
             loadData={loadData}
             columns={columns}
             columnToExpand={columnToExpand}
-            // rowActions={rowActions}
-            // rowActionCallback={rowActionCallback}
-            // getRowEditOverlay={getRowEditOverlay}
-            // calculateRowHeight={calculateRowHeight}
-            // updateRowData={updateRowData}
-            // deleteRowData={deleteRowData}
-            // selectBulkData={selectBulkData}
+            rowActions={rowActions}
+            rowActionCallback={rowActionCallback}
+            getRowEditOverlay={getRowEditOverlay}
+            calculateRowHeight={calculateRowHeight}
+            updateRowData={updateRowData}
+            deleteRowData={deleteRowData}
+            selectBulkData={selectBulkData}
         />
     );
 };
-// const Template = (args) =>{
-//     debugger;
-//     console.log({...args})
-//     return ({
-//     component: Grid,
-//     props: {...args},
-//     });
-// };
 export const MainStory = Template.bind({});
 MainStory.args = {
     title: "AWBs",
     gridHeight: "80vh",
     gridWidth: "100%",
     columns: columns
-    // columnToExpand: columnToExpand
-    // rowActions: rowActions
 };
-// export default {
-//     title: "Grid Component",
-//     component: Grid,
-//     // includeStories: ["MainStory"]
-// };
-
-// export const MainStory = () => (
-// <Grid
-//         title="AWBs"
-//         gridHeight="80vh"
-//         gridWidth="100%"
-//         loadData={loadData}
-//         columns={columns}
-//         columnToExpand={columnToExpand}
-//         rowActions={rowActions}
-//         rowActionCallback={rowActionCallback}
-//         getRowEditOverlay={getRowEditOverlay}
-//         calculateRowHeight={calculateRowHeight}
-//         updateRowData={updateRowData}
-//         deleteRowData={deleteRowData}
-//         selectBulkData={selectBulkData}
-//     />
-// );
