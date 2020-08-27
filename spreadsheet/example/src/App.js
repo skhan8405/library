@@ -3,7 +3,7 @@ import Spreadsheet from "spreadsheet";
 import CargoData from "./data.json";
 //import { fetchData } from "./getData";
 
-const App = (props) => {
+const App = () => {
     //Get spreadsheet height value, which is a required value
     const gridHeight = "90vh";
     //Set state value for variable to hold grid data
