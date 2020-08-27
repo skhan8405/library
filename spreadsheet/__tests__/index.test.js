@@ -1418,9 +1418,9 @@ test("Spreadsheet - handleFilterChange 5", () => {
         const component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...columns]} />
         );
-        const junk = JSON.parse(
-            '{"segmentto":{"filterTerm":[{"value":"ZYY","label":"ZYY"}],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}}'
-        );
+        // const junk = JSON.parse(
+        //     '{"segmentto":{"filterTerm":[{"value":"ZYY","label":"ZYY"}],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}}'
+        // );
         const filterVal = JSON.parse(
             '{"filterTerm":[],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}'
         );
@@ -1443,9 +1443,9 @@ test("Spreadsheet - handleFilterChange 6 ", () => {
         const component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...columns]} />
         );
-        const junk = JSON.parse(
-            '{"segmentto":{"filterTerm":[{"value":"ZYY","label":"ZYY"}],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}}'
-        );
+        // const junk = JSON.parse(
+        //     '{"segmentto":{"filterTerm":[{"value":"ZYY","label":"ZYY"}],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}}'
+        // );
         const filterVal = JSON.parse(
             '{"filterTerm":[],"column":{"rowType":"filter","key":"segmentto","name":"Segment To","draggable":false,"editor":{"key":null,"ref":null,"props":{"options":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}]},"_owner":null,"_store":{}},"formulaApplicable":false,"sortable":true,"resizable":true,"filterable":true,"width":150,"filterType":"autoCompleteFilter","dataSource":[{"id":"AAA","value":"AAA"},{"id":"AAB","value":"AAB"},{"id":"AAC","value":"AAC"},{"id":"ABA","value":"ABA"},{"id":"ABB","value":"ABB"},{"id":"ABC","value":"ABC"},{"id":"ACA","value":"ACA"},{"id":"ACB","value":"ACB"},{"id":"ACC","value":"ACC"},{"id":"BAA","value":"BAA"},{"id":"BAB","value":"BAB"},{"id":"BAC","value":"BAC"},{"id":"BBA","value":"BBA"},{"id":"BBB","value":"BBB"},{"id":"BBC","value":"BBC"},{"id":"BCA","value":"BCA"},{"id":"BCB","value":"BCB"},{"id":"BCC","value":"BCC"},{"id":"CAA","value":"CAA"},{"id":"CAB","value":"CAB"},{"id":"CAC","value":"CAC"},{"id":"CBA","value":"CBA"},{"id":"CBB","value":"CBB"},{"id":"CBC","value":"CBC"},{"id":"CCA","value":"CCA"},{"id":"CCB","value":"CCB"},{"id":"CCC","value":"CCC"},{"id":"XXX","value":"XXX"},{"id":"XXY","value":"XXY"},{"id":"XXZ","value":"XXZ"},{"id":"XYX","value":"XYX"},{"id":"XYY","value":"XYY"},{"id":"XYZ","value":"XYZ"},{"id":"XZX","value":"XZX"},{"id":"XZY","value":"XZY"},{"id":"XZZ","value":"XZZ"},{"id":"YXX","value":"YXX"},{"id":"YXY","value":"YXY"},{"id":"YXZ","value":"YXZ"},{"id":"YYX","value":"YYX"},{"id":"YYY","value":"YYY"},{"id":"YYZ","value":"YYZ"},{"id":"YZX","value":"YZX"},{"id":"YZY","value":"YZY"},{"id":"YZZ","value":"YZZ"},{"id":"ZXX","value":"ZXX"},{"id":"ZXY","value":"ZXY"},{"id":"ZXZ","value":"ZXZ"},{"id":"ZYX","value":"ZYX"},{"id":"ZYY","value":"ZYY"},{"id":"ZYZ","value":"ZYZ"},{"id":"ZZX","value":"ZZX"},{"id":"ZZY","value":"ZZY"},{"id":"ZZZ","value":"ZZZ"}],"dataSourceType":"segmentto","left":810,"idx":6},"rawValue":[{"value":"ZYY","label":"ZYY"}]}'
         );
@@ -1772,6 +1772,331 @@ test("Spreadsheet - onGridRowsUpdated drag calculations of Minimum", () => {
                     toRow: 1,
                     updated: { flightno: "1000" },
                     action: "CELL_DRAG"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+
+test("Spreadsheet - handlePaste", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                topLeft: { rowIdx: 3, colIdx: 1 }
+            })
+            .then(() => {
+                let event = {
+                    bubbles: true,
+                    cancelBubble: false,
+                    cancelable: true,
+                    clipboardData: {
+                        dropEffect: "none",
+                        files: [],
+                        items: [],
+                        types: [],
+                        effectAllowed: "uninitialized"
+                    },
+                    composed: true,
+                    currentTarget: null,
+                    defaultPrevented: true,
+                    eventPhase: 0,
+                    isTrusted: true,
+                    path: [],
+                    returnValue: false,
+                    srcElement: {},
+                    target: {},
+                    timeStamp: 2961218.920000014,
+                    type: "paste"
+                };
+                const d = component.handlePaste(event);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - updateRows", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                subDataSet: [...data.slice(0, pageSize)],
+                dataSet: [...data.slice(0, pageSize)],
+                searchValue: "car",
+                sortingParamsObjectList: [
+                    {
+                        order: "Ascending",
+                        sortBy: "FlightNo",
+                        sortOn: "Value"
+                    }
+                ]
+            })
+            .then(() => {
+                let newRows = [
+                    {
+                        bodyType: "Wide Body",
+                        date: "2/23/2016",
+                        flightModel: "828",
+                        flightno: "XX3322",
+                        revenue: "$61,136.95 ",
+                        segmentfrom: "CAA",
+                        segmentto: "ZXY",
+                        yeild: "$8 "
+                    }
+                ];
+                const d = component.updateRows(2, newRows);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - updateRows 2", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                subDataSet: [...data.slice(0, pageSize)],
+                dataSet: [...data.slice(0, pageSize)],
+                searchValue: "",
+                sortDirection: "NONE"
+            })
+            .then(() => {
+                let newRows = [
+                    {
+                        bodyType: "Wide Body",
+                        date: "2/23/2016",
+                        flightModel: "828",
+                        flightno: "XX3322",
+                        revenue: "$61,136.95 ",
+                        segmentfrom: "CAA",
+                        segmentto: "ZXY",
+                        yeild: "$8 "
+                    }
+                ];
+                const d = component.updateRows(0, newRows);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - updateRows 3", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                subDataSet: [...data.slice(0, pageSize)],
+                dataSet: [...data.slice(0, pageSize)],
+                searchValue: "car",
+                sortDirection: "ASC",
+                sortColumn: ""
+            })
+            .then(() => {
+                let newRows = [
+                    {
+                        bodyType: "Wide Body",
+                        date: "2/23/2016",
+                        flightModel: "828",
+                        flightno: "XX3322",
+                        revenue: "$61,136.95 ",
+                        segmentfrom: "CAA",
+                        segmentto: "ZXY",
+                        yeild: "$8 "
+                    }
+                ];
+                const d = component.updateRows(0, newRows);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - rowGetter", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data
+            })
+            .then(() => {
+                const d = component.rowGetter(0);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - handleCopy", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                topLeft: { rowIdx: 1, colIdx: 1 },
+                botRight: { rowIdx: 1, colIdx: 5 }
+            })
+            .then(() => {
+                let event = {};
+                const d = component.handleCopy(event);
+                expect(d).not.toBeNull();
+            });
+    });
+});
+
+test("Spreadsheet - onGridRowsUpdated  cell update addition", () => {
+    const tempObj = {
+        targetColumn: "flightno",
+        rowId: 0,
+        operation: "SUM",
+        columnKeyArray: ["flightModel", "flightModel"]
+    };
+    const formulaArray = [];
+    formulaArray.push(tempObj);
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: formulaArray
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "=sum(c7,c7)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update subtraction", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "DIFF",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update multiplication", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "MUL",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update maximum of", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "MAX",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update minimum of", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "MIN",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
                 });
                 expect(d).not.toBeNull();
             });
