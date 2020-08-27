@@ -120,6 +120,7 @@ class Spreadsheet extends Component {
             prevAction: "",
             columnKeyArray: [],
             operation: "",
+            formulaKeyArray: [],
             // eslint-disable-next-line react/no-unused-state
             pinnedReorder: false,
             columns: columns.map((item) => {
@@ -947,9 +948,10 @@ class Spreadsheet extends Component {
      * @param {*} updated is the value of change
      * @param {*} action is type of edit action performed
      */
-    onGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
+    onGridRowsUpdated = async ({ fromRow, toRow, updated, action }) => {
         let updatedArray = [];
         let updatedValue = "";
+        let updatedColumn = Object.keys(updated);
         for (let update in updated) {
             updatedValue = updated[update];
         }
@@ -999,11 +1001,20 @@ class Spreadsheet extends Component {
                     tempResult = Math.min(...tempArray);
                 }
                 updated[Object.keys(updated)] = tempResult;
+                let tempObj = {
+                    targetColumn: updatedColumn,
+                    rowId: fromRow,
+                    operation: operation,
+                    columnKeyArray: colKeyArray
+                };
+                let formulaKeyArray = [];
+                formulaKeyArray.push(tempObj);
                 this.setState({
                     prevRow: fromRow,
                     prevAction: action,
                     columnKeyArray: colKeyArray,
-                    operation: operation
+                    operation: operation,
+                    formulaKeyArray
                 });
             }
         }
@@ -1211,7 +1222,7 @@ class Spreadsheet extends Component {
                 });
             } else {
                 this.props.updatedRows({ fromRow, toRow, updated, action });
-                this.setState((state) => {
+                await this.setState((state) => {
                     const rows = state.rows.slice();
                     for (let i = fromRow; i <= toRow; i++) {
                         rows[i] = {
@@ -1224,8 +1235,7 @@ class Spreadsheet extends Component {
                         rows
                     };
                 });
-
-                this.setState((state) => {
+                await this.setState((state) => {
                     const filteringRows = state.filteringRows.slice();
                     for (let i = fromRow; i <= toRow; i++) {
                         filteringRows[i] = {
@@ -1238,7 +1248,7 @@ class Spreadsheet extends Component {
                         filteringRows
                     };
                 });
-                this.setState((state) => {
+                await this.setState((state) => {
                     const tempRows = state.tempRows.slice();
                     for (let i = fromRow; i <= toRow; i++) {
                         tempRows[i] = {
@@ -1252,6 +1262,48 @@ class Spreadsheet extends Component {
                     };
                 });
             }
+        }
+        if (action === "CELL_UPDATE") {
+            this.state.formulaKeyArray.forEach((item) => {
+                let tempResult = 0;
+                if (item.operation === "SUM") {
+                    item.columnKeyArray.forEach((it) => {
+                        tempResult += Number(this.state.rows[fromRow][it]);
+                    });
+                } else if (item.operation === "DIFF") {
+                    tempResult = Number(
+                        this.state.rows[fromRow][item.columnKeyArray[0]]
+                    );
+                    for (let i = 1; i < item.columnKeyArray.length; i++) {
+                        tempResult -= Number(
+                            this.state.rows[fromRow][item.columnKeyArray[i]]
+                        );
+                    }
+                } else if (item.operation === "MUL") {
+                    tempResult = 1;
+                    item.columnKeyArray.forEach((it) => {
+                        tempResult *= Number(this.state.rows[fromRow][it]);
+                    });
+                } else if (item.operation === "MAX") {
+                    let tempArray = [];
+                    item.columnKeyArray.forEach((it) => {
+                        tempArray.push(Number(this.state.rows[fromRow][it]));
+                    });
+                    tempResult = Math.max(...tempArray);
+                } else if (item.operation === "MIN") {
+                    let tempArray = [];
+                    item.columnKeyArray.forEach((it) => {
+                        tempArray.push(Number(this.state.rows[fromRow][it]));
+                    });
+                    tempResult = Math.min(...tempArray);
+                }
+                if (item.rowId === fromRow) {
+                    this.setState((state) => {
+                        let rows = state.rows.slice();
+                        rows[fromRow][item.targetColumn] = tempResult;
+                    });
+                }
+            });
         }
         if (this.props.updateCellData) {
             this.props.updateCellData(
