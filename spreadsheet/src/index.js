@@ -7,10 +7,12 @@ import ErrorMessage from "./common/ErrorMessage";
 import ColumnReordering from "./overlays/column_chooser/Chooser";
 import Sorting from "./overlays/sorting/Sorting";
 import ExportData from "./overlays/export_data/ExportData";
-import { ReactComponent as IconColumns } from "./images/icon-columns.svg";
-import { ReactComponent as IconShare } from "./images/icon-share.svg";
-import { ReactComponent as IconGroupSort } from "./images/icon-group-sort.svg";
-import { ReactComponent as IconSearch } from "./images/icon-search.svg";
+import {
+    IconColumns,
+    IconShare,
+    IconGroupSort,
+    IconSearch
+} from "./Utilities/SvgUtilities";
 import FormulaProcessor from "./functions/FormulaProcessor";
 import { range } from "lodash";
 
