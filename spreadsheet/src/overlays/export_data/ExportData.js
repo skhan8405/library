@@ -4,10 +4,12 @@ import "jspdf-autotable";
 import * as XLSX from "xlsx";
 import PropTypes from "prop-types";
 import ClickAwayListener from "react-click-away-listener";
-import { ReactComponent as IconCsv } from "../../images/icon-csv.svg";
-import { ReactComponent as IconExcel } from "../../images/icon-excel.svg";
-import { ReactComponent as IconPdf } from "../../images/icon-pdf.svg";
-import { ReactComponent as IconClose } from "../../images/icon-close.svg";
+import {
+    IconCsv,
+    IconExcel,
+    IconClose,
+    IconPdf
+} from "../../Utilities/SvgUtilities";
 
 class ExportData extends React.Component {
     constructor(props) {
