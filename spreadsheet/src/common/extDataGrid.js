@@ -6,6 +6,7 @@ class ExtDataGrid extends ReactDataGrid {
     componentDidMount() {
         this._mounted = true;
         // eslint-disable-next-line prefer-destructuring
+
         this.dataGridComponent = document.getElementsByClassName(
             "react-grid-Viewport"
         )[0];
@@ -27,14 +28,16 @@ class ExtDataGrid extends ReactDataGrid {
     componentWillUnmount() {
         this._mounted = false;
         window.removeEventListener("resize", this.metricsUpdated);
-        this.dataGridComponent.removeEventListener(
-            "mouseup",
-            this.clickHandler
-        );
-        this.dataGridComponent.removeEventListener(
-            "mousedown",
-            this.mouseDownHandler
-        );
+        if (this.dataGridComponent) {
+            this.dataGridComponent.removeEventListener(
+                "mouseup",
+                this.clickHandler
+            );
+            this.dataGridComponent.removeEventListener(
+                "mousedown",
+                this.mouseDownHandler
+            );
+        }
     }
 
     mouseDownHandler = (event) => {
