@@ -6,8 +6,7 @@ import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import PropTypes from "prop-types";
 import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
-import { ReactComponent as IconClose } from "../../images/icon-close.svg";
-import { ReactComponent as IconJustify } from "../../images/icon-align-justify.svg";
+import { IconClose, IconJustify } from "../../Utilities/SvgUtilities";
 
 const HTML5toTouch = {
     backends: [
