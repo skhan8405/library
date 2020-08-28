@@ -5,7 +5,6 @@ import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
 import ExtDataGrid from "../../src/common/extDataGrid";
 import "@testing-library/jest-dom/extend-expect";
-import { render, fireEvent } from "@testing-library/react";
 
 let container;
 
@@ -100,36 +99,7 @@ it("Render mount the component and unmount the ExtDataGrid", () => {
 });
 
 test("ExtDataGrid mouse events", () => {
-    jest.setTimeout(30000);
-    const { getAllByTestId } = render(
-        <ExtDataGrid
-            toolbar={<div />}
-            getValidFilterValues={mockgetValidFilters}
-            minHeight={10}
-            columns={["name", "place", "origin"]}
-            rowGetter={mockRowGetter}
-            rowsCount={10}
-            onGridRowsUpdated={mockGridRowUpdate}
-            enableCellSelect
-            onClearFilters={mockClearFilters}
-            onColumnResize={mockColumnResize}
-            onAddFilter={mockAddFilter}
-            rowSelection={{
-                showCheckbox: true,
-                enableShiftSelect: true,
-                onRowsSelected: mockRowSelected,
-                onRowsDeselected: mockRowDeselected,
-                selectBy: {
-                    indexes: 1
-                }
-            }}
-            onGridSort={mockGridSort}
-            globalSearch={mockGlobalSearchLogic}
-            handleWarningStatus=""
-            closeWarningStatus=""
-            enableRowSelect={null}
-        />
-    );
+    jest.useFakeTimers(1000);
     const component = ReactTestUtils.renderIntoDocument(
         <ExtDataGrid
             toolbar={<div />}
@@ -164,6 +134,13 @@ test("ExtDataGrid mouse events", () => {
     );
     component.singleClick();
     component.doubleClick();
+    component.clickHandler({ preventDefault: jest.fn() });
+    component.clickHandler({ preventDefault: jest.fn() });
+    jest.runAllTimers();
+    component.clickHandler({ preventDefault: jest.fn() });
+    jest.runAllTimers();
+    component.mouseDownHandler({});
+    component.clickHandler({ preventDefault: jest.fn() });
     component.clickHandler({ preventDefault: jest.fn() });
     component.mouseDownHandler({});
 });

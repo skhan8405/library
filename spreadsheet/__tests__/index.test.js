@@ -384,6 +384,157 @@ let props = {
     updatedRows: jest.fn()
 };
 
+test("Spreadsheet - onGridRowsUpdated  cell update addition", () => {
+    const tempObj = {
+        targetColumn: "flightno",
+        rowId: 0,
+        operation: "SUM",
+        columnKeyArray: ["flightModel", "flightModel"]
+    };
+    const formulaArray = [];
+    formulaArray.push(tempObj);
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: formulaArray
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "=sum(c7,c7)" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update subtraction", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "DIFF",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update multiplication", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "MUL",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update maximum of", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "MAX",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
+test("Spreadsheet - onGridRowsUpdated  cell update minimum of", () => {
+    act(() => {
+        const component = ReactTestUtils.renderIntoDocument(
+            <Spreadsheet {...props} columns={[...columns]} />
+        );
+        component
+            .setStateAsync({
+                rows: data,
+                filteringRows: data,
+                tempRows: data,
+                formulaKeyArray: [
+                    {
+                        targetColumn: "flightno",
+                        rowId: 0,
+                        operation: "MIN",
+                        columnKeyArray: ["flightModel", "flightModel"]
+                    }
+                ]
+            })
+            .then(() => {
+                const d = component.onGridRowsUpdated({
+                    fromRow: 0,
+                    toRow: 0,
+                    updated: { flightno: "1000" },
+                    action: "CELL_UPDATE"
+                });
+                expect(d).not.toBeNull();
+            });
+    });
+});
 test("<Spreadsheet />", () => {
     act(() => {
         const component = ReactTestUtils.renderIntoDocument(
@@ -1779,6 +1930,7 @@ test("Spreadsheet - onGridRowsUpdated drag calculations of Minimum", () => {
 });
 
 test("Spreadsheet - handlePaste", () => {
+    const getData = () => "A string";
     act(() => {
         const component = ReactTestUtils.renderIntoDocument(
             <Spreadsheet {...props} columns={[...columns]} />
@@ -1790,27 +1942,10 @@ test("Spreadsheet - handlePaste", () => {
             })
             .then(() => {
                 let event = {
-                    bubbles: true,
-                    cancelBubble: false,
-                    cancelable: true,
                     clipboardData: {
-                        dropEffect: "none",
-                        files: [],
-                        items: [],
-                        types: [],
-                        effectAllowed: "uninitialized"
+                        getData: getData
                     },
-                    composed: true,
-                    currentTarget: null,
-                    defaultPrevented: true,
-                    eventPhase: 0,
-                    isTrusted: true,
-                    path: [],
-                    returnValue: false,
-                    srcElement: {},
-                    target: {},
-                    timeStamp: 2961218.920000014,
-                    type: "paste"
+                    preventDefault: jest.fn()
                 };
                 const d = component.handlePaste(event);
                 expect(d).not.toBeNull();
@@ -1944,160 +2079,8 @@ test("Spreadsheet - handleCopy", () => {
                 botRight: { rowIdx: 1, colIdx: 5 }
             })
             .then(() => {
-                let event = {};
+                let event = { preventDefault: jest.fn() };
                 const d = component.handleCopy(event);
-                expect(d).not.toBeNull();
-            });
-    });
-});
-
-test("Spreadsheet - onGridRowsUpdated  cell update addition", () => {
-    const tempObj = {
-        targetColumn: "flightno",
-        rowId: 0,
-        operation: "SUM",
-        columnKeyArray: ["flightModel", "flightModel"]
-    };
-    const formulaArray = [];
-    formulaArray.push(tempObj);
-    act(() => {
-        const component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
-        );
-        component
-            .setStateAsync({
-                rows: data,
-                filteringRows: data,
-                tempRows: data,
-                formulaKeyArray: formulaArray
-            })
-            .then(() => {
-                const d = component.onGridRowsUpdated({
-                    fromRow: 0,
-                    toRow: 0,
-                    updated: { flightno: "=sum(c7,c7)" },
-                    action: "CELL_UPDATE"
-                });
-                expect(d).not.toBeNull();
-            });
-    });
-});
-test("Spreadsheet - onGridRowsUpdated  cell update subtraction", () => {
-    act(() => {
-        const component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
-        );
-        component
-            .setStateAsync({
-                rows: data,
-                filteringRows: data,
-                tempRows: data,
-                formulaKeyArray: [
-                    {
-                        targetColumn: "flightno",
-                        rowId: 0,
-                        operation: "DIFF",
-                        columnKeyArray: ["flightModel", "flightModel"]
-                    }
-                ]
-            })
-            .then(() => {
-                const d = component.onGridRowsUpdated({
-                    fromRow: 0,
-                    toRow: 0,
-                    updated: { flightno: "1000" },
-                    action: "CELL_UPDATE"
-                });
-                expect(d).not.toBeNull();
-            });
-    });
-});
-test("Spreadsheet - onGridRowsUpdated  cell update multiplication", () => {
-    act(() => {
-        const component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
-        );
-        component
-            .setStateAsync({
-                rows: data,
-                filteringRows: data,
-                tempRows: data,
-                formulaKeyArray: [
-                    {
-                        targetColumn: "flightno",
-                        rowId: 0,
-                        operation: "MUL",
-                        columnKeyArray: ["flightModel", "flightModel"]
-                    }
-                ]
-            })
-            .then(() => {
-                const d = component.onGridRowsUpdated({
-                    fromRow: 0,
-                    toRow: 0,
-                    updated: { flightno: "1000" },
-                    action: "CELL_UPDATE"
-                });
-                expect(d).not.toBeNull();
-            });
-    });
-});
-test("Spreadsheet - onGridRowsUpdated  cell update maximum of", () => {
-    act(() => {
-        const component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
-        );
-        component
-            .setStateAsync({
-                rows: data,
-                filteringRows: data,
-                tempRows: data,
-                formulaKeyArray: [
-                    {
-                        targetColumn: "flightno",
-                        rowId: 0,
-                        operation: "MAX",
-                        columnKeyArray: ["flightModel", "flightModel"]
-                    }
-                ]
-            })
-            .then(() => {
-                const d = component.onGridRowsUpdated({
-                    fromRow: 0,
-                    toRow: 0,
-                    updated: { flightno: "1000" },
-                    action: "CELL_UPDATE"
-                });
-                expect(d).not.toBeNull();
-            });
-    });
-});
-test("Spreadsheet - onGridRowsUpdated  cell update minimum of", () => {
-    act(() => {
-        const component = ReactTestUtils.renderIntoDocument(
-            <Spreadsheet {...props} columns={[...columns]} />
-        );
-        component
-            .setStateAsync({
-                rows: data,
-                filteringRows: data,
-                tempRows: data,
-                formulaKeyArray: [
-                    {
-                        targetColumn: "flightno",
-                        rowId: 0,
-                        operation: "MIN",
-                        columnKeyArray: ["flightModel", "flightModel"]
-                    }
-                ]
-            })
-            .then(() => {
-                const d = component.onGridRowsUpdated({
-                    fromRow: 0,
-                    toRow: 0,
-                    updated: { flightno: "1000" },
-                    action: "CELL_UPDATE"
-                });
                 expect(d).not.toBeNull();
             });
     });

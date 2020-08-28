@@ -253,6 +253,7 @@ class Spreadsheet extends Component {
         const pasteData = defaultParsePaste(
             e.clipboardData.getData("text/plain")
         );
+
         pasteData.forEach((row) => {
             if (row != "") {
                 const rowData = {};
@@ -316,37 +317,6 @@ class Spreadsheet extends Component {
                 return i === a.indexOf(item);
             });
     }
-
-    /**
-     * Method To swap the columns
-     * @param {*} source is source column
-     * @param {*} target is the target column
-     */
-    // onHeaderDrop = (source, target) => {
-    //   const stateCopy = Object.assign({}, this.state);
-    //   const columnSourceIndex = this.state.columns.findIndex(
-    //     (i) => i.key === source
-    //   );
-    //   const columnTargetIndex = this.state.columns.findIndex(
-    //     (i) => i.key === target
-    //   );
-
-    //   stateCopy.columns.splice(
-    //     columnTargetIndex,
-    //     0,
-    //     stateCopy.columns.splice(columnSourceIndex, 1)[0]
-    //   );
-
-    //   const emptyColumns = Object.assign({}, this.state, {
-    //     columns: [],
-    //   });
-    //   this.setState(emptyColumns);
-
-    //   const reorderedColumns = Object.assign({}, this.state, {
-    //     columns: stateCopy.columns,
-    //   });
-    //   this.setState(reorderedColumns);
-    // };
 
     // eslint-disable-next-line react/sort-comp
     handleTableSortSwap = (reorderedSwap) => {
