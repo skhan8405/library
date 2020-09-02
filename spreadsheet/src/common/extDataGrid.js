@@ -7,9 +7,9 @@ class ExtDataGrid extends ReactDataGrid {
         this._mounted = true;
         // eslint-disable-next-line prefer-destructuring
 
-        this.dataGridComponent = document.getElementsByClassName(
+        [this.dataGridComponent] = document.getElementsByClassName(
             "react-grid-Viewport"
-        )[0];
+        );
 
         window.addEventListener("resize", this.metricsUpdated);
         if (this.props.cellRangeSelection && this.dataGridComponent) {
@@ -41,16 +41,18 @@ class ExtDataGrid extends ReactDataGrid {
     }
 
     mouseDownHandler = (event) => {
-        let editorContainer = document.getElementsByClassName(
+        const editorContainer = document.getElementsByClassName(
             "rdg-editor-container"
         );
         if (editorContainer && editorContainer.length > 0) {
             event.stopPropagation();
         }
     };
+
     singleClick = () => {
         this.onWindowMouseUp();
     };
+
     doubleClick = () => {
         console.log("");
     };

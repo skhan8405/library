@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Toolbar, Data, Filters, Editors } from "react-data-grid-addons";
 import PropTypes from "prop-types";
+import { range } from "lodash";
 import ExtDataGrid from "./common/extDataGrid";
 import DatePicker from "./functions/DatePicker";
 import ErrorMessage from "./common/ErrorMessage";
@@ -14,7 +15,6 @@ import {
     IconSearch
 } from "./Utilities/SvgUtilities";
 import FormulaProcessor from "./functions/FormulaProcessor";
-import { range } from "lodash";
 
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
