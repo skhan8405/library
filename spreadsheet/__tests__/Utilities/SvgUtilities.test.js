@@ -41,7 +41,6 @@ afterEach(() => {
 
 describe("Svg Utilities File", () => {
     test("Icon Columns Validation", () => {
-        // afterEach(cleanup)
         const { iconColumns } = render(<IconColumns />);
         const { iconAngle } = render(<IconAngle />);
         const { iconFilter } = render(<IconFilter />);
@@ -64,14 +63,4 @@ describe("Svg Utilities File", () => {
         const { sortCopy } = render(<SortCopy />);
         const { sortDelete } = render(<SortDelete />);
     });
-
-    // test("Icon Angle Validation", () => {
-    //     // afterEach(cleanup)
-    //     const { iconAngle } = render(<IconAngle />);
-    // });
-
-    // test("Icon Filter Validation", () => {
-    //     // afterEach(cleanup)
-    //     const { iconFilter } = render(<IconFilter />);
-    // });
 });
