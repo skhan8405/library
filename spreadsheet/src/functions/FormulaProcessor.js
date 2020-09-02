@@ -1,9 +1,9 @@
 export default function FormulaProcessor(expression) {
-    let calculationObject = {
+    const calculationObject = {
         operation: "",
         columnArray: []
     };
-    let columnArray = [];
+    const columnArray = [];
     if (
         expression.match(
             /^=(sum|mul|diff|add|prod|sub|max|min)\((?<one>.\w*?),(?<more>(.\w*?)*?)\)$/i
@@ -64,5 +64,6 @@ export default function FormulaProcessor(expression) {
         }
         calculationObject.columnArray = [...columnArray];
         return calculationObject;
-    } else return [];
+    }
+    return [];
 }
