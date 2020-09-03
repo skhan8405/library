@@ -184,11 +184,13 @@ const Customgrid = memo((props) => {
                     // Return value of the filter method
                     let returnValue = false;
                     // Loop through all column values for each row
-                    originalColumns.forEach((column) => {
+                    originalColumns.forEach((col) => {
                         // Do search for each column
-                        returnValue =
-                            returnValue ||
-                            searchColumn(column, original, searchText);
+                        col.columns.forEach((column) => {
+                            returnValue =
+                                returnValue ||
+                                searchColumn(column, original, searchText);
+                        });
                     });
                     return returnValue;
                 });
@@ -487,7 +489,7 @@ const Customgrid = memo((props) => {
                                                             : ""
                                                     }`}
                                                 >
-                                                    {!column.disableFilters
+                                                    {column.canFilter
                                                         ? column.render(
                                                               "Filter"
                                                           )

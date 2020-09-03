@@ -14,8 +14,9 @@ export const extractColumns = (
 
     const modifiedColumns = [];
     // Loop through the columns configuration and create required column structure
+
     filteredColumns.forEach((column, index) => {
-        const { originalInnerCells, innerCells, accessor, sortValue } = column;
+        const { originalInnerCells, innerCells, sortValue, accessor } = column;
         const isInnerCellsPresent = innerCells && innerCells.length > 0;
         const isOriginalInnerCellsPresent =
             originalInnerCells && originalInnerCells.length > 0;
@@ -30,6 +31,7 @@ export const extractColumns = (
         // If there are no copies of original Cells create a new copy from Inner cells
         if (!isOriginalInnerCellsPresent && isInnerCellsPresent) {
             elem.originalInnerCells = innerCells;
+            // elem.column = "test";
         }
 
         // Configure Cell function (which is used by react-table component), based on the user defined function displayCell
@@ -81,10 +83,48 @@ export const extractColumns = (
                 });
             };
         }
-
         modifiedColumns.push(column);
     });
-    return modifiedColumns;
+
+    const modifiedCols = Object.values(modifiedColumns).map((subHeader) => {
+        return {
+            Header: subHeader.groupHeader,
+            columns: columns.filter(
+                (inner) => inner.Header === subHeader.Header
+            )
+        };
+    });
+
+    const arraySamp = [];
+    modifiedCols.forEach((item) => {
+        item.columns.forEach((it) => {
+            arraySamp.push(it);
+        });
+    });
+    modifiedCols.forEach((item) => {
+        if (item.columns) {
+            item.columns.forEach((col) => {
+                arraySamp.forEach((it) => {
+                    const index = item.columns.findIndex(
+                        (its) =>
+                            its.Header === it.Header &&
+                            its.groupHeader === it.groupHeader
+                    );
+                    if (index === -1 && it.groupHeader === col.groupHeader) {
+                        item.columns.push(it);
+                    }
+                });
+            });
+        }
+    });
+    const updatedModifiedColumns = Object.values(
+        modifiedCols.reduce(
+            (acc, cur) => Object.assign(acc, { [cur.Header]: cur }),
+            {}
+        )
+    );
+    console.log(updatedModifiedColumns);
+    return updatedModifiedColumns;
 };
 
 export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
