@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Multiselect } from "multiselect-react-dropdown";
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { ReactComponent as IconTimes } from "../images/icon-close.svg";
+import { IconTimes } from "../Utilities/SvgUtilities";
 
 export default function AutoComplete(props) {
     const [autoCompleteArr, setAutoAcompleteArr] = useState([]);

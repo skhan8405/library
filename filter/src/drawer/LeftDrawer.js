@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import { Accordion, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { ReactComponent as IconUpArrow } from "../images/downarrow.svg";
+import { IconUpArrow } from "../Utilities/SvgUtilities";
 
 export default function LeftDrawer(props) {
     const [leftDrawData, setLeftDrawData] = useState([]);
@@ -54,7 +54,7 @@ export default function LeftDrawer(props) {
     };
 
     const accordianHeads = leftDrawData.map((item) => {
-        if (item.types.length) {
+        if (item.types && item.types.length > 0) {
             return (
                 <div>
                     <Accordion>
@@ -126,7 +126,7 @@ export default function LeftDrawer(props) {
         return <div key={item.name} />;
     });
     const fieldHeads = leftDrawData.map((item) => {
-        if (item.field.length) {
+        if (item.field && item.field.length > 0) {
             return (
                 <div className="fieldHeads">
                     <li
@@ -186,7 +186,12 @@ export default function LeftDrawer(props) {
     //     return <div key={index} />;
     // });
     const normalHeads = leftDrawData.map((item) => {
-        if (!(item.types.length || item.field.length)) {
+        if (
+            item.field &&
+            item.field.length <= 0 &&
+            item.types &&
+            item.types.length <= 0
+        ) {
             return (
                 <div className="normalHeads">
                     <li
