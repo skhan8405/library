@@ -12,8 +12,8 @@
         "node": ">=10"
     },
     "scripts": {
-        "build": "microbundle-crl --no-compress --format modern,cjs",
-        "start": "microbundle-crl watch --no-compress --format modern,cjs",
+        "build": "SET NODE_ENV=dev && microbundle-crl --no-compress --format modern,cjs",
+        "start": "SET NODE_ENV=dev && microbundle-crl watch --no-compress --format modern,cjs",
         "prepare": "run-s build",
         "test": "jest --coverage --env=jest-environment-jsdom-sixteen",
         "test:build": "run-s build",
