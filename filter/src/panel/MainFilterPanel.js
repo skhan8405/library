@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { ReactComponent as IconLeftAlign } from "../images/icon-leftAlign.svg";
+import { IconLeftAlign } from "../Utilities/SvgUtilities";
 import SavedFilters from "./SavedFilters";
 
 let chips;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import ClickAwayListener from "react-click-away-listener";
-import { ReactComponent as IconCheck } from "../images/icon-check.svg";
+import { IconCheck } from "../Utilities/SvgUtilities";
 
 const SavedFilters = (props) => {
     const [showFilter, setShowFilter] = useState(false);

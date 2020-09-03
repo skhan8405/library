@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { ReactComponent as IconTimes } from "../images/icon-close.svg";
+import { IconTimes } from "../Utilities/SvgUtilities";
 
 export default function FieldComponent(props) {
     const [fieldComponentArr, setFieldComponentArr] = useState([]);

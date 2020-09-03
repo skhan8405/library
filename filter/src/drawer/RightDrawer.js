@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import AutoComplete from "../types/AutoCompleteComponent";
 import FieldComponent from "../types/DateTimeComponent";
 import TextComponents from "../types/TextComponents";
-import { ReactComponent as SaveLogo } from "../images/save-icon.svg";
+import { SaveLogo } from "../Utilities/SvgUtilities";
 
 const RightDrawer = (props) => {
     const [showSavePopup, setShowSavePopup] = useState("none");
