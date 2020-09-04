@@ -66,6 +66,12 @@ const Customgrid = memo((props) => {
         doGroupSort
     } = props;
 
+    const updatedOriginalColumns = [];
+    originalColumns.forEach((item) => {
+        item.columns.forEach((col) => {
+            updatedOriginalColumns.push(col);
+        });
+    });
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
     // Local state value for holding the boolean value to check if row expand is available
@@ -184,13 +190,11 @@ const Customgrid = memo((props) => {
                     // Return value of the filter method
                     let returnValue = false;
                     // Loop through all column values for each row
-                    originalColumns.forEach((col) => {
+                    updatedOriginalColumns.forEach((column) => {
                         // Do search for each column
-                        col.columns.forEach((column) => {
-                            returnValue =
-                                returnValue ||
-                                searchColumn(column, original, searchText);
-                        });
+                        returnValue =
+                            returnValue ||
+                            searchColumn(column, original, searchText);
                     });
                     return returnValue;
                 });
@@ -337,7 +341,7 @@ const Customgrid = memo((props) => {
                     <ColumnReordering
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
-                        originalColumns={originalColumns}
+                        originalColumns={updatedOriginalColumns}
                         isExpandContentAvailable={isExpandContentAvailable}
                         additionalColumn={[additionalColumn]}
                         updateColumnStructure={updateColumnStructure}
@@ -349,14 +353,14 @@ const Customgrid = memo((props) => {
                     <GroupSort
                         isGroupSortOverLayOpen={isGroupSortOverLayOpen}
                         toggleGroupSortOverLay={toggleGroupSortOverLay}
-                        originalColumns={originalColumns}
+                        originalColumns={updatedOriginalColumns}
                         applyGroupSort={applyGroupSort}
                     />
                     <ExportData
                         isExportOverlayOpen={isExportOverlayOpen}
                         toggleExportDataOverlay={toggleExportDataOverlay}
                         rows={rows}
-                        originalColumns={originalColumns}
+                        originalColumns={updatedOriginalColumns}
                         columns={columns} // Updated columns structure from manage columns overlay
                         isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
                         isExpandContentAvailable={isExpandContentAvailable}

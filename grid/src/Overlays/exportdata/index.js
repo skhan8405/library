@@ -23,14 +23,6 @@ const ExportData = memo((props) => {
         additionalColumn
     } = props;
 
-    const updatedOriginalColumns = [];
-    originalColumns.forEach((item) => {
-        item.columns.forEach((col) => {
-            updatedOriginalColumns.push(col);
-        });
-    });
-    console.log(updatedOriginalColumns);
-
     // Check if row expand is configured by developer
     const getRemarksColumnIfAvailable = () => {
         return isExpandContentAvailable ? additionalColumn : [];
@@ -42,12 +34,12 @@ const ExportData = memo((props) => {
     };
 
     // Full list of columns + expand column
-    const updatedColumns = [...updatedOriginalColumns].concat(
+    const updatedColumns = [...originalColumns].concat(
         getRemarksColumnIfAvailable()
     );
 
     // List of columns + expand based on user selection from manage overlay
-    const updatedColumnsPerUserSelection = [...updatedOriginalColumns].concat(
+    const updatedColumnsPerUserSelection = [...originalColumns].concat(
         getRemarksColumnIfSelectedByUser()
     );
 
@@ -132,7 +124,6 @@ const ExportData = memo((props) => {
         setWarning("");
 
         if (managedColumns.length > 0 && downloadTypes.length > 0) {
-            console.log(managedColumns);
             const rowLength = rows && rows.length > 0 ? rows.length : 0;
             rows.forEach((rowDetails, index) => {
                 const row = rowDetails.original;
@@ -254,7 +245,7 @@ const ExportData = memo((props) => {
         value = value ? value.toLowerCase() : "";
         if (value !== "") {
             setSearchedColumns(
-                updatedOriginalColumns
+                originalColumns
                     .filter((column) => {
                         return column.Header.toLowerCase().includes(value);
                     })

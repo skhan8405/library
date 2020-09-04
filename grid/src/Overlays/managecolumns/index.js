@@ -17,13 +17,6 @@ const ColumnReordering = memo((props) => {
         additionalColumn
     } = props;
 
-    const updatedOriginalColumns = [];
-    originalColumns.forEach((item) => {
-        item.columns.forEach((col) => {
-            updatedOriginalColumns.push(col);
-        });
-    });
-
     const additionalColumnHeader =
         additionalColumn && additionalColumn.length
             ? additionalColumn[0].Header
@@ -32,13 +25,11 @@ const ColumnReordering = memo((props) => {
         return isExpandContentAvailable ? additionalColumn : [];
     };
 
-    const concatedOriginalColumns = updatedOriginalColumns.concat(
+    const concatedOriginalColumns = originalColumns.concat(
         getRemarksColumnIfAvailable()
     );
 
-    const [managedColumns, setManagedColumns] = useState(
-        updatedOriginalColumns
-    );
+    const [managedColumns, setManagedColumns] = useState(originalColumns);
     const [searchedColumns, setSearchedColumns] = useState(
         concatedOriginalColumns
     );
@@ -66,7 +57,7 @@ const ColumnReordering = memo((props) => {
         value = value ? value.toLowerCase() : "";
         if (value !== "") {
             setSearchedColumns(
-                updatedOriginalColumns
+                originalColumns
                     .filter((column) => {
                         return column.Header.toLowerCase().includes(value);
                     })
@@ -130,8 +121,7 @@ const ColumnReordering = memo((props) => {
         if (type === "column") {
             return columnsList.findIndex((column) => {
                 return (
-                    column.Header ===
-                    updatedOriginalColumns[indexOfColumnToAdd].Header
+                    column.Header === originalColumns[indexOfColumnToAdd].Header
                 );
             });
         }
@@ -147,7 +137,7 @@ const ColumnReordering = memo((props) => {
 
     const selectAllColumns = (event) => {
         if (event.currentTarget.checked) {
-            setManagedColumns(updatedOriginalColumns);
+            setManagedColumns(originalColumns);
             setRemarksColumnToManage(getRemarksColumnIfAvailable());
         } else {
             setManagedColumns([]);
@@ -168,12 +158,10 @@ const ColumnReordering = memo((props) => {
         } else if (checked) {
             // If column checkbox is checked
             // Find the index of selected column from original column array and also find the user selected column
-            let indexOfColumnToAdd = updatedOriginalColumns.findIndex(
-                (column) => {
-                    return column.Header === value;
-                }
-            );
-            const itemToAdd = updatedOriginalColumns[indexOfColumnToAdd];
+            let indexOfColumnToAdd = originalColumns.findIndex((column) => {
+                return column.Header === value;
+            });
+            const itemToAdd = originalColumns[indexOfColumnToAdd];
 
             // Loop through the managedColumns array to find the position of the column that is present previous to the user selected column
             // Find index of that previous column in original column list and push the new column next to that position
@@ -295,16 +283,16 @@ const ColumnReordering = memo((props) => {
     };
 
     const resetColumnUpdate = () => {
-        setManagedColumns(resetInnerCells(updatedOriginalColumns));
+        setManagedColumns(resetInnerCells(originalColumns));
         setSearchedColumns(
-            updatedOriginalColumns.concat(getRemarksColumnIfAvailable())
+            originalColumns.concat(getRemarksColumnIfAvailable())
         );
         setRemarksColumnToManage(
             resetInnerCells(getRemarksColumnIfAvailable())
         );
         setIsErrorDisplayed(false);
         props.updateColumnStructure(
-            updatedOriginalColumns,
+            originalColumns,
             getRemarksColumnIfAvailable()
         );
     };

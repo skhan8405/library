@@ -31,7 +31,6 @@ export const extractColumns = (
         // If there are no copies of original Cells create a new copy from Inner cells
         if (!isOriginalInnerCellsPresent && isInnerCellsPresent) {
             elem.originalInnerCells = innerCells;
-            // elem.column = "test";
         }
 
         // Configure Cell function (which is used by react-table component), based on the user defined function displayCell
@@ -123,7 +122,6 @@ export const extractColumns = (
             {}
         )
     );
-    console.log(updatedModifiedColumns);
     return updatedModifiedColumns;
 };
 

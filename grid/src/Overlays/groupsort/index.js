@@ -16,19 +16,12 @@ const GroupSort = memo((props) => {
         originalColumns
     } = props;
 
-    const updatedOriginalColumns = [];
-    originalColumns.forEach((item) => {
-        item.columns.forEach((col) => {
-            updatedOriginalColumns.push(col);
-        });
-    });
-
     const sortingOrders = ["Ascending", "Descending"];
     const defaultSortingOption = [
         {
-            sortBy: updatedOriginalColumns[0].accessor,
-            sortOn: updatedOriginalColumns[0].innerCells
-                ? updatedOriginalColumns[0].innerCells[0].accessor
+            sortBy: originalColumns[0].accessor,
+            sortOn: originalColumns[0].innerCells
+                ? originalColumns[0].innerCells[0].accessor
                 : "value",
             order: sortingOrders[0]
         }
@@ -142,7 +135,7 @@ const GroupSort = memo((props) => {
                             >
                                 <SortingList
                                     sortOptions={sortOptions}
-                                    originalColumns={updatedOriginalColumns}
+                                    originalColumns={originalColumns}
                                     updateSortingOptions={updateSortingOptions}
                                     updateSingleSortingOption={
                                         updateSingleSortingOption
