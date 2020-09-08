@@ -8,7 +8,7 @@ import { AdditionalColumnContext } from "./Utilities/TagsContext";
 import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
 // eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+import "!style-loader!css-loader!sass-loader!../dist/Styles/main.scss";
 
 const Grid = memo((props) => {
     const {
@@ -269,14 +269,12 @@ const Grid = memo((props) => {
 
     useEffect(() => {
         // Add duplicate copy of inner cells to be used for data chooser
-        processedColumns.forEach((column) => {
-            column.columns.forEach((col) => {
-                const columnTpProcess = col;
-                if (col.innerCells) {
-                    columnTpProcess.originalInnerCells = col.innerCells;
-                }
-                return columnTpProcess;
-            });
+        processedColumns.map((column) => {
+            const columnTpProcess = column;
+            if (column.innerCells) {
+                columnTpProcess.originalInnerCells = column.innerCells;
+            }
+            return columnTpProcess;
         });
         if (additionalColumn) {
             const { innerCells } = additionalColumn;
