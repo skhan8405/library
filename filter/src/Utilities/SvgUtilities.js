@@ -49,6 +49,7 @@ export const IconUpArrow = (): React$Element<*> => (
         width="10px"
         height="6px"
         xmlns="http://www.w3.org/2000/svg"
+        style={{ transform: "rotate(0deg)" }}
     >
         <g transform="matrix(1 0 0 1 -191 -14 )">
             <path
