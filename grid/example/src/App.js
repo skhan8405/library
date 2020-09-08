@@ -7,6 +7,7 @@ import FlightEdit from "./cells/FlightEdit";
 import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 import RowEdit from "./cells/RowEdit";
+import CustomPanel from "./panels/CustomPanel";
 
 const App = () => {
     //#region -- Variable that are specific to example application
@@ -672,6 +673,7 @@ const App = () => {
             updateRowData={updateRowData}
             deleteRowData={deleteRowData}
             selectBulkData={selectBulkData}
+            CustomPanel={CustomPanel}
         />
     );
 };

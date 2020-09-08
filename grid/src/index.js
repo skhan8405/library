@@ -24,7 +24,8 @@ const Grid = memo((props) => {
         updateRowData,
         deleteRowData,
         selectBulkData,
-        calculateRowHeight
+        calculateRowHeight,
+        CustomPanel
     } = props;
 
     // Check if device is desktop
@@ -330,6 +331,7 @@ const Grid = memo((props) => {
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}
                         doGroupSort={doGroupSort}
+                        CustomPanel={CustomPanel}
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -369,7 +371,8 @@ Grid.propTypes = {
     selectBulkData: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     rowActions: PropTypes.any,
-    rowActionCallback: PropTypes.any
+    rowActionCallback: PropTypes.any,
+    CustomPanel: PropTypes.any
 };
 
 export default Grid;
