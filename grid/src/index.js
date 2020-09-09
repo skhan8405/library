@@ -34,10 +34,6 @@ const Grid = memo((props) => {
 
     // Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-    // Local state value for checking if data is being loaded from API
-    const [isLoading, setIsLoading] = useState(true);
-    // Set state value for variable to hold grid data
-    const [items, setItems] = useState(gridData);
     // Local state for group sort options
     const [groupSortOptions, setGroupSortOptions] = useState([]);
 
@@ -101,7 +97,7 @@ const Grid = memo((props) => {
     // Gets triggered when one row item is updated
     const updateRowInGrid = (original, updatedRow) => {
         if (updateRowData) {
-            updateRowData(updatedRow);
+            updateRowData(original, updatedRow);
         }
     };
 
@@ -244,13 +240,11 @@ const Grid = memo((props) => {
     };
 
     useEffect(() => {
-        setItems(gridData);
-        setIsLoading(false);
         setIsNextPageLoading(false);
     }, [gridData]);
 
     // Sort the data based on the user selected group sort optipons
-    const data = getSortedData([...items]);
+    const data = getSortedData([...gridData]);
 
     return (
         <div className="grid-component-container iCargo__custom">
@@ -301,13 +295,9 @@ const Grid = memo((props) => {
                 </div>
             ) : (
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    {isLoading ? (
-                        "Initializing Grid..."
-                    ) : (
-                        <span className="error">
-                            Invalid Data or Column Configurations
-                        </span>
-                    )}
+                    <span className="error">
+                        Invalid Data or Column Configurations
+                    </span>
                 </h2>
             )}
         </div>

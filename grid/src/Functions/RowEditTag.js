@@ -12,7 +12,13 @@ const RowEditTag = (props) => {
         const selectedColumn = columns.find(
             (col) => col.accessor === columnKey
         );
-        if (selectedColumn && cellKey) {
+        if (selectedColumn && !selectedColumn.innerCells) {
+            return (
+                <React.Fragment key="RowEditFragment">
+                    {props.children}
+                </React.Fragment>
+            );
+        } else if (selectedColumn && cellKey) {
             if (checkInnerCells(selectedColumn, cellKey)) {
                 return (
                     <React.Fragment key="RowEditFragment">
