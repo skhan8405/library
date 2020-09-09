@@ -66,12 +66,6 @@ const Customgrid = memo((props) => {
         doGroupSort
     } = props;
 
-    const updatedOriginalColumns = [];
-    originalColumns.forEach((item) => {
-        item.columns.forEach((col) => {
-            updatedOriginalColumns.push(col);
-        });
-    });
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
     // Local state value for holding the boolean value to check if row expand is available
@@ -190,7 +184,7 @@ const Customgrid = memo((props) => {
                     // Return value of the filter method
                     let returnValue = false;
                     // Loop through all column values for each row
-                    updatedOriginalColumns.forEach((column) => {
+                    originalColumns.forEach((column) => {
                         // Do search for each column
                         returnValue =
                             returnValue ||
@@ -341,7 +335,7 @@ const Customgrid = memo((props) => {
                     <ColumnReordering
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
-                        originalColumns={updatedOriginalColumns}
+                        originalColumns={originalColumns}
                         isExpandContentAvailable={isExpandContentAvailable}
                         additionalColumn={[additionalColumn]}
                         updateColumnStructure={updateColumnStructure}
@@ -353,14 +347,14 @@ const Customgrid = memo((props) => {
                     <GroupSort
                         isGroupSortOverLayOpen={isGroupSortOverLayOpen}
                         toggleGroupSortOverLay={toggleGroupSortOverLay}
-                        originalColumns={updatedOriginalColumns}
+                        originalColumns={originalColumns}
                         applyGroupSort={applyGroupSort}
                     />
                     <ExportData
                         isExportOverlayOpen={isExportOverlayOpen}
                         toggleExportDataOverlay={toggleExportDataOverlay}
                         rows={rows}
-                        originalColumns={updatedOriginalColumns}
+                        originalColumns={originalColumns}
                         columns={columns} // Updated columns structure from manage columns overlay
                         isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
                         isExpandContentAvailable={isExpandContentAvailable}
@@ -493,7 +487,7 @@ const Customgrid = memo((props) => {
                                                             : ""
                                                     }`}
                                                 >
-                                                    {column.canFilter
+                                                    {!column.disableFilters
                                                         ? column.render(
                                                               "Filter"
                                                           )

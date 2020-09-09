@@ -14,9 +14,8 @@ export const extractColumns = (
 
     const modifiedColumns = [];
     // Loop through the columns configuration and create required column structure
-
     filteredColumns.forEach((column, index) => {
-        const { originalInnerCells, innerCells, sortValue, accessor } = column;
+        const { originalInnerCells, innerCells, accessor, sortValue } = column;
         const isInnerCellsPresent = innerCells && innerCells.length > 0;
         const isOriginalInnerCellsPresent =
             originalInnerCells && originalInnerCells.length > 0;
@@ -82,47 +81,10 @@ export const extractColumns = (
                 });
             };
         }
+
         modifiedColumns.push(column);
     });
-
-    const modifiedCols = Object.values(modifiedColumns).map((subHeader) => {
-        return {
-            Header: subHeader.groupHeader,
-            columns: columns.filter(
-                (inner) => inner.Header === subHeader.Header
-            )
-        };
-    });
-
-    const arraySamp = [];
-    modifiedCols.forEach((item) => {
-        item.columns.forEach((it) => {
-            arraySamp.push(it);
-        });
-    });
-    modifiedCols.forEach((item) => {
-        if (item.columns) {
-            item.columns.forEach((col) => {
-                arraySamp.forEach((it) => {
-                    const index = item.columns.findIndex(
-                        (its) =>
-                            its.Header === it.Header &&
-                            its.groupHeader === it.groupHeader
-                    );
-                    if (index === -1 && it.groupHeader === col.groupHeader) {
-                        item.columns.push(it);
-                    }
-                });
-            });
-        }
-    });
-    const updatedModifiedColumns = Object.values(
-        modifiedCols.reduce(
-            (acc, cur) => Object.assign(acc, { [cur.Header]: cur }),
-            {}
-        )
-    );
-    return updatedModifiedColumns;
+    return modifiedColumns;
 };
 
 export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
