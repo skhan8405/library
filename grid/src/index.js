@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
     extractColumns,
@@ -10,7 +10,7 @@ import Customgrid from "./Customgrid";
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
-const Grid = memo((props) => {
+const Grid = (props) => {
     const {
         title,
         gridHeight,
@@ -121,8 +121,8 @@ const Grid = memo((props) => {
         updateRowInGrid
     );
 
-    // Create memoized column, to be used by grid component
-    const gridColumns = useMemo(() => processedColumns, []);
+    // Create columns variable, to be used by grid component
+    const gridColumns = processedColumns || [];
 
     // Local variable for keeping the expanded row rendering method
     const renderExpandedContent = additionalColumn
@@ -302,7 +302,7 @@ const Grid = memo((props) => {
             )}
         </div>
     );
-});
+};
 
 Grid.propTypes = {
     title: PropTypes.any,
