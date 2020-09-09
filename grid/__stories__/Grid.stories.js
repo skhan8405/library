@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./example.css";
 
 import Grid from "../src/index";
@@ -14,8 +14,6 @@ import RowEdit from "./cells/RowEdit";
 const { search } = window.location;
 const urlPageSize = search ? parseInt(search.replace("?pagesize=", "")) : NaN;
 const pageSize = !isNaN(urlPageSize) ? urlPageSize : 300;
-
-let index = 0;
 
 const airportCodeList = [
     "AAA",
@@ -73,12 +71,6 @@ const airportCodeList = [
     "ZZY",
     "ZZZ"
 ];
-
-const loadData = async () => {
-    const oldIndex = index;
-    index = index + pageSize;
-    return await fetchData(oldIndex, pageSize);
-};
 
 let columns = [
     {
@@ -629,19 +621,43 @@ const selectBulkData = (selectedRows) => {
     console.log(selectedRows);
 };
 
-export default {
-    title: "Grid Component",
-    component: Grid,
-    includeStories: ["MainStory"]
+const loadMoreData = () => {
+    fetchData(index, pageSize).then((data) => {
+        if (data && data.length > 0) {
+            setGridData(gridData.concat(data));
+            setIndex(index + pageSize);
+        } else {
+            setIsNextPageAvailable(false);
+        }
+    });
 };
 
-const Template = (args) => {
+const GridView = (props) => {
+    //State for holding index value for API call
+    const [index, setIndex] = useState(0);
+    //State for holding grid data
+    const [gridData, setGridData] = useState([]);
+    //State for notifying if next page is available or not
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState(true);
+
+    useEffect(() => {
+        fetchData(index, pageSize).then((data) => {
+            if (data && data.length > 0) {
+                setGridData(data);
+                setIndex(index + pageSize);
+            } else {
+                setIsNextPageAvailable(false);
+            }
+        });
+    }, []);
     return (
         <Grid
             title="AWBs"
             gridHeight="80vh"
             gridWidth="100%"
-            loadData={loadData}
+            gridData={gridData}
+            isNextPageAvailable={isNextPageAvailable}
+            loadMoreData={loadMoreData}
             columns={columns}
             columnToExpand={columnToExpand}
             rowActions={rowActions}
@@ -654,10 +670,13 @@ const Template = (args) => {
         />
     );
 };
-export const MainStory = Template.bind({});
-MainStory.args = {
-    title: "AWBs",
-    gridHeight: "80vh",
-    gridWidth: "100%",
-    columns: columns
+
+export default {
+    title: "Grid Component",
+    component: GridView
 };
+const Template = (args) => {
+    return <GridView />;
+};
+
+export const MainStory = Template.bind({});
