@@ -11,17 +11,17 @@ import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 import RowEdit from "./cells/RowEdit";
 
-const GridView = (props) => {
+const GridView = () => {
     const { search } = window.location;
     const urlPageSize = search
-        ? parseInt(search.replace("?pagesize=", ""))
+        ? parseInt(search.replace("?pagesize=", ""), 10)
         : NaN;
-    const pageSize = !isNaN(urlPageSize) ? urlPageSize : 300;
-    //State for holding index value for API call
+    const pageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
+    // State for holding index value for API call
     const [index, setIndex] = useState(0);
-    //State for holding grid data
+    // State for holding grid data
     const [gridData, setGridData] = useState([]);
-    //State for notifying if next page is available or not
+    // State for notifying if next page is available or not
     const [isNextPageAvailable, setIsNextPageAvailable] = useState(true);
 
     const airportCodeList = [
@@ -81,7 +81,7 @@ const GridView = (props) => {
         "ZZZ"
     ];
 
-    let columns = [
+    const columns = [
         {
             Header: "Id",
             accessor: "travelId",
@@ -320,8 +320,8 @@ const GridView = (props) => {
             displayCell: (rowData, DisplayTag) => {
                 const { percentage, value } = rowData.weight;
                 const splitValue = value ? value.split("/") : [];
-                let valuePrefix,
-                    valueSuffix = "";
+                let valuePrefix;
+                let valueSuffix = "";
                 if (splitValue.length === 2) {
                     valuePrefix = splitValue[0];
                     valueSuffix = splitValue[1];
@@ -359,8 +359,8 @@ const GridView = (props) => {
             displayCell: (rowData, DisplayTag) => {
                 const { percentage, value } = rowData.volume;
                 const splitValue = value ? value.split("/") : [];
-                let valuePrefix,
-                    valueSuffix = "";
+                let valuePrefix;
+                let valueSuffix = "";
                 if (splitValue.length === 2) {
                     valuePrefix = splitValue[0];
                     valueSuffix = splitValue[1];
@@ -400,9 +400,10 @@ const GridView = (props) => {
                 return (
                     <div className="uld-details">
                         <ul>
-                            {uldPositions.map((positions, index) => {
+                            {uldPositions.map((positions) => {
+                                const { position, value } = positions;
                                 return (
-                                    <li key={index}>
+                                    <li key={`${position}_${value}`}>
                                         <DisplayTag
                                             columnKey="uldPositions"
                                             cellKey="position"
@@ -525,7 +526,7 @@ const GridView = (props) => {
                 bodyType,
                 type,
                 timeStatus
-            } = details ? details : {};
+            } = details || {};
             const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
@@ -586,45 +587,43 @@ const GridView = (props) => {
     ];
 
     const rowActionCallback = (rowData, actionValue) => {
-        console.log("Row action: " + actionValue);
+        console.log(`Row action: ${actionValue}`);
         console.log(rowData);
     };
 
     const calculateRowHeight = (row, gridColumns) => {
-        //Minimum height for each row
+        // Minimum height for each row
         let rowHeight = 50;
         if (gridColumns && gridColumns.length > 0 && row) {
-            //Get properties of a row
+            // Get properties of a row
             const { original, isExpanded } = row;
-            //Find the column with maximum width configured, from grid columns list
+            // Find the column with maximum width configured, from grid columns list
             const columnWithMaxWidth = [...gridColumns].sort((a, b) => {
                 return b.width - a.width;
             })[0];
-            //Get column properties including the user resized column width (totalFlexWidth)
+            // Get column properties including the user resized column width (totalFlexWidth)
             const { id, width, totalFlexWidth } = columnWithMaxWidth;
-            //Get row value of that column
+            // Get row value of that column
             const rowValue = original[id];
             if (rowValue) {
-                //Find the length of text of data in that column
+                // Find the length of text of data in that column
                 const textLength = Object.values(rowValue).join(",").length;
-                //This is a formula that was created for the test data used.
-                rowHeight =
-                    rowHeight + Math.ceil((75 * textLength) / totalFlexWidth);
+                // This is a formula that was created for the test data used.
+                rowHeight += Math.ceil((75 * textLength) / totalFlexWidth);
                 const widthVariable =
                     totalFlexWidth > width
                         ? totalFlexWidth - width
                         : width - totalFlexWidth;
-                rowHeight = rowHeight + widthVariable / 1000;
+                rowHeight += widthVariable / 1000;
             }
-            //Add logic to increase row height if row is expanded
+            // Add logic to increase row height if row is expanded
             if (isExpanded && columnToExpand) {
-                //Increase height based on the number of inner cells in additional columns
-                rowHeight =
-                    rowHeight +
-                    (columnToExpand.innerCells &&
+                // Increase height based on the number of inner cells in additional columns
+                rowHeight +=
+                    columnToExpand.innerCells &&
                     columnToExpand.innerCells.length > 0
                         ? columnToExpand.innerCells.length * 35
-                        : 35);
+                        : 35;
             }
         }
         return rowHeight;
@@ -712,7 +711,7 @@ export default {
     title: "Grid Component",
     component: GridView
 };
-const Template = (args) => {
+const Template = () => {
     return <GridView />;
 };
 

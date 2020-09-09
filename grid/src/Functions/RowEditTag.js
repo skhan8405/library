@@ -18,7 +18,8 @@ const RowEditTag = (props) => {
                     {props.children}
                 </React.Fragment>
             );
-        } else if (selectedColumn && cellKey) {
+        }
+        if (selectedColumn && cellKey) {
             if (checkInnerCells(selectedColumn, cellKey)) {
                 return (
                     <React.Fragment key="RowEditFragment">
