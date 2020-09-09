@@ -5,34 +5,38 @@
             "types": [
                 {
                     "name": "Airport",
-                    "dataType": "AutoComplete",
+                    "dataType": "Airport",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "Airport Group",
-                    "dataType": "AutoComplete",
+                    "dataType": "TextField",
                     "dataSource": "AirportGroup",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "City",
-                    "dataType": "AutoComplete",
+                    "dataType": "TextField",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "City Group",
-                    "dataType": "AutoComplete",
-
+                    "dataType": "TextField",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "Country",
-                    "dataType": "AutoComplete",
+                    "dataType": "TextField",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 }
             ]
         },
@@ -41,113 +45,130 @@
             "types": [
                 {
                     "name": "Airport",
-                    "dataType": "AutoComplete",
+                    "dataType": "Airport",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "Airport Group",
-                    "dataType": "AutoComplete",
+                    "dataType": "TextField",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "City",
-                    "dataType": "AutoComplete",
-
+                    "dataType": "TextField",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "City Group",
-                    "dataType": "AutoComplete",
-
+                    "dataType": "TextField",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 },
                 {
                     "name": "Country",
-                    "dataType": "AutoComplete",
-
+                    "dataType": "TextField",
                     "dataSource": "Airport",
-                    "condition": ["equal to", "greater than", "less than"]
+                    "condition": ["equal to", "greater than", "less than"],
+                    "required":true
                 }
             ]
         },
         {
             "name": "Date",
             "dataType": "DateTime",
-            "condition": ["equal to", "greater than", "less than"]
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Booking Profile",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Flight Group",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Flight No",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Yeild",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Service Recovery",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Queued Bookings",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TeTextFieldxt",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Weight",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Volume",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Aircraft",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Aircraft Classification",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Flight Type",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Flight Status",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Segment Status",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         },
         {
             "name": "Milestone Status",
-            "dataType": "Text",
-            "condition": ["equal to", "greater than", "less than"]
+            "dataType": "TextField",
+            "condition": ["equal to", "greater than", "less than"],
+            "required":true
         }
     ]
 }
