@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useFormik } from "formik";
+import { useFormik, withFormik } from "formik";
+import { IDatePicker } from "@neo-ui/date";
+import { IAirport } from "@neo-ui/airport";
+import { ITextField } from "@neo-ui/textfield";
 import { SaveLogo } from "../Utilities/SvgUtilities";
-// import { IDatePicker } from "@neo-ui/date";
-// import IAirport from "@neo-ui/airport";
+import "react-datepicker/dist/react-datepicker.css";
 
 const RightDrawer = (props) => {
     const [showSavePopup, setShowSavePopup] = useState("none");
@@ -40,7 +42,8 @@ const RightDrawer = (props) => {
 
     const formik = useFormik({
         initialValues: {
-            email: "djnadaca"
+            email: "djnadaca",
+            name: "airport"
         },
         onSubmit: (values) => {
             console.log(formik);
@@ -112,7 +115,11 @@ const RightDrawer = (props) => {
                             {props.filterCount}
                         </span>
                     </div>
-                    <div className="filter__content">***Filters***</div>
+                    <div className="filter__content">
+                        <IAirport name="airport" />
+                        <IDatePicker name="date" />
+                        <ITextField name="textfield" />
+                    </div>
                     <div className="filter__btn">
                         <div className="filter__save">
                             <Button
@@ -218,4 +225,9 @@ RightDrawer.propTypes = {
     cancelSavePopup: PropTypes.any
 };
 
-export default RightDrawer;
+export default withFormik({
+    displayName: "BasicForm",
+    mapPropsToValues: () => ({
+        test: false
+    })
+})(RightDrawer);
