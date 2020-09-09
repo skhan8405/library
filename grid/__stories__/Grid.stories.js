@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./example.css";
-
 import Grid from "../src/index";
-
 import FlightIcon from "./images/FlightIcon.png";
 import { fetchData } from "./getData";
 import { getValueOfDate } from "./utils/DateUtility";
