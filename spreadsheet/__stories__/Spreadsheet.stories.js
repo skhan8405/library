@@ -4,17 +4,13 @@ import Spreadsheet from "../src/index";
 import CargoData from "./data.json";
 
 const SpreadsheetView = () => {
-    //Get spreadsheet height value, which is a required value
     const gridHeight = "90vh";
-    //Set state value for variable to hold grid data
-    const [data, setData] = useState();
     const rows = CargoData;
-
-    // Spreadsheet page size
     const pageSize = 500;
     const maxLeftPinnedColumn = 5;
-    //Configure columns and its related featues such as editor(Text/DropDown), FormulaApplicable(True/False)
-    //Editable, Draggable, sortable, resizable, filterable, default width
+
+    const [data, setData] = useState();
+
     const columns = [
         {
             key: "flightno",
@@ -395,7 +391,6 @@ const SpreadsheetView = () => {
         }
     ];
 
-    //Configure columns and its related functions
     const segmenToCode = [
         "AAA",
         "AAB",
@@ -453,7 +448,6 @@ const SpreadsheetView = () => {
         "ZZZ"
     ];
 
-    //Configure dropdown editor values
     const segmentFromCode = [
         "AAA",
         "AAB",
@@ -484,7 +478,6 @@ const SpreadsheetView = () => {
         "CCC"
     ];
 
-    //Gets called when there is a cell edit
     const updateCellData = (fromRow, toRow, value, updateType) => {
         if (updateType === "CELL_UPDATE") {
             console.log(
@@ -512,12 +505,10 @@ const SpreadsheetView = () => {
         }
     };
 
-    //Gets called when row bulk edit is done
     const selectBulkData = (selectedRows) => {
         console.log("selectedRows:", selectedRows);
     };
 
-    //binding the required values of dropDown to the dataSource field in columns
     columns.forEach((item) => {
         if (item.key === "segmentto") {
             let tempArray = [];
@@ -559,12 +550,10 @@ const SpreadsheetView = () => {
         console.log("UpdatedRows:", temp);
     };
 
-    /**
-     * Method return updated rows
-     */
-    const handleSave = () => {
-        console.log(data);
-    };
+    if (data === undefined) {
+        return <h2>Loading Data</h2>;
+    }
+
     if (data) {
         return (
             <Spreadsheet
@@ -580,11 +569,8 @@ const SpreadsheetView = () => {
                 updatedRows={updatedRows}
             />
         );
-    } else if (data === undefined) {
-        return <h2>Loading Data</h2>;
-    } else {
-        return null;
     }
+    return null;
 };
 
 export default {
