@@ -339,7 +339,9 @@ const Customgrid = (props) => {
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
                     <strong>{rows.length}</strong>
-                    <span>{title || "Rows"}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span>{title || "Rows"}</span>
+                </div>
+                <div className="neo-grid-header_customPanel">
                     <CustomPanel />
                 </div>
                 <div className="neo-grid-header__utilities">

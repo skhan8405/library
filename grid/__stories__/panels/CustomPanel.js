@@ -68,21 +68,29 @@ const CustomPanel = () => {
                       const { label, children, handleEvent } = action;
                       const isChildrenPresent = children && children.length > 0;
                       return (
-                          <div className="dropdown">
-                              <button className="dropbtn" onClick={handleEvent}>
+                          <div className="dropdown" key={label}>
+                              <button
+                                  type="button"
+                                  className="dropbtn"
+                                  onClick={handleEvent}
+                              >
                                   {label}
                               </button>
 
                               <div className="dropdown-content">
                                   {isChildrenPresent
-                                      ? children.map((action) => {
+                                      ? children.map((childAction) => {
                                             const {
                                                 label,
                                                 handleEvent
-                                            } = action;
+                                            } = childAction;
                                             return (
-                                                <div className="dropdown">
+                                                <div
+                                                    className="dropdown"
+                                                    key={label}
+                                                >
                                                     <button
+                                                        type="button"
                                                         className="dropbtn"
                                                         onClick={handleEvent}
                                                     >
