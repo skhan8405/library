@@ -72,6 +72,8 @@ const Customgrid = (props) => {
         isExpandContentAvailable
     );
 
+    // Variable to check if row options are available
+    const isRowActionsAvailable = rowActions && rowActions.length > 0;
     // Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
     const loadMoreItems = isNextPageLoading
@@ -239,13 +241,17 @@ const Customgrid = (props) => {
                     Cell: ({ row }) => {
                         return (
                             <div className="action">
-                                <RowOptions
-                                    row={row}
-                                    rowActions={rowActions}
-                                    rowActionCallback={rowActionCallback}
-                                    bindRowEditOverlay={bindRowEditOverlay}
-                                    bindRowDeleteOverlay={bindRowDeleteOverlay}
-                                />
+                                {isRowActionsAvailable ? (
+                                    <RowOptions
+                                        row={row}
+                                        rowActions={rowActions}
+                                        rowActionCallback={rowActionCallback}
+                                        bindRowEditOverlay={bindRowEditOverlay}
+                                        bindRowDeleteOverlay={
+                                            bindRowDeleteOverlay
+                                        }
+                                    />
+                                ) : null}
                                 {isRowExpandEnabled ? (
                                     <span
                                         className="expander"
@@ -340,7 +346,9 @@ const Customgrid = (props) => {
                         toggleManageColumns={toggleManageColumns}
                         originalColumns={originalColumns}
                         isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={[additionalColumn]}
+                        additionalColumn={
+                            additionalColumn ? [additionalColumn] : []
+                        }
                         updateColumnStructure={updateColumnStructure}
                     />
                     <GlobalFilter
@@ -361,7 +369,9 @@ const Customgrid = (props) => {
                         columns={columns} // Updated columns structure from manage columns overlay
                         isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
                         isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={[additionalColumn]}
+                        additionalColumn={
+                            additionalColumn ? [additionalColumn] : []
+                        }
                     />
                     <div
                         className="utilities-icon keyword-search"
