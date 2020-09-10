@@ -341,9 +341,11 @@ const Customgrid = (props) => {
                     <strong>{rows.length}</strong>
                     <span>{title || "Rows"}</span>
                 </div>
-                <div className="neo-grid-header_customPanel">
-                    <CustomPanel />
-                </div>
+                {CustomPanel ? (
+                    <div className="neo-grid-header_customPanel">
+                        <CustomPanel />
+                    </div>
+                ) : null}
                 <div className="neo-grid-header__utilities">
                     <ColumnReordering
                         isManageColumnOpen={isManageColumnOpen}
