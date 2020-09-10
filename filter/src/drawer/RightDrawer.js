@@ -4,9 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useFormik, withFormik } from "formik";
-import { IDatePicker } from "@neo-ui/date";
-import { IAirport } from "@neo-ui/airport";
-import { ITextField } from "@neo-ui/textfield";
+import Port from "../types/Port";
+import DateTimeComponent from "../types/DateTimeComponent";
+import TextField from "../types/TextField";
 import { SaveLogo } from "../Utilities/SvgUtilities";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -116,9 +116,13 @@ const RightDrawer = (props) => {
                         </span>
                     </div>
                     <div className="filter__content">
-                        <IAirport name="airport" />
-                        <IDatePicker name="date" />
-                        <ITextField name="textfield" />
+                        <Port portsArray={props.portsArray} />
+                        <DateTimeComponent
+                            dateTimesArray={props.dateTimesArray}
+                        />
+                        <TextField
+                            textComponentsArray={props.textComponentsArray}
+                        />
                     </div>
                     <div className="filter__btn">
                         <div className="filter__save">
@@ -222,7 +226,10 @@ RightDrawer.propTypes = {
     resetDrawer: PropTypes.any,
     applyFilter: PropTypes.any,
     saveFilter: PropTypes.any,
-    cancelSavePopup: PropTypes.any
+    cancelSavePopup: PropTypes.any,
+    portsArray: PropTypes.any,
+    dateTimesArray: PropTypes.any,
+    textComponentsArray: PropTypes.any
 };
 
 export default withFormik({
