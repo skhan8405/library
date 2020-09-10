@@ -62,7 +62,8 @@ const Customgrid = (props) => {
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
-        doGroupSort
+        doGroupSort,
+        CustomPanel
     } = props;
 
     // Local state value for holding columns configuration
@@ -338,7 +339,8 @@ const Customgrid = (props) => {
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
                     <strong>{rows.length}</strong>
-                    <span>{title || "Rows"}</span>
+                    <span>{title || "Rows"}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                    <CustomPanel />
                 </div>
                 <div className="neo-grid-header__utilities">
                     <ColumnReordering
@@ -581,7 +583,8 @@ Customgrid.propTypes = {
     row: PropTypes.any,
     additionalColumn: PropTypes.any,
     rowActions: PropTypes.any,
-    rowActionCallback: PropTypes.any
+    rowActionCallback: PropTypes.any,
+    CustomPanel: PropTypes.any
 };
 
 export default Customgrid;
