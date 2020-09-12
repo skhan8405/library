@@ -8,6 +8,7 @@ import FlightEdit from "./cells/FlightEdit";
 import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 import RowEdit from "./cells/RowEdit";
+import CustomPanel from "./panels/CustomPanel";
 
 const GridView = () => {
     const { search } = window.location;
@@ -578,6 +579,8 @@ const GridView = () => {
     };
 
     const rowActions = [
+        { label: "edit" },
+        { label: "delete" },
         { label: "Send SCR", value: "SCR" },
         { label: "Segment Summary", value: "SegmentSummary" },
         { label: "Open Summary", value: "OpenSummary" },
@@ -695,6 +698,7 @@ const GridView = () => {
                 updateRowData={updateRowData}
                 deleteRowData={deleteRowData}
                 selectBulkData={selectBulkData}
+                CustomPanel= {CustomPanel}
             />
         );
     }

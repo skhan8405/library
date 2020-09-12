@@ -62,7 +62,8 @@ const Customgrid = (props) => {
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
-        doGroupSort
+        doGroupSort,
+        CustomPanel
     } = props;
 
     // Local state value for holding columns configuration
@@ -72,6 +73,8 @@ const Customgrid = (props) => {
         isExpandContentAvailable
     );
 
+    // Variable to check if row options are available
+    const isRowActionsAvailable = rowActions && rowActions.length > 0;
     // Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
     const loadMoreItems = isNextPageLoading
@@ -239,13 +242,17 @@ const Customgrid = (props) => {
                     Cell: ({ row }) => {
                         return (
                             <div className="action">
-                                <RowOptions
-                                    row={row}
-                                    rowActions={rowActions}
-                                    rowActionCallback={rowActionCallback}
-                                    bindRowEditOverlay={bindRowEditOverlay}
-                                    bindRowDeleteOverlay={bindRowDeleteOverlay}
-                                />
+                                {isRowActionsAvailable ? (
+                                    <RowOptions
+                                        row={row}
+                                        rowActions={rowActions}
+                                        rowActionCallback={rowActionCallback}
+                                        bindRowEditOverlay={bindRowEditOverlay}
+                                        bindRowDeleteOverlay={
+                                            bindRowDeleteOverlay
+                                        }
+                                    />
+                                ) : null}
                                 {isRowExpandEnabled ? (
                                     <span
                                         className="expander"
@@ -334,13 +341,20 @@ const Customgrid = (props) => {
                     <strong>{rows.length}</strong>
                     <span>{title || "Rows"}</span>
                 </div>
+                {CustomPanel ? (
+                    <div className="neo-grid-header_customPanel">
+                        <CustomPanel />
+                    </div>
+                ) : null}
                 <div className="neo-grid-header__utilities">
                     <ColumnReordering
                         isManageColumnOpen={isManageColumnOpen}
                         toggleManageColumns={toggleManageColumns}
                         originalColumns={originalColumns}
                         isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={[additionalColumn]}
+                        additionalColumn={
+                            additionalColumn ? [additionalColumn] : []
+                        }
                         updateColumnStructure={updateColumnStructure}
                     />
                     <GlobalFilter
@@ -361,7 +375,9 @@ const Customgrid = (props) => {
                         columns={columns} // Updated columns structure from manage columns overlay
                         isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
                         isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={[additionalColumn]}
+                        additionalColumn={
+                            additionalColumn ? [additionalColumn] : []
+                        }
                     />
                     <div
                         className="utilities-icon keyword-search"
@@ -571,7 +587,8 @@ Customgrid.propTypes = {
     row: PropTypes.any,
     additionalColumn: PropTypes.any,
     rowActions: PropTypes.any,
-    rowActionCallback: PropTypes.any
+    rowActionCallback: PropTypes.any,
+    CustomPanel: PropTypes.any
 };
 
 export default Customgrid;
