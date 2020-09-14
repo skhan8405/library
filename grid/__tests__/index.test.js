@@ -455,6 +455,7 @@ describe("render Index file ", () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
+                className="icargoCustomClass"
                 title={mockTitle}
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
@@ -476,6 +477,13 @@ describe("render Index file ", () => {
 
         // Row expansion
         expect(gricContainer).toBeInTheDocument();
+
+        // Check if custom class name is present or not
+        const customClassElement = gricContainer.getElementsByClassName(
+            "icargoCustomClass"
+        );
+        expect(customClassElement.length).toBeGreaterThan(0);
+
         const expander = gricContainer.getElementsByClassName("expander")[2];
         act(() => {
             expander.dispatchEvent(new MouseEvent("click", { bubbles: true }));

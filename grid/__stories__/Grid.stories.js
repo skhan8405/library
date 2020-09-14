@@ -683,6 +683,7 @@ const GridView = () => {
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
             <Grid
+                className="icargoCustomClass"
                 title="AWBs"
                 gridHeight="80vh"
                 gridWidth="100%"
@@ -698,7 +699,7 @@ const GridView = () => {
                 updateRowData={updateRowData}
                 deleteRowData={deleteRowData}
                 selectBulkData={selectBulkData}
-                CustomPanel= {CustomPanel}
+                CustomPanel={CustomPanel}
             />
         );
     }

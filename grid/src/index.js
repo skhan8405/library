@@ -12,6 +12,7 @@ import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const Grid = (props) => {
     const {
+        className,
         title,
         gridHeight,
         gridWidth,
@@ -248,7 +249,7 @@ const Grid = (props) => {
     const data = getSortedData([...gridData]);
 
     return (
-        <div className="grid-component-container iCargo__custom">
+        <div className={`grid-component-container ${className || ""}`}>
             {data &&
             data.length > 0 &&
             processedColumns &&
@@ -307,6 +308,7 @@ const Grid = (props) => {
 };
 
 Grid.propTypes = {
+    className: PropTypes.any,
     title: PropTypes.any,
     gridHeight: PropTypes.any,
     gridWidth: PropTypes.any,
