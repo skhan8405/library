@@ -370,12 +370,7 @@ const ColumnReordering = (props) => {
                                 <div className="column__headerTxt">
                                     <strong>Column Settings</strong>
                                     {isErrorDisplayed ? (
-                                        <strong
-                                            style={{
-                                                marginLeft: "10px",
-                                                color: "red"
-                                            }}
-                                        >
+                                        <strong className="column-warning">
                                             Select at least one column (other
                                             than {additionalColumnHeader})
                                         </strong>

@@ -473,7 +473,7 @@ const ExportData = (props) => {
                                     </div>
                                 </div>
                                 <div className="exportWarning">
-                                    <span className="alert alert-danger">
+                                    <span className="alert export-warning">
                                         <strong>{warning}</strong>
                                     </span>
                                 </div>

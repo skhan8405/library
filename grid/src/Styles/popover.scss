@@ -152,6 +152,10 @@
         &:before {
             right: 40px;
         }
+        .column-warning {
+            margin-left: 10px;
+            color: var(--danger);
+        }
     }
     &__column {
         display: flex;
@@ -292,6 +296,9 @@
         }
         &:before {
             right: 9px;
+        }
+        .export-warning {
+            color: var(--danger);
         }
     }
     &__export {
