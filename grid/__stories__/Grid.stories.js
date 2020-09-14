@@ -700,6 +700,11 @@ const GridView = () => {
                 deleteRowData={deleteRowData}
                 selectBulkData={selectBulkData}
                 CustomPanel={CustomPanel}
+                hideGlobalSearch
+                hideColumnFilter
+                hideGroupSort
+                hideColumnChooser
+                hideExportData
             />
         );
     }

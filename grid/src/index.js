@@ -28,7 +28,12 @@ const Grid = (props) => {
         deleteRowData,
         selectBulkData,
         calculateRowHeight,
-        CustomPanel
+        CustomPanel,
+        hideGlobalSearch,
+        hideColumnFilter,
+        hideGroupSort,
+        hideColumnChooser,
+        hideExportData
     } = props;
 
     // Check if device is desktop
@@ -285,6 +290,11 @@ const Grid = (props) => {
                         loadNextPage={loadNextPage}
                         doGroupSort={doGroupSort}
                         CustomPanel={CustomPanel}
+                        hideGlobalSearch={hideGlobalSearch}
+                        hideColumnFilter={hideColumnFilter}
+                        hideGroupSort={hideGroupSort}
+                        hideColumnChooser={hideColumnChooser}
+                        hideExportData={hideExportData}
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -324,7 +334,12 @@ Grid.propTypes = {
     calculateRowHeight: PropTypes.any,
     rowActions: PropTypes.any,
     rowActionCallback: PropTypes.any,
-    CustomPanel: PropTypes.any
+    CustomPanel: PropTypes.any,
+    hideGlobalSearch: PropTypes.any,
+    hideColumnFilter: PropTypes.any,
+    hideGroupSort: PropTypes.any,
+    hideColumnChooser: PropTypes.any,
+    hideExportData: PropTypes.any
 };
 
 export default Grid;
