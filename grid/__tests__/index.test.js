@@ -402,7 +402,7 @@ describe("render Index file ", () => {
                           const isChildrenPresent =
                               children && children.length > 0;
                           return (
-                              <div className="dropdown">
+                              <div className="dropdown" key={label}>
                                   <button
                                       type="submit"
                                       className="dropbtn"
@@ -414,12 +414,15 @@ describe("render Index file ", () => {
                                   <div className="dropdown-content">
                                       {isChildrenPresent
                                           ? children.map((childAction) => {
-                                                const {
-                                                    childlabel,
-                                                    childhandleEvent
-                                                } = action;
+                                                const childlabel =
+                                                    childAction.label;
+                                                const childhandleEvent =
+                                                    childAction.handleEvent;
                                                 return (
-                                                    <div className="dropdown">
+                                                    <div
+                                                        className="dropdown"
+                                                        key={`${childlabel}`}
+                                                    >
                                                         <button
                                                             type="submit"
                                                             className="dropbtn"
