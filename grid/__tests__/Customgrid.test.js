@@ -308,7 +308,6 @@ describe("render CustomgridCustomgrid", () => {
         );
     };
 
-
     for (let i = 0; i < 50; i++) {
         data.push({
             travelId: i,
@@ -582,7 +581,7 @@ describe("render CustomgridCustomgrid", () => {
             );
         });
         let sortOverlay = container.querySelector(
-            "[class='neo-popover__sort']"
+            "[class='neo-grid-popover__sort']"
         );
         const addNewSort = sortOverlay.querySelector("[class='sort__txt']");
         act(() => {
@@ -598,7 +597,9 @@ describe("render CustomgridCustomgrid", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        sortOverlay = container.querySelector("[class='neo-popover__sort']");
+        sortOverlay = container.querySelector(
+            "[class='neo-grid-popover__sort']"
+        );
         expect(sortOverlay).toBeNull();
 
         // Bulk Selector
@@ -621,7 +622,7 @@ describe("render CustomgridCustomgrid", () => {
             );
         });
         let columnManageOverlay = container.querySelector(
-            "[class='neo-popover__column column__grid']"
+            "[class='neo-grid-popover__column column__grid']"
         );
         const applyColumnManageButton = columnManageOverlay.querySelector(
             "[class='btns btns__save']"
@@ -632,7 +633,7 @@ describe("render CustomgridCustomgrid", () => {
             );
         });
         columnManageOverlay = container.querySelector(
-            "[class='neo-popover neo-popover--column columns--grid']"
+            "[class='neo-grid-popover neo-grid-popover--column columns--grid']"
         );
         expect(columnManageOverlay).toBeNull();
 

@@ -520,7 +520,7 @@ describe("render Index file ", () => {
             );
         });
         let sortOverlay = gricContainer.querySelector(
-            "[class='neo-popover__sort']"
+            "[class='neo-grid-popover__sort']"
         );
         const addNewSort = sortOverlay.querySelector("[class='sort__txt']");
         act(() => {
@@ -537,7 +537,7 @@ describe("render Index file ", () => {
             );
         });
         sortOverlay = gricContainer.querySelector(
-            "[class='neo-popover__sort']"
+            "[class='neo-grid-popover__sort']"
         );
         expect(sortOverlay).toBeNull();
     });
@@ -577,7 +577,7 @@ describe("render Index file ", () => {
             );
         });
         let sortOverlay = gricContainer.querySelector(
-            "[class='neo-popover__sort']"
+            "[class='neo-grid-popover__sort']"
         );
         const addNewSort = sortOverlay.querySelector("[class='sort__txt']");
         act(() => {
@@ -602,7 +602,7 @@ describe("render Index file ", () => {
             );
         });
         sortOverlay = gricContainer.querySelector(
-            "[class='neo-popover__sort']"
+            "[class='neo-grid-popover__sort']"
         );
         expect(sortOverlay).toBeNull();
     });

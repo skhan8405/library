@@ -305,8 +305,8 @@ const ColumnReordering = (props) => {
     if (isManageColumnOpen) {
         return (
             <ClickAwayListener onClickAway={toggleManageColumns}>
-                <div className="neo-popover neo-popover--column columns--grid">
-                    <div className="neo-popover__column column__grid">
+                <div className="neo-grid-popover neo-grid-popover--column columns--grid">
+                    <div className="neo-grid-popover__column column__grid">
                         <div className="column__chooser">
                             <div className="column__header">
                                 <div>
