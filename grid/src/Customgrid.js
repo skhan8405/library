@@ -34,8 +34,7 @@ import {
     IconFilter,
     IconShare,
     IconGroupSort,
-    IconSort,
-    IconEdit
+    IconSort
 } from "./Utilities/SvgUtilities";
 
 const listRef = createRef(null);
@@ -53,7 +52,7 @@ const Customgrid = (props) => {
         updateRowInGrid,
         deleteRowFromGrid,
         searchColumn,
-        selectBulkData,
+        rowDataSelected,
         calculateRowHeight,
         isExpandContentAvailable,
         displayExpandedContent,
@@ -70,6 +69,11 @@ const Customgrid = (props) => {
         hideColumnChooser,
         hideExportData
     } = props;
+
+    // Local state to check if this is the first rendering of the Grid. Default value is true
+    // This will be set as false in useEffect - [].
+    // Selectedrows data will be passed to parent only if isFirstRendering is false
+    const [isFirstRendering, setIsFirstRendering] = useState(true);
 
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
@@ -282,23 +286,31 @@ const Customgrid = (props) => {
         }
     );
 
-    // Export selected row data and pass it to the callback method
-    const bulkSelector = () => {
-        if (selectBulkData) {
-            selectBulkData(selectedFlatRows);
-        }
-    };
-
     // This code is to handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
+
+    // This code is to update the column chooser overlay, when user is updating column configuration from outside Grid
     useEffect(() => {
         setColumns(managableColumns);
         setIsRowExpandEnabled(isExpandContentAvailable);
     }, [managableColumns, isExpandContentAvailable]);
+
+    // This code is update the boolean value used to identify if this is the first time render of Grid
+    useEffect(() => {
+        setIsFirstRendering(false);
+    }, []);
+
+    // This code is to trigger call back when user makes a row selection using checkbox
+    // Call back method will not be triggered if this is the first render of Grid
+    useEffect(() => {
+        if (!isFirstRendering && rowDataSelected) {
+            rowDataSelected(selectedFlatRows);
+        }
+    }, [state.selectedRowIds]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -404,16 +416,6 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    <div
-                        className="utilities-icon bulk-select"
-                        role="presentation"
-                        data-testid="bulkSelector"
-                        onClick={bulkSelector}
-                    >
-                        <i>
-                            <IconEdit />
-                        </i>
-                    </div>
                     {!hideGroupSort ? (
                         <div
                             className="utilities-icon group-sort"
@@ -596,7 +598,7 @@ Customgrid.propTypes = {
     updateRowInGrid: PropTypes.any,
     deleteRowFromGrid: PropTypes.any,
     searchColumn: PropTypes.any,
-    selectBulkData: PropTypes.any,
+    rowDataSelected: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     isExpandContentAvailable: PropTypes.any,
     displayExpandedContent: PropTypes.any,

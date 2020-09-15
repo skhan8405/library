@@ -653,7 +653,7 @@ const GridView = () => {
         );
     };
 
-    const selectBulkData = (selectedRows) => {
+    const rowDataSelected = (selectedRows) => {
         console.log("Rows selected: ");
         console.log(selectedRows);
     };
@@ -698,7 +698,7 @@ const GridView = () => {
                 calculateRowHeight={calculateRowHeight}
                 updateRowData={updateRowData}
                 deleteRowData={deleteRowData}
-                selectBulkData={selectBulkData}
+                rowDataSelected={rowDataSelected}
                 CustomPanel={CustomPanel}
             />
         );

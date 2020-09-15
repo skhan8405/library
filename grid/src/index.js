@@ -26,7 +26,7 @@ const Grid = (props) => {
         getRowEditOverlay,
         updateRowData,
         deleteRowData,
-        selectBulkData,
+        rowDataSelected,
         calculateRowHeight,
         CustomPanel,
         hideGlobalSearch,
@@ -272,7 +272,7 @@ const Grid = (props) => {
                         updateRowInGrid={updateRowInGrid}
                         deleteRowFromGrid={deleteRowFromGrid}
                         searchColumn={searchColumn}
-                        selectBulkData={selectBulkData}
+                        rowDataSelected={rowDataSelected}
                         calculateRowHeight={
                             calculateRowHeight &&
                             typeof calculateRowHeight === "function"
@@ -330,7 +330,7 @@ Grid.propTypes = {
     getRowEditOverlay: PropTypes.any,
     updateRowData: PropTypes.any,
     deleteRowData: PropTypes.any,
-    selectBulkData: PropTypes.any,
+    rowDataSelected: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     rowActions: PropTypes.any,
     rowActionCallback: PropTypes.any,

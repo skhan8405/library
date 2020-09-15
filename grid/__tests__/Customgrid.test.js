@@ -544,7 +544,7 @@ describe("render CustomgridCustomgrid", () => {
                 updateRowInGrid={mockUpdateRowInGrid}
                 deleteRowFromGrid={mockDeleteRowFromGrid}
                 searchColumn={mocksearchColumn}
-                selectBulkData={mockSelectBulkData}
+                rowDataSelected={mockSelectBulkData}
                 calculateRowHeight={mockCalculateRowHeight}
                 isExpandContentAvailable={mockIsExpandContentAvailable}
                 displayExpandedContent={mockDisplayExpandedContent}
@@ -605,15 +605,16 @@ describe("render CustomgridCustomgrid", () => {
         );
         expect(sortOverlay).toBeNull();
 
-        // Bulk Selector
-        const bulkSelector = container.querySelector(
-            "[data-testid='bulkSelector']"
-        );
+        // Row Selector
+        const selectAllRowsCheckbox = container.querySelectorAll(
+            "input[type='checkbox']"
+        )[0];
         act(() => {
-            bulkSelector.dispatchEvent(
+            selectAllRowsCheckbox.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
+        expect(mockSelectBulkData).toBeCalledTimes(1);
 
         // Apply column manage
         const toggleManageColumns = container.querySelector(
@@ -746,7 +747,7 @@ describe("render CustomgridCustomgrid", () => {
                 updateRowInGrid={mockUpdateRowInGrid}
                 deleteRowFromGrid={mockDeleteRowFromGrid}
                 searchColumn={mocksearchColumn}
-                selectBulkData={mockSelectBulkData}
+                rowDataSelected={mockSelectBulkData}
                 calculateRowHeight={mockCalculateRowHeight}
                 isExpandContentAvailable={mockIsExpandContentAvailable}
                 displayExpandedContent={mockDisplayExpandedContent}

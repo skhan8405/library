@@ -469,7 +469,7 @@ describe("render Index file ", () => {
                 getRowEditOverlay={mockGetRowEditOverlay}
                 updateRowData={mockUpdateRowData}
                 deleteRowData={mockDeleteRowData}
-                selectBulkData={mockSelectBulkData}
+                rowDataSelected={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -571,7 +571,7 @@ describe("render Index file ", () => {
                 calculateRowHeight={mockCalculateRowHeight}
                 updateRowData={mockUpdateRowData}
                 deleteRowData={mockDeleteRowData}
-                selectBulkData={mockSelectBulkData}
+                rowDataSelected={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -636,7 +636,7 @@ describe("render Index file ", () => {
                 calculateRowHeight={mockCalculateRowHeight}
                 updateRowData={mockUpdateRowData}
                 deleteRowData={mockDeleteRowData}
-                selectBulkData={mockSelectBulkData}
+                rowDataSelected={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -750,7 +750,7 @@ describe("render Index file ", () => {
                 calculateRowHeight={mockCalculateRowHeight}
                 updateRowData={mockUpdateRowData}
                 deleteRowData={mockDeleteRowData}
-                selectBulkData={mockSelectBulkData}
+                rowDataSelected={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -776,7 +776,7 @@ describe("render Index file ", () => {
                 getRowEditOverlay={mockGetRowEditOverlay}
                 updateRowData={mockUpdateRowData}
                 deleteRowData={mockDeleteRowData}
-                selectBulkData={mockSelectBulkData}
+                rowDataSelected={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
                 hideGlobalSearch
                 hideColumnFilter
