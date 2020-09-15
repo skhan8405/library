@@ -198,6 +198,118 @@ describe("render CustomgridCustomgrid", () => {
             remarks: "Labore irure."
         }
     ];
+    const mockCustomPanel = () => {
+        const SCR = () => {
+            alert("view SCR ");
+        };
+        const OpenSummary = () => {
+            alert("Open Summary");
+        };
+        const CloseSummary = () => {
+            alert("Close Summary");
+        };
+
+        const GiveFeedback = () => {
+            alert("Give FeedBack ");
+        };
+        const ViewFeedback = () => {
+            alert("View Feedback");
+        };
+
+        const buttonPanelData = [
+            {
+                label: "Send SCR",
+                value: "SCR",
+                handleEvent: SCR,
+                children: []
+            },
+            {
+                label: "Segment Summary",
+                value: "SegmentSummary",
+                children: [
+                    {
+                        label: "Open Summary",
+                        value: "OpenSummary",
+                        handleEvent: OpenSummary
+                    },
+                    {
+                        label: "Close Summary",
+                        value: "handleEvent",
+                        handleEvent: CloseSummary
+                    }
+                ]
+            },
+            {
+                label: "Feedback",
+                value: "Feedback",
+                children: [
+                    {
+                        label: "View Feedback",
+                        value: "ViewFeedback",
+                        handleEvent: ViewFeedback
+                    },
+                    {
+                        label: "Give Feedback",
+                        value: "GiveFeedback",
+                        handleEvent: GiveFeedback
+                    }
+                ]
+            }
+        ];
+
+        const isbuttonPanelDataPresent =
+            buttonPanelData && buttonPanelData.length > 0;
+
+        return (
+            <div className="row-options-overlay">
+                {isbuttonPanelDataPresent
+                    ? buttonPanelData.map((action) => {
+                          const { label, children, handleEvent } = action;
+                          const isChildrenPresent =
+                              children && children.length > 0;
+                          return (
+                              <div className="dropdown" key={label}>
+                                  <button
+                                      type="submit"
+                                      className="dropbtn"
+                                      onClick={handleEvent}
+                                  >
+                                      {label}
+                                  </button>
+
+                                  <div className="dropdown-content">
+                                      {isChildrenPresent
+                                          ? children.map((childAction) => {
+                                                const childlabel =
+                                                    childAction.label;
+                                                const childhandleEvent =
+                                                    childAction.handleEvent;
+                                                return (
+                                                    <div
+                                                        className="dropdown"
+                                                        key={childlabel}
+                                                    >
+                                                        <button
+                                                            type="submit"
+                                                            className="dropbtn"
+                                                            onClick={
+                                                                childhandleEvent
+                                                            }
+                                                        >
+                                                            {childlabel}
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })
+                                          : null}
+                                  </div>
+                              </div>
+                          );
+                      })
+                    : null}
+            </div>
+        );
+    };
 
     for (let i = 0; i < 50; i++) {
         data.push({
@@ -442,6 +554,7 @@ describe("render CustomgridCustomgrid", () => {
                 isNextPageLoading={mockIsNextPageLoading}
                 loadNextPage={mockLoadNextPage}
                 doGroupSort={mockDoGroupSort}
+                CustomPanel={mockCustomPanel}
             />
         );
 
@@ -471,7 +584,7 @@ describe("render CustomgridCustomgrid", () => {
             );
         });
         let sortOverlay = container.querySelector(
-            "[class='neo-popover__sort']"
+            "[class='neo-grid-popover__sort']"
         );
         const addNewSort = sortOverlay.querySelector("[class='sort__txt']");
         act(() => {
@@ -487,7 +600,9 @@ describe("render CustomgridCustomgrid", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        sortOverlay = container.querySelector("[class='neo-popover__sort']");
+        sortOverlay = container.querySelector(
+            "[class='neo-grid-popover__sort']"
+        );
         expect(sortOverlay).toBeNull();
 
         // Bulk Selector
@@ -510,7 +625,7 @@ describe("render CustomgridCustomgrid", () => {
             );
         });
         let columnManageOverlay = container.querySelector(
-            "[class='neo-popover__column column__grid']"
+            "[class='neo-grid-popover__column column__grid']"
         );
         const applyColumnManageButton = columnManageOverlay.querySelector(
             "[class='btns btns__save']"
@@ -521,7 +636,7 @@ describe("render CustomgridCustomgrid", () => {
             );
         });
         columnManageOverlay = container.querySelector(
-            "[class='neo-popover neo-popover--column columns--grid']"
+            "[class='neo-grid-popover neo-grid-popover--column columns--grid']"
         );
         expect(columnManageOverlay).toBeNull();
 
@@ -641,6 +756,7 @@ describe("render CustomgridCustomgrid", () => {
                 isNextPageLoading={mockIsNextPageLoading}
                 loadNextPage={mockLoadNextPage}
                 doGroupSort={mockDoGroupSort}
+                CustomPanel={mockCustomPanel}
             />
         );
 

@@ -337,8 +337,8 @@ const ExportData = (props) => {
     if (isExportOverlayOpen) {
         return (
             <ClickAwayListener onClickAway={toggleExportDataOverlay}>
-                <div className="neo-popover neo-popover--exports exports--grid">
-                    <div className="neo-popover__export export__grid">
+                <div className="neo-grid-popover neo-grid-popover--exports exports--grid">
+                    <div className="neo-grid-popover__export export__grid">
                         <div className="export__chooser">
                             <div className="export__header">
                                 <div>
@@ -473,7 +473,7 @@ const ExportData = (props) => {
                                     </div>
                                 </div>
                                 <div className="exportWarning">
-                                    <span className="alert alert-danger">
+                                    <span className="alert export-warning">
                                         <strong>{warning}</strong>
                                     </span>
                                 </div>

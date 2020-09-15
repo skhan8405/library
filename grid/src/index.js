@@ -12,6 +12,7 @@ import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const Grid = (props) => {
     const {
+        className,
         title,
         gridHeight,
         gridWidth,
@@ -26,7 +27,13 @@ const Grid = (props) => {
         updateRowData,
         deleteRowData,
         selectBulkData,
-        calculateRowHeight
+        calculateRowHeight,
+        CustomPanel,
+        hideGlobalSearch,
+        hideColumnFilter,
+        hideGroupSort,
+        hideColumnChooser,
+        hideExportData
     } = props;
 
     // Check if device is desktop
@@ -247,7 +254,7 @@ const Grid = (props) => {
     const data = getSortedData([...gridData]);
 
     return (
-        <div className="grid-component-container iCargo__custom">
+        <div className={`grid-component-container ${className || ""}`}>
             {data &&
             data.length > 0 &&
             processedColumns &&
@@ -282,6 +289,12 @@ const Grid = (props) => {
                         isNextPageLoading={isNextPageLoading}
                         loadNextPage={loadNextPage}
                         doGroupSort={doGroupSort}
+                        CustomPanel={CustomPanel}
+                        hideGlobalSearch={hideGlobalSearch}
+                        hideColumnFilter={hideColumnFilter}
+                        hideGroupSort={hideGroupSort}
+                        hideColumnChooser={hideColumnChooser}
+                        hideExportData={hideExportData}
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -305,6 +318,7 @@ const Grid = (props) => {
 };
 
 Grid.propTypes = {
+    className: PropTypes.any,
     title: PropTypes.any,
     gridHeight: PropTypes.any,
     gridWidth: PropTypes.any,
@@ -319,7 +333,13 @@ Grid.propTypes = {
     selectBulkData: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     rowActions: PropTypes.any,
-    rowActionCallback: PropTypes.any
+    rowActionCallback: PropTypes.any,
+    CustomPanel: PropTypes.any,
+    hideGlobalSearch: PropTypes.any,
+    hideColumnFilter: PropTypes.any,
+    hideGroupSort: PropTypes.any,
+    hideColumnChooser: PropTypes.any,
+    hideExportData: PropTypes.any
 };
 
 export default Grid;

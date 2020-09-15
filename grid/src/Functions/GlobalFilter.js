@@ -11,7 +11,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
     }, 200);
 
     return (
-        <div className="txt-wrap">
+        <div className="txt-wrap neo-grid-header_globalFilter">
             <input
                 type="text"
                 value={value || ""}

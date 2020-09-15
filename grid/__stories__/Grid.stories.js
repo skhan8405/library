@@ -8,6 +8,7 @@ import FlightEdit from "./cells/FlightEdit";
 import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 import RowEdit from "./cells/RowEdit";
+import CustomPanel from "./panels/CustomPanel";
 
 const GridView = () => {
     const { search } = window.location;
@@ -682,6 +683,7 @@ const GridView = () => {
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
             <Grid
+                className="icargoCustomClass"
                 title="AWBs"
                 gridHeight="80vh"
                 gridWidth="100%"
@@ -697,6 +699,7 @@ const GridView = () => {
                 updateRowData={updateRowData}
                 deleteRowData={deleteRowData}
                 selectBulkData={selectBulkData}
+                CustomPanel={CustomPanel}
             />
         );
     }

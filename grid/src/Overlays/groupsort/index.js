@@ -115,11 +115,11 @@ const GroupSort = (props) => {
     if (isGroupSortOverLayOpen) {
         return (
             <ClickAwayListener onClickAway={toggleGroupSortOverLay}>
-                <div className="neo-popover">
-                    <div className="neo-popover__sort">
-                        <div className="neo-popover__title">
+                <div className="neo-grid-popover">
+                    <div className="neo-grid-popover__sort">
+                        <div className="neo-grid-popover__title">
                             <h2>Sort</h2>
-                            <div className="neo-popover__close">
+                            <div className="neo-grid-popover__close">
                                 <i
                                     aria-hidden="true"
                                     onClick={toggleGroupSortOverLay}
@@ -128,7 +128,7 @@ const GroupSort = (props) => {
                                 </i>
                             </div>
                         </div>
-                        <div className="neo-popover__content">
+                        <div className="neo-grid-popover__content">
                             <DndProvider
                                 backend={MultiBackend}
                                 options={HTML5toTouch}

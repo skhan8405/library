@@ -62,7 +62,13 @@ const Customgrid = (props) => {
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
-        doGroupSort
+        doGroupSort,
+        CustomPanel,
+        hideGlobalSearch,
+        hideColumnFilter,
+        hideGroupSort,
+        hideColumnChooser,
+        hideExportData
     } = props;
 
     // Local state value for holding columns configuration
@@ -340,49 +346,64 @@ const Customgrid = (props) => {
                     <strong>{rows.length}</strong>
                     <span>{title || "Rows"}</span>
                 </div>
-                <div className="neo-grid-header__utilities">
-                    <ColumnReordering
-                        isManageColumnOpen={isManageColumnOpen}
-                        toggleManageColumns={toggleManageColumns}
-                        originalColumns={originalColumns}
-                        isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={
-                            additionalColumn ? [additionalColumn] : []
-                        }
-                        updateColumnStructure={updateColumnStructure}
-                    />
-                    <GlobalFilter
-                        globalFilter={state.globalFilter}
-                        setGlobalFilter={setGlobalFilter}
-                    />
-                    <GroupSort
-                        isGroupSortOverLayOpen={isGroupSortOverLayOpen}
-                        toggleGroupSortOverLay={toggleGroupSortOverLay}
-                        originalColumns={originalColumns}
-                        applyGroupSort={applyGroupSort}
-                    />
-                    <ExportData
-                        isExportOverlayOpen={isExportOverlayOpen}
-                        toggleExportDataOverlay={toggleExportDataOverlay}
-                        rows={rows}
-                        originalColumns={originalColumns}
-                        columns={columns} // Updated columns structure from manage columns overlay
-                        isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
-                        isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={
-                            additionalColumn ? [additionalColumn] : []
-                        }
-                    />
-                    <div
-                        className="utilities-icon keyword-search"
-                        role="presentation"
-                        data-testid="toggleColumnFilter"
-                        onClick={toggleColumnFilter}
-                    >
-                        <i>
-                            <IconFilter />
-                        </i>
+                {CustomPanel ? (
+                    <div className="neo-grid-header_customPanel">
+                        <CustomPanel />
                     </div>
+                ) : null}
+                <div className="neo-grid-header__utilities">
+                    {!hideColumnChooser ? (
+                        <ColumnReordering
+                            isManageColumnOpen={isManageColumnOpen}
+                            toggleManageColumns={toggleManageColumns}
+                            originalColumns={originalColumns}
+                            isExpandContentAvailable={isExpandContentAvailable}
+                            additionalColumn={
+                                additionalColumn ? [additionalColumn] : []
+                            }
+                            updateColumnStructure={updateColumnStructure}
+                        />
+                    ) : null}
+                    {!hideGlobalSearch ? (
+                        <GlobalFilter
+                            globalFilter={state.globalFilter}
+                            setGlobalFilter={setGlobalFilter}
+                        />
+                    ) : null}
+                    {!hideGroupSort ? (
+                        <GroupSort
+                            isGroupSortOverLayOpen={isGroupSortOverLayOpen}
+                            toggleGroupSortOverLay={toggleGroupSortOverLay}
+                            originalColumns={originalColumns}
+                            applyGroupSort={applyGroupSort}
+                        />
+                    ) : null}
+                    {!hideExportData ? (
+                        <ExportData
+                            isExportOverlayOpen={isExportOverlayOpen}
+                            toggleExportDataOverlay={toggleExportDataOverlay}
+                            rows={rows}
+                            originalColumns={originalColumns}
+                            columns={columns} // Updated columns structure from manage columns overlay
+                            isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
+                            isExpandContentAvailable={isExpandContentAvailable}
+                            additionalColumn={
+                                additionalColumn ? [additionalColumn] : []
+                            }
+                        />
+                    ) : null}
+                    {!hideColumnFilter ? (
+                        <div
+                            className="utilities-icon keyword-search"
+                            role="presentation"
+                            data-testid="toggleColumnFilter"
+                            onClick={toggleColumnFilter}
+                        >
+                            <i>
+                                <IconFilter />
+                            </i>
+                        </div>
+                    ) : null}
                     <div
                         className="utilities-icon bulk-select"
                         role="presentation"
@@ -393,36 +414,42 @@ const Customgrid = (props) => {
                             <IconEdit />
                         </i>
                     </div>
-                    <div
-                        className="utilities-icon group-sort"
-                        role="presentation"
-                        data-testid="toggleGroupSortOverLay"
-                        onClick={toggleGroupSortOverLay}
-                    >
-                        <i>
-                            <IconGroupSort />
-                        </i>
-                    </div>
-                    <div
-                        className="utilities-icon manage-columns"
-                        role="presentation"
-                        data-testid="toggleManageColumns"
-                        onClick={toggleManageColumns}
-                    >
-                        <i>
-                            <IconColumns />
-                        </i>
-                    </div>
-                    <div
-                        className="utilities-icon export-data"
-                        role="presentation"
-                        data-testid="toggleExportDataOverlay"
-                        onClick={toggleExportDataOverlay}
-                    >
-                        <i>
-                            <IconShare />
-                        </i>
-                    </div>
+                    {!hideGroupSort ? (
+                        <div
+                            className="utilities-icon group-sort"
+                            role="presentation"
+                            data-testid="toggleGroupSortOverLay"
+                            onClick={toggleGroupSortOverLay}
+                        >
+                            <i>
+                                <IconGroupSort />
+                            </i>
+                        </div>
+                    ) : null}
+                    {!hideColumnChooser ? (
+                        <div
+                            className="utilities-icon manage-columns"
+                            role="presentation"
+                            data-testid="toggleManageColumns"
+                            onClick={toggleManageColumns}
+                        >
+                            <i>
+                                <IconColumns />
+                            </i>
+                        </div>
+                    ) : null}
+                    {!hideExportData ? (
+                        <div
+                            className="utilities-icon export-data"
+                            role="presentation"
+                            data-testid="toggleExportDataOverlay"
+                            onClick={toggleExportDataOverlay}
+                        >
+                            <i>
+                                <IconShare />
+                            </i>
+                        </div>
+                    ) : null}
                 </div>
             </div>
 
@@ -581,7 +608,13 @@ Customgrid.propTypes = {
     row: PropTypes.any,
     additionalColumn: PropTypes.any,
     rowActions: PropTypes.any,
-    rowActionCallback: PropTypes.any
+    rowActionCallback: PropTypes.any,
+    CustomPanel: PropTypes.any,
+    hideGlobalSearch: PropTypes.any,
+    hideColumnFilter: PropTypes.any,
+    hideGroupSort: PropTypes.any,
+    hideColumnChooser: PropTypes.any,
+    hideExportData: PropTypes.any
 };
 
 export default Customgrid;

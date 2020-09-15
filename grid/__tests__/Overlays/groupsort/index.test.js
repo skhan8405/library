@@ -94,16 +94,16 @@ describe("Group Sort-index test Cases", () => {
             );
         });
         const sortDivText = document
-            .querySelector("[class=neo-popover__content]")
+            .querySelector("[class=neo-grid-popover__content]")
             .getElementsByTagName("div")[0].innerHTML;
 
-        // after clear all, the div inside class 'neo-popover__content should be empty
+        // after clear all, the div inside class 'neo-grid-popover__content should be empty
         expect(sortDivText).toBe("");
     });
 
     it("Apply Sort Test ", () => {
         // LOGIC-->> Apply  sorting Param
-        // expect the HTML element neo-popover NOT to exists as layover gets closed.
+        // expect the HTML element neo-grid-popover NOT to exists as layover gets closed.
         act(() => {
             ReactDOM.render(
                 <GroupSort
@@ -127,7 +127,7 @@ describe("Group Sort-index test Cases", () => {
         });
 
         const sortLayOverDiv = document.getElementsByClassName(
-            ".neo-popover"
+            ".neo-grid-popover"
         )[0];
         expect(sortLayOverDiv).toBeUndefined();
     });
