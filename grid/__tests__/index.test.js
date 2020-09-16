@@ -778,11 +778,11 @@ describe("render Index file ", () => {
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
-                hideGlobalSearch
-                hideColumnFilter
-                hideGroupSort
-                hideColumnChooser
-                hideExportData
+                globalSearch={false}
+                columnFilter={false}
+                groupSort={false}
+                columnChooser={false}
+                exportData={false}
             />
         );
         const gridContainer = container;

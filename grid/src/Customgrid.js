@@ -63,11 +63,11 @@ const Customgrid = (props) => {
         loadNextPage,
         doGroupSort,
         CustomPanel,
-        hideGlobalSearch,
-        hideColumnFilter,
-        hideGroupSort,
-        hideColumnChooser,
-        hideExportData
+        globalSearch,
+        columnFilter,
+        groupSort,
+        columnChooser,
+        exportData
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -368,7 +368,7 @@ const Customgrid = (props) => {
                     </div>
                 ) : null}
                 <div className="neo-grid-header__utilities">
-                    {!hideColumnChooser ? (
+                    {columnChooser !== false ? (
                         <ColumnReordering
                             isManageColumnOpen={isManageColumnOpen}
                             toggleManageColumns={toggleManageColumns}
@@ -380,13 +380,13 @@ const Customgrid = (props) => {
                             updateColumnStructure={updateColumnStructure}
                         />
                     ) : null}
-                    {!hideGlobalSearch ? (
+                    {globalSearch !== false ? (
                         <GlobalFilter
                             globalFilter={state.globalFilter}
                             setGlobalFilter={setGlobalFilter}
                         />
                     ) : null}
-                    {!hideGroupSort ? (
+                    {groupSort !== false ? (
                         <GroupSort
                             isGroupSortOverLayOpen={isGroupSortOverLayOpen}
                             toggleGroupSortOverLay={toggleGroupSortOverLay}
@@ -394,7 +394,7 @@ const Customgrid = (props) => {
                             applyGroupSort={applyGroupSort}
                         />
                     ) : null}
-                    {!hideExportData ? (
+                    {exportData !== false ? (
                         <ExportData
                             isExportOverlayOpen={isExportOverlayOpen}
                             toggleExportDataOverlay={toggleExportDataOverlay}
@@ -408,7 +408,7 @@ const Customgrid = (props) => {
                             }
                         />
                     ) : null}
-                    {!hideColumnFilter ? (
+                    {columnFilter !== false ? (
                         <div
                             className="utilities-icon keyword-search"
                             role="presentation"
@@ -420,7 +420,7 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    {!hideGroupSort ? (
+                    {groupSort !== false ? (
                         <div
                             className="utilities-icon group-sort"
                             role="presentation"
@@ -432,7 +432,7 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    {!hideColumnChooser ? (
+                    {columnChooser !== false ? (
                         <div
                             className="utilities-icon manage-columns"
                             role="presentation"
@@ -444,7 +444,7 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    {!hideExportData ? (
+                    {exportData !== false ? (
                         <div
                             className="utilities-icon export-data"
                             role="presentation"
@@ -616,11 +616,11 @@ Customgrid.propTypes = {
     rowActions: PropTypes.any,
     rowActionCallback: PropTypes.any,
     CustomPanel: PropTypes.any,
-    hideGlobalSearch: PropTypes.any,
-    hideColumnFilter: PropTypes.any,
-    hideGroupSort: PropTypes.any,
-    hideColumnChooser: PropTypes.any,
-    hideExportData: PropTypes.any
+    globalSearch: PropTypes.any,
+    columnFilter: PropTypes.any,
+    groupSort: PropTypes.any,
+    columnChooser: PropTypes.any,
+    exportData: PropTypes.any
 };
 
 export default Customgrid;
