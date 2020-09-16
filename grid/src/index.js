@@ -33,7 +33,9 @@ const Grid = (props) => {
         hideColumnFilter,
         hideGroupSort,
         hideColumnChooser,
-        hideExportData
+        hideExportData,
+        refreshGrid,
+        hideRefreshGrid
     } = props;
 
     // Check if device is desktop
@@ -295,6 +297,9 @@ const Grid = (props) => {
                         hideGroupSort={hideGroupSort}
                         hideColumnChooser={hideColumnChooser}
                         hideExportData={hideExportData}
+                        refreshGrid={refreshGrid}
+                        hideRefreshGrid={hideRefreshGrid}
+                        
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -339,7 +344,9 @@ Grid.propTypes = {
     hideColumnFilter: PropTypes.any,
     hideGroupSort: PropTypes.any,
     hideColumnChooser: PropTypes.any,
-    hideExportData: PropTypes.any
+    hideExportData: PropTypes.any,
+    refreshGrid:PropTypes.any,
+    hideRefreshGrid :PropTypes.any
 };
 
 export default Grid;
