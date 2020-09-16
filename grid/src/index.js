@@ -8,7 +8,7 @@ import { AdditionalColumnContext } from "./Utilities/TagsContext";
 import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
 // eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+//import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const Grid = (props) => {
     const {
@@ -33,9 +33,11 @@ const Grid = (props) => {
         hideColumnFilter,
         hideGroupSort,
         hideColumnChooser,
-        hideExportData
+        hideExportData,
+        refreshGrid,
+        hideRefreshGrid
     } = props;
-
+console.log("hideGroupSort"+hideGroupSort)
     // Check if device is desktop
     const isDesktop = window.innerWidth > 1024;
 
@@ -295,6 +297,9 @@ const Grid = (props) => {
                         hideGroupSort={hideGroupSort}
                         hideColumnChooser={hideColumnChooser}
                         hideExportData={hideExportData}
+                        refreshGrid={refreshGrid}
+                        hideRefreshGrid={hideRefreshGrid}
+                        
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -339,7 +344,9 @@ Grid.propTypes = {
     hideColumnFilter: PropTypes.any,
     hideGroupSort: PropTypes.any,
     hideColumnChooser: PropTypes.any,
-    hideExportData: PropTypes.any
+    hideExportData: PropTypes.any,
+    refreshGrid:PropTypes.any,
+    hideRefreshGrid :PropTypes.any
 };
 
 export default Grid;

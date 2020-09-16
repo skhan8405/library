@@ -669,6 +669,10 @@ const GridView = () => {
         });
     };
 
+    const refreshGrid = () => {
+        console.log("Grid Refrehsed ");
+       };
+
     useEffect(() => {
         fetchData(index, pageSize).then((data) => {
             if (data && data.length > 0) {
@@ -700,6 +704,7 @@ const GridView = () => {
                 deleteRowData={deleteRowData}
                 selectBulkData={selectBulkData}
                 CustomPanel={CustomPanel}
+                refreshGrid={refreshGrid}
             />
         );
     }

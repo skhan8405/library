@@ -68,7 +68,9 @@ const Customgrid = (props) => {
         hideColumnFilter,
         hideGroupSort,
         hideColumnChooser,
-        hideExportData
+        hideExportData,
+        refreshGrid,
+        hideRefreshGrid
     } = props;
 
     // Local state value for holding columns configuration
@@ -450,6 +452,18 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
+                    {!hideRefreshGrid ? (
+                        <div
+                            className="utilities-icon export-data"
+                            role="presentation"
+                            data-testid="refreshGrid"
+                            onClick={refreshGrid}
+                        >
+                            <i>
+                                <IconShare />
+                            </i>
+                        </div>
+                    ) : null}
                 </div>
             </div>
 
@@ -614,7 +628,9 @@ Customgrid.propTypes = {
     hideColumnFilter: PropTypes.any,
     hideGroupSort: PropTypes.any,
     hideColumnChooser: PropTypes.any,
-    hideExportData: PropTypes.any
+    hideExportData: PropTypes.any,
+    refreshGrid: PropTypes.any,
+    hideRefreshGrid:  PropTypes.any
 };
 
 export default Customgrid;

@@ -812,6 +812,6 @@ describe("render Index file ", () => {
 
         // Export Data
         const exportDataIcon = gridContainer.querySelectorAll(".export-data");
-        expect(exportDataIcon.length).toBe(0);
+        expect(exportDataIcon.length).toBe(1);
     });
 });
