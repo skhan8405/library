@@ -308,7 +308,11 @@ const Customgrid = (props) => {
     // Call back method will not be triggered if this is the first render of Grid
     useEffect(() => {
         if (!isFirstRendering && rowDataSelected) {
-            rowDataSelected(selectedFlatRows);
+            const userCheckedRows = [];
+            selectedFlatRows.forEach((selectedRows) => {
+                userCheckedRows.push(selectedRows.original);
+            });
+            rowDataSelected(userCheckedRows);
         }
     }, [state.selectedRowIds]);
 
