@@ -52,7 +52,7 @@ const Customgrid = (props) => {
         updateRowInGrid,
         deleteRowFromGrid,
         searchColumn,
-        rowDataSelected,
+        onRowSelect,
         calculateRowHeight,
         isExpandContentAvailable,
         displayExpandedContent,
@@ -307,12 +307,12 @@ const Customgrid = (props) => {
     // This code is to trigger call back when user makes a row selection using checkbox
     // Call back method will not be triggered if this is the first render of Grid
     useEffect(() => {
-        if (!isFirstRendering && rowDataSelected) {
+        if (!isFirstRendering && onRowSelect) {
             const userCheckedRows = [];
             selectedFlatRows.forEach((selectedRows) => {
                 userCheckedRows.push(selectedRows.original);
             });
-            rowDataSelected(userCheckedRows);
+            onRowSelect(userCheckedRows);
         }
     }, [state.selectedRowIds]);
 
@@ -602,7 +602,7 @@ Customgrid.propTypes = {
     updateRowInGrid: PropTypes.any,
     deleteRowFromGrid: PropTypes.any,
     searchColumn: PropTypes.any,
-    rowDataSelected: PropTypes.any,
+    onRowSelect: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     isExpandContentAvailable: PropTypes.any,
     displayExpandedContent: PropTypes.any,

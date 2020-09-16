@@ -467,9 +467,9 @@ describe("render Index file ", () => {
                 rowActions={mockRowActions}
                 rowActionCallback={mockRowActionCallback}
                 getRowEditOverlay={mockGetRowEditOverlay}
-                updateRowData={mockUpdateRowData}
-                deleteRowData={mockDeleteRowData}
-                rowDataSelected={mockSelectBulkData}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -569,9 +569,9 @@ describe("render Index file ", () => {
                 rowActionCallback={mockRowActionCallback}
                 getRowEditOverlay={mockGetRowEditOverlay}
                 calculateRowHeight={mockCalculateRowHeight}
-                updateRowData={mockUpdateRowData}
-                deleteRowData={mockDeleteRowData}
-                rowDataSelected={mockSelectBulkData}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -634,9 +634,9 @@ describe("render Index file ", () => {
                 rowActionCallback={mockRowActionCallback}
                 getRowEditOverlay={mockGetRowEditOverlay}
                 calculateRowHeight={mockCalculateRowHeight}
-                updateRowData={mockUpdateRowData}
-                deleteRowData={mockDeleteRowData}
-                rowDataSelected={mockSelectBulkData}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -748,9 +748,9 @@ describe("render Index file ", () => {
                 rowActionCallback={mockRowActionCallback}
                 getRowEditOverlay={mockGetRowEditOverlay}
                 calculateRowHeight={mockCalculateRowHeight}
-                updateRowData={mockUpdateRowData}
-                deleteRowData={mockDeleteRowData}
-                rowDataSelected={mockSelectBulkData}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
             />
         );
@@ -774,9 +774,9 @@ describe("render Index file ", () => {
                 rowActions={mockRowActions}
                 rowActionCallback={mockRowActionCallback}
                 getRowEditOverlay={mockGetRowEditOverlay}
-                updateRowData={mockUpdateRowData}
-                deleteRowData={mockDeleteRowData}
-                rowDataSelected={mockSelectBulkData}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
                 CustomPanel={mockCustomPanel}
                 hideGlobalSearch
                 hideColumnFilter

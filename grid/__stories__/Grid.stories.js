@@ -630,7 +630,7 @@ const GridView = () => {
         return rowHeight;
     };
 
-    const updateRowData = (originalRow, updatedRow) => {
+    const onRowUpdate = (originalRow, updatedRow) => {
         setGridData((old) =>
             old.map((row) => {
                 let newRow = row;
@@ -645,7 +645,7 @@ const GridView = () => {
         );
     };
 
-    const deleteRowData = (originalRow) => {
+    const onRowDelete = (originalRow) => {
         setGridData((old) =>
             old.filter((row) => {
                 return row !== originalRow;
@@ -653,7 +653,7 @@ const GridView = () => {
         );
     };
 
-    const rowDataSelected = (selectedRows) => {
+    const onRowSelect = (selectedRows) => {
         console.log("Rows selected: ");
         console.log(selectedRows);
     };
@@ -696,9 +696,9 @@ const GridView = () => {
                 rowActionCallback={rowActionCallback}
                 getRowEditOverlay={getRowEditOverlay}
                 calculateRowHeight={calculateRowHeight}
-                updateRowData={updateRowData}
-                deleteRowData={deleteRowData}
-                rowDataSelected={rowDataSelected}
+                onRowUpdate={onRowUpdate}
+                onRowDelete={onRowDelete}
+                onRowSelect={onRowSelect}
                 CustomPanel={CustomPanel}
             />
         );

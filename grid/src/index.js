@@ -24,9 +24,9 @@ const Grid = (props) => {
         rowActions,
         rowActionCallback,
         getRowEditOverlay,
-        updateRowData,
-        deleteRowData,
-        rowDataSelected,
+        onRowUpdate,
+        onRowDelete,
+        onRowSelect,
         calculateRowHeight,
         CustomPanel,
         hideGlobalSearch,
@@ -103,15 +103,15 @@ const Grid = (props) => {
 
     // Gets triggered when one row item is updated
     const updateRowInGrid = (original, updatedRow) => {
-        if (updateRowData) {
-            updateRowData(original, updatedRow);
+        if (onRowUpdate) {
+            onRowUpdate(original, updatedRow);
         }
     };
 
     // Gets triggered when one row item is deleted
     const deleteRowFromGrid = (original) => {
-        if (deleteRowData) {
-            deleteRowData(original);
+        if (onRowDelete) {
+            onRowDelete(original);
         }
     };
 
@@ -272,7 +272,7 @@ const Grid = (props) => {
                         updateRowInGrid={updateRowInGrid}
                         deleteRowFromGrid={deleteRowFromGrid}
                         searchColumn={searchColumn}
-                        rowDataSelected={rowDataSelected}
+                        onRowSelect={onRowSelect}
                         calculateRowHeight={
                             calculateRowHeight &&
                             typeof calculateRowHeight === "function"
@@ -328,9 +328,9 @@ Grid.propTypes = {
     isNextPageAvailable: PropTypes.any,
     loadMoreData: PropTypes.any,
     getRowEditOverlay: PropTypes.any,
-    updateRowData: PropTypes.any,
-    deleteRowData: PropTypes.any,
-    rowDataSelected: PropTypes.any,
+    onRowUpdate: PropTypes.any,
+    onRowDelete: PropTypes.any,
+    onRowSelect: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     rowActions: PropTypes.any,
     rowActionCallback: PropTypes.any,
