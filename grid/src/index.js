@@ -33,7 +33,8 @@ const Grid = (props) => {
         columnFilter,
         groupSort,
         columnChooser,
-        exportData
+        exportData,
+        onGridRefresh
     } = props;
 
     // Check if device is desktop
@@ -295,6 +296,7 @@ const Grid = (props) => {
                         groupSort={groupSort}
                         columnChooser={columnChooser}
                         exportData={exportData}
+                        onGridRefresh={onGridRefresh}
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -339,7 +341,8 @@ Grid.propTypes = {
     columnFilter: PropTypes.any,
     groupSort: PropTypes.any,
     columnChooser: PropTypes.any,
-    exportData: PropTypes.any
+    exportData: PropTypes.any,
+    onGridRefresh: PropTypes.any
 };
 
 export default Grid;

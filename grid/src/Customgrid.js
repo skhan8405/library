@@ -34,7 +34,8 @@ import {
     IconFilter,
     IconShare,
     IconGroupSort,
-    IconSort
+    IconSort,
+    IconRefresh
 } from "./Utilities/SvgUtilities";
 
 const listRef = createRef(null);
@@ -67,7 +68,9 @@ const Customgrid = (props) => {
         columnFilter,
         groupSort,
         columnChooser,
-        exportData
+        exportData,
+        onGridRefresh
+     
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -456,6 +459,18 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
+                    {typeof onGridRefresh === "function"? (
+                        <div
+                            className="utilities-icon refresh-data"
+                            role="presentation"
+                            data-testid="refreshGrid"
+                            onClick={onGridRefresh}
+                        >
+                            <i>
+                                <IconRefresh />
+                            </i>
+                        </div>
+                    ) : null}
                 </div>
             </div>
 
@@ -620,7 +635,8 @@ Customgrid.propTypes = {
     columnFilter: PropTypes.any,
     groupSort: PropTypes.any,
     columnChooser: PropTypes.any,
-    exportData: PropTypes.any
+    exportData: PropTypes.any,
+    OnGridRefresh: PropTypes.any
 };
 
 export default Customgrid;
