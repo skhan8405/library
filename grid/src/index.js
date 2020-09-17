@@ -24,16 +24,16 @@ const Grid = (props) => {
         rowActions,
         rowActionCallback,
         getRowEditOverlay,
-        updateRowData,
-        deleteRowData,
-        selectBulkData,
+        onRowUpdate,
+        onRowDelete,
+        onRowSelect,
         calculateRowHeight,
         CustomPanel,
-        hideGlobalSearch,
-        hideColumnFilter,
-        hideGroupSort,
-        hideColumnChooser,
-        hideExportData
+        globalSearch,
+        columnFilter,
+        groupSort,
+        columnChooser,
+        exportData
     } = props;
 
     // Check if device is desktop
@@ -103,15 +103,15 @@ const Grid = (props) => {
 
     // Gets triggered when one row item is updated
     const updateRowInGrid = (original, updatedRow) => {
-        if (updateRowData) {
-            updateRowData(original, updatedRow);
+        if (onRowUpdate) {
+            onRowUpdate(original, updatedRow);
         }
     };
 
     // Gets triggered when one row item is deleted
     const deleteRowFromGrid = (original) => {
-        if (deleteRowData) {
-            deleteRowData(original);
+        if (onRowDelete) {
+            onRowDelete(original);
         }
     };
 
@@ -272,7 +272,7 @@ const Grid = (props) => {
                         updateRowInGrid={updateRowInGrid}
                         deleteRowFromGrid={deleteRowFromGrid}
                         searchColumn={searchColumn}
-                        selectBulkData={selectBulkData}
+                        onRowSelect={onRowSelect}
                         calculateRowHeight={
                             calculateRowHeight &&
                             typeof calculateRowHeight === "function"
@@ -290,11 +290,11 @@ const Grid = (props) => {
                         loadNextPage={loadNextPage}
                         doGroupSort={doGroupSort}
                         CustomPanel={CustomPanel}
-                        hideGlobalSearch={hideGlobalSearch}
-                        hideColumnFilter={hideColumnFilter}
-                        hideGroupSort={hideGroupSort}
-                        hideColumnChooser={hideColumnChooser}
-                        hideExportData={hideExportData}
+                        globalSearch={globalSearch}
+                        columnFilter={columnFilter}
+                        groupSort={groupSort}
+                        columnChooser={columnChooser}
+                        exportData={exportData}
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -328,18 +328,18 @@ Grid.propTypes = {
     isNextPageAvailable: PropTypes.any,
     loadMoreData: PropTypes.any,
     getRowEditOverlay: PropTypes.any,
-    updateRowData: PropTypes.any,
-    deleteRowData: PropTypes.any,
-    selectBulkData: PropTypes.any,
+    onRowUpdate: PropTypes.any,
+    onRowDelete: PropTypes.any,
+    onRowSelect: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     rowActions: PropTypes.any,
     rowActionCallback: PropTypes.any,
     CustomPanel: PropTypes.any,
-    hideGlobalSearch: PropTypes.any,
-    hideColumnFilter: PropTypes.any,
-    hideGroupSort: PropTypes.any,
-    hideColumnChooser: PropTypes.any,
-    hideExportData: PropTypes.any
+    globalSearch: PropTypes.any,
+    columnFilter: PropTypes.any,
+    groupSort: PropTypes.any,
+    columnChooser: PropTypes.any,
+    exportData: PropTypes.any
 };
 
 export default Grid;

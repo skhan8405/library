@@ -34,8 +34,7 @@ import {
     IconFilter,
     IconShare,
     IconGroupSort,
-    IconSort,
-    IconEdit
+    IconSort
 } from "./Utilities/SvgUtilities";
 
 const listRef = createRef(null);
@@ -53,7 +52,7 @@ const Customgrid = (props) => {
         updateRowInGrid,
         deleteRowFromGrid,
         searchColumn,
-        selectBulkData,
+        onRowSelect,
         calculateRowHeight,
         isExpandContentAvailable,
         displayExpandedContent,
@@ -64,12 +63,17 @@ const Customgrid = (props) => {
         loadNextPage,
         doGroupSort,
         CustomPanel,
-        hideGlobalSearch,
-        hideColumnFilter,
-        hideGroupSort,
-        hideColumnChooser,
-        hideExportData
+        globalSearch,
+        columnFilter,
+        groupSort,
+        columnChooser,
+        exportData
     } = props;
+
+    // Local state to check if this is the first rendering of the Grid. Default value is true
+    // This will be set as false in useEffect - [].
+    // Selectedrows data will be passed to parent only if isFirstRendering is false
+    const [isFirstRendering, setIsFirstRendering] = useState(true);
 
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
@@ -282,23 +286,35 @@ const Customgrid = (props) => {
         }
     );
 
-    // Export selected row data and pass it to the callback method
-    const bulkSelector = () => {
-        if (selectBulkData) {
-            selectBulkData(selectedFlatRows);
-        }
-    };
-
     // This code is to handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
+
+    // This code is to update the column chooser overlay, when user is updating column configuration from outside Grid
     useEffect(() => {
         setColumns(managableColumns);
         setIsRowExpandEnabled(isExpandContentAvailable);
     }, [managableColumns, isExpandContentAvailable]);
+
+    // This code is update the boolean value used to identify if this is the first time render of Grid
+    useEffect(() => {
+        setIsFirstRendering(false);
+    }, []);
+
+    // This code is to trigger call back when user makes a row selection using checkbox
+    // Call back method will not be triggered if this is the first render of Grid
+    useEffect(() => {
+        if (!isFirstRendering && onRowSelect) {
+            const userCheckedRows = [];
+            selectedFlatRows.forEach((selectedRows) => {
+                userCheckedRows.push(selectedRows.original);
+            });
+            onRowSelect(userCheckedRows);
+        }
+    }, [state.selectedRowIds]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -352,7 +368,7 @@ const Customgrid = (props) => {
                     </div>
                 ) : null}
                 <div className="neo-grid-header__utilities">
-                    {!hideColumnChooser ? (
+                    {columnChooser !== false ? (
                         <ColumnReordering
                             isManageColumnOpen={isManageColumnOpen}
                             toggleManageColumns={toggleManageColumns}
@@ -364,13 +380,13 @@ const Customgrid = (props) => {
                             updateColumnStructure={updateColumnStructure}
                         />
                     ) : null}
-                    {!hideGlobalSearch ? (
+                    {globalSearch !== false ? (
                         <GlobalFilter
                             globalFilter={state.globalFilter}
                             setGlobalFilter={setGlobalFilter}
                         />
                     ) : null}
-                    {!hideGroupSort ? (
+                    {groupSort !== false ? (
                         <GroupSort
                             isGroupSortOverLayOpen={isGroupSortOverLayOpen}
                             toggleGroupSortOverLay={toggleGroupSortOverLay}
@@ -378,7 +394,7 @@ const Customgrid = (props) => {
                             applyGroupSort={applyGroupSort}
                         />
                     ) : null}
-                    {!hideExportData ? (
+                    {exportData !== false ? (
                         <ExportData
                             isExportOverlayOpen={isExportOverlayOpen}
                             toggleExportDataOverlay={toggleExportDataOverlay}
@@ -392,7 +408,7 @@ const Customgrid = (props) => {
                             }
                         />
                     ) : null}
-                    {!hideColumnFilter ? (
+                    {columnFilter !== false ? (
                         <div
                             className="utilities-icon keyword-search"
                             role="presentation"
@@ -404,17 +420,7 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    <div
-                        className="utilities-icon bulk-select"
-                        role="presentation"
-                        data-testid="bulkSelector"
-                        onClick={bulkSelector}
-                    >
-                        <i>
-                            <IconEdit />
-                        </i>
-                    </div>
-                    {!hideGroupSort ? (
+                    {groupSort !== false ? (
                         <div
                             className="utilities-icon group-sort"
                             role="presentation"
@@ -426,7 +432,7 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    {!hideColumnChooser ? (
+                    {columnChooser !== false ? (
                         <div
                             className="utilities-icon manage-columns"
                             role="presentation"
@@ -438,7 +444,7 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    {!hideExportData ? (
+                    {exportData !== false ? (
                         <div
                             className="utilities-icon export-data"
                             role="presentation"
@@ -596,7 +602,7 @@ Customgrid.propTypes = {
     updateRowInGrid: PropTypes.any,
     deleteRowFromGrid: PropTypes.any,
     searchColumn: PropTypes.any,
-    selectBulkData: PropTypes.any,
+    onRowSelect: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     isExpandContentAvailable: PropTypes.any,
     displayExpandedContent: PropTypes.any,
@@ -610,11 +616,11 @@ Customgrid.propTypes = {
     rowActions: PropTypes.any,
     rowActionCallback: PropTypes.any,
     CustomPanel: PropTypes.any,
-    hideGlobalSearch: PropTypes.any,
-    hideColumnFilter: PropTypes.any,
-    hideGroupSort: PropTypes.any,
-    hideColumnChooser: PropTypes.any,
-    hideExportData: PropTypes.any
+    globalSearch: PropTypes.any,
+    columnFilter: PropTypes.any,
+    groupSort: PropTypes.any,
+    columnChooser: PropTypes.any,
+    exportData: PropTypes.any
 };
 
 export default Customgrid;
