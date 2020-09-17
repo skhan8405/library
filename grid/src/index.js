@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
     extractColumns,
@@ -265,10 +265,10 @@ const Grid = (props) => {
                         title={title}
                         gridHeight={gridHeight}
                         gridWidth={gridWidth}
-                        managableColumns={gridColumns}
+                        managableColumns={useMemo(() => gridColumns)} // React table wants all parameters passed into useTable function to be memoized
                         originalColumns={gridColumns}
                         additionalColumn={additionalColumn}
-                        data={data}
+                        data={useMemo(() => data)} // React table wants all parameters passed into useTable function to be memoized
                         getRowEditOverlay={getRowEditOverlay}
                         updateRowInGrid={updateRowInGrid}
                         deleteRowFromGrid={deleteRowFromGrid}

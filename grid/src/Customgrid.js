@@ -172,6 +172,29 @@ const Customgrid = (props) => {
         []
     );
 
+    // Global Search Filter Logic - React table wants all parameters passed into useTable function to be memoized
+    const globalFilterLogic = useCallback(
+        (rowsToFilter, columnsToFilter, filterValue) => {
+            // convert user searched text to lower case
+            const searchText = filterValue ? filterValue.toLowerCase() : "";
+            // Loop through all rows
+            return rowsToFilter.filter((row) => {
+                // Find original data value of each row
+                const { original } = row;
+                // Return value of the filter method
+                let returnValue = false;
+                // Loop through all column values for each row
+                originalColumns.forEach((column) => {
+                    // Do search for each column
+                    returnValue =
+                        returnValue ||
+                        searchColumn(column, original, searchText);
+                });
+                return returnValue;
+            });
+        }
+    );
+
     // Initialize react-table instance with the values received through properties
     const {
         getTableProps,
@@ -187,25 +210,7 @@ const Customgrid = (props) => {
             columns,
             data,
             defaultColumn,
-            globalFilter: (rowsToFilter, columnsToFilter, filterValue) => {
-                // convert user searched text to lower case
-                const searchText = filterValue ? filterValue.toLowerCase() : "";
-                // Loop through all rows
-                return rowsToFilter.filter((row) => {
-                    // Find original data value of each row
-                    const { original } = row;
-                    // Return value of the filter method
-                    let returnValue = false;
-                    // Loop through all column values for each row
-                    originalColumns.forEach((column) => {
-                        // Do search for each column
-                        returnValue =
-                            returnValue ||
-                            searchColumn(column, original, searchText);
-                    });
-                    return returnValue;
-                });
-            },
+            globalFilter: globalFilterLogic,
             autoResetFilters: false,
             autoResetGlobalFilter: false,
             autoResetSortBy: false,
