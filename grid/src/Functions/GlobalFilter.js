@@ -1,9 +1,9 @@
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import { useAsyncDebounce } from "react-table";
 import PropTypes from "prop-types";
 import { IconSearch } from "../Utilities/SvgUtilities";
 
-const GlobalFilter = memo(({ globalFilter, setGlobalFilter }) => {
+const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
     const [value, setValue] = useState(globalFilter);
 
     const onChange = useAsyncDebounce((changedValue) => {
@@ -11,7 +11,7 @@ const GlobalFilter = memo(({ globalFilter, setGlobalFilter }) => {
     }, 200);
 
     return (
-        <div className="txt-wrap">
+        <div className="txt-wrap neo-grid-header_globalFilter">
             <input
                 type="text"
                 value={value || ""}
@@ -27,7 +27,7 @@ const GlobalFilter = memo(({ globalFilter, setGlobalFilter }) => {
             </i>
         </div>
     );
-});
+};
 
 GlobalFilter.propTypes = {
     globalFilter: PropTypes.any,

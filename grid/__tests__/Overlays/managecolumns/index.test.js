@@ -263,7 +263,9 @@ describe("ColumnReordering unit test", () => {
             />,
             mockContainer
         );
-        const overlay = document.getElementsByClassName("neo-popover--column");
+        const overlay = document.getElementsByClassName(
+            "neo-grid-popover--column"
+        );
         expect(overlay.innerHTML).toBeUndefined();
     });
 

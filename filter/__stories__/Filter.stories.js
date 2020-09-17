@@ -1,7 +1,10 @@
 import React from "react";
 import Filter from "../src/index";
 import FilterData from "./data.json";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { mockData } from "../__mocks__/graphqlDataMock";
+import { MockedProvider } from "@apollo/react-testing";
+import CustomPanel from "./panels/CustomPanel";
+import "./example.css";
 
 const airport = [
     { key: "AAA", value: "AAA" },
@@ -48,11 +51,14 @@ export default {
 };
 
 const Template = (args) => (
-    <Filter
-        filterData={FilterData}
-        appliedFilters={appliedFilters}
-        savedFilters={savedFilters}
-    />
+    <MockedProvider addTypename={false} mocks={mockData}>
+        <Filter
+            filterData={FilterData}
+            appliedFilters={appliedFilters}
+            savedFilters={savedFilters}
+            customPanel={CustomPanel}
+        />
+    </MockedProvider>
 );
 
 export const MainStory = Template.bind({});

@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import SortingList from "./sortingList";
 import { IconClose } from "../../Utilities/SvgUtilities";
 
-const GroupSort = memo((props) => {
+const GroupSort = (props) => {
     const {
         isGroupSortOverLayOpen,
         toggleGroupSortOverLay,
@@ -115,11 +115,11 @@ const GroupSort = memo((props) => {
     if (isGroupSortOverLayOpen) {
         return (
             <ClickAwayListener onClickAway={toggleGroupSortOverLay}>
-                <div className="neo-popover">
-                    <div className="neo-popover__sort">
-                        <div className="neo-popover__title">
+                <div className="neo-grid-popover">
+                    <div className="neo-grid-popover__sort">
+                        <div className="neo-grid-popover__title">
                             <h2>Sort</h2>
-                            <div className="neo-popover__close">
+                            <div className="neo-grid-popover__close">
                                 <i
                                     aria-hidden="true"
                                     onClick={toggleGroupSortOverLay}
@@ -128,7 +128,7 @@ const GroupSort = memo((props) => {
                                 </i>
                             </div>
                         </div>
-                        <div className="neo-popover__content">
+                        <div className="neo-grid-popover__content">
                             <DndProvider
                                 backend={MultiBackend}
                                 options={HTML5toTouch}
@@ -184,7 +184,7 @@ const GroupSort = memo((props) => {
         );
     }
     return <div />;
-});
+};
 
 GroupSort.propTypes = {
     isGroupSortOverLayOpen: PropTypes.any,

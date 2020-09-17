@@ -1,7 +1,6 @@
 import React, {
     useCallback,
     useState,
-    memo,
     useEffect,
     createRef,
     useMemo
@@ -35,13 +34,12 @@ import {
     IconFilter,
     IconShare,
     IconGroupSort,
-    IconSort,
-    IconEdit
+    IconSort
 } from "./Utilities/SvgUtilities";
 
 const listRef = createRef(null);
 
-const Customgrid = memo((props) => {
+const Customgrid = (props) => {
     const {
         title,
         gridHeight,
@@ -54,7 +52,7 @@ const Customgrid = memo((props) => {
         updateRowInGrid,
         deleteRowFromGrid,
         searchColumn,
-        selectBulkData,
+        onRowSelect,
         calculateRowHeight,
         isExpandContentAvailable,
         displayExpandedContent,
@@ -63,15 +61,20 @@ const Customgrid = memo((props) => {
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
-        doGroupSort
+        doGroupSort,
+        CustomPanel,
+        globalSearch,
+        columnFilter,
+        groupSort,
+        columnChooser,
+        exportData
     } = props;
 
-    const updatedOriginalColumns = [];
-    originalColumns.forEach((item) => {
-        item.columns.forEach((col) => {
-            updatedOriginalColumns.push(col);
-        });
-    });
+    // Local state to check if this is the first rendering of the Grid. Default value is true
+    // This will be set as false in useEffect - [].
+    // Selectedrows data will be passed to parent only if isFirstRendering is false
+    const [isFirstRendering, setIsFirstRendering] = useState(true);
+
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
     // Local state value for holding the boolean value to check if row expand is available
@@ -79,6 +82,8 @@ const Customgrid = memo((props) => {
         isExpandContentAvailable
     );
 
+    // Variable to check if row options are available
+    const isRowActionsAvailable = rowActions && rowActions.length > 0;
     // Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
     const loadMoreItems = isNextPageLoading
@@ -190,7 +195,7 @@ const Customgrid = memo((props) => {
                     // Return value of the filter method
                     let returnValue = false;
                     // Loop through all column values for each row
-                    updatedOriginalColumns.forEach((column) => {
+                    originalColumns.forEach((column) => {
                         // Do search for each column
                         returnValue =
                             returnValue ||
@@ -246,13 +251,17 @@ const Customgrid = memo((props) => {
                     Cell: ({ row }) => {
                         return (
                             <div className="action">
-                                <RowOptions
-                                    row={row}
-                                    rowActions={rowActions}
-                                    rowActionCallback={rowActionCallback}
-                                    bindRowEditOverlay={bindRowEditOverlay}
-                                    bindRowDeleteOverlay={bindRowDeleteOverlay}
-                                />
+                                {isRowActionsAvailable ? (
+                                    <RowOptions
+                                        row={row}
+                                        rowActions={rowActions}
+                                        rowActionCallback={rowActionCallback}
+                                        bindRowEditOverlay={bindRowEditOverlay}
+                                        bindRowDeleteOverlay={
+                                            bindRowDeleteOverlay
+                                        }
+                                    />
+                                ) : null}
                                 {isRowExpandEnabled ? (
                                     <span
                                         className="expander"
@@ -277,19 +286,35 @@ const Customgrid = memo((props) => {
         }
     );
 
-    // Export selected row data and pass it to the callback method
-    const bulkSelector = () => {
-        if (selectBulkData) {
-            selectBulkData(selectedFlatRows);
-        }
-    };
-
     // This code is to handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
+
+    // This code is to update the column chooser overlay, when user is updating column configuration from outside Grid
+    useEffect(() => {
+        setColumns(managableColumns);
+        setIsRowExpandEnabled(isExpandContentAvailable);
+    }, [managableColumns, isExpandContentAvailable]);
+
+    // This code is update the boolean value used to identify if this is the first time render of Grid
+    useEffect(() => {
+        setIsFirstRendering(false);
+    }, []);
+
+    // This code is to trigger call back when user makes a row selection using checkbox
+    // Call back method will not be triggered if this is the first render of Grid
+    useEffect(() => {
+        if (!isFirstRendering && onRowSelect) {
+            const userCheckedRows = [];
+            selectedFlatRows.forEach((selectedRows) => {
+                userCheckedRows.push(selectedRows.original);
+            });
+            onRowSelect(userCheckedRows);
+        }
+    }, [state.selectedRowIds]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -337,85 +362,100 @@ const Customgrid = memo((props) => {
                     <strong>{rows.length}</strong>
                     <span>{title || "Rows"}</span>
                 </div>
+                {CustomPanel ? (
+                    <div className="neo-grid-header_customPanel">
+                        <CustomPanel />
+                    </div>
+                ) : null}
                 <div className="neo-grid-header__utilities">
-                    <ColumnReordering
-                        isManageColumnOpen={isManageColumnOpen}
-                        toggleManageColumns={toggleManageColumns}
-                        originalColumns={updatedOriginalColumns}
-                        isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={[additionalColumn]}
-                        updateColumnStructure={updateColumnStructure}
-                    />
-                    <GlobalFilter
-                        globalFilter={state.globalFilter}
-                        setGlobalFilter={setGlobalFilter}
-                    />
-                    <GroupSort
-                        isGroupSortOverLayOpen={isGroupSortOverLayOpen}
-                        toggleGroupSortOverLay={toggleGroupSortOverLay}
-                        originalColumns={updatedOriginalColumns}
-                        applyGroupSort={applyGroupSort}
-                    />
-                    <ExportData
-                        isExportOverlayOpen={isExportOverlayOpen}
-                        toggleExportDataOverlay={toggleExportDataOverlay}
-                        rows={rows}
-                        originalColumns={updatedOriginalColumns}
-                        columns={columns} // Updated columns structure from manage columns overlay
-                        isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
-                        isExpandContentAvailable={isExpandContentAvailable}
-                        additionalColumn={[additionalColumn]}
-                    />
-                    <div
-                        className="utilities-icon keyword-search"
-                        role="presentation"
-                        data-testid="toggleColumnFilter"
-                        onClick={toggleColumnFilter}
-                    >
-                        <i>
-                            <IconFilter />
-                        </i>
-                    </div>
-                    <div
-                        className="utilities-icon bulk-select"
-                        role="presentation"
-                        data-testid="bulkSelector"
-                        onClick={bulkSelector}
-                    >
-                        <i>
-                            <IconEdit />
-                        </i>
-                    </div>
-                    <div
-                        className="utilities-icon group-sort"
-                        role="presentation"
-                        data-testid="toggleGroupSortOverLay"
-                        onClick={toggleGroupSortOverLay}
-                    >
-                        <i>
-                            <IconGroupSort />
-                        </i>
-                    </div>
-                    <div
-                        className="utilities-icon manage-columns"
-                        role="presentation"
-                        data-testid="toggleManageColumns"
-                        onClick={toggleManageColumns}
-                    >
-                        <i>
-                            <IconColumns />
-                        </i>
-                    </div>
-                    <div
-                        className="utilities-icon export-data"
-                        role="presentation"
-                        data-testid="toggleExportDataOverlay"
-                        onClick={toggleExportDataOverlay}
-                    >
-                        <i>
-                            <IconShare />
-                        </i>
-                    </div>
+                    {columnChooser !== false ? (
+                        <ColumnReordering
+                            isManageColumnOpen={isManageColumnOpen}
+                            toggleManageColumns={toggleManageColumns}
+                            originalColumns={originalColumns}
+                            isExpandContentAvailable={isExpandContentAvailable}
+                            additionalColumn={
+                                additionalColumn ? [additionalColumn] : []
+                            }
+                            updateColumnStructure={updateColumnStructure}
+                        />
+                    ) : null}
+                    {globalSearch !== false ? (
+                        <GlobalFilter
+                            globalFilter={state.globalFilter}
+                            setGlobalFilter={setGlobalFilter}
+                        />
+                    ) : null}
+                    {groupSort !== false ? (
+                        <GroupSort
+                            isGroupSortOverLayOpen={isGroupSortOverLayOpen}
+                            toggleGroupSortOverLay={toggleGroupSortOverLay}
+                            originalColumns={originalColumns}
+                            applyGroupSort={applyGroupSort}
+                        />
+                    ) : null}
+                    {exportData !== false ? (
+                        <ExportData
+                            isExportOverlayOpen={isExportOverlayOpen}
+                            toggleExportDataOverlay={toggleExportDataOverlay}
+                            rows={rows}
+                            originalColumns={originalColumns}
+                            columns={columns} // Updated columns structure from manage columns overlay
+                            isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
+                            isExpandContentAvailable={isExpandContentAvailable}
+                            additionalColumn={
+                                additionalColumn ? [additionalColumn] : []
+                            }
+                        />
+                    ) : null}
+                    {columnFilter !== false ? (
+                        <div
+                            className="utilities-icon keyword-search"
+                            role="presentation"
+                            data-testid="toggleColumnFilter"
+                            onClick={toggleColumnFilter}
+                        >
+                            <i>
+                                <IconFilter />
+                            </i>
+                        </div>
+                    ) : null}
+                    {groupSort !== false ? (
+                        <div
+                            className="utilities-icon group-sort"
+                            role="presentation"
+                            data-testid="toggleGroupSortOverLay"
+                            onClick={toggleGroupSortOverLay}
+                        >
+                            <i>
+                                <IconGroupSort />
+                            </i>
+                        </div>
+                    ) : null}
+                    {columnChooser !== false ? (
+                        <div
+                            className="utilities-icon manage-columns"
+                            role="presentation"
+                            data-testid="toggleManageColumns"
+                            onClick={toggleManageColumns}
+                        >
+                            <i>
+                                <IconColumns />
+                            </i>
+                        </div>
+                    ) : null}
+                    {exportData !== false ? (
+                        <div
+                            className="utilities-icon export-data"
+                            role="presentation"
+                            data-testid="toggleExportDataOverlay"
+                            onClick={toggleExportDataOverlay}
+                        >
+                            <i>
+                                <IconShare />
+                            </i>
+                        </div>
+                    ) : null}
                 </div>
             </div>
 
@@ -493,7 +533,7 @@ const Customgrid = memo((props) => {
                                                             : ""
                                                     }`}
                                                 >
-                                                    {column.canFilter
+                                                    {!column.disableFilters
                                                         ? column.render(
                                                               "Filter"
                                                           )
@@ -549,7 +589,7 @@ const Customgrid = memo((props) => {
             </div>
         </div>
     );
-});
+};
 
 Customgrid.propTypes = {
     title: PropTypes.any,
@@ -562,7 +602,7 @@ Customgrid.propTypes = {
     updateRowInGrid: PropTypes.any,
     deleteRowFromGrid: PropTypes.any,
     searchColumn: PropTypes.any,
-    selectBulkData: PropTypes.any,
+    onRowSelect: PropTypes.any,
     calculateRowHeight: PropTypes.any,
     isExpandContentAvailable: PropTypes.any,
     displayExpandedContent: PropTypes.any,
@@ -574,7 +614,13 @@ Customgrid.propTypes = {
     row: PropTypes.any,
     additionalColumn: PropTypes.any,
     rowActions: PropTypes.any,
-    rowActionCallback: PropTypes.any
+    rowActionCallback: PropTypes.any,
+    CustomPanel: PropTypes.any,
+    globalSearch: PropTypes.any,
+    columnFilter: PropTypes.any,
+    groupSort: PropTypes.any,
+    columnChooser: PropTypes.any,
+    exportData: PropTypes.any
 };
 
 export default Customgrid;

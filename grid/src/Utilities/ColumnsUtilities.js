@@ -14,9 +14,8 @@ export const extractColumns = (
 
     const modifiedColumns = [];
     // Loop through the columns configuration and create required column structure
-
     filteredColumns.forEach((column, index) => {
-        const { originalInnerCells, innerCells, sortValue, accessor } = column;
+        const { originalInnerCells, innerCells, accessor, sortValue } = column;
         const isInnerCellsPresent = innerCells && innerCells.length > 0;
         const isOriginalInnerCellsPresent =
             originalInnerCells && originalInnerCells.length > 0;
@@ -82,73 +81,39 @@ export const extractColumns = (
                 });
             };
         }
+
         modifiedColumns.push(column);
     });
-
-    const modifiedCols = Object.values(modifiedColumns).map((subHeader) => {
-        return {
-            Header: subHeader.groupHeader,
-            columns: columns.filter(
-                (inner) => inner.Header === subHeader.Header
-            )
-        };
-    });
-
-    const arraySamp = [];
-    modifiedCols.forEach((item) => {
-        item.columns.forEach((it) => {
-            arraySamp.push(it);
-        });
-    });
-    modifiedCols.forEach((item) => {
-        if (item.columns) {
-            item.columns.forEach((col) => {
-                arraySamp.forEach((it) => {
-                    const index = item.columns.findIndex(
-                        (its) =>
-                            its.Header === it.Header &&
-                            its.groupHeader === it.groupHeader
-                    );
-                    if (index === -1 && it.groupHeader === col.groupHeader) {
-                        item.columns.push(it);
-                    }
-                });
-            });
-        }
-    });
-    const updatedModifiedColumns = Object.values(
-        modifiedCols.reduce(
-            (acc, cur) => Object.assign(acc, { [cur.Header]: cur }),
-            {}
-        )
-    );
-    return updatedModifiedColumns;
+    return modifiedColumns;
 };
 
 export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
-    const { originalInnerCells, innerCells } = additionalColumn;
-    const isInnerCellsPresent = innerCells && innerCells.length > 0;
-    const isOriginalInnerCellsPresent =
-        originalInnerCells && originalInnerCells.length > 0;
-    const element = additionalColumn;
+    if (additionalColumn) {
+        const { originalInnerCells, innerCells } = additionalColumn;
+        const isInnerCellsPresent = innerCells && innerCells.length > 0;
+        const isOriginalInnerCellsPresent =
+            originalInnerCells && originalInnerCells.length > 0;
+        const element = additionalColumn;
 
-    // Add column Id
-    element.columnId = `ExpandColumn`;
+        // Add column Id
+        element.columnId = `ExpandColumn`;
 
-    // Add an indentifier that this is a column for expanded region
-    element.displayInExpandedRegion = true;
+        // Add an indentifier that this is a column for expanded region
+        element.displayInExpandedRegion = true;
 
-    // Remove iPad only columns from desktop and vice-versa
-    if (isInnerCellsPresent) {
-        const filteredInnerCells = innerCells.filter((cell) => {
-            return isDesktop ? !cell.onlyInTablet : !cell.onlyInDesktop;
-        });
-        element.innerCells = filteredInnerCells;
-        // If there are no copies of original Cells create a new copy from Inner cells
-        if (!isOriginalInnerCellsPresent) {
-            element.originalInnerCells = filteredInnerCells;
+        // Remove iPad only columns from desktop and vice-versa
+        if (isInnerCellsPresent) {
+            const filteredInnerCells = innerCells.filter((cell) => {
+                return isDesktop ? !cell.onlyInTablet : !cell.onlyInDesktop;
+            });
+            element.innerCells = filteredInnerCells;
+            // If there are no copies of original Cells create a new copy from Inner cells
+            if (!isOriginalInnerCellsPresent) {
+                element.originalInnerCells = filteredInnerCells;
+            }
         }
-    }
 
-    return additionalColumn;
+        return additionalColumn;
+    }
+    return null;
 };

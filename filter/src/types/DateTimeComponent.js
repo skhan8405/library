@@ -1,102 +1,50 @@
 /* eslint-disable react/destructuring-assignment */
 
 import React, { useState, useEffect } from "react";
-import { Form } from "react-bootstrap";
+import { IDatePicker } from "@neo-ui/date";
+import "react-datepicker/dist/react-datepicker.css";
 import PropTypes from "prop-types";
-import { ReactComponent as IconTimes } from "../images/icon-close.svg";
+import { IconTimes } from "../Utilities/SvgUtilities";
 
-export default function FieldComponent(props) {
+const DateTime = (props) => {
     const [fieldComponentArr, setFieldComponentArr] = useState([]);
+
     useEffect(() => {
-        setFieldComponentArr(props.dateTimesArray);
+        if (props.dateTimesArray) setFieldComponentArr(props.dateTimesArray);
     }, [props.dateTimesArray]);
-    /**
-     * Method To close the filter
-     * @param {*} item is specific filter element
-     */
-    const handleClose = (item) => {
-        props.deleteDateTimeElement(item);
-    };
-    const fieldComponentDiv = fieldComponentArr.map((item) => {
-        let validationClass = "";
-        if (item.validated === false) {
-            validationClass = "text-danger";
-        }
+
+    const dateTimeDiv = fieldComponentArr.map((item) => {
         return (
-            <div className="filter__input" key={item}>
-                <div className="filter__input-title" key={1}>
-                    <div className="filter__label">
-                        <Form.Label>
-                            <strong>{item.name}</strong>
-                        </Form.Label>
-                    </div>
-                    <div className="filter__control">
-                        <Form.Check
-                            type="switch"
-                            id={item.name}
-                            label=""
-                            defaultChecked={item.enabled}
-                            data-testid="handleDateTimeEnabled-check"
-                            onChange={() => {
-                                props.handleDateTimeEnabled(item);
-                            }}
-                        />
+            <div className="form-group">
+                <div className="title" key={item.name}>
+                    <h5>{item.name}</h5>
+                    <div className="controls">
                         <div
                             role="presentation"
                             data-testid="deleteDateTimeElement-click"
                             onClick={() => {
-                                handleClose(item);
+                                props.closeDateTime(item);
                             }}
                         >
                             <IconTimes />
                         </div>
                     </div>
                 </div>
-                {item.field.map((field) => {
-                    return (
-                        <div key={`${field}-${field.name}`}>
-                            <div
-                                className="displayFlex"
-                                key={`${field},${field.name}`}
-                            >
-                                <Form.Text>{field.column}</Form.Text>
-                            </div>
-                            <div className="filter__split" key={field}>
-                                <div className="date-wrap">
-                                    <Form.Control
-                                        disabled={!item.enabled}
-                                        type="datetime-local"
-                                        value={field.value}
-                                        className={field.name}
-                                        data-testid="createDateTimeArray-input"
-                                        onChange={(e) => {
-                                            props.createDateTimeArray(
-                                                item,
-                                                field.column,
-                                                e.target.value
-                                            );
-                                        }}
-                                    />
-                                    {/* <span className="date-button">
-                                        <button type="button" />
-                                    </span> */}
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
-                <span id="fieldWarning" className={validationClass}>
-                    {item.warning}
-                </span>
+                <div className="form-inputs">
+                    <IDatePicker name="date" />
+                    <span id="fieldWarning" className="text-danger">
+                        This field is required*
+                    </span>
+                </div>
             </div>
         );
     });
-    return <div>{fieldComponentDiv}</div>;
-}
+    return <div>{dateTimeDiv}</div>;
+};
 
-FieldComponent.propTypes = {
+export default DateTime;
+
+DateTime.propTypes = {
     dateTimesArray: PropTypes.any,
-    deleteDateTimeElement: PropTypes.any,
-    handleDateTimeEnabled: PropTypes.any,
-    createDateTimeArray: PropTypes.any
+    closeDateTime: PropTypes.any
 };

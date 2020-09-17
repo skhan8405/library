@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import PropTypes from "prop-types";
 import JsPdf from "jspdf";
@@ -11,7 +11,7 @@ import {
     IconPdf
 } from "../../Utilities/SvgUtilities";
 
-const ExportData = memo((props) => {
+const ExportData = (props) => {
     const {
         isExportOverlayOpen,
         toggleExportDataOverlay,
@@ -39,7 +39,7 @@ const ExportData = memo((props) => {
     );
 
     // List of columns + expand based on user selection from manage overlay
-    const updatedColumnsPerUserSelection = [...originalColumns].concat(
+    const updatedColumnsPerUserSelection = [...columns].concat(
         getRemarksColumnIfSelectedByUser()
     );
 
@@ -331,13 +331,14 @@ const ExportData = memo((props) => {
 
     useEffect(() => {
         setManagedColumns(updatedColumnsPerUserSelection);
-    }, [columns, isRowExpandEnabled]);
+        setSearchedColumns(updatedColumns);
+    }, [columns, isRowExpandEnabled, additionalColumn]);
 
     if (isExportOverlayOpen) {
         return (
             <ClickAwayListener onClickAway={toggleExportDataOverlay}>
-                <div className="neo-popover neo-popover--exports exports--grid">
-                    <div className="neo-popover__export export__grid">
+                <div className="neo-grid-popover neo-grid-popover--exports exports--grid">
+                    <div className="neo-grid-popover__export export__grid">
                         <div className="export__chooser">
                             <div className="export__header">
                                 <div>
@@ -472,7 +473,7 @@ const ExportData = memo((props) => {
                                     </div>
                                 </div>
                                 <div className="exportWarning">
-                                    <span className="alert alert-danger">
+                                    <span className="alert export-warning">
                                         <strong>{warning}</strong>
                                     </span>
                                 </div>
@@ -511,7 +512,7 @@ const ExportData = memo((props) => {
         );
     }
     return <div />;
-});
+};
 
 ExportData.propTypes = {
     isExportOverlayOpen: PropTypes.any,

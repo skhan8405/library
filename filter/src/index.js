@@ -2,18 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import ClickAwayListener from "react-click-away-listener";
 import RightDrawer from "./drawer/RightDrawer";
 import LeftDrawer from "./drawer/LeftDrawer";
 import MainFilterPanel from "./panel/MainFilterPanel";
+import ClickAwayListener from "./ClickAwayListener";
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 export default function Filter(props) {
     const [showApplyFilter, setApplyFilter] = useState(false);
     const [autoCompletesValueArray] = useState([]);
-    const [autoCompletesArray, setAutoCompletesArray] = useState([]);
+    const [portsArray, setPortsArray] = useState([]);
     const [dateTimesArray, setDateTimesArray] = useState([]);
+    const [dateTimeRangesArray, setDateTimeRangesArray] = useState([]);
     const [dateTimesValueArray] = useState([]);
     const [textComponentsArray, setTextComponentsArray] = useState([]);
     const [textComponentsValueArray] = useState([]);
@@ -27,6 +28,7 @@ export default function Filter(props) {
     const [emptyFilterClassName, setEmptyFilterClassName] = useState("");
     const [recentFilterShow, setRecentFilterShow] = useState("none");
     const [filterShow, setFilterShow] = useState("");
+    const [initialValuesObject, setInitialValuesObject] = useState({});
 
     useEffect(() => {
         setFilterData(props.filterData);
@@ -34,11 +36,12 @@ export default function Filter(props) {
     useEffect(() => {
         let count = 0;
         count =
-            autoCompletesArray.length +
+            portsArray.length +
             dateTimesArray.length +
+            dateTimeRangesArray.length +
             textComponentsArray.length;
         setFilterCount(count);
-    }, [autoCompletesArray, dateTimesArray, textComponentsArray]);
+    }, [portsArray, dateTimesArray, textComponentsArray]);
     /**
      * Method set the state which shows the drawer when on true condition
      */
@@ -59,6 +62,12 @@ export default function Filter(props) {
     const openShowSavePopUp = () => {
         setShowSavePopUp("");
     };
+
+    /* Method To close the save popup on clicking cancel button */
+    const cancelSavePopup = () => {
+        setShowSavePopUp("none");
+    };
+
     /**
      * Method which creates the array which contains the elements to be shown in the applied filter chips
      */
@@ -71,12 +80,16 @@ export default function Filter(props) {
             const applyFilter = {
                 applyFilterArray: []
             };
-            let tempObj = { applyFilter: [] };
+            let tempObj = {
+                applyFilter: []
+            };
             const obj = [];
             if (autoCompletesValueArray.length > 0) {
                 autoCompletesValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
-                    obj.push({ ...item });
+                    obj.push({
+                        ...item
+                    });
                 });
                 applyFilter.applyFilterArray.push({
                     autoComplete: autoCompletesValueArray
@@ -85,7 +98,9 @@ export default function Filter(props) {
             if (dateTimesValueArray.length > 0) {
                 dateTimesValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
-                    obj.push({ ...item });
+                    obj.push({
+                        ...item
+                    });
                 });
                 applyFilter.applyFilterArray.push({
                     dateTime: dateTimesValueArray
@@ -94,7 +109,9 @@ export default function Filter(props) {
             if (textComponentsValueArray.length > 0) {
                 textComponentsValueArray.forEach((item) => {
                     tempObj.applyFilter.push(item);
-                    obj.push({ ...item });
+                    obj.push({
+                        ...item
+                    });
                 });
                 applyFilter.applyFilterArray.push({
                     textComponent: textComponentsValueArray
@@ -108,7 +125,7 @@ export default function Filter(props) {
             });
             props.appliedFilters(obj);
             tempObj = {};
-            closeDrawer();
+            // closeDrawer();
         } else {
             setEmptyFilterClassName("text-danger");
             setEmptyFilterWarning("No Filter is being selected");
@@ -147,8 +164,8 @@ export default function Filter(props) {
                     filter: []
                 };
                 if (autoCompletesValueArray.length > 0) {
-                    const autoCompleteArray = [...autoCompletesArray];
-                    autoCompleteArray.map((item) => {
+                    const portArray = [...portsArray];
+                    portArray.map((item) => {
                         const newItem = item;
                         autoCompletesValueArray.forEach((valueItem) => {
                             if (
@@ -161,16 +178,16 @@ export default function Filter(props) {
                         });
                         return newItem;
                     });
-                    setAutoCompletesArray(autoCompleteArray);
+                    setPortsArray(portArray);
                     let count = 0;
-                    autoCompletesArray.forEach((item) => {
+                    portsArray.forEach((item) => {
                         if (item.validated === false) {
                             count++;
                         }
                     });
                     if (count === 0) {
                         savedFilter.filter.push({
-                            autoComplete: autoCompletesValueArray
+                            ports: autoCompletesValueArray
                         });
                     } else {
                         setShowSavePopUp("");
@@ -178,11 +195,11 @@ export default function Filter(props) {
                         setSaveWarningLabel("Enter values in every field");
                     }
                 } else {
-                    const autoCompleteArray = [...autoCompletesArray];
-                    autoCompleteArray.forEach((item) => {
+                    const portArray = [...portsArray];
+                    portArray.forEach((item) => {
                         item.validated = false;
                     });
-                    setAutoCompletesArray(autoCompleteArray);
+                    setPortsArray(portArray);
                 }
                 if (dateTimesValueArray.length > 0) {
                     const dateTimeArray = [...dateTimesArray];
@@ -290,24 +307,37 @@ export default function Filter(props) {
     };
 
     /**
-     * Method To create the filter arrays for each specific type based on datatype
+     * Method To create the filter arrays for Port type filter element
      * @param {*} name is the name of the filter
+     * @param {*} type is the name of the filter
      * @param {*} dataType is the dataType of the filter
      * @param {*} condition is the condition array of the filter if present
      */
     /* eslint-disable no-param-reassign */
-    const fromLeftToRight = (name, dataType) => {
+    const portValuesFromLeftToRight = (name, type, dataType, condition) => {
+        setRecentFilterShow("none");
+        setFilterShow("");
         setShowSavePopUp("none");
         setSaveWarningLabel("");
         setSaveWarningClassName("");
         setEmptyFilterClassName("");
         setEmptyFilterWarning("");
-        if (dataType === "AutoComplete") {
-            const value = {
-                name,
-                dataType,
-                objectArray: []
-            };
+        let value = {};
+        if (name === "Departure Port" || name === "Arrival Port") {
+            if (type !== "Airport")
+                value = {
+                    name,
+                    type,
+                    dataType,
+                    condition
+                };
+            else {
+                value = {
+                    name,
+                    type,
+                    dataType
+                };
+            }
             filterData.filter.forEach((item) => {
                 if (item.name === value.name) {
                     item.weight = 700;
@@ -318,29 +348,49 @@ export default function Filter(props) {
                     });
                 }
             });
-            const autoCompleteArray = [...autoCompletesArray];
-            if (autoCompleteArray.length > 0) {
-                const index = autoCompleteArray.findIndex(
+            const portArray = [...portsArray];
+            if (portArray.length > 0) {
+                const index = portArray.findIndex(
                     (x) => x.name === value.name && x.type === value.type
                 );
                 if (index === -1) {
-                    autoCompleteArray.push({
+                    portArray.push({
                         name,
-                        dataType
+                        type,
+                        dataType,
+                        condition,
+                        display: "none",
+                        disabled: true
                     });
                 }
             } else {
-                autoCompleteArray.push({
+                portArray.push({
                     name,
-                    dataType
+                    type,
+                    dataType,
+                    condition,
+                    display: "none",
+                    disabled: true
                 });
             }
-            setAutoCompletesArray(autoCompleteArray);
+            setPortsArray(portArray);
         }
+    };
+
+    /**
+     * Method To create the filter arrays for each specific type based on datatype
+     * @param {*} name is the name of the filter
+     * @param {*} dataType is the dataType of the filter
+     * @param {*} dataSource is the condition array of the filter if present
+     * @param {*} condition is the condition array of the filter if present
+     */
+    /* eslint-disable no-param-reassign */
+    const fromLeftToRight = (name, dataType, condition) => {
         if (dataType === "DateTime") {
             const value = {
                 name,
-                dataType
+                dataType,
+                condition
             };
             filterData.filter.forEach((item) => {
                 if (item.name === value.name) {
@@ -355,21 +405,56 @@ export default function Filter(props) {
                 if (index === -1) {
                     dateTimeArray.push({
                         name,
-                        dataType
+                        dataType,
+                        condition
                     });
                 }
             } else {
                 dateTimeArray.push({
                     name,
-                    dataType
+                    dataType,
+                    condition
                 });
             }
             setDateTimesArray(dateTimeArray);
         }
-        if (dataType === "Text") {
+        if (dataType === "DateTimeRange") {
             const value = {
                 name,
-                dataType
+                dataType,
+                condition
+            };
+            filterData.filter.forEach((item) => {
+                if (item.name === value.name) {
+                    item.weight = 700;
+                }
+            });
+            const dateTimeRangeArray = [...dateTimeRangesArray];
+            if (dateTimeRangeArray.length > 0) {
+                const index = dateTimeRangeArray.findIndex(
+                    (x) => x.name === value.name && x.field === value.field
+                );
+                if (index === -1) {
+                    dateTimeRangeArray.push({
+                        name,
+                        dataType,
+                        condition
+                    });
+                }
+            } else {
+                dateTimeRangeArray.push({
+                    name,
+                    dataType,
+                    condition
+                });
+            }
+            setDateTimeRangesArray(dateTimeRangeArray);
+        }
+        if (dataType === "TextField") {
+            const value = {
+                name,
+                dataType,
+                condition
             };
             filterData.filter.forEach((item) => {
                 if (item.name === value.name) {
@@ -385,13 +470,19 @@ export default function Filter(props) {
                 if (index === -1) {
                     textComponentArray.push({
                         name,
-                        dataType
+                        dataType,
+                        condition,
+                        display: "none",
+                        disabled: true
                     });
                 }
             } else {
                 textComponentArray.push({
                     name,
-                    dataType
+                    dataType,
+                    condition,
+                    display: "none",
+                    disabled: true
                 });
             }
             setTextComponentsArray(textComponentArray);
@@ -403,20 +494,20 @@ export default function Filter(props) {
      * @param {*} items is the  filter element array
      */
     const addAppliedFilters = (items) => {
-        let autoComplete = [];
+        let port = [];
         let dateTime = [];
         let text = [];
         items.forEach((item) => {
             if (item.dataType === "AutoComplete") {
-                const autoCompleteArray = [...autoComplete];
+                const portArray = [...port];
                 const options = [];
-                if (autoCompleteArray.length > 0) {
-                    const index = autoCompleteArray.findIndex(
+                if (portArray.length > 0) {
+                    const index = portArray.findIndex(
                         (x) => x.name === item.name && item.type === x.type
                     );
 
                     if (index === -1) {
-                        autoCompleteArray.push({
+                        portArray.push({
                             name: item.name,
                             dataType: item.dataType,
                             value: item.value,
@@ -424,14 +515,14 @@ export default function Filter(props) {
                         });
                     }
                 } else {
-                    autoCompleteArray.push({
+                    portArray.push({
                         name: item.name,
                         dataType: item.dataType,
                         value: item.value,
                         objectArray: options
                     });
                 }
-                autoComplete = autoCompleteArray;
+                port = portArray;
             } else if (item.dataType === "DateTime") {
                 const dateTimeArray = [...dateTime];
                 if (dateTimeArray.length === 0) {
@@ -474,7 +565,7 @@ export default function Filter(props) {
                 }
                 text = textComponentArray;
             }
-            setAutoCompletesArray(autoComplete);
+            setPortsArray(port);
             setDateTimesArray(dateTime);
             setTextComponentsArray(text);
         });
@@ -488,7 +579,7 @@ export default function Filter(props) {
     const addSavedFilters = (item) => {
         setFilterShow("");
         setRecentFilterShow("none");
-        let autoComplete = [];
+        let port = [];
         let text = [];
         const tempArr = [];
         const savedFilters = [];
@@ -516,14 +607,17 @@ export default function Filter(props) {
                     }
                 }
             });
-            if (items.dataType === "AutoComplete") {
-                const autoCompleteArray = [...autoComplete];
-                if (autoCompleteArray.length > 0) {
-                    const index = autoCompleteArray.findIndex(
+            if (
+                items.name === "Arrival Port" ||
+                items.name === "Departure Port"
+            ) {
+                const portArray = [...port];
+                if (portArray.length > 0) {
+                    const index = portArray.findIndex(
                         (x) => x.name === items.name && items.type === x.type
                     );
                     if (index === -1) {
-                        autoCompleteArray.push({
+                        portArray.push({
                             name: items.name,
                             dataType: items.dataType,
                             value: items.value,
@@ -531,17 +625,17 @@ export default function Filter(props) {
                         });
                     }
                 } else {
-                    autoCompleteArray.push({
+                    portArray.push({
                         name: items.name,
                         dataType: items.dataType,
                         value: items.value,
                         objectArray: arr
                     });
                 }
-                autoComplete = autoCompleteArray;
+                port = portArray;
             }
         });
-        setAutoCompletesArray(autoComplete);
+        setPortsArray(port);
         const saveTempDateTimeArray = [];
         savedFilters.forEach((items) => {
             if (items.dataType === "DateTime") {
@@ -594,11 +688,202 @@ export default function Filter(props) {
         // eslint-disable-next-line no-use-before-define
         setApplyFilter(true);
     };
-    const handleClickAway = () => {
-        setApplyFilter(false);
+    // const handleClickAway = () => {
+    //     setApplyFilter(false);
+    // };
+
+    /**
+     * Method To close the dateTime element from rightDrawer
+     * @param {*} item is the specific filter element object
+     */
+    const closeDateTime = (item) => {
+        const index = dateTimesArray.findIndex(
+            (it) => it.name === item.name && it.dataType === item.dataType
+        );
+        if (index !== -1) {
+            filterData.filter.forEach((it) => {
+                if (it.name === item.name) it.weight = 400;
+            });
+            const dateTimeArray = [...dateTimesArray];
+            dateTimeArray.splice(index, 1);
+            setDateTimesArray(dateTimeArray);
+        }
     };
+    /**
+     * Method To close the dateTimeRange element from rightDrawer
+     * @param {*} item is the specific filter element object
+     */
+    const closeDateTimeRange = (item) => {
+        const index = dateTimeRangesArray.findIndex(
+            (it) => it.name === item.name && it.dataType === item.dataType
+        );
+        if (index !== -1) {
+            filterData.filter.forEach((it) => {
+                if (it.name === item.name) it.weight = 400;
+            });
+            const dateTimeRangeArray = [...dateTimeRangesArray];
+            dateTimeRangeArray.splice(index, 1);
+            setDateTimeRangesArray(dateTimeRangeArray);
+        }
+    };
+    /**
+     * Method To close the port element from rightDrawer
+     * @param {*} item is the specific filter element object
+     */
+    const closePortElement = (item) => {
+        const index = portsArray.findIndex(
+            (it) => it.name === item.name && it.dataType === item.dataType
+        );
+        if (index !== -1) {
+            filterData.filter.forEach((it) => {
+                if (it.name === item.name) {
+                    it.types.forEach((its) => {
+                        if (its.name === item.type) {
+                            its.weight = 400;
+                        }
+                    });
+                }
+            });
+            const portArray = [...portsArray];
+            portArray.splice(index, 1);
+            setPortsArray(portArray);
+        }
+    };
+
+    /**
+     * Method To close the textField element from rightDrawer
+     * @param {*} item is the specific filter element object
+     */
+    const closeTextField = (item) => {
+        const index = textComponentsArray.findIndex(
+            (it) => it.name === item.name && it.dataType === item.dataType
+        );
+        if (index !== -1) {
+            filterData.filter.forEach((it) => {
+                if (it.name === item.name) {
+                    it.weight = 400;
+                }
+            });
+            const textComponentArray = [...textComponentsArray];
+            textComponentArray.splice(index, 1);
+            setTextComponentsArray(textComponentArray);
+        }
+    };
+
+    /**
+     * Method To handle port conditional field in rightDrawer
+     * @param {*} item is the specific filter element object
+     */
+    const portConditionHandler = (item) => {
+        const portArray = [...portsArray];
+        portArray.forEach((it) => {
+            if (it.name === item.name && it.type === item.type) {
+                if (it.disabled === false) {
+                    it.disabled = true;
+                } else {
+                    it.disabled = false;
+                }
+                if (it.display === "none") {
+                    it.display = "";
+                } else {
+                    it.display = "none";
+                }
+            }
+        });
+        setPortsArray(portArray);
+    };
+    /**
+     * Method To handle textField conditional field in rightDrawer
+     * @param {*} item is the specific filter element object
+     */
+    const textFieldconditionHandler = (item) => {
+        const textComponentArray = [...textComponentsArray];
+        textComponentArray.forEach((it) => {
+            if (it.name === item.name) {
+                if (it.disabled === false) {
+                    it.disabled = true;
+                } else {
+                    it.disabled = false;
+                }
+                if (it.display === "none") {
+                    it.display = "";
+                } else {
+                    it.display = "none";
+                }
+            }
+        });
+        setTextComponentsArray(textComponentArray);
+    };
+    /**
+     * Method To dateTime initialValues in rightDrawer
+     * @param {*} name is the specific filter element object
+     */
+    const setInitialValueDate = (name) => {
+        const initialValueObject = {
+            ...initialValuesObject
+        };
+        if (!Object.prototype.hasOwnProperty.call(initialValueObject, name)) {
+            initialValueObject[name] = "14-Sep-2020";
+        }
+        setInitialValuesObject(initialValueObject);
+        console.log(initialValueObject);
+    };
+    /**
+     * Method To dateTimeRange initialValues in rightDrawer
+     * @param {*} name is the specific filter element object
+     */
+    const setInitialValueDateRange = () => {
+        const initialValueObject = {
+            ...initialValuesObject
+        };
+        if (
+            !Object.prototype.hasOwnProperty.call(
+                initialValueObject,
+                "fromDate"
+            ) &&
+            !Object.prototype.hasOwnProperty.call(initialValueObject, "toDate")
+        ) {
+            initialValueObject.fromDate = "14-Sep-2020";
+            initialValueObject.toDate = "15-Sep-2020";
+        }
+        setInitialValuesObject(initialValueObject);
+    };
+
+    /**
+     * Method To port initialValues in rightDrawer
+     * @param {*} name is the specific filter element object
+     */
+    const setInitialValuePort = (name, type) => {
+        const initialValueObject = {
+            ...initialValuesObject
+        };
+        if (type !== "Airport") {
+            if (
+                !Object.prototype.hasOwnProperty.call(
+                    initialValueObject,
+                    `${name}>${type}>condition`
+                ) &&
+                !Object.prototype.hasOwnProperty.call(
+                    initialValueObject,
+                    `${name}>${type}>value`
+                )
+            ) {
+                initialValueObject[`${name}>${type}>condition`] = "";
+                initialValueObject[`${name}>${type}>value`] = "";
+            }
+        } else if (
+            !Object.prototype.hasOwnProperty.call(
+                initialValueObject,
+                `${name}>${type}`
+            )
+        ) {
+            initialValueObject[`${name}>${type}`] = "";
+        }
+        setInitialValuesObject(initialValueObject);
+    };
+
     return (
-        <ClickAwayListener onClickAway={handleClickAway}>
+        <ClickAwayListener onClickAway={closeDrawer}>
             {showApplyFilter && (
                 <div className="neo-filter filter--grid iCargo__custom">
                     <div className="filter__wrap">
@@ -606,6 +891,14 @@ export default function Filter(props) {
                             <LeftDrawer
                                 filterData={filterData}
                                 fromLeftToRight={fromLeftToRight}
+                                portValuesFromLeftToRight={
+                                    portValuesFromLeftToRight
+                                }
+                                setInitialValueDate={setInitialValueDate}
+                                setInitialValueDateRange={
+                                    setInitialValueDateRange
+                                }
+                                setInitialValuePort={setInitialValuePort}
                             />
                         </div>
                         <div className="filter__inputwrap">
@@ -618,12 +911,27 @@ export default function Filter(props) {
                                 saveWarningClassName={saveWarningClassName}
                                 saveWarningLabel={saveWarningLabel}
                                 showSavePopUp={showSavePopUp}
+                                cancelSavePopup={cancelSavePopup}
                                 emptyFilterClassName={emptyFilterClassName}
                                 emptyFilterWarning={emptyFilterWarning}
                                 openShowSavePopUp={openShowSavePopUp}
                                 recentFilterShow={recentFilterShow}
                                 filterShow={filterShow}
                                 addSavedFilters={addSavedFilters}
+                                dateTimesArray={dateTimesArray}
+                                dateTimeRangesArray={dateTimeRangesArray}
+                                portsArray={portsArray}
+                                closePortElement={closePortElement}
+                                portConditionHandler={portConditionHandler}
+                                textComponentsArray={textComponentsArray}
+                                textFieldconditionHandler={
+                                    textFieldconditionHandler
+                                }
+                                closeDateTime={closeDateTime}
+                                closeDateTimeRange={closeDateTimeRange}
+                                closeTextField={closeTextField}
+                                setInitialValueDate={setInitialValueDate}
+                                initialValuesObject={initialValuesObject}
                             />
                         </div>
                     </div>
@@ -636,6 +944,7 @@ export default function Filter(props) {
                 addAppliedFilters={addAppliedFilters}
                 addSavedFilters={addSavedFilters}
                 addingToFavourite={props.addingToFavourite}
+                customPanel={props.customPanel}
             />
         </ClickAwayListener>
     );
@@ -645,5 +954,6 @@ Filter.propTypes = {
     filterData: PropTypes.any,
     addingToFavourite: PropTypes.any,
     appliedFilters: PropTypes.any,
-    savedFilters: PropTypes.any
+    savedFilters: PropTypes.any,
+    customPanel: PropTypes.any
 };

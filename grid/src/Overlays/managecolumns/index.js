@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import ColumnsList from "./columnsList";
 import { IconClose } from "../../Utilities/SvgUtilities";
 
-const ColumnReordering = memo((props) => {
+const ColumnReordering = (props) => {
     const {
         isManageColumnOpen,
         toggleManageColumns,
@@ -16,7 +16,6 @@ const ColumnReordering = memo((props) => {
         isExpandContentAvailable,
         additionalColumn
     } = props;
-
     const additionalColumnHeader =
         additionalColumn && additionalColumn.length
             ? additionalColumn[0].Header
@@ -34,7 +33,7 @@ const ColumnReordering = memo((props) => {
         concatedOriginalColumns
     );
     const [remarksColumnToManage, setRemarksColumnToManage] = useState(
-        getRemarksColumnIfAvailable
+        getRemarksColumnIfAvailable()
     );
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
@@ -297,11 +296,17 @@ const ColumnReordering = memo((props) => {
         );
     };
 
+    useEffect(() => {
+        setManagedColumns(originalColumns);
+        setSearchedColumns(concatedOriginalColumns);
+        setRemarksColumnToManage(getRemarksColumnIfAvailable());
+    }, [originalColumns, isExpandContentAvailable, additionalColumn]);
+
     if (isManageColumnOpen) {
         return (
             <ClickAwayListener onClickAway={toggleManageColumns}>
-                <div className="neo-popover neo-popover--column columns--grid">
-                    <div className="neo-popover__column column__grid">
+                <div className="neo-grid-popover neo-grid-popover--column columns--grid">
+                    <div className="neo-grid-popover__column column__grid">
                         <div className="column__chooser">
                             <div className="column__header">
                                 <div>
@@ -365,12 +370,7 @@ const ColumnReordering = memo((props) => {
                                 <div className="column__headerTxt">
                                     <strong>Column Settings</strong>
                                     {isErrorDisplayed ? (
-                                        <strong
-                                            style={{
-                                                marginLeft: "10px",
-                                                color: "red"
-                                            }}
-                                        >
+                                        <strong className="column-warning">
                                             Select at least one column (other
                                             than {additionalColumnHeader})
                                         </strong>
@@ -487,7 +487,7 @@ const ColumnReordering = memo((props) => {
         );
     }
     return <div />;
-});
+};
 
 ColumnReordering.propTypes = {
     isManageColumnOpen: PropTypes.any,
