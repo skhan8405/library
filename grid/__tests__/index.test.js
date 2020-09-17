@@ -395,7 +395,7 @@ describe("render Index file ", () => {
             buttonPanelData && buttonPanelData.length > 0;
 
         return (
-            <div className="row-options-overlay">
+            <div className="row-options-overlay customPanel">
                 {isbuttonPanelDataPresent
                     ? buttonPanelData.map((action) => {
                           const { label, children, handleEvent } = action;
@@ -470,7 +470,6 @@ describe("render Index file ", () => {
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
-                CustomPanel={mockCustomPanel}
             />
         );
         const gridContainer = container;
@@ -572,7 +571,6 @@ describe("render Index file ", () => {
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
-                CustomPanel={mockCustomPanel}
             />
         );
         const gridContainer = container;
@@ -637,11 +635,16 @@ describe("render Index file ", () => {
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
-                CustomPanel={mockCustomPanel}
             />
         );
         const gridContainer = container;
         expect(gridContainer).toBeInTheDocument();
+
+        // Check if custom panel is not present as the property is not passed to Grid
+        const customPanelElement = gridContainer.getElementsByClassName(
+            "customPanel"
+        );
+        expect(customPanelElement.length).toBe(0);
 
         // Row Options
         let rowOptionsIcon = gridContainer.querySelector(
@@ -751,14 +754,13 @@ describe("render Index file ", () => {
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
-                CustomPanel={mockCustomPanel}
             />
         );
         const gridContainer = container;
         expect(gridContainer).toBeInTheDocument();
     });
 
-    it("test Grid loading with all header icons hidden", () => {
+    it("test Grid loading with all header icons hidden and custom panel", () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
@@ -787,6 +789,12 @@ describe("render Index file ", () => {
         );
         const gridContainer = container;
         expect(gridContainer).toBeInTheDocument();
+
+        // Check if custom panel is present
+        const customPanelElement = gridContainer.getElementsByClassName(
+            "customPanel"
+        );
+        expect(customPanelElement.length).toBeGreaterThan(0);
 
         // Global filter
         const globalFilter = gridContainer.querySelectorAll(
