@@ -70,7 +70,6 @@ const Customgrid = (props) => {
         columnChooser,
         exportData,
         onGridRefresh
-     
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -459,7 +458,7 @@ const Customgrid = (props) => {
                             </i>
                         </div>
                     ) : null}
-                    {typeof onGridRefresh === "function"? (
+                    {typeof onGridRefresh === "function" ? (
                         <div
                             className="utilities-icon refresh-data"
                             role="presentation"
@@ -636,7 +635,7 @@ Customgrid.propTypes = {
     groupSort: PropTypes.any,
     columnChooser: PropTypes.any,
     exportData: PropTypes.any,
-    OnGridRefresh: PropTypes.any
+    onGridRefresh: PropTypes.any
 };
 
 export default Customgrid;
