@@ -290,6 +290,11 @@ describe("render Index file ", () => {
     const mockGridWidth = "100%";
     const mockTitle = "AWBs";
 
+    const mockRowsToDeselect = {
+        columnKey: "travelId",
+        columnValues: [1, 2]
+    };
+
     const mockRowActionCallback = jest.fn();
     const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {
         // Minimum height for each row
@@ -471,6 +476,7 @@ describe("render Index file ", () => {
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
+                rowsToDeselect={mockRowsToDeselect}
             />
         );
         const gridContainer = container;
