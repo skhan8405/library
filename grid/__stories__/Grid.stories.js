@@ -22,6 +22,10 @@ const GridView = () => {
     const [gridData, setGridData] = useState([]);
     // State for notifying if next page is available or not
     const [isNextPageAvailable, setIsNextPageAvailable] = useState(true);
+    // State for holding selected rows
+    const [userSelectedRows, setUserSelectedRows] = useState([]);
+    // State for holding rows to deselect
+    const [rowsToDeselect, setRowsToDeselect] = useState({});
 
     const airportCodeList = [
         "AAA",
@@ -656,6 +660,11 @@ const GridView = () => {
     const onRowSelect = (selectedRows) => {
         console.log("Rows selected: ");
         console.log(selectedRows);
+        setUserSelectedRows(selectedRows);
+    };
+
+    const onGridRefresh = () => {
+        console.log("Grid Refrehsed ");
     };
 
     const loadMoreData = () => {
@@ -680,27 +689,55 @@ const GridView = () => {
         });
     }, []);
 
+    const removeRowSelection = (event) => {
+        const rowId = event.currentTarget.dataset.id;
+        setRowsToDeselect({
+            idAttribute: "travelId",
+            value: [Number(rowId)]
+        });
+    };
+
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
-            <Grid
-                className="icargoCustomClass"
-                title="AWBs"
-                gridHeight="80vh"
-                gridWidth="100%"
-                gridData={gridData}
-                isNextPageAvailable={isNextPageAvailable}
-                loadMoreData={loadMoreData}
-                columns={columns}
-                columnToExpand={columnToExpand}
-                rowActions={rowActions}
-                rowActionCallback={rowActionCallback}
-                getRowEditOverlay={getRowEditOverlay}
-                calculateRowHeight={calculateRowHeight}
-                onRowUpdate={onRowUpdate}
-                onRowDelete={onRowDelete}
-                onRowSelect={onRowSelect}
-                CustomPanel={CustomPanel}
-            />
+            <div>
+                <div className="selectedRows">
+                    {userSelectedRows.map((row) => {
+                        return (
+                            <div className="selectedRow" key={row.travelId}>
+                                <p>Travel Id : {row.travelId}</p>
+                                <button
+                                    type="button"
+                                    onClick={removeRowSelection}
+                                    data-id={row.travelId}
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        );
+                    })}
+                </div>
+                <Grid
+                    className="icargoCustomClass"
+                    title="AWBs"
+                    gridHeight="80vh"
+                    gridWidth="100%"
+                    gridData={gridData}
+                    isNextPageAvailable={isNextPageAvailable}
+                    loadMoreData={loadMoreData}
+                    columns={columns}
+                    columnToExpand={columnToExpand}
+                    rowActions={rowActions}
+                    rowActionCallback={rowActionCallback}
+                    getRowEditOverlay={getRowEditOverlay}
+                    calculateRowHeight={calculateRowHeight}
+                    onRowUpdate={onRowUpdate}
+                    onRowDelete={onRowDelete}
+                    onRowSelect={onRowSelect}
+                    onGridRefresh={onGridRefresh}
+                    CustomPanel={CustomPanel}
+                    rowsToDeselect={rowsToDeselect}
+                />
+            </div>
         );
     }
     return (

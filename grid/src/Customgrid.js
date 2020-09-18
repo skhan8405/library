@@ -34,7 +34,8 @@ import {
     IconFilter,
     IconShare,
     IconGroupSort,
-    IconSort
+    IconSort,
+    IconRefresh
 } from "./Utilities/SvgUtilities";
 
 const listRef = createRef(null);
@@ -67,7 +68,9 @@ const Customgrid = (props) => {
         columnFilter,
         groupSort,
         columnChooser,
-        exportData
+        exportData,
+        onGridRefresh,
+        rowsToDeselect
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -170,6 +173,29 @@ const Customgrid = (props) => {
         []
     );
 
+    // Global Search Filter Logic - React table wants all parameters passed into useTable function to be memoized
+    const globalFilterLogic = useCallback(
+        (rowsToFilter, columnsToFilter, filterValue) => {
+            // convert user searched text to lower case
+            const searchText = filterValue ? filterValue.toLowerCase() : "";
+            // Loop through all rows
+            return rowsToFilter.filter((row) => {
+                // Find original data value of each row
+                const { original } = row;
+                // Return value of the filter method
+                let returnValue = false;
+                // Loop through all column values for each row
+                originalColumns.forEach((column) => {
+                    // Do search for each column
+                    returnValue =
+                        returnValue ||
+                        searchColumn(column, original, searchText);
+                });
+                return returnValue;
+            });
+        }
+    );
+
     // Initialize react-table instance with the values received through properties
     const {
         getTableProps,
@@ -179,31 +205,14 @@ const Customgrid = (props) => {
         prepareRow,
         selectedFlatRows,
         state,
-        setGlobalFilter
+        setGlobalFilter,
+        toggleRowSelected
     } = useTable(
         {
             columns,
             data,
             defaultColumn,
-            globalFilter: (rowsToFilter, columnsToFilter, filterValue) => {
-                // convert user searched text to lower case
-                const searchText = filterValue ? filterValue.toLowerCase() : "";
-                // Loop through all rows
-                return rowsToFilter.filter((row) => {
-                    // Find original data value of each row
-                    const { original } = row;
-                    // Return value of the filter method
-                    let returnValue = false;
-                    // Loop through all column values for each row
-                    originalColumns.forEach((column) => {
-                        // Do search for each column
-                        returnValue =
-                            returnValue ||
-                            searchColumn(column, original, searchText);
-                    });
-                    return returnValue;
-                });
-            },
+            globalFilter: globalFilterLogic,
             autoResetFilters: false,
             autoResetGlobalFilter: false,
             autoResetSortBy: false,
@@ -286,25 +295,44 @@ const Customgrid = (props) => {
         }
     );
 
-    // This code is to handle the row height calculation while expanding a row or resizing a column
+    // Handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
 
-    // This code is to update the column chooser overlay, when user is updating column configuration from outside Grid
+    // Update the column chooser overlay, when user is updating column configuration from outside Grid
     useEffect(() => {
         setColumns(managableColumns);
         setIsRowExpandEnabled(isExpandContentAvailable);
     }, [managableColumns, isExpandContentAvailable]);
 
-    // This code is update the boolean value used to identify if this is the first time render of Grid
+    // Update the boolean value used to identify if this is the first time render of Grid
     useEffect(() => {
         setIsFirstRendering(false);
     }, []);
 
-    // This code is to trigger call back when user makes a row selection using checkbox
+    // Update the select state of row in Grid using thehook provided by useTable method
+    // Find the row Id using the key - value passed from props and use toggleRowSelected method
+    useEffect(() => {
+        if (rowsToDeselect) {
+            const { idAttribute, value } = rowsToDeselect;
+            if (idAttribute && value && value.length > 0) {
+                value.forEach((columnVal) => {
+                    const rowToDeselect = rows.find((row) => {
+                        return row.original[idAttribute] === columnVal;
+                    });
+                    if (rowToDeselect) {
+                        const { id } = rowToDeselect;
+                        toggleRowSelected(id, false);
+                    }
+                });
+            }
+        }
+    }, [rowsToDeselect]);
+
+    // Trigger call back when user makes a row selection using checkbox
     // Call back method will not be triggered if this is the first render of Grid
     useEffect(() => {
         if (!isFirstRendering && onRowSelect) {
@@ -453,6 +481,18 @@ const Customgrid = (props) => {
                         >
                             <i>
                                 <IconShare />
+                            </i>
+                        </div>
+                    ) : null}
+                    {typeof onGridRefresh === "function" ? (
+                        <div
+                            className="utilities-icon refresh-data"
+                            role="presentation"
+                            data-testid="refreshGrid"
+                            onClick={onGridRefresh}
+                        >
+                            <i>
+                                <IconRefresh />
                             </i>
                         </div>
                     ) : null}
@@ -620,7 +660,9 @@ Customgrid.propTypes = {
     columnFilter: PropTypes.any,
     groupSort: PropTypes.any,
     columnChooser: PropTypes.any,
-    exportData: PropTypes.any
+    exportData: PropTypes.any,
+    onGridRefresh: PropTypes.any,
+    rowsToDeselect: PropTypes.any
 };
 
 export default Customgrid;

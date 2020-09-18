@@ -290,6 +290,11 @@ describe("render Index file ", () => {
     const mockGridWidth = "100%";
     const mockTitle = "AWBs";
 
+    const mockRowsToDeselect = {
+        columnKey: "travelId",
+        columnValues: [1, 2]
+    };
+
     const mockRowActionCallback = jest.fn();
     const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {
         // Minimum height for each row
@@ -331,6 +336,7 @@ describe("render Index file ", () => {
     const mockUpdateRowData = jest.fn();
     const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
+    const mockGridRefresh = jest.fn();
     const mockLoadMoreData = jest.fn();
     const mockCustomPanel = () => {
         const SCR = () => {
@@ -470,6 +476,7 @@ describe("render Index file ", () => {
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
+                rowsToDeselect={mockRowsToDeselect}
             />
         );
         const gridContainer = container;
@@ -616,7 +623,7 @@ describe("render Index file ", () => {
         expect(sortOverlay).toBeNull();
     });
 
-    it("test row options functionalities and column sort with row height calculation", () => {
+    it("test row options functionalities and column sort with row height calculation, custom panel and refresh button not passed", () => {
         mockOffsetSize(600, 600);
         const { getByText, container } = render(
             <Grid
@@ -645,6 +652,12 @@ describe("render Index file ", () => {
             "customPanel"
         );
         expect(customPanelElement.length).toBe(0);
+
+        // Check if refresh icon is not present as the property is not passed to Grid
+        const refreshElement = gridContainer.getElementsByClassName(
+            "refresh-data"
+        );
+        expect(refreshElement.length).toBe(0);
 
         // Row Options
         let rowOptionsIcon = gridContainer.querySelector(
@@ -760,7 +773,7 @@ describe("render Index file ", () => {
         expect(gridContainer).toBeInTheDocument();
     });
 
-    it("test Grid loading with all header icons hidden and custom panel", () => {
+    it("test Grid loading with all header icons hidden, custom panel and refresh button shown", () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
@@ -779,6 +792,7 @@ describe("render Index file ", () => {
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
+                onGridRefresh={mockGridRefresh}
                 CustomPanel={mockCustomPanel}
                 globalSearch={false}
                 columnFilter={false}
@@ -795,6 +809,12 @@ describe("render Index file ", () => {
             "customPanel"
         );
         expect(customPanelElement.length).toBeGreaterThan(0);
+
+        // Check if refresh icon is present
+        const refreshElement = gridContainer.getElementsByClassName(
+            "refresh-data"
+        );
+        expect(refreshElement.length).toBeGreaterThan(0);
 
         // Global filter
         const globalFilter = gridContainer.querySelectorAll(

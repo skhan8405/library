@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
     extractColumns,
@@ -33,7 +33,9 @@ const Grid = (props) => {
         columnFilter,
         groupSort,
         columnChooser,
-        exportData
+        exportData,
+        onGridRefresh,
+        rowsToDeselect
     } = props;
 
     // Check if device is desktop
@@ -264,10 +266,10 @@ const Grid = (props) => {
                         title={title}
                         gridHeight={gridHeight}
                         gridWidth={gridWidth}
-                        managableColumns={gridColumns}
+                        managableColumns={useMemo(() => gridColumns)} // React table wants all parameters passed into useTable function to be memoized
                         originalColumns={gridColumns}
                         additionalColumn={additionalColumn}
-                        data={data}
+                        data={useMemo(() => data)} // React table wants all parameters passed into useTable function to be memoized
                         getRowEditOverlay={getRowEditOverlay}
                         updateRowInGrid={updateRowInGrid}
                         deleteRowFromGrid={deleteRowFromGrid}
@@ -295,6 +297,8 @@ const Grid = (props) => {
                         groupSort={groupSort}
                         columnChooser={columnChooser}
                         exportData={exportData}
+                        onGridRefresh={onGridRefresh}
+                        rowsToDeselect={rowsToDeselect}
                     />
                     {isNextPageLoading ? (
                         <div id="loader" className="background">
@@ -339,7 +343,9 @@ Grid.propTypes = {
     columnFilter: PropTypes.any,
     groupSort: PropTypes.any,
     columnChooser: PropTypes.any,
-    exportData: PropTypes.any
+    exportData: PropTypes.any,
+    onGridRefresh: PropTypes.any,
+    rowsToDeselect: PropTypes.any
 };
 
 export default Grid;
