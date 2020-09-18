@@ -1,25 +1,16 @@
-import React, { forwardRef, useRef, useEffect, useState } from "react";
+import React, { forwardRef, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
 const RowSelector = forwardRef(({ indeterminate, ...rest }, ref) => {
-    const [checkValue, setCheckValue] = useState(indeterminate);
     const defaultRef = useRef();
     const resolvedRef = ref || defaultRef;
-    const onChange = () => {
-        setCheckValue(!indeterminate);
-    };
+
     useEffect(() => {
         resolvedRef.current.indeterminate = indeterminate;
     }, [resolvedRef, indeterminate]);
     return (
         <div className="check-wrap">
-            <input
-                type="checkbox"
-                checked={checkValue}
-                onChange={onChange}
-                ref={resolvedRef}
-                {...rest}
-            />
+            <input type="checkbox" ref={resolvedRef} {...rest} />
         </div>
     );
 });

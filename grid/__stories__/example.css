@@ -168,3 +168,15 @@ li {
 .dropdown:hover .dropbtn {
     background-color: white;
 }
+
+/*  CustomPanel Styles
+*  ------------------------------------------------------ */
+
+.selectedRows .selectedRow p {
+    display: inline-block;
+    margin: 3px 10px;
+}
+
+.selectedRows .selectedRow button {
+    display: inline-block;
+}

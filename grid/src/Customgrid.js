@@ -69,7 +69,8 @@ const Customgrid = (props) => {
         groupSort,
         columnChooser,
         exportData,
-        onGridRefresh
+        onGridRefresh,
+        rowsToDeselect
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -204,7 +205,8 @@ const Customgrid = (props) => {
         prepareRow,
         selectedFlatRows,
         state,
-        setGlobalFilter
+        setGlobalFilter,
+        toggleRowSelected
     } = useTable(
         {
             columns,
@@ -293,25 +295,44 @@ const Customgrid = (props) => {
         }
     );
 
-    // This code is to handle the row height calculation while expanding a row or resizing a column
+    // Handle the row height calculation while expanding a row or resizing a column
     useEffect(() => {
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(0, true);
         }
     });
 
-    // This code is to update the column chooser overlay, when user is updating column configuration from outside Grid
+    // Update the column chooser overlay, when user is updating column configuration from outside Grid
     useEffect(() => {
         setColumns(managableColumns);
         setIsRowExpandEnabled(isExpandContentAvailable);
     }, [managableColumns, isExpandContentAvailable]);
 
-    // This code is update the boolean value used to identify if this is the first time render of Grid
+    // Update the boolean value used to identify if this is the first time render of Grid
     useEffect(() => {
         setIsFirstRendering(false);
     }, []);
 
-    // This code is to trigger call back when user makes a row selection using checkbox
+    // Update the select state of row in Grid using thehook provided by useTable method
+    // Find the row Id using the key - value passed from props and use toggleRowSelected method
+    useEffect(() => {
+        if (rowsToDeselect) {
+            const { columnKey, columnValues } = rowsToDeselect;
+            if (columnKey && columnValues && columnValues.length > 0) {
+                columnValues.forEach((columnVal) => {
+                    const rowToDeselect = rows.find((row) => {
+                        return row.original[columnKey] === columnVal;
+                    });
+                    if (rowToDeselect) {
+                        const { id } = rowToDeselect;
+                        toggleRowSelected(id, false);
+                    }
+                });
+            }
+        }
+    }, [rowsToDeselect]);
+
+    // Trigger call back when user makes a row selection using checkbox
     // Call back method will not be triggered if this is the first render of Grid
     useEffect(() => {
         if (!isFirstRendering && onRowSelect) {
@@ -640,7 +661,8 @@ Customgrid.propTypes = {
     groupSort: PropTypes.any,
     columnChooser: PropTypes.any,
     exportData: PropTypes.any,
-    onGridRefresh: PropTypes.any
+    onGridRefresh: PropTypes.any,
+    rowsToDeselect: PropTypes.any
 };
 
 export default Customgrid;
