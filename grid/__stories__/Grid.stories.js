@@ -692,8 +692,8 @@ const GridView = () => {
     const removeRowSelection = (event) => {
         const rowId = event.currentTarget.dataset.id;
         setRowsToDeselect({
-            columnKey: "travelId",
-            columnValues: [Number(rowId)]
+            idAttribute: "travelId",
+            value: [Number(rowId)]
         });
     };
 

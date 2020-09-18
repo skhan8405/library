@@ -317,11 +317,11 @@ const Customgrid = (props) => {
     // Find the row Id using the key - value passed from props and use toggleRowSelected method
     useEffect(() => {
         if (rowsToDeselect) {
-            const { columnKey, columnValues } = rowsToDeselect;
-            if (columnKey && columnValues && columnValues.length > 0) {
-                columnValues.forEach((columnVal) => {
+            const { idAttribute, value } = rowsToDeselect;
+            if (idAttribute && value && value.length > 0) {
+                value.forEach((columnVal) => {
                     const rowToDeselect = rows.find((row) => {
-                        return row.original[columnKey] === columnVal;
+                        return row.original[idAttribute] === columnVal;
                     });
                     if (rowToDeselect) {
                         const { id } = rowToDeselect;
