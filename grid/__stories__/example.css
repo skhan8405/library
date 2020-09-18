@@ -172,11 +172,17 @@ li {
 /*  CustomPanel Styles
 *  ------------------------------------------------------ */
 
-.selectedRows .selectedRow p {
-    display: inline-block;
-    margin: 3px 10px;
+.selectedRows {
+    overflow-x: auto;
+    display: flex;
+    flex-direction: row;
 }
-
-.selectedRows .selectedRow button {
-    display: inline-block;
+.selectedRows .selectedRow {
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 120px;
+}
+.selectedRows .selectedRow p,
+button {
+    margin: 3px 10px;
 }

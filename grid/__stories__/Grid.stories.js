@@ -703,8 +703,8 @@ const GridView = () => {
                 <div className="selectedRows">
                     {userSelectedRows.map((row) => {
                         return (
-                            <div className="selectedRow">
-                                <p>Row Selected : {row.travelId}</p>
+                            <div className="selectedRow" key={row.travelId}>
+                                <p>Travel Id : {row.travelId}</p>
                                 <button
                                     type="button"
                                     onClick={removeRowSelection}
