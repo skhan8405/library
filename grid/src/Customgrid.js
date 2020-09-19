@@ -191,7 +191,8 @@ const Customgrid = (props) => {
                 });
                 return returnValue;
             });
-        }
+        },
+        [originalColumns, searchColumn]
     );
 
     // Initialize react-table instance with the values received through properties
@@ -373,7 +374,7 @@ const Customgrid = (props) => {
                 </div>
             );
         },
-        [prepareRow, rows, displayExpandedContent]
+        [prepareRow, rows, isRowExpandEnabled, displayExpandedContent]
     );
 
     // Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
