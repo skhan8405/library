@@ -80,6 +80,7 @@ const Customgrid = (props) => {
 
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
+
     // Local state value for holding the boolean value to check if row expand is available
     const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(
         isExpandContentAvailable
@@ -87,6 +88,7 @@ const Customgrid = (props) => {
 
     // Variable to check if row options are available
     const isRowActionsAvailable = rowActions && rowActions.length > 0;
+
     // Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
     const loadMoreItems = isNextPageLoading
@@ -101,7 +103,7 @@ const Customgrid = (props) => {
         setFilterOpen(!isFilterOpen);
     };
 
-    // Local state value for checking if column filter is open/closed
+    // Local state value for checking if row edit overlay is open/closed
     const [isRowEditOverlyOpen, setIsRowEditOverlyOpen] = useState(false);
     // Local state value to hold row data that is going to be edited
     const [editedRowData, setEditedRowData] = useState(null);
@@ -116,7 +118,7 @@ const Customgrid = (props) => {
         setIsRowEditOverlyOpen(false);
     };
 
-    // Local state value for checking if column filter is open/closed
+    // Local state value for checking if row delete overlay is open/closed
     const [isRowDeleteOverlyOpen, setIsRowDeleteOverlyOpen] = useState(false);
     // Local state value to hold row data that is going to be deleted
     const [deletedRowData, setDeletedRowData] = useState(null);
@@ -133,24 +135,21 @@ const Customgrid = (props) => {
 
     // Local state value for checking if group Sort Overlay is open/closed.
     const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
-
     // Toggle group Sort state value based on UI clicks
     const toggleGroupSortOverLay = () => {
         setGroupSortOverLay(!isGroupSortOverLayOpen);
     };
-
+    // Call apply group sort function from parent
     const applyGroupSort = (sortOptions) => {
         doGroupSort(sortOptions);
     };
 
     // Local state value for hiding/unhiding column management overlay
     const [isManageColumnOpen, setManageColumnOpen] = useState(false);
-
     // Toggle column manage overlay show/hide state value based on UI clicks
     const toggleManageColumns = () => {
         setManageColumnOpen(!isManageColumnOpen);
     };
-
     // Callback method from column manage overlay to update the column structure of the grid
     const updateColumnStructure = (newColumnStructure, remarksColumn) => {
         setColumns([...newColumnStructure]);
@@ -159,7 +158,6 @@ const Customgrid = (props) => {
 
     // Local state value for hiding/unhiding export data overlay
     const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
-
     // Toggle export overlay show/hide state value based on UI clicks
     const toggleExportDataOverlay = () => {
         setIsExportOverlayOpen(!isExportOverlayOpen);
