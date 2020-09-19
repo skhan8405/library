@@ -377,7 +377,7 @@ const Customgrid = (props) => {
         [prepareRow, rows, isRowExpandEnabled, displayExpandedContent]
     );
 
-    // Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
+    // Render table and other components as required
     // Use properties and methods provided by react-table
     // Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
     // Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
