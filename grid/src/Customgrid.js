@@ -204,7 +204,7 @@ const Customgrid = (props) => {
         rows,
         prepareRow,
         selectedFlatRows,
-        state,
+        state: { globalFilter, selectedRowIds },
         setGlobalFilter,
         toggleRowSelected
     } = useTable(
@@ -342,7 +342,7 @@ const Customgrid = (props) => {
             });
             onRowSelect(userCheckedRows);
         }
-    }, [state.selectedRowIds]);
+    }, [selectedRowIds]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -410,7 +410,7 @@ const Customgrid = (props) => {
                     ) : null}
                     {globalSearch !== false ? (
                         <GlobalFilter
-                            globalFilter={state.globalFilter}
+                            globalFilter={globalFilter}
                             setGlobalFilter={setGlobalFilter}
                         />
                     ) : null}
