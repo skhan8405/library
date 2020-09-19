@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import "./example.css";
 import Grid from "../src/index";
@@ -8,9 +9,25 @@ import FlightEdit from "./cells/FlightEdit";
 import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 import RowEdit from "./cells/RowEdit";
-import CustomPanel from "./panels/CustomPanel";
 
-const GridView = () => {
+const GridComponent = (props) => {
+    const {
+        className,
+        title,
+        gridHeight,
+        gridWidth,
+        columnToExpand,
+        rowActions,
+        rowActionCallback,
+        onGridRefresh,
+        isNextPageAvailableCheck,
+        CustomPanel,
+        globalSearch,
+        columnFilter,
+        groupSort,
+        columnChooser,
+        exportData
+    } = props;
     const { search } = window.location;
     const urlPageSize = search
         ? parseInt(search.replace("?pagesize=", ""), 10)
@@ -21,7 +38,9 @@ const GridView = () => {
     // State for holding grid data
     const [gridData, setGridData] = useState([]);
     // State for notifying if next page is available or not
-    const [isNextPageAvailable, setIsNextPageAvailable] = useState(true);
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState(
+        isNextPageAvailableCheck
+    );
     // State for holding selected rows
     const [userSelectedRows, setUserSelectedRows] = useState([]);
     // State for holding rows to deselect
@@ -512,65 +531,6 @@ const GridView = () => {
         }
     ];
 
-    const columnToExpand = {
-        Header: "Remarks",
-        innerCells: [
-            { Header: "Remarks", accessor: "remarks" },
-            { Header: "Details", onlyInTablet: true, accessor: "details" }
-        ],
-        displayCell: (rowData, DisplayTag) => {
-            const { remarks, details } = rowData;
-            const {
-                startTime,
-                endTime,
-                status,
-                additionalStatus,
-                flightModel,
-                bodyType,
-                type,
-                timeStatus
-            } = details || {};
-            const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
-            const timeValue = timeStatusArray.shift();
-            const timeText = timeStatusArray.join(" ");
-            return (
-                <div className="details-wrap">
-                    <DisplayTag columnKey="remarks" cellKey="remarks">
-                        <ul>
-                            <li>{remarks}</li>
-                        </ul>
-                    </DisplayTag>
-                    <DisplayTag columnKey="details" cellKey="details">
-                        <ul>
-                            <li>
-                                {startTime} - {endTime}
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{status}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>{additionalStatus}</li>
-                            <li className="divider">|</li>
-                            <li>{flightModel}</li>
-                            <li className="divider">|</li>
-                            <li>{bodyType}</li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{type}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <strong>{timeValue} </strong>
-                                <span>{timeText}</span>
-                            </li>
-                        </ul>
-                    </DisplayTag>
-                </div>
-            );
-        }
-    };
-
     const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
         return (
             <RowEdit
@@ -580,20 +540,6 @@ const GridView = () => {
                 rowUpdateCallBack={rowUpdateCallBack}
             />
         );
-    };
-
-    const rowActions = [
-        { label: "edit" },
-        { label: "delete" },
-        { label: "Send SCR", value: "SCR" },
-        { label: "Segment Summary", value: "SegmentSummary" },
-        { label: "Open Summary", value: "OpenSummary" },
-        { label: "Close Summary", value: "CloseSummary" }
-    ];
-
-    const rowActionCallback = (rowData, actionValue) => {
-        console.log(`Row action: ${actionValue}`);
-        console.log(rowData);
     };
 
     const calculateRowHeight = (row, gridColumns) => {
@@ -663,10 +609,6 @@ const GridView = () => {
         setUserSelectedRows(selectedRows);
     };
 
-    const onGridRefresh = () => {
-        console.log("Grid Refrehsed ");
-    };
-
     const loadMoreData = () => {
         fetchData(index, pageSize).then((data) => {
             if (data && data.length > 0) {
@@ -717,10 +659,10 @@ const GridView = () => {
                     })}
                 </div>
                 <Grid
-                    className="icargoCustomClass"
-                    title="AWBs"
-                    gridHeight="80vh"
-                    gridWidth="100%"
+                    className={className}
+                    title={title}
+                    gridHeight={gridHeight}
+                    gridWidth={gridWidth}
                     gridData={gridData}
                     isNextPageAvailable={isNextPageAvailable}
                     loadMoreData={loadMoreData}
@@ -736,6 +678,11 @@ const GridView = () => {
                     onGridRefresh={onGridRefresh}
                     CustomPanel={CustomPanel}
                     rowsToDeselect={rowsToDeselect}
+                    globalSearch={globalSearch}
+                    columnFilter={columnFilter}
+                    groupSort={groupSort}
+                    columnChooser={columnChooser}
+                    exportData={exportData}
                 />
             </div>
         );
@@ -747,12 +694,4 @@ const GridView = () => {
     );
 };
 
-export default {
-    title: "Grid Component",
-    component: GridView
-};
-const Template = () => {
-    return <GridView />;
-};
-
-export const MainStory = Template.bind({});
+export default GridComponent;
