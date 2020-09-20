@@ -37,6 +37,7 @@ import {
     IconSort,
     IconRefresh
 } from "./Utilities/SvgUtilities";
+import { findSelectedRows } from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
 
@@ -80,6 +81,7 @@ const Customgrid = (props) => {
 
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
+
     // Local state value for holding the boolean value to check if row expand is available
     const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(
         isExpandContentAvailable
@@ -87,6 +89,7 @@ const Customgrid = (props) => {
 
     // Variable to check if row options are available
     const isRowActionsAvailable = rowActions && rowActions.length > 0;
+
     // Variables used for handling infinite loading
     const itemCount = hasNextPage ? data.length + 1 : data.length;
     const loadMoreItems = isNextPageLoading
@@ -101,7 +104,7 @@ const Customgrid = (props) => {
         setFilterOpen(!isFilterOpen);
     };
 
-    // Local state value for checking if column filter is open/closed
+    // Local state value for checking if row edit overlay is open/closed
     const [isRowEditOverlyOpen, setIsRowEditOverlyOpen] = useState(false);
     // Local state value to hold row data that is going to be edited
     const [editedRowData, setEditedRowData] = useState(null);
@@ -116,7 +119,7 @@ const Customgrid = (props) => {
         setIsRowEditOverlyOpen(false);
     };
 
-    // Local state value for checking if column filter is open/closed
+    // Local state value for checking if row delete overlay is open/closed
     const [isRowDeleteOverlyOpen, setIsRowDeleteOverlyOpen] = useState(false);
     // Local state value to hold row data that is going to be deleted
     const [deletedRowData, setDeletedRowData] = useState(null);
@@ -133,24 +136,21 @@ const Customgrid = (props) => {
 
     // Local state value for checking if group Sort Overlay is open/closed.
     const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
-
     // Toggle group Sort state value based on UI clicks
     const toggleGroupSortOverLay = () => {
         setGroupSortOverLay(!isGroupSortOverLayOpen);
     };
-
+    // Call apply group sort function from parent
     const applyGroupSort = (sortOptions) => {
         doGroupSort(sortOptions);
     };
 
     // Local state value for hiding/unhiding column management overlay
     const [isManageColumnOpen, setManageColumnOpen] = useState(false);
-
     // Toggle column manage overlay show/hide state value based on UI clicks
     const toggleManageColumns = () => {
         setManageColumnOpen(!isManageColumnOpen);
     };
-
     // Callback method from column manage overlay to update the column structure of the grid
     const updateColumnStructure = (newColumnStructure, remarksColumn) => {
         setColumns([...newColumnStructure]);
@@ -159,11 +159,13 @@ const Customgrid = (props) => {
 
     // Local state value for hiding/unhiding export data overlay
     const [isExportOverlayOpen, setIsExportOverlayOpen] = useState(false);
-
     // Toggle export overlay show/hide state value based on UI clicks
     const toggleExportDataOverlay = () => {
         setIsExportOverlayOpen(!isExportOverlayOpen);
     };
+
+    // Local state value for storing user selected rows
+    const [userSelectedRows, setUserSelectedRows] = useState([]);
 
     // Column filter added for all columns by default
     const defaultColumn = useMemo(
@@ -193,8 +195,19 @@ const Customgrid = (props) => {
                 });
                 return returnValue;
             });
-        }
+        },
+        [originalColumns, searchColumn]
     );
+
+    // Finds the rows selected by users from selectedRowIds and updates the state value and triggers the callback function.
+    // This is used in useeffects for row selection and row deselection
+    const updateSelectedRows = (rows, selectedRowIds) => {
+        const rowsSelectedByUser = findSelectedRows(rows, selectedRowIds);
+        setUserSelectedRows(rowsSelectedByUser);
+        if (onRowSelect) {
+            onRowSelect(rowsSelectedByUser);
+        }
+    };
 
     // Initialize react-table instance with the values received through properties
     const {
@@ -203,10 +216,9 @@ const Customgrid = (props) => {
         headerGroups,
         rows,
         prepareRow,
-        selectedFlatRows,
-        state,
-        setGlobalFilter,
-        toggleRowSelected
+        preFilteredRows,
+        state: { globalFilter, selectedRowIds },
+        setGlobalFilter
     } = useTable(
         {
             columns,
@@ -320,12 +332,13 @@ const Customgrid = (props) => {
             const { idAttribute, value } = rowsToDeselect;
             if (idAttribute && value && value.length > 0) {
                 value.forEach((columnVal) => {
-                    const rowToDeselect = rows.find((row) => {
+                    const rowToDeselect = preFilteredRows.find((row) => {
                         return row.original[idAttribute] === columnVal;
                     });
                     if (rowToDeselect) {
                         const { id } = rowToDeselect;
-                        toggleRowSelected(id, false);
+                        selectedRowIds[id] = false;
+                        updateSelectedRows(preFilteredRows, selectedRowIds);
                     }
                 });
             }
@@ -333,16 +346,13 @@ const Customgrid = (props) => {
     }, [rowsToDeselect]);
 
     // Trigger call back when user makes a row selection using checkbox
+    // And store the rows that are selected by user for making them selected when data changes after groupsort
     // Call back method will not be triggered if this is the first render of Grid
     useEffect(() => {
-        if (!isFirstRendering && onRowSelect) {
-            const userCheckedRows = [];
-            selectedFlatRows.forEach((selectedRows) => {
-                userCheckedRows.push(selectedRows.original);
-            });
-            onRowSelect(userCheckedRows);
+        if (!isFirstRendering) {
+            updateSelectedRows(preFilteredRows, selectedRowIds);
         }
-    }, [state.selectedRowIds]);
+    }, [selectedRowIds]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -375,10 +385,10 @@ const Customgrid = (props) => {
                 </div>
             );
         },
-        [prepareRow, rows, displayExpandedContent]
+        [prepareRow, rows, isRowExpandEnabled, displayExpandedContent]
     );
 
-    // Render table title, global search component, button to show/hide column filter, button to export selected row data & the grid
+    // Render table and other components as required
     // Use properties and methods provided by react-table
     // Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
     // Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
@@ -410,7 +420,7 @@ const Customgrid = (props) => {
                     ) : null}
                     {globalSearch !== false ? (
                         <GlobalFilter
-                            globalFilter={state.globalFilter}
+                            globalFilter={globalFilter}
                             setGlobalFilter={setGlobalFilter}
                         />
                     ) : null}
