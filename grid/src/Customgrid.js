@@ -199,6 +199,16 @@ const Customgrid = (props) => {
         [originalColumns, searchColumn]
     );
 
+    // Finds the rows selected by users from selectedRowIds and updates the state value and triggers the callback function.
+    // This is used in useeffects for row selection and row deselection
+    const updateSelectedRows = (rows, selectedRowIds) => {
+        const rowsSelectedByUser = findSelectedRows(rows, selectedRowIds);
+        setUserSelectedRows(rowsSelectedByUser);
+        if (onRowSelect) {
+            onRowSelect(rowsSelectedByUser);
+        }
+    };
+
     // Initialize react-table instance with the values received through properties
     const {
         getTableProps,
@@ -208,8 +218,7 @@ const Customgrid = (props) => {
         prepareRow,
         preFilteredRows,
         state: { globalFilter, selectedRowIds },
-        setGlobalFilter,
-        toggleRowSelected
+        setGlobalFilter
     } = useTable(
         {
             columns,
@@ -323,12 +332,13 @@ const Customgrid = (props) => {
             const { idAttribute, value } = rowsToDeselect;
             if (idAttribute && value && value.length > 0) {
                 value.forEach((columnVal) => {
-                    const rowToDeselect = rows.find((row) => {
+                    const rowToDeselect = preFilteredRows.find((row) => {
                         return row.original[idAttribute] === columnVal;
                     });
                     if (rowToDeselect) {
                         const { id } = rowToDeselect;
-                        toggleRowSelected(id, false);
+                        selectedRowIds[id] = false;
+                        updateSelectedRows(preFilteredRows, selectedRowIds);
                     }
                 });
             }
@@ -339,13 +349,8 @@ const Customgrid = (props) => {
     // And store the rows that are selected by user for making them selected when data changes after groupsort
     // Call back method will not be triggered if this is the first render of Grid
     useEffect(() => {
-        const rowsSelectedByUser = findSelectedRows(
-            preFilteredRows,
-            selectedRowIds
-        );
-        setUserSelectedRows(rowsSelectedByUser);
-        if (!isFirstRendering && onRowSelect) {
-            onRowSelect(rowsSelectedByUser);
+        if (!isFirstRendering) {
+            updateSelectedRows(preFilteredRows, selectedRowIds);
         }
     }, [selectedRowIds]);
 
