@@ -37,6 +37,7 @@ import {
     IconSort,
     IconRefresh
 } from "./Utilities/SvgUtilities";
+import { findSelectedRows } from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
 
@@ -163,6 +164,9 @@ const Customgrid = (props) => {
         setIsExportOverlayOpen(!isExportOverlayOpen);
     };
 
+    // Local state value for storing user selected rows
+    const [userSelectedRows, setUserSelectedRows] = useState([]);
+
     // Column filter added for all columns by default
     const defaultColumn = useMemo(
         () => ({
@@ -202,7 +206,7 @@ const Customgrid = (props) => {
         headerGroups,
         rows,
         prepareRow,
-        selectedFlatRows,
+        preFilteredRows,
         state: { globalFilter, selectedRowIds },
         setGlobalFilter,
         toggleRowSelected
@@ -332,14 +336,16 @@ const Customgrid = (props) => {
     }, [rowsToDeselect]);
 
     // Trigger call back when user makes a row selection using checkbox
+    // And store the rows that are selected by user for making them selected when data changes after groupsort
     // Call back method will not be triggered if this is the first render of Grid
     useEffect(() => {
+        const rowsSelectedByUser = findSelectedRows(
+            preFilteredRows,
+            selectedRowIds
+        );
+        setUserSelectedRows(rowsSelectedByUser);
         if (!isFirstRendering && onRowSelect) {
-            const userCheckedRows = [];
-            selectedFlatRows.forEach((selectedRows) => {
-                userCheckedRows.push(selectedRows.original);
-            });
-            onRowSelect(userCheckedRows);
+            onRowSelect(rowsSelectedByUser);
         }
     }, [selectedRowIds]);
 
