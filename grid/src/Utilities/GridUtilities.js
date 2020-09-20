@@ -1,16 +1,19 @@
 export const findSelectedRows = (rows, selectedRowIds) => {
     const rowsSelectedByUser = [];
-    if (selectedRowIds) {
+    if (rows && rows.length > 0 && selectedRowIds) {
         Object.entries(selectedRowIds).forEach((objEntry) => {
             if (objEntry && objEntry.length > 0) {
                 const rowId = objEntry[0];
-                const selectedRow = rows.find((flatRow) => {
-                    return flatRow.id === rowId;
-                });
-                if (selectedRow) {
-                    const { original } = selectedRow;
-                    if (original) {
-                        rowsSelectedByUser.push(original);
+                const isSelected = objEntry[1];
+                if (isSelected) {
+                    const selectedRow = rows.find((flatRow) => {
+                        return flatRow.id === rowId;
+                    });
+                    if (selectedRow) {
+                        const { original } = selectedRow;
+                        if (original) {
+                            rowsSelectedByUser.push(original);
+                        }
                     }
                 }
             }
