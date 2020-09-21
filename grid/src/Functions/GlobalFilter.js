@@ -30,7 +30,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
 };
 
 GlobalFilter.propTypes = {
-    globalFilter: PropTypes.func,
+    globalFilter: PropTypes.string,
     setGlobalFilter: PropTypes.func
 };
 

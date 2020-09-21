@@ -22,7 +22,7 @@ const AdditionalColumnTag = (props) => {
 
 AdditionalColumnTag.propTypes = {
     cellKey: PropTypes.string,
-    children: PropTypes.arrayOf(PropTypes.object)
+    children: PropTypes.any
 };
 
 export default AdditionalColumnTag;

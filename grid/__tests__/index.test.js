@@ -290,10 +290,7 @@ describe("render Index file ", () => {
     const mockGridWidth = "100%";
     const mockTitle = "AWBs";
 
-    const mockRowsToDeselect = {
-        columnKey: "travelId",
-        columnValues: [1, 2]
-    };
+    const mockRowsToDeselect = [1, 2];
 
     const mockRowActionCallback = jest.fn();
     const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {

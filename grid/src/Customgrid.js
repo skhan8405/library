@@ -721,7 +721,7 @@ Customgrid.propTypes = {
     columnChooser: PropTypes.bool,
     exportData: PropTypes.bool,
     onGridRefresh: PropTypes.func,
-    rowsToDeselect: PropTypes.object,
+    rowsToDeselect: PropTypes.array,
     groupSortOptions: PropTypes.arrayOf(PropTypes.object)
 };
 
