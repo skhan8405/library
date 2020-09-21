@@ -492,14 +492,14 @@ const ExportData = (props) => {
 };
 
 ExportData.propTypes = {
-    isExportOverlayOpen: PropTypes.any,
-    toggleExportDataOverlay: PropTypes.any,
-    rows: PropTypes.any,
-    columns: PropTypes.any,
-    originalColumns: PropTypes.any,
-    isExpandContentAvailable: PropTypes.any,
-    additionalColumn: PropTypes.any,
-    isRowExpandEnabled: PropTypes.any
+    isExportOverlayOpen: PropTypes.bool,
+    toggleExportDataOverlay: PropTypes.func,
+    rows: PropTypes.arrayOf(PropTypes.object),
+    columns: PropTypes.arrayOf(PropTypes.object),
+    originalColumns: PropTypes.arrayOf(PropTypes.object),
+    isExpandContentAvailable: PropTypes.bool,
+    additionalColumn: PropTypes.arrayOf(PropTypes.object),
+    isRowExpandEnabled: PropTypes.bool
 };
 
 export default ExportData;

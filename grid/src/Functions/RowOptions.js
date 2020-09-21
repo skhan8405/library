@@ -141,11 +141,11 @@ const RowOptions = ({
     );
 };
 RowOptions.propTypes = {
-    row: PropTypes.any,
-    rowActions: PropTypes.any,
-    rowActionCallback: PropTypes.any,
-    bindRowEditOverlay: PropTypes.any,
-    bindRowDeleteOverlay: PropTypes.any
+    row: PropTypes.object,
+    rowActions: PropTypes.arrayOf(PropTypes.object),
+    rowActionCallback: PropTypes.func,
+    bindRowEditOverlay: PropTypes.func,
+    bindRowDeleteOverlay: PropTypes.func
 };
 
 export default RowOptions;

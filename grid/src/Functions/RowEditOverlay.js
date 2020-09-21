@@ -68,13 +68,13 @@ const RowEditOverLay = ({
     );
 };
 RowEditOverLay.propTypes = {
-    row: PropTypes.any,
-    columns: PropTypes.any,
-    isRowExpandEnabled: PropTypes.any,
-    additionalColumn: PropTypes.any,
-    getRowEditOverlay: PropTypes.any,
-    closeRowEditOverlay: PropTypes.any,
-    updateRowInGrid: PropTypes.any
+    row: PropTypes.object,
+    columns: PropTypes.arrayOf(PropTypes.object),
+    isRowExpandEnabled: PropTypes.bool,
+    additionalColumn: PropTypes.object,
+    getRowEditOverlay: PropTypes.func,
+    closeRowEditOverlay: PropTypes.func,
+    updateRowInGrid: PropTypes.func
 };
 
 export default RowEditOverLay;

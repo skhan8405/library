@@ -32,8 +32,8 @@ const CellDisplayAndEditTag = (props) => {
 };
 
 CellDisplayAndEditTag.propTypes = {
-    cellKey: PropTypes.any,
-    columnKey: PropTypes.any,
+    cellKey: PropTypes.string,
+    columnKey: PropTypes.string,
     children: PropTypes.any
 };
 

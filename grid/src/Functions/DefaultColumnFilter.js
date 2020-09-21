@@ -15,7 +15,7 @@ const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => {
 };
 
 DefaultColumnFilter.propTypes = {
-    column: PropTypes.any
+    column: PropTypes.object
 };
 
 export default DefaultColumnFilter;

@@ -99,9 +99,9 @@ const CellDisplayAndEdit = ({ row, columns, updateRowInGrid }) => {
 };
 
 CellDisplayAndEdit.propTypes = {
-    row: PropTypes.any,
-    columns: PropTypes.any,
-    updateRowInGrid: PropTypes.any
+    row: PropTypes.object,
+    columns: PropTypes.arrayOf(PropTypes.object),
+    updateRowInGrid: PropTypes.func
 };
 
 export default CellDisplayAndEdit;

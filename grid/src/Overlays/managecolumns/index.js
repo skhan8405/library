@@ -479,12 +479,12 @@ const ColumnReordering = (props) => {
 };
 
 ColumnReordering.propTypes = {
-    isManageColumnOpen: PropTypes.any,
-    toggleManageColumns: PropTypes.any,
-    originalColumns: PropTypes.any,
-    isExpandContentAvailable: PropTypes.any,
-    additionalColumn: PropTypes.any,
-    updateColumnStructure: PropTypes.any
+    isManageColumnOpen: PropTypes.bool,
+    toggleManageColumns: PropTypes.func,
+    originalColumns: PropTypes.arrayOf(PropTypes.object),
+    isExpandContentAvailable: PropTypes.bool,
+    additionalColumn: PropTypes.arrayOf(PropTypes.object),
+    updateColumnStructure: PropTypes.func
 };
 
 export default ColumnReordering;
