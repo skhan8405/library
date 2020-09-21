@@ -39,9 +39,9 @@ const RowDeleteOverLay = ({
     );
 };
 RowDeleteOverLay.propTypes = {
-    row: PropTypes.any,
-    closeRowDeleteOverlay: PropTypes.any,
-    deleteRowFromGrid: PropTypes.any
+    row: PropTypes.object,
+    closeRowDeleteOverlay: PropTypes.func,
+    deleteRowFromGrid: PropTypes.func
 };
 
 export default RowDeleteOverLay;

@@ -16,7 +16,7 @@ const RowSelector = forwardRef(({ indeterminate, ...rest }, ref) => {
 });
 
 RowSelector.propTypes = {
-    indeterminate: PropTypes.any
+    indeterminate: PropTypes.bool
 };
 
 export default RowSelector;

@@ -57,7 +57,7 @@ const ColumnItem = ({
                         <IconJustify />
                     </i>
                 </div>
-                <div>{Header}</div>
+                <div className="columnItem__Header">{Header}</div>
                 <div className="column__innerCells__wrap">
                     {originalInnerCells && originalInnerCells.length > 0
                         ? originalInnerCells.map((cell) => {

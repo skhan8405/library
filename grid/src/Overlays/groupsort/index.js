@@ -114,76 +114,77 @@ const GroupSort = (props) => {
 
     if (isGroupSortOverLayOpen) {
         return (
-            <ClickAwayListener onClickAway={toggleGroupSortOverLay}>
-                <div className="neo-grid-popover">
-                    <div className="neo-grid-popover__sort">
-                        <div className="neo-grid-popover__title">
-                            <h2>Sort</h2>
-                            <div className="neo-grid-popover__close">
-                                <i
-                                    aria-hidden="true"
-                                    onClick={toggleGroupSortOverLay}
-                                >
-                                    <IconClose />
-                                </i>
-                            </div>
-                        </div>
-                        <div className="neo-grid-popover__content">
-                            <DndProvider
-                                backend={MultiBackend}
-                                options={HTML5toTouch}
+            <ClickAwayListener
+                onClickAway={toggleGroupSortOverLay}
+                className="neo-grid-popover"
+            >
+                <div className="neo-grid-popover__sort">
+                    <div className="neo-grid-popover__title">
+                        <h2>Sort</h2>
+                        <div className="neo-grid-popover__close">
+                            <i
+                                aria-hidden="true"
+                                onClick={toggleGroupSortOverLay}
                             >
-                                <SortingList
-                                    sortOptions={sortOptions}
-                                    originalColumns={originalColumns}
-                                    updateSortingOptions={updateSortingOptions}
-                                    updateSingleSortingOption={
-                                        updateSingleSortingOption
-                                    }
-                                    copySortOption={copySortOption}
-                                    deleteSortOption={deleteSortOption}
-                                />
-                            </DndProvider>
+                                <IconClose />
+                            </i>
                         </div>
-                        <div className="sort-warning">
-                            {isErrorDisplayed ? (
-                                <span>Duplicate sort options found.</span>
-                            ) : null}
+                    </div>
+                    <div className="neo-grid-popover__content">
+                        <DndProvider
+                            backend={MultiBackend}
+                            options={HTML5toTouch}
+                        >
+                            <SortingList
+                                sortOptions={sortOptions}
+                                originalColumns={originalColumns}
+                                updateSortingOptions={updateSortingOptions}
+                                updateSingleSortingOption={
+                                    updateSingleSortingOption
+                                }
+                                copySortOption={copySortOption}
+                                deleteSortOption={deleteSortOption}
+                            />
+                        </DndProvider>
+                    </div>
+                    <div className="sort-warning">
+                        {isErrorDisplayed ? (
+                            <span>Duplicate sort options found.</span>
+                        ) : null}
+                    </div>
+                    <div className="sort__new">
+                        <div
+                            className="sort__section"
+                            role="presentation"
+                            onClick={addSortingOptions}
+                        >
+                            <span>+</span>
+                            <div className="sort__txt">New Sort</div>
                         </div>
-                        <div className="sort__new">
-                            <div
-                                className="sort__section"
-                                role="presentation"
-                                onClick={addSortingOptions}
+                    </div>
+                    <div className="sort__footer">
+                        <div className="sort__btns">
+                            <button
+                                type="button"
+                                className="btns"
+                                onClick={clearSortingOptions}
                             >
-                                <span>+</span>
-                                <div className="sort__txt">New Sort</div>
-                            </div>
-                        </div>
-                        <div className="sort__footer">
-                            <div className="sort__btns">
-                                <button
-                                    type="button"
-                                    className="btns"
-                                    onClick={clearSortingOptions}
-                                >
-                                    Clear All
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btns btns__save"
-                                    onClick={applySort}
-                                >
-                                    Ok
-                                </button>
-                            </div>
+                                Clear All
+                            </button>
+                            <button
+                                type="button"
+                                className="btns btns__save"
+                                onClick={applySort}
+                            >
+                                Ok
+                            </button>
                         </div>
                     </div>
                 </div>
             </ClickAwayListener>
         );
     }
-    return <div />;
+    return null;
 };
 
 GroupSort.propTypes = {
