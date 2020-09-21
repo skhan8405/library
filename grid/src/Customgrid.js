@@ -71,7 +71,8 @@ const Customgrid = (props) => {
         columnChooser,
         exportData,
         onGridRefresh,
-        rowsToDeselect
+        rowsToDeselect,
+        groupSortOptions
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -218,7 +219,8 @@ const Customgrid = (props) => {
         prepareRow,
         preFilteredRows,
         state: { globalFilter, selectedRowIds },
-        setGlobalFilter
+        setGlobalFilter,
+        toggleAllRowsExpanded
     } = useTable(
         {
             columns,
@@ -353,6 +355,30 @@ const Customgrid = (props) => {
             updateSelectedRows(preFilteredRows, selectedRowIds);
         }
     }, [selectedRowIds]);
+
+    // Update the row selection and clear row expands when group sort changes
+    // Set all row selections to false and find new Ids of already selected rows and make them selected
+    useEffect(() => {
+        if (!isFirstRendering) {
+            toggleAllRowsExpanded(false);
+            if (userSelectedRows && userSelectedRows.length > 0) {
+                Object.keys(selectedRowIds).forEach((key) => {
+                    selectedRowIds[key] = false;
+                });
+                userSelectedRows.forEach((selectedRow) => {
+                    const updatedRow = rows.find((row) => {
+                        return row.original === selectedRow;
+                    });
+                    if (updatedRow) {
+                        const { id } = updatedRow;
+                        if (updatedRow) {
+                            selectedRowIds[id] = true;
+                        }
+                    }
+                });
+            }
+        }
+    }, [groupSortOptions]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -672,7 +698,8 @@ Customgrid.propTypes = {
     columnChooser: PropTypes.any,
     exportData: PropTypes.any,
     onGridRefresh: PropTypes.any,
-    rowsToDeselect: PropTypes.any
+    rowsToDeselect: PropTypes.any,
+    groupSortOptions: PropTypes.any
 };
 
 export default Customgrid;
