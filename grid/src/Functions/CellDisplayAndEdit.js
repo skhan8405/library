@@ -8,6 +8,7 @@ import { IconPencil, IconTick, IconCancel } from "../Utilities/SvgUtilities";
 const CellDisplayAndEdit = ({ row, columns, updateRowInGrid }) => {
     const { column } = row;
     if (column && row.row) {
+        const { original, isExpanded } = row.row;
         const [isEditOpen, setIsEditOpen] = useState(false);
         const [editedRowValue, setEditedRowValue] = useState(null);
 
@@ -29,16 +30,16 @@ const CellDisplayAndEdit = ({ row, columns, updateRowInGrid }) => {
 
         const saveEdit = () => {
             if (editedRowValue) {
-                updateRowInGrid(row.row.original, editedRowValue);
+                updateRowInGrid(original, editedRowValue);
             }
             closeEdit();
         };
 
-        const originalRowValue = { ...row.row.original };
+        const originalRowValue = { ...original };
         const cellDisplayContent = column.displayCell(
             originalRowValue,
             CellDisplayAndEditTag,
-            row.row.isExpanded
+            isExpanded
         );
         const cellEditContent = column.editCell
             ? column.editCell(
