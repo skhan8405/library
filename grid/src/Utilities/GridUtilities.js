@@ -21,3 +21,13 @@ export const findSelectedRows = (rows, selectedRowIds) => {
     }
     return rowsSelectedByUser;
 };
+
+export const findSelectedRowIdAttributes = (selectedRows, idAttribute) => {
+    const rowIdentifiers = [];
+    if (selectedRows && selectedRows.length > 0) {
+        selectedRows.forEach((row) => {
+            rowIdentifiers.push(row[idAttribute]);
+        });
+    }
+    return rowIdentifiers;
+};

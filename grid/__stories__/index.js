@@ -633,10 +633,7 @@ const GridComponent = (props) => {
 
     const removeRowSelection = (event) => {
         const rowId = event.currentTarget.dataset.id;
-        setRowsToDeselect({
-            idAttribute: "travelId",
-            value: [Number(rowId)]
-        });
+        setRowsToDeselect([Number(rowId)]);
     };
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
@@ -664,6 +661,7 @@ const GridComponent = (props) => {
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
                     gridData={gridData}
+                    idAttribute="travelId"
                     isNextPageAvailable={isNextPageAvailable}
                     loadMoreData={loadMoreData}
                     columns={columns}

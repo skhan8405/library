@@ -37,7 +37,10 @@ import {
     IconSort,
     IconRefresh
 } from "./Utilities/SvgUtilities";
-import { findSelectedRows } from "./Utilities/GridUtilities";
+import {
+    findSelectedRows,
+    findSelectedRowIdAttributes
+} from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
 
@@ -50,6 +53,7 @@ const Customgrid = (props) => {
         originalColumns,
         additionalColumn,
         data,
+        idAttribute,
         getRowEditOverlay,
         updateRowInGrid,
         deleteRowFromGrid,
@@ -71,7 +75,8 @@ const Customgrid = (props) => {
         columnChooser,
         exportData,
         onGridRefresh,
-        rowsToDeselect
+        rowsToDeselect,
+        groupSortOptions
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -164,8 +169,11 @@ const Customgrid = (props) => {
         setIsExportOverlayOpen(!isExportOverlayOpen);
     };
 
-    // Local state value for storing user selected rows
-    const [userSelectedRows, setUserSelectedRows] = useState([]);
+    // Local state value for storing user selected rows - identifier values (idAttribute)
+    const [
+        userSelectedRowIdentifiers,
+        setUserSelectedRowIdentifiers
+    ] = useState([]);
 
     // Column filter added for all columns by default
     const defaultColumn = useMemo(
@@ -203,7 +211,11 @@ const Customgrid = (props) => {
     // This is used in useeffects for row selection and row deselection
     const updateSelectedRows = (rows, selectedRowIds) => {
         const rowsSelectedByUser = findSelectedRows(rows, selectedRowIds);
-        setUserSelectedRows(rowsSelectedByUser);
+        const rowIdentifiers = findSelectedRowIdAttributes(
+            rowsSelectedByUser,
+            idAttribute
+        );
+        setUserSelectedRowIdentifiers(rowIdentifiers);
         if (onRowSelect) {
             onRowSelect(rowsSelectedByUser);
         }
@@ -218,7 +230,8 @@ const Customgrid = (props) => {
         prepareRow,
         preFilteredRows,
         state: { globalFilter, selectedRowIds },
-        setGlobalFilter
+        setGlobalFilter,
+        toggleAllRowsExpanded
     } = useTable(
         {
             columns,
@@ -328,20 +341,18 @@ const Customgrid = (props) => {
     // Update the select state of row in Grid using thehook provided by useTable method
     // Find the row Id using the key - value passed from props and use toggleRowSelected method
     useEffect(() => {
-        if (rowsToDeselect) {
-            const { idAttribute, value } = rowsToDeselect;
-            if (idAttribute && value && value.length > 0) {
-                value.forEach((columnVal) => {
-                    const rowToDeselect = preFilteredRows.find((row) => {
-                        return row.original[idAttribute] === columnVal;
-                    });
-                    if (rowToDeselect) {
-                        const { id } = rowToDeselect;
-                        selectedRowIds[id] = false;
-                        updateSelectedRows(preFilteredRows, selectedRowIds);
-                    }
+        if (rowsToDeselect && rowsToDeselect.length) {
+            rowsToDeselect.forEach((rowId) => {
+                const rowToDeselect = preFilteredRows.find((row) => {
+                    const { original } = row;
+                    return original[idAttribute] === rowId;
                 });
-            }
+                if (rowToDeselect) {
+                    const { id } = rowToDeselect;
+                    selectedRowIds[id] = false;
+                    updateSelectedRows(preFilteredRows, selectedRowIds);
+                }
+            });
         }
     }, [rowsToDeselect]);
 
@@ -353,6 +364,37 @@ const Customgrid = (props) => {
             updateSelectedRows(preFilteredRows, selectedRowIds);
         }
     }, [selectedRowIds]);
+
+    // Update the row selection and clear row expands when group sort changes
+    // Set all row selections to false and find new Ids of already selected rows and make them selected
+    useEffect(() => {
+        if (!isFirstRendering) {
+            toggleAllRowsExpanded(false);
+            if (
+                userSelectedRowIdentifiers &&
+                userSelectedRowIdentifiers.length > 0
+            ) {
+                // Deselect all current selections
+                Object.keys(selectedRowIds).forEach((key) => {
+                    selectedRowIds[key] = false;
+                });
+
+                // Loop through already selected rows and find row id and make it selected
+                userSelectedRowIdentifiers.forEach((selectedRowId) => {
+                    const updatedRow = preFilteredRows.find((row) => {
+                        const { original } = row;
+                        return original[idAttribute] === selectedRowId;
+                    });
+                    if (updatedRow) {
+                        const { id } = updatedRow;
+                        if (updatedRow) {
+                            selectedRowIds[id] = true;
+                        }
+                    }
+                });
+            }
+        }
+    }, [groupSortOptions]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -542,7 +584,11 @@ const Customgrid = (props) => {
                     overflowY: "hidden"
                 }}
             >
-                <AutoSizer disableWidth disableResizing>
+                <AutoSizer
+                    disableWidth
+                    disableResizing
+                    className="tableContainer__AutoSizer"
+                >
                     {({ height }) => (
                         <div {...getTableProps()} className="table">
                             <div className="thead table-row table-row--head">
@@ -605,6 +651,7 @@ const Customgrid = (props) => {
                                     isItemLoaded={isItemLoaded}
                                     itemCount={itemCount}
                                     loadMoreItems={loadMoreItems}
+                                    className="tableContainer__InfiniteLoader"
                                 >
                                     {({ onItemsRendered, ref }) => (
                                         <List
@@ -627,6 +674,7 @@ const Customgrid = (props) => {
                                             }}
                                             onItemsRendered={onItemsRendered}
                                             overscanCount={20}
+                                            className="tableContainer__List"
                                         >
                                             {RenderRow}
                                         </List>
@@ -648,6 +696,7 @@ Customgrid.propTypes = {
     managableColumns: PropTypes.any,
     originalColumns: PropTypes.any,
     data: PropTypes.any,
+    idAttribute: PropTypes.string,
     getRowEditOverlay: PropTypes.any,
     updateRowInGrid: PropTypes.any,
     deleteRowFromGrid: PropTypes.any,
@@ -672,7 +721,8 @@ Customgrid.propTypes = {
     columnChooser: PropTypes.any,
     exportData: PropTypes.any,
     onGridRefresh: PropTypes.any,
-    rowsToDeselect: PropTypes.any
+    rowsToDeselect: PropTypes.any,
+    groupSortOptions: PropTypes.any
 };
 
 export default Customgrid;

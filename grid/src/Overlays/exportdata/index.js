@@ -50,8 +50,6 @@ const ExportData = (props) => {
     const [downloadTypes, setDownloadTypes] = useState([]);
     const [warning, setWarning] = useState("");
 
-    let isDownload = false;
-
     const downloadPDF = (rowFilteredValues, rowFilteredHeader) => {
         const unit = "pt";
         const size = "A4"; // Use A1, A2, A3 or A4
@@ -75,8 +73,6 @@ const ExportData = (props) => {
         doc.text(title, 30, 40);
         doc.autoTable(content);
         doc.save("iCargo Neo Report.pdf");
-
-        isDownload = false;
     };
 
     const downloadCSVFile = async (filteredRowValue) => {
@@ -116,7 +112,6 @@ const ExportData = (props) => {
     };
 
     const exportRowData = () => {
-        isDownload = true;
         const filteredRow = [];
         const filteredRowValues = [];
         const filteredRowHeader = [];
@@ -336,174 +331,156 @@ const ExportData = (props) => {
 
     if (isExportOverlayOpen) {
         return (
-            <ClickAwayListener onClickAway={toggleExportDataOverlay}>
-                <div className="neo-grid-popover neo-grid-popover--exports exports--grid">
-                    <div className="neo-grid-popover__export export__grid">
-                        <div className="export__chooser">
-                            <div className="export__header">
-                                <div>
-                                    <strong>Export Data</strong>
-                                </div>
-                            </div>
-                            <div className="export__body">
-                                <div>
+            <ClickAwayListener
+                onClickAway={toggleExportDataOverlay}
+                className="neo-grid-popover neo-grid-popover--exports exports--grid"
+            >
+                <div className="neo-grid-popover__export export__grid">
+                    <div className="export__chooser">
+                        <div className="export__header">
+                            <strong>Export Data</strong>
+                        </div>
+                        <div className="export__body">
+                            <input
+                                type="text"
+                                data-testid="search"
+                                placeholder="Search column"
+                                className="custom__ctrl"
+                                onChange={filterColumnsList}
+                            />
+                            <div className="export__wrap export__headertxt">
+                                <div className="export__checkbox">
                                     <input
-                                        type="text"
-                                        data-testid="search"
-                                        placeholder="Search column"
-                                        className="custom__ctrl"
-                                        onChange={filterColumnsList}
+                                        type="checkbox"
+                                        value="Select All"
+                                        data-testid="select-all-checkbox"
+                                        checked={isCheckboxSelected(
+                                            "Select All"
+                                        )}
+                                        onChange={selectAllColumns}
                                     />
                                 </div>
-                                <div className="export__wrap export__headertxt">
-                                    <div className="export__checkbox">
-                                        <input
-                                            type="checkbox"
-                                            value="Select All"
-                                            data-testid="select-all-checkbox"
-                                            checked={isCheckboxSelected(
-                                                "Select All"
-                                            )}
-                                            onChange={selectAllColumns}
-                                        />
-                                    </div>
-                                    <div className="export__txt">
-                                        Select All
-                                    </div>
-                                </div>
-                                {searchedColumns.map((column) => {
-                                    return (
-                                        <div
-                                            className="export__wrap"
-                                            key={column.columnId}
-                                        >
-                                            <div className="export__checkbox">
-                                                <input
-                                                    type="checkbox"
-                                                    data-testid={`${column.Header}`}
-                                                    value={column.Header}
-                                                    checked={isCheckboxSelected(
-                                                        column.Header
-                                                    )}
-                                                    onChange={
-                                                        selectSingleColumn
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="export__txt">
-                                                {column.Header}
-                                            </div>
+                                <div className="export__txt">Select All</div>
+                            </div>
+                            {searchedColumns.map((column) => {
+                                return (
+                                    <div
+                                        className="export__wrap"
+                                        key={column.columnId}
+                                    >
+                                        <div className="export__checkbox">
+                                            <input
+                                                type="checkbox"
+                                                data-testid={`${column.Header}`}
+                                                value={column.Header}
+                                                checked={isCheckboxSelected(
+                                                    column.Header
+                                                )}
+                                                onChange={selectSingleColumn}
+                                            />
                                         </div>
-                                    );
-                                })}
+                                        <div className="export__txt">
+                                            {column.Header}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className="export__settings">
+                        <div className="export__header">
+                            <div className="export__headerTxt" />
+                            <div className="export__close">
+                                <i
+                                    aria-hidden="true"
+                                    onClick={toggleExportDataOverlay}
+                                >
+                                    <IconClose />
+                                </i>
                             </div>
                         </div>
-                        <div className="export__settings">
-                            <div className="export__header">
-                                <div className="export__headerTxt" />
-                                <div className="export__close">
-                                    <i
-                                        aria-hidden="true"
-                                        onClick={toggleExportDataOverlay}
-                                    >
-                                        <IconClose />
+                        <div className="export__as">Export As</div>
+                        <div className="export__body">
+                            <div className="export__reorder">
+                                <div className="check-wrap">
+                                    <input
+                                        type="checkbox"
+                                        id="chk_pdf"
+                                        data-testid="chk_pdf_test"
+                                        value="pdf"
+                                        checked={downloadTypes.includes("pdf")}
+                                        onChange={changeDownloadType}
+                                    />
+                                </div>
+                                <div className="export__file">
+                                    <i>
+                                        <IconPdf />
                                     </i>
+                                    <strong>PDF</strong>
                                 </div>
                             </div>
-                            <div className="export__as">Export As</div>
-                            <div className="export__body">
-                                <div className="export__reorder">
-                                    <div className="check-wrap">
-                                        <input
-                                            type="checkbox"
-                                            id="chk_pdf"
-                                            data-testid="chk_pdf_test"
-                                            value="pdf"
-                                            checked={downloadTypes.includes(
-                                                "pdf"
-                                            )}
-                                            onChange={changeDownloadType}
-                                        />
-                                    </div>
-                                    <div className="export__file">
-                                        <i>
-                                            <IconPdf />
-                                        </i>
-                                        <strong>PDF</strong>
-                                    </div>
+                            <div className="export__reorder">
+                                <div className="check-wrap">
+                                    <input
+                                        type="checkbox"
+                                        id="chk_excel"
+                                        data-testid="chk_excel_test"
+                                        value="excel"
+                                        checked={downloadTypes.includes(
+                                            "excel"
+                                        )}
+                                        onChange={changeDownloadType}
+                                    />
                                 </div>
-                                <div className="export__reorder">
-                                    <div className="check-wrap">
-                                        <input
-                                            type="checkbox"
-                                            id="chk_excel"
-                                            data-testid="chk_excel_test"
-                                            value="excel"
-                                            checked={downloadTypes.includes(
-                                                "excel"
-                                            )}
-                                            onChange={changeDownloadType}
-                                        />
-                                    </div>
-                                    <div className="export__file">
-                                        <i>
-                                            <IconExcel />
-                                        </i>
-                                        <strong>Excel</strong>
-                                    </div>
-                                </div>
-                                <div className="export__reorder">
-                                    <div className="check-wrap">
-                                        <input
-                                            type="checkbox"
-                                            id="chk_csv"
-                                            data-testid="chk_csv_test"
-                                            value="csv"
-                                            checked={downloadTypes.includes(
-                                                "csv"
-                                            )}
-                                            onChange={changeDownloadType}
-                                        />
-                                    </div>
-                                    <div className="export__file">
-                                        <i>
-                                            <IconCsv />
-                                        </i>
-                                        <strong>CSV</strong>
-                                    </div>
-                                </div>
-                                <div className="exportWarning">
-                                    <span className="alert export-warning">
-                                        <strong>{warning}</strong>
-                                    </span>
-                                </div>
-                                <div>
-                                    {isDownload ? (
-                                        <h2 style={{ textAlign: "center" }}>
-                                            Loading...
-                                        </h2>
-                                    ) : null}
+                                <div className="export__file">
+                                    <i>
+                                        <IconExcel />
+                                    </i>
+                                    <strong>Excel</strong>
                                 </div>
                             </div>
-                            <div className="export__footer">
-                                <div className="export__btns">
-                                    <button
-                                        type="button"
-                                        data-testid="cancel_button"
-                                        className="btns"
-                                        onClick={toggleExportDataOverlay}
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="button"
-                                        data-testid="export_button"
-                                        className="btns btns__save"
-                                        onClick={exportRowData}
-                                    >
-                                        Export
-                                    </button>
+                            <div className="export__reorder">
+                                <div className="check-wrap">
+                                    <input
+                                        type="checkbox"
+                                        id="chk_csv"
+                                        data-testid="chk_csv_test"
+                                        value="csv"
+                                        checked={downloadTypes.includes("csv")}
+                                        onChange={changeDownloadType}
+                                    />
                                 </div>
+                                <div className="export__file">
+                                    <i>
+                                        <IconCsv />
+                                    </i>
+                                    <strong>CSV</strong>
+                                </div>
+                            </div>
+                            <div className="exportWarning">
+                                <span className="alert export-warning">
+                                    <strong>{warning}</strong>
+                                </span>
+                            </div>
+                        </div>
+                        <div className="export__footer">
+                            <div className="export__btns">
+                                <button
+                                    type="button"
+                                    data-testid="cancel_button"
+                                    className="btns"
+                                    onClick={toggleExportDataOverlay}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    data-testid="export_button"
+                                    className="btns btns__save"
+                                    onClick={exportRowData}
+                                >
+                                    Export
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -511,7 +488,7 @@ const ExportData = (props) => {
             </ClickAwayListener>
         );
     }
-    return <div />;
+    return null;
 };
 
 ExportData.propTypes = {
