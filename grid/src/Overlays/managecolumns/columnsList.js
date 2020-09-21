@@ -60,10 +60,10 @@ const ColumnsList = (props) => {
 };
 
 ColumnsList.propTypes = {
-    updateColumnsInState: PropTypes.any,
-    columnsToManage: PropTypes.any,
-    isInnerCellSelected: PropTypes.any,
-    selectInnerCells: PropTypes.any
+    updateColumnsInState: PropTypes.func,
+    columnsToManage: PropTypes.arrayOf(PropTypes.object),
+    isInnerCellSelected: PropTypes.func,
+    selectInnerCells: PropTypes.func
 };
 
 export default ColumnsList;

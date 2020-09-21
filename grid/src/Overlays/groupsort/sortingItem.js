@@ -195,14 +195,14 @@ const SortItem = ({
 };
 
 SortItem.propTypes = {
-    id: PropTypes.any,
-    sortOption: PropTypes.any,
-    originalColumns: PropTypes.any,
-    moveSort: PropTypes.any,
-    findSort: PropTypes.any,
-    updateSingleSortingOption: PropTypes.any,
-    copySortOption: PropTypes.any,
-    deleteSortOption: PropTypes.any
+    id: PropTypes.number,
+    sortOption: PropTypes.object,
+    originalColumns: PropTypes.arrayOf(PropTypes.object),
+    moveSort: PropTypes.func,
+    findSort: PropTypes.func,
+    updateSingleSortingOption: PropTypes.func,
+    copySortOption: PropTypes.func,
+    deleteSortOption: PropTypes.func
 };
 
 export default SortItem;

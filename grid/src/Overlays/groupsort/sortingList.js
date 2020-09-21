@@ -63,12 +63,12 @@ const SortingList = (props) => {
 };
 
 SortingList.propTypes = {
-    updateSortingOptions: PropTypes.any,
-    sortOptions: PropTypes.any,
-    originalColumns: PropTypes.any,
-    copySortOption: PropTypes.any,
-    deleteSortOption: PropTypes.any,
-    updateSingleSortingOption: PropTypes.any
+    updateSortingOptions: PropTypes.func,
+    sortOptions: PropTypes.array,
+    originalColumns: PropTypes.arrayOf(PropTypes.object),
+    copySortOption: PropTypes.func,
+    deleteSortOption: PropTypes.func,
+    updateSingleSortingOption: PropTypes.func
 };
 
 export default SortingList;

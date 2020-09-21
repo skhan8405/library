@@ -92,13 +92,13 @@ const ColumnItem = ({
 };
 
 ColumnItem.propTypes = {
-    id: PropTypes.any,
-    Header: PropTypes.any,
-    moveColumn: PropTypes.any,
-    findColumn: PropTypes.any,
-    originalInnerCells: PropTypes.any,
-    isInnerCellSelected: PropTypes.any,
-    selectInnerCells: PropTypes.any
+    id: PropTypes.string,
+    Header: PropTypes.string,
+    moveColumn: PropTypes.func,
+    findColumn: PropTypes.func,
+    originalInnerCells: PropTypes.arrayOf(PropTypes.object),
+    isInnerCellSelected: PropTypes.func,
+    selectInnerCells: PropTypes.func
 };
 
 export default ColumnItem;

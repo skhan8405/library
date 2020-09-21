@@ -187,10 +187,10 @@ const GroupSort = (props) => {
 };
 
 GroupSort.propTypes = {
-    isGroupSortOverLayOpen: PropTypes.any,
-    toggleGroupSortOverLay: PropTypes.any,
-    originalColumns: PropTypes.any,
-    applyGroupSort: PropTypes.any
+    isGroupSortOverLayOpen: PropTypes.bool,
+    toggleGroupSortOverLay: PropTypes.func,
+    originalColumns: PropTypes.arrayOf(PropTypes.object),
+    applyGroupSort: PropTypes.func
 };
 
 export default GroupSort;

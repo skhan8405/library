@@ -802,7 +802,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -815,9 +815,9 @@ const GridComponent = (props) => {
 ```jsx
 <Grid
     className={className}
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -830,14 +830,14 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With out title
+#### Without title
 
-<Story name="With out title">
+<Story name="Without title">
     <GridComponent
         className="icargoCustomClass"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -850,8 +850,8 @@ const GridComponent = (props) => {
 ```jsx
 <Grid
     className={className}
-    gridHeight="80vh"
-    gridWidth="100%"
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -864,14 +864,15 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With out custom height
+#### With custom height
 
-<Story name="With out custom height">
+<Story name="With custom height">
     <GridComponent
         className="icargoCustomClass"
         title="AWBs"
+        gridHeight="50vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -884,8 +885,9 @@ const GridComponent = (props) => {
 ```jsx
 <Grid
     className={className}
-    title="AWBs"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -898,14 +900,15 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With out custom width
+#### With custom width
 
-<Story name="With out custom width">
+<Story name="With custom width">
     <GridComponent
         className="icargoCustomClass"
         title="AWBs"
         gridHeight="80vh"
-        isNextPageAvailable={true}
+        gridWidth="75%"
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -918,8 +921,9 @@ const GridComponent = (props) => {
 ```jsx
 <Grid
     className={className}
-    title="AWBs"
-    gridHeight="80vh"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -940,7 +944,7 @@ const GridComponent = (props) => {
         gridHeight="80vh"
         gridWidth="100%"
         columnToExpand={columnToExpand}
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -952,9 +956,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     columnToExpand={columnToExpand}
     isNextPageAvailable={isNextPageAvailable}
@@ -977,7 +981,7 @@ const GridComponent = (props) => {
         gridWidth="100%"
         rowActions={rowActions}
         rowActionCallback={rowActionCallback}
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -989,9 +993,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     rowActions={rowActions}
     rowActionCallback={rowActionCallback}
@@ -1013,7 +1017,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         onGridRefresh={onGridRefresh}
         globalSearch={false}
         columnFilter={false}
@@ -1026,9 +1030,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1049,7 +1053,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         CustomPanel={CustomPanel}
         globalSearch={false}
         columnFilter={false}
@@ -1062,9 +1066,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1085,7 +1089,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         rowsToDeselect={GridComponent.rowsToDeselect}
         globalSearch={false}
         columnFilter={false}
@@ -1098,9 +1102,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1114,14 +1118,14 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With out next page
+#### Without next page
 
-<Story name="With out next page">
+<Story name="Without next page">
     <GridComponent
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={false}
+        isNextPageAvailableCheck={false}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -1133,12 +1137,11 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
     columns={columns}
     getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
@@ -1155,7 +1158,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={true}
         columnFilter={false}
         groupSort={false}
@@ -1167,9 +1170,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1190,7 +1193,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={true}
         groupSort={false}
@@ -1202,9 +1205,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1225,7 +1228,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={true}
@@ -1237,9 +1240,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1260,7 +1263,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -1272,9 +1275,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1295,7 +1298,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         globalSearch={false}
         columnFilter={false}
         groupSort={false}
@@ -1307,9 +1310,9 @@ const GridComponent = (props) => {
 
 ```jsx
 <Grid
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1331,7 +1334,7 @@ const GridComponent = (props) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
-        isNextPageAvailable={true}
+        isNextPageAvailableCheck={true}
         columnToExpand={columnToExpand}
         rowActions={rowActions}
         rowActionCallback={rowActionCallback}
@@ -1350,9 +1353,9 @@ const GridComponent = (props) => {
 ```jsx
 <Grid
     className={className}
-    title="AWBs"
-    gridHeight="80vh"
-    gridWidth="100%"
+    title={title}
+    gridHeight={gridHeight}
+    gridWidth={gridWidth}
     gridData={gridData}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
@@ -1368,5 +1371,10 @@ const GridComponent = (props) => {
     onGridRefresh={onGridRefresh}
     CustomPanel={CustomPanel}
     rowsToDeselect={rowsToDeselect}
+    globalSearch={globalSearch}
+    columnFilter={columnFilter}
+    groupSort={groupSort}
+    columnChooser={columnChooser}
+    exportData={exportData}
 />
 ```
