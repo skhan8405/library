@@ -952,4 +952,82 @@ describe("render Index file ", () => {
         const errorElement = gridContainer.getElementsByClassName("error");
         expect(errorElement.length).toBeGreaterThan(0);
     });
+
+    it("test row selection retained after applying group sort", () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Grid
+                className="icargoCustomClass"
+                title={mockTitle}
+                gridHeight={mockGridHeight}
+                gridWidth={mockGridWidth}
+                gridData={data}
+                idAttribute="travelId"
+                isNextPageAvailable={false}
+                loadMoreData={mockLoadMoreData}
+                columns={gridColumns}
+                columnToExpand={mockAdditionalColumn}
+                rowActions={mockRowActions}
+                rowActionCallback={mockRowActionCallback}
+                getRowEditOverlay={mockGetRowEditOverlay}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
+                onGridRefresh={mockGridRefresh}
+                CustomPanel={mockCustomPanel}
+            />
+        );
+        const gridContainer = container;
+        expect(gridContainer).toBeInTheDocument();
+
+        const selectRowCheckbox = container.querySelectorAll(
+            "input[type='checkbox']"
+        )[2];
+        act(() => {
+            selectRowCheckbox.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        // Apply Sort
+        const toggleGroupSortOverLay = container.querySelector(
+            "[data-testid='toggleGroupSortOverLay']"
+        );
+
+        act(() => {
+            toggleGroupSortOverLay.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+        let sortOverlay = container.querySelector(
+            "[class='neo-grid-popover__sort']"
+        );
+        const addNewSort = sortOverlay.querySelector("[class='sort__txt']");
+        act(() => {
+            addNewSort.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+        const applySortButton = sortOverlay.querySelector(
+            "[class='btns btns__save']"
+        );
+        act(() => {
+            applySortButton.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+        sortOverlay = container.querySelector(
+            "[class='neo-grid-popover__sort']"
+        );
+        expect(sortOverlay).toBeNull();
+
+        const selectedRowCheckboxes = container.querySelectorAll(
+            "input[type='checkbox'][checked]"
+        );
+        expect(selectedRowCheckboxes.length).toBe(1);
+        const idCellContainerElement =
+            selectedRowCheckboxes[0].parentElement.parentElement
+                .nextElementSibling;
+        expect(idCellContainerElement.innerHTML).toBe("0");
+    });
 });
