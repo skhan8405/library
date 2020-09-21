@@ -17,6 +17,7 @@ const Grid = (props) => {
         gridHeight,
         gridWidth,
         gridData,
+        idAttribute,
         isNextPageAvailable,
         loadMoreData,
         columns,
@@ -215,22 +216,25 @@ const Grid = (props) => {
     };
     // Function to return sorted data
     const getSortedData = (originalData) => {
-        return originalData.sort((x, y) => {
-            let compareResult = 0;
-            groupSortOptions.forEach((option) => {
-                const { sortBy, sortOn, order } = option;
-                const newResult =
-                    sortOn === "value"
-                        ? compareValues(order, x[sortBy], y[sortBy])
-                        : compareValues(
-                              order,
-                              x[sortBy][sortOn],
-                              y[sortBy][sortOn]
-                          );
-                compareResult = compareResult || newResult;
+        if (originalData && originalData.length > 0) {
+            return originalData.sort((x, y) => {
+                let compareResult = 0;
+                groupSortOptions.forEach((option) => {
+                    const { sortBy, sortOn, order } = option;
+                    const newResult =
+                        sortOn === "value"
+                            ? compareValues(order, x[sortBy], y[sortBy])
+                            : compareValues(
+                                  order,
+                                  x[sortBy][sortOn],
+                                  y[sortBy][sortOn]
+                              );
+                    compareResult = compareResult || newResult;
+                });
+                return compareResult;
             });
-            return compareResult;
-        });
+        }
+        return [];
     };
     // #endregion
 
@@ -253,71 +257,87 @@ const Grid = (props) => {
     }, [gridData]);
 
     // Sort the data based on the user selected group sort optipons
-    const data = getSortedData([...gridData]);
+    const data =
+        gridData && gridData.length > 0 ? getSortedData([...gridData]) : [];
 
+    if (!(data && data.length > 0)) {
+        return (
+            <div className={`grid-component-container ${className || ""}`}>
+                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                    <span className="error">Invalid Data</span>
+                </h2>
+            </div>
+        );
+    }
+    if (!(processedColumns && processedColumns.length > 0)) {
+        return (
+            <div className={`grid-component-container ${className || ""}`}>
+                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                    <span className="error">Invalid Column Configuration</span>
+                </h2>
+            </div>
+        );
+    }
+    if (!idAttribute) {
+        return (
+            <div className={`grid-component-container ${className || ""}`}>
+                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                    <span className="error">Id Attribute not passed</span>
+                </h2>
+            </div>
+        );
+    }
     return (
         <div className={`grid-component-container ${className || ""}`}>
-            {data &&
-            data.length > 0 &&
-            processedColumns &&
-            processedColumns.length > 0 ? (
-                <div>
-                    <Customgrid
-                        title={title}
-                        gridHeight={gridHeight}
-                        gridWidth={gridWidth}
-                        managableColumns={useMemo(() => gridColumns)} // React table wants all parameters passed into useTable function to be memoized
-                        originalColumns={gridColumns}
-                        additionalColumn={additionalColumn}
-                        data={useMemo(() => data)} // React table wants all parameters passed into useTable function to be memoized
-                        getRowEditOverlay={getRowEditOverlay}
-                        updateRowInGrid={updateRowInGrid}
-                        deleteRowFromGrid={deleteRowFromGrid}
-                        searchColumn={searchColumn}
-                        onRowSelect={onRowSelect}
-                        calculateRowHeight={
-                            calculateRowHeight &&
-                            typeof calculateRowHeight === "function"
-                                ? calculateRowHeight
-                                : calculateDefaultRowHeight
-                        }
-                        isExpandContentAvailable={
-                            typeof renderExpandedContent === "function"
-                        }
-                        displayExpandedContent={displayExpandedContent}
-                        rowActions={rowActions}
-                        rowActionCallback={rowActionCallback}
-                        hasNextPage={isNextPageAvailable}
-                        isNextPageLoading={isNextPageLoading}
-                        loadNextPage={loadNextPage}
-                        doGroupSort={doGroupSort}
-                        CustomPanel={CustomPanel}
-                        globalSearch={globalSearch}
-                        columnFilter={columnFilter}
-                        groupSort={groupSort}
-                        columnChooser={columnChooser}
-                        exportData={exportData}
-                        onGridRefresh={onGridRefresh}
-                        rowsToDeselect={rowsToDeselect}
-                        groupSortOptions={groupSortOptions}
-                    />
-                    {isNextPageLoading ? (
-                        <div id="loader" className="background">
-                            <div className="dots container">
-                                <span />
-                                <span />
-                                <span />
-                            </div>
-                        </div>
-                    ) : null}
+            <Customgrid
+                title={title}
+                gridHeight={gridHeight}
+                gridWidth={gridWidth}
+                managableColumns={useMemo(() => gridColumns)} // React table wants all parameters passed into useTable function to be memoized
+                originalColumns={gridColumns}
+                additionalColumn={additionalColumn}
+                data={useMemo(() => data)} // React table wants all parameters passed into useTable function to be memoized
+                idAttribute={idAttribute}
+                getRowEditOverlay={getRowEditOverlay}
+                updateRowInGrid={updateRowInGrid}
+                deleteRowFromGrid={deleteRowFromGrid}
+                searchColumn={searchColumn}
+                onRowSelect={onRowSelect}
+                calculateRowHeight={
+                    calculateRowHeight &&
+                    typeof calculateRowHeight === "function"
+                        ? calculateRowHeight
+                        : calculateDefaultRowHeight
+                }
+                isExpandContentAvailable={
+                    typeof renderExpandedContent === "function"
+                }
+                displayExpandedContent={displayExpandedContent}
+                rowActions={rowActions}
+                rowActionCallback={rowActionCallback}
+                hasNextPage={isNextPageAvailable}
+                isNextPageLoading={isNextPageLoading}
+                loadNextPage={loadNextPage}
+                doGroupSort={doGroupSort}
+                CustomPanel={CustomPanel}
+                globalSearch={globalSearch}
+                columnFilter={columnFilter}
+                groupSort={groupSort}
+                columnChooser={columnChooser}
+                exportData={exportData}
+                onGridRefresh={onGridRefresh}
+                rowsToDeselect={rowsToDeselect}
+                groupSortOptions={groupSortOptions}
+            />
+            {isNextPageLoading ? (
+                <div id="loader" className="background">
+                    <div className="dots container">
+                        <span />
+                        <span />
+                        <span />
+                    </div>
                 </div>
-            ) : (
-                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    <span className="error">
-                        Invalid Data or Column Configurations
-                    </span>
-                </h2>
-            )}
+            ) : null}
         </div>
     );
 };
@@ -330,6 +350,7 @@ Grid.propTypes = {
     columns: PropTypes.any,
     columnToExpand: PropTypes.any,
     gridData: PropTypes.any,
+    idAttribute: PropTypes.string,
     isNextPageAvailable: PropTypes.any,
     loadMoreData: PropTypes.any,
     getRowEditOverlay: PropTypes.any,

@@ -37,7 +37,10 @@ import {
     IconSort,
     IconRefresh
 } from "./Utilities/SvgUtilities";
-import { findSelectedRows } from "./Utilities/GridUtilities";
+import {
+    findSelectedRows,
+    findSelectedRowIdAttributes
+} from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
 
@@ -50,6 +53,7 @@ const Customgrid = (props) => {
         originalColumns,
         additionalColumn,
         data,
+        idAttribute,
         getRowEditOverlay,
         updateRowInGrid,
         deleteRowFromGrid,
@@ -165,8 +169,11 @@ const Customgrid = (props) => {
         setIsExportOverlayOpen(!isExportOverlayOpen);
     };
 
-    // Local state value for storing user selected rows
-    const [userSelectedRows, setUserSelectedRows] = useState([]);
+    // Local state value for storing user selected rows - identifier values (idAttribute)
+    const [
+        userSelectedRowIdentifiers,
+        setUserSelectedRowIdentifiers
+    ] = useState([]);
 
     // Column filter added for all columns by default
     const defaultColumn = useMemo(
@@ -204,7 +211,11 @@ const Customgrid = (props) => {
     // This is used in useeffects for row selection and row deselection
     const updateSelectedRows = (rows, selectedRowIds) => {
         const rowsSelectedByUser = findSelectedRows(rows, selectedRowIds);
-        setUserSelectedRows(rowsSelectedByUser);
+        const rowIdentifiers = findSelectedRowIdAttributes(
+            rowsSelectedByUser,
+            idAttribute
+        );
+        setUserSelectedRowIdentifiers(rowIdentifiers);
         if (onRowSelect) {
             onRowSelect(rowsSelectedByUser);
         }
@@ -330,20 +341,18 @@ const Customgrid = (props) => {
     // Update the select state of row in Grid using thehook provided by useTable method
     // Find the row Id using the key - value passed from props and use toggleRowSelected method
     useEffect(() => {
-        if (rowsToDeselect) {
-            const { idAttribute, value } = rowsToDeselect;
-            if (idAttribute && value && value.length > 0) {
-                value.forEach((columnVal) => {
-                    const rowToDeselect = preFilteredRows.find((row) => {
-                        return row.original[idAttribute] === columnVal;
-                    });
-                    if (rowToDeselect) {
-                        const { id } = rowToDeselect;
-                        selectedRowIds[id] = false;
-                        updateSelectedRows(preFilteredRows, selectedRowIds);
-                    }
+        if (rowsToDeselect && rowsToDeselect.length) {
+            rowsToDeselect.forEach((rowId) => {
+                const rowToDeselect = preFilteredRows.find((row) => {
+                    const { original } = row;
+                    return original[idAttribute] === rowId;
                 });
-            }
+                if (rowToDeselect) {
+                    const { id } = rowToDeselect;
+                    selectedRowIds[id] = false;
+                    updateSelectedRows(preFilteredRows, selectedRowIds);
+                }
+            });
         }
     }, [rowsToDeselect]);
 
@@ -361,13 +370,20 @@ const Customgrid = (props) => {
     useEffect(() => {
         if (!isFirstRendering) {
             toggleAllRowsExpanded(false);
-            if (userSelectedRows && userSelectedRows.length > 0) {
+            if (
+                userSelectedRowIdentifiers &&
+                userSelectedRowIdentifiers.length > 0
+            ) {
+                // Deselect all current selections
                 Object.keys(selectedRowIds).forEach((key) => {
                     selectedRowIds[key] = false;
                 });
-                userSelectedRows.forEach((selectedRow) => {
-                    const updatedRow = rows.find((row) => {
-                        return row.original === selectedRow;
+
+                // Loop through already selected rows and find row id and make it selected
+                userSelectedRowIdentifiers.forEach((selectedRowId) => {
+                    const updatedRow = preFilteredRows.find((row) => {
+                        const { original } = row;
+                        return original[idAttribute] === selectedRowId;
                     });
                     if (updatedRow) {
                         const { id } = updatedRow;
@@ -674,6 +690,7 @@ Customgrid.propTypes = {
     managableColumns: PropTypes.any,
     originalColumns: PropTypes.any,
     data: PropTypes.any,
+    idAttribute: PropTypes.string,
     getRowEditOverlay: PropTypes.any,
     updateRowInGrid: PropTypes.any,
     deleteRowFromGrid: PropTypes.any,
