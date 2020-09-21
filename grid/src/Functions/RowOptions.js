@@ -63,81 +63,80 @@ const RowOptions = ({
     };
 
     return (
-        <div>
-            <div className="row-options-wrap">
-                <span
-                    className="icon-row-options"
-                    role="presentation"
-                    onClick={openRowOptionsOverlay}
+        <div className="row-options-wrap">
+            <span
+                className="icon-row-options"
+                role="presentation"
+                onClick={openRowOptionsOverlay}
+            >
+                <i />
+                <i />
+                <i />
+            </span>
+            {isRowOptionsOpen ? (
+                <ClickAwayListener
+                    onClickAway={closeRowOptionsOverlay}
+                    className="row-options-overlay"
                 >
-                    <i />
-                    <i />
-                    <i />
-                </span>
-                {isRowOptionsOpen ? (
-                    <ClickAwayListener onClickAway={closeRowOptionsOverlay}>
-                        <div className="row-options-overlay">
-                            <ul>
-                                {isRowEditOptionNeeded ? (
-                                    <li>
-                                        <span
-                                            role="presentation"
-                                            onClick={openRowEditOverlay}
-                                        >
-                                            <i>
-                                                <RowEdit />
-                                            </i>
-                                            <span>Edit</span>
-                                        </span>
-                                    </li>
-                                ) : null}
-                                {isRowDeleteOptionNeeded ? (
-                                    <li>
-                                        <span
-                                            role="presentation"
-                                            onClick={openDeleteOverlay}
-                                        >
-                                            <i>
-                                                <RowDelete />
-                                            </i>
-                                            <span>Delete</span>
-                                        </span>
-                                    </li>
-                                ) : null}
-                                {isAdditionalRowOptionsPresent
-                                    ? additionalRowOptions.map((action) => {
-                                          const { value, label } = action;
-                                          return (
-                                              <li key={value}>
-                                                  <span
-                                                      role="presentation"
-                                                      onClick={() => {
-                                                          return additionalActionClicked(
-                                                              value
-                                                          );
-                                                      }}
-                                                  >
-                                                      <i className="default" />
-                                                      <span>{label}</span>
-                                                  </span>
-                                              </li>
-                                          );
-                                      })
-                                    : null}
-                            </ul>
-                            <span
-                                role="presentation"
-                                className="close"
-                                onClick={closeRowOptionsOverlay}
-                            >
-                                <i>
-                                    <IconCancel />
-                                </i>
-                            </span>
-                        </div>
-                    </ClickAwayListener>
-                ) : null}
-            </div>
+                    <ul>
+                        {isRowEditOptionNeeded ? (
+                            <li>
+                                <span
+                                    role="presentation"
+                                    onClick={openRowEditOverlay}
+                                >
+                                    <i>
+                                        <RowEdit />
+                                    </i>
+                                    <span>Edit</span>
+                                </span>
+                            </li>
+                        ) : null}
+                        {isRowDeleteOptionNeeded ? (
+                            <li>
+                                <span
+                                    role="presentation"
+                                    onClick={openDeleteOverlay}
+                                >
+                                    <i>
+                                        <RowDelete />
+                                    </i>
+                                    <span>Delete</span>
+                                </span>
+                            </li>
+                        ) : null}
+                        {isAdditionalRowOptionsPresent
+                            ? additionalRowOptions.map((action) => {
+                                  const { value, label } = action;
+                                  return (
+                                      <li key={value}>
+                                          <span
+                                              role="presentation"
+                                              onClick={() => {
+                                                  return additionalActionClicked(
+                                                      value
+                                                  );
+                                              }}
+                                          >
+                                              <i className="default" />
+                                              <span>{label}</span>
+                                          </span>
+                                      </li>
+                                  );
+                              })
+                            : null}
+                    </ul>
+                    <span
+                        role="presentation"
+                        className="close"
+                        onClick={closeRowOptionsOverlay}
+                    >
+                        <i>
+                            <IconCancel />
+                        </i>
+                    </span>
+                </ClickAwayListener>
+            ) : null}
         </div>
     );
 };

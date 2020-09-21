@@ -584,7 +584,11 @@ const Customgrid = (props) => {
                     overflowY: "hidden"
                 }}
             >
-                <AutoSizer disableWidth disableResizing>
+                <AutoSizer
+                    disableWidth
+                    disableResizing
+                    className="tableContainer__AutoSizer"
+                >
                     {({ height }) => (
                         <div {...getTableProps()} className="table">
                             <div className="thead table-row table-row--head">
@@ -647,6 +651,7 @@ const Customgrid = (props) => {
                                     isItemLoaded={isItemLoaded}
                                     itemCount={itemCount}
                                     loadMoreItems={loadMoreItems}
+                                    className="tableContainer__InfiniteLoader"
                                 >
                                     {({ onItemsRendered, ref }) => (
                                         <List
@@ -669,6 +674,7 @@ const Customgrid = (props) => {
                                             }}
                                             onItemsRendered={onItemsRendered}
                                             overscanCount={20}
+                                            className="tableContainer__List"
                                         >
                                             {RenderRow}
                                         </List>

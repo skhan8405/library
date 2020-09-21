@@ -52,46 +52,45 @@ const CellDisplayAndEdit = ({ row, columns, updateRowInGrid }) => {
             <CellDisplayAndEditContext.Provider
                 value={{ columns: columnsToPass, column: columnToPass }}
             >
-                <ClickAwayListener onClickAway={closeEdit}>
-                    <div
-                        className={`table-cell--content table-cell--content__${id}`}
-                    >
-                        {cellEditContent ? (
-                            <div
-                                className="cell-edit"
-                                role="presentation"
-                                onClick={openEdit}
+                <ClickAwayListener
+                    onClickAway={closeEdit}
+                    className={`table-cell--content table-cell--content__${id}`}
+                >
+                    {cellEditContent ? (
+                        <div
+                            className="cell-edit"
+                            role="presentation"
+                            onClick={openEdit}
+                        >
+                            <i>
+                                <IconPencil />
+                            </i>
+                        </div>
+                    ) : null}
+                    {cellDisplayContent}
+                    {isEditOpen ? (
+                        <div className="table-cell--content-edit">
+                            {cellEditContent}
+                            <button
+                                type="button"
+                                aria-label="Cell Edit Save Button"
+                                className="ok"
+                                data-testid="ok"
+                                onClick={saveEdit}
                             >
-                                <i>
-                                    <IconPencil />
-                                </i>
-                            </div>
-                        ) : null}
-                        {cellDisplayContent}
-                        {isEditOpen ? (
-                            <div className="table-cell--content-edit">
-                                {cellEditContent}
-                                <button
-                                    type="button"
-                                    aria-label="Cell Edit Save Button"
-                                    className="ok"
-                                    data-testid="ok"
-                                    onClick={saveEdit}
-                                >
-                                    <IconTick />
-                                </button>
-                                <button
-                                    type="button"
-                                    aria-label="Cell Edit Cancel Button"
-                                    className="cancel"
-                                    data-testid="cancel"
-                                    onClick={closeEdit}
-                                >
-                                    <IconCancel />
-                                </button>
-                            </div>
-                        ) : null}
-                    </div>
+                                <IconTick />
+                            </button>
+                            <button
+                                type="button"
+                                aria-label="Cell Edit Cancel Button"
+                                className="cancel"
+                                data-testid="cancel"
+                                onClick={closeEdit}
+                            >
+                                <IconCancel />
+                            </button>
+                        </div>
+                    ) : null}
                 </ClickAwayListener>
             </CellDisplayAndEditContext.Provider>
         );

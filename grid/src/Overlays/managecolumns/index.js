@@ -304,181 +304,170 @@ const ColumnReordering = (props) => {
 
     if (isManageColumnOpen) {
         return (
-            <ClickAwayListener onClickAway={toggleManageColumns}>
-                <div className="neo-grid-popover neo-grid-popover--column columns--grid">
-                    <div className="neo-grid-popover__column column__grid">
-                        <div className="column__chooser">
-                            <div className="column__header">
-                                <div>
-                                    <strong>Column Chooser</strong>
-                                </div>
-                            </div>
-                            <div className="column__body">
-                                <div>
-                                    <input
-                                        type="text"
-                                        placeholder="Search column"
-                                        className="custom__ctrl"
-                                        data-testid="filterColumnsList"
-                                        onChange={filterColumnsList}
-                                    />
-                                </div>
-                                <div className="column__selectAll">
-                                    <div className="column__checkbox">
-                                        <input
-                                            type="checkbox"
-                                            value="Select All"
-                                            data-testid="selectAllCheckbox"
-                                            checked={isCheckboxSelected(
-                                                "Select All"
-                                            )}
-                                            onChange={selectAllColumns}
-                                        />
-                                    </div>
-                                    <div className="column__selectTxt">
-                                        Select All
-                                    </div>
-                                </div>
-                                {searchedColumns.map((column) => {
-                                    return (
-                                        <div
-                                            className="column__wrap"
-                                            key={column.columnId}
-                                        >
-                                            <div className="column__checkbox">
-                                                <input
-                                                    type="checkbox"
-                                                    value={column.Header}
-                                                    checked={isCheckboxSelected(
-                                                        column.Header
-                                                    )}
-                                                    onChange={
-                                                        selectSingleColumn
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="column__txt">
-                                                {column.Header}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+            <ClickAwayListener
+                onClickAway={toggleManageColumns}
+                className="neo-grid-popover neo-grid-popover--column columns--grid"
+            >
+                <div className="neo-grid-popover__column column__grid">
+                    <div className="column__chooser">
+                        <div className="column__header">
+                            <strong>Column Chooser</strong>
                         </div>
-                        <div className="column__settings">
-                            <div className="column__header">
-                                <div className="column__headerTxt">
-                                    <strong>Column Settings</strong>
-                                    {isErrorDisplayed ? (
-                                        <strong className="column-warning">
-                                            Select at least one column (other
-                                            than {additionalColumnHeader})
-                                        </strong>
-                                    ) : null}
+                        <div className="column__body">
+                            <input
+                                type="text"
+                                placeholder="Search column"
+                                className="custom__ctrl"
+                                data-testid="filterColumnsList"
+                                onChange={filterColumnsList}
+                            />
+                            <div className="column__selectAll">
+                                <div className="column__checkbox">
+                                    <input
+                                        type="checkbox"
+                                        value="Select All"
+                                        data-testid="selectAllCheckbox"
+                                        checked={isCheckboxSelected(
+                                            "Select All"
+                                        )}
+                                        onChange={selectAllColumns}
+                                    />
                                 </div>
-                                <div
-                                    className="column__close"
-                                    role="presentation"
-                                    onClick={toggleManageColumns}
-                                >
-                                    <i>
-                                        <IconClose />
-                                    </i>
+                                <div className="column__selectTxt">
+                                    Select All
                                 </div>
                             </div>
-                            <div className="column__body">
-                                <DndProvider
-                                    backend={MultiBackend}
-                                    options={HTML5toTouch}
-                                >
-                                    <ColumnsList
-                                        columnsToManage={managedColumns}
-                                        updateColumnsInState={
-                                            updateColumnsInState
-                                        }
-                                        isInnerCellSelected={
-                                            isInnerCellSelected
-                                        }
-                                        selectInnerCells={selectInnerCells}
-                                    />
-                                </DndProvider>
-                                {remarksColumnToManage &&
-                                remarksColumnToManage.length > 0 ? (
-                                    <div className="column__reorder full-width">
-                                        <div>
-                                            {remarksColumnToManage[0].Header}
+                            {searchedColumns.map((column) => {
+                                return (
+                                    <div
+                                        className="column__wrap"
+                                        key={column.columnId}
+                                    >
+                                        <div className="column__checkbox">
+                                            <input
+                                                type="checkbox"
+                                                value={column.Header}
+                                                checked={isCheckboxSelected(
+                                                    column.Header
+                                                )}
+                                                onChange={selectSingleColumn}
+                                            />
                                         </div>
-                                        <div className="column__innerCells__wrap">
-                                            {remarksColumnToManage[0]
-                                                .originalInnerCells &&
-                                            remarksColumnToManage[0]
-                                                .originalInnerCells.length > 0
-                                                ? remarksColumnToManage[0].originalInnerCells.map(
-                                                      (cell) => {
-                                                          return (
-                                                              <div
-                                                                  className="column__wrap"
-                                                                  key={`${cell.Header}_${cell.accessor}`}
-                                                              >
-                                                                  <div className="column__checkbox">
-                                                                      <input
-                                                                          type="checkbox"
-                                                                          data-columnheader={
-                                                                              remarksColumnToManage[0]
-                                                                                  .Header
-                                                                          }
-                                                                          value={
-                                                                              cell.Header
-                                                                          }
-                                                                          checked={isInnerCellSelected(
-                                                                              remarksColumnToManage[0]
-                                                                                  .Header,
-                                                                              cell.Header
-                                                                          )}
-                                                                          onChange={
-                                                                              selectRemarksInnerCells
-                                                                          }
-                                                                      />
-                                                                  </div>
-                                                                  <div className="column__txt">
-                                                                      {
-                                                                          cell.Header
-                                                                      }
-                                                                  </div>
-                                                              </div>
-                                                          );
-                                                      }
-                                                  )
-                                                : null}
+                                        <div className="column__txt">
+                                            {column.Header}
                                         </div>
                                     </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className="column__settings">
+                        <div className="column__header">
+                            <div className="column__headerTxt">
+                                <strong>Column Settings</strong>
+                                {isErrorDisplayed ? (
+                                    <strong className="column-warning">
+                                        Select at least one column (other than{" "}
+                                        {additionalColumnHeader})
+                                    </strong>
                                 ) : null}
                             </div>
-                            <div className="column__footer">
-                                <div className="column__btns">
-                                    <button
-                                        type="button"
-                                        className="btns"
-                                        onClick={resetColumnUpdate}
-                                    >
-                                        Reset
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btns"
-                                        onClick={toggleManageColumns}
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btns btns__save"
-                                        onClick={doColumnUpdate}
-                                        data-testid="saveButton"
-                                    >
-                                        Save
-                                    </button>
+                            <div
+                                className="column__close"
+                                role="presentation"
+                                onClick={toggleManageColumns}
+                            >
+                                <i>
+                                    <IconClose />
+                                </i>
+                            </div>
+                        </div>
+                        <div className="column__body">
+                            <DndProvider
+                                backend={MultiBackend}
+                                options={HTML5toTouch}
+                            >
+                                <ColumnsList
+                                    columnsToManage={managedColumns}
+                                    updateColumnsInState={updateColumnsInState}
+                                    isInnerCellSelected={isInnerCellSelected}
+                                    selectInnerCells={selectInnerCells}
+                                />
+                            </DndProvider>
+                            {remarksColumnToManage &&
+                            remarksColumnToManage.length > 0 ? (
+                                <div className="column__reorder full-width">
+                                    <div className="column__reorder__Header">
+                                        {remarksColumnToManage[0].Header}
+                                    </div>
+                                    <div className="column__innerCells__wrap">
+                                        {remarksColumnToManage[0]
+                                            .originalInnerCells &&
+                                        remarksColumnToManage[0]
+                                            .originalInnerCells.length > 0
+                                            ? remarksColumnToManage[0].originalInnerCells.map(
+                                                  (cell) => {
+                                                      return (
+                                                          <div
+                                                              className="column__wrap"
+                                                              key={`${cell.Header}_${cell.accessor}`}
+                                                          >
+                                                              <div className="column__checkbox">
+                                                                  <input
+                                                                      type="checkbox"
+                                                                      data-columnheader={
+                                                                          remarksColumnToManage[0]
+                                                                              .Header
+                                                                      }
+                                                                      value={
+                                                                          cell.Header
+                                                                      }
+                                                                      checked={isInnerCellSelected(
+                                                                          remarksColumnToManage[0]
+                                                                              .Header,
+                                                                          cell.Header
+                                                                      )}
+                                                                      onChange={
+                                                                          selectRemarksInnerCells
+                                                                      }
+                                                                  />
+                                                              </div>
+                                                              <div className="column__txt">
+                                                                  {cell.Header}
+                                                              </div>
+                                                          </div>
+                                                      );
+                                                  }
+                                              )
+                                            : null}
+                                    </div>
                                 </div>
+                            ) : null}
+                        </div>
+                        <div className="column__footer">
+                            <div className="column__btns">
+                                <button
+                                    type="button"
+                                    className="btns"
+                                    onClick={resetColumnUpdate}
+                                >
+                                    Reset
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btns"
+                                    onClick={toggleManageColumns}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btns btns__save"
+                                    onClick={doColumnUpdate}
+                                    data-testid="saveButton"
+                                >
+                                    Save
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -486,7 +475,7 @@ const ColumnReordering = (props) => {
             </ClickAwayListener>
         );
     }
-    return <div />;
+    return null;
 };
 
 ColumnReordering.propTypes = {
