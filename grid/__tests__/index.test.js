@@ -466,6 +466,7 @@ describe("render Index file ", () => {
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
                 gridData={data}
+                idAttribute="travelId"
                 isNextPageAvailable={false}
                 loadMoreData={mockLoadMoreData}
                 columns={gridColumns}
@@ -567,6 +568,7 @@ describe("render Index file ", () => {
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
                 gridData={data}
+                idAttribute="travelId"
                 isNextPageAvailable={false}
                 loadMoreData={mockLoadMoreData}
                 columns={gridColumns}
@@ -631,6 +633,7 @@ describe("render Index file ", () => {
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
                 gridData={data}
+                idAttribute="travelId"
                 isNextPageAvailable={false}
                 loadMoreData={mockLoadMoreData}
                 columns={gridColumns}
@@ -756,6 +759,7 @@ describe("render Index file ", () => {
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
                 gridData={smallData}
+                idAttribute="travelId"
                 isNextPageAvailable
                 loadMoreData={mockLoadMoreData}
                 columns={gridColumns}
@@ -782,6 +786,7 @@ describe("render Index file ", () => {
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
                 gridData={data}
+                idAttribute="travelId"
                 isNextPageAvailable={false}
                 loadMoreData={mockLoadMoreData}
                 columns={gridColumns}
@@ -841,5 +846,113 @@ describe("render Index file ", () => {
         // Export Data
         const exportDataIcon = gridContainer.querySelectorAll(".export-data");
         expect(exportDataIcon.length).toBe(0);
+    });
+
+    it("test Grid loading without any data", () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Grid
+                className="icargoCustomClass"
+                title={mockTitle}
+                gridHeight={mockGridHeight}
+                gridWidth={mockGridWidth}
+                idAttribute="travelId"
+                isNextPageAvailable={false}
+                loadMoreData={mockLoadMoreData}
+                columns={gridColumns}
+                columnToExpand={mockAdditionalColumn}
+                rowActions={mockRowActions}
+                rowActionCallback={mockRowActionCallback}
+                getRowEditOverlay={mockGetRowEditOverlay}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
+                onGridRefresh={mockGridRefresh}
+                CustomPanel={mockCustomPanel}
+                globalSearch={false}
+                columnFilter={false}
+                groupSort={false}
+                columnChooser={false}
+                exportData={false}
+            />
+        );
+        const gridContainer = container;
+        expect(gridContainer).toBeInTheDocument();
+
+        // Check if error message is present
+        const errorElement = gridContainer.getElementsByClassName("error");
+        expect(errorElement.length).toBeGreaterThan(0);
+    });
+
+    it("test Grid loading without columns", () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Grid
+                className="icargoCustomClass"
+                title={mockTitle}
+                gridHeight={mockGridHeight}
+                gridWidth={mockGridWidth}
+                gridData={data}
+                idAttribute="travelId"
+                isNextPageAvailable={false}
+                loadMoreData={mockLoadMoreData}
+                columnToExpand={mockAdditionalColumn}
+                rowActions={mockRowActions}
+                rowActionCallback={mockRowActionCallback}
+                getRowEditOverlay={mockGetRowEditOverlay}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
+                onGridRefresh={mockGridRefresh}
+                CustomPanel={mockCustomPanel}
+                globalSearch={false}
+                columnFilter={false}
+                groupSort={false}
+                columnChooser={false}
+                exportData={false}
+            />
+        );
+        const gridContainer = container;
+        expect(gridContainer).toBeInTheDocument();
+
+        // Check if error message is present
+        const errorElement = gridContainer.getElementsByClassName("error");
+        expect(errorElement.length).toBeGreaterThan(0);
+    });
+
+    it("test Grid loading without idAttribute", () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Grid
+                className="icargoCustomClass"
+                title={mockTitle}
+                gridHeight={mockGridHeight}
+                gridWidth={mockGridWidth}
+                gridData={data}
+                isNextPageAvailable={false}
+                loadMoreData={mockLoadMoreData}
+                columns={gridColumns}
+                columnToExpand={mockAdditionalColumn}
+                rowActions={mockRowActions}
+                rowActionCallback={mockRowActionCallback}
+                getRowEditOverlay={mockGetRowEditOverlay}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
+                onGridRefresh={mockGridRefresh}
+                CustomPanel={mockCustomPanel}
+                globalSearch={false}
+                columnFilter={false}
+                groupSort={false}
+                columnChooser={false}
+                exportData={false}
+            />
+        );
+        const gridContainer = container;
+        expect(gridContainer).toBeInTheDocument();
+
+        // Check if error message is present
+        const errorElement = gridContainer.getElementsByClassName("error");
+        expect(errorElement.length).toBeGreaterThan(0);
     });
 });
