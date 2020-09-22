@@ -1024,6 +1024,25 @@ export default GridComponent;
 />
 ```
 
+#### With column expansion
+
+<Story name="With column expansion">
+    <GridComponent expandableColumn={true} />;
+</Story>
+
+```jsx
+<Grid
+    gridData={gridData}
+    idAttribute={idAttribute}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+    expandableColumn
+/>
+```
+
 #### With row actions
 
 <Story name="With row actions">
@@ -1231,6 +1250,7 @@ export default GridComponent;
         gridWidth="100%"
         isNextPageAvailableCheck={true}
         columnToExpand={columnToExpand}
+        expandableColumn={true}
         rowActions={rowActions}
         rowActionCallback={rowActionCallback}
         onGridRefresh={onGridRefresh}
@@ -1261,6 +1281,7 @@ export default GridComponent;
     rowActionCallback={rowActionCallback}
     getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
+    expandableColumn={expandableColumn}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}

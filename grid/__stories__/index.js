@@ -27,7 +27,8 @@ const GridComponent = (props) => {
         groupSort,
         columnChooser,
         exportData,
-        enableRowDeselection
+        enableRowDeselection,
+        expandableColumn
     } = props;
     const idAttribute = "travelId";
     const { search } = window.location;
@@ -745,7 +746,7 @@ const GridComponent = (props) => {
                     rowActionCallback={rowActionCallback}
                     getRowEditOverlay={getRowEditOverlay}
                     calculateRowHeight={calculateRowHeight}
-                    expandableColumn
+                    expandableColumn={expandableColumn}
                     onRowUpdate={onRowUpdate}
                     onRowDelete={onRowDelete}
                     onRowSelect={onRowSelect}
