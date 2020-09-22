@@ -365,11 +365,10 @@ const Customgrid = (props) => {
         }
     }, [selectedRowIds]);
 
-    // Update the row selection and clear row expands when group sort changes
+    // Update the row selection and clear row expands when data changes
     // Set all row selections to false and find new Ids of already selected rows and make them selected
     useEffect(() => {
         if (!isFirstRendering) {
-            toggleAllRowsExpanded(false);
             if (
                 userSelectedRowIdentifiers &&
                 userSelectedRowIdentifiers.length > 0
@@ -394,7 +393,7 @@ const Customgrid = (props) => {
                 });
             }
         }
-    }, [groupSortOptions]);
+    }, [data]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
