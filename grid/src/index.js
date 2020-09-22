@@ -327,7 +327,6 @@ const Grid = (props) => {
                 exportData={exportData}
                 onGridRefresh={onGridRefresh}
                 rowsToDeselect={rowsToDeselect}
-                groupSortOptions={groupSortOptions}
             />
             {isNextPageLoading ? (
                 <div id="loader" className="background">

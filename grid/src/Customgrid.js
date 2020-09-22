@@ -368,15 +368,15 @@ const Customgrid = (props) => {
     // Set all row selections to false and find new Ids of already selected rows and make them selected
     useEffect(() => {
         if (!isFirstRendering) {
+            // Deselect all current selections
+            Object.keys(selectedRowIds).forEach((key) => {
+                selectedRowIds[key] = false;
+            });
+            // Make rows selected if user has already made any selections
             if (
                 userSelectedRowIdentifiers &&
                 userSelectedRowIdentifiers.length > 0
             ) {
-                // Deselect all current selections
-                Object.keys(selectedRowIds).forEach((key) => {
-                    selectedRowIds[key] = false;
-                });
-
                 // Loop through already selected rows and find row id and make it selected
                 userSelectedRowIdentifiers.forEach((selectedRowId) => {
                     const updatedRow = preFilteredRows.find((row) => {
