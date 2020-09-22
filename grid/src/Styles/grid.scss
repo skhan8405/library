@@ -7,6 +7,16 @@
     .table {
         border-top: 1px solid var(--border-table);
     }
+    .table-row--head {
+        .table-cell {
+            padding: 10px 5px;
+        }
+    }
+    .tbody {
+        .row-selector-cell-container {
+            padding: 10px 5px;
+        }
+    }
     .table-row {
         border-bottom: 1px solid var(--border-table);
         flex-wrap: wrap;
@@ -19,7 +29,6 @@
         display: flex;
     }
     .table-cell {
-        padding: 10px 5px;
         position: relative;
         &:hover {
             .cell-edit {
@@ -66,6 +75,8 @@
         align-items: center;
         height: 100%;
         margin-right: 5px;
+        box-sizing: border-box;
+        padding: 10px 5px;
         .icon-arrow-up {
             transform: rotate(-180deg);
         }

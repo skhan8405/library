@@ -36,6 +36,17 @@ li {
 
 /*  Application Styles
 *  ------------------------------------------------------ */
+.travelId-details,
+.flight-details,
+.segment-details,
+.details-wrap,
+.weight-details,
+.uld-details,
+.revenue-details,
+.sr-details,
+.queued-details {
+    padding: 10px 5px;
+}
 .flight-details strong {
     display: block;
     color: #3171b2;

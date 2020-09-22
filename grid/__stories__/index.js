@@ -111,7 +111,15 @@ const GridComponent = (props) => {
             Header: "Id",
             accessor: "travelId",
             width: 50,
-            disableFilters: true
+            disableFilters: true,
+            displayCell: (rowData) => {
+                const { travelId } = rowData;
+                return (
+                    <div className="travelId-details">
+                        <span>{travelId}</span>
+                    </div>
+                );
+            }
         },
         {
             Header: "Flight",
