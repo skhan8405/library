@@ -60,6 +60,7 @@ const Customgrid = (props) => {
         searchColumn,
         onRowSelect,
         calculateRowHeight,
+        expandableColumn,
         isExpandContentAvailable,
         displayExpandedContent,
         rowActions,
@@ -75,8 +76,7 @@ const Customgrid = (props) => {
         columnChooser,
         exportData,
         onGridRefresh,
-        rowsToDeselect,
-        groupSortOptions
+        rowsToDeselect
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -295,7 +295,7 @@ const Customgrid = (props) => {
                                         }
                                     />
                                 ) : null}
-                                {isRowExpandEnabled ? (
+                                {isRowExpandEnabled || expandableColumn ? (
                                     <span
                                         className="expander"
                                         {...row.getToggleRowExpandedProps()}
@@ -711,6 +711,7 @@ Customgrid.propTypes = {
     searchColumn: PropTypes.func,
     onRowSelect: PropTypes.func,
     calculateRowHeight: PropTypes.func,
+    expandableColumn: PropTypes.bool,
     isExpandContentAvailable: PropTypes.bool,
     displayExpandedContent: PropTypes.func,
     hasNextPage: PropTypes.bool,
@@ -729,8 +730,7 @@ Customgrid.propTypes = {
     columnChooser: PropTypes.bool,
     exportData: PropTypes.bool,
     onGridRefresh: PropTypes.func,
-    rowsToDeselect: PropTypes.array,
-    groupSortOptions: PropTypes.arrayOf(PropTypes.object)
+    rowsToDeselect: PropTypes.array
 };
 
 export default Customgrid;

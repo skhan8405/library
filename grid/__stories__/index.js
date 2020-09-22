@@ -246,7 +246,7 @@ const GridComponent = (props) => {
                 const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
-                if (isExpanded) {
+                if (isExpanded === null || isExpanded === true) {
                     return (
                         <div className="details-wrap">
                             <ul>
@@ -745,6 +745,7 @@ const GridComponent = (props) => {
                     rowActionCallback={rowActionCallback}
                     getRowEditOverlay={getRowEditOverlay}
                     calculateRowHeight={calculateRowHeight}
+                    expandableColumn
                     onRowUpdate={onRowUpdate}
                     onRowDelete={onRowDelete}
                     onRowSelect={onRowSelect}

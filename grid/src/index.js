@@ -29,6 +29,7 @@ const Grid = (props) => {
         onRowDelete,
         onRowSelect,
         calculateRowHeight,
+        expandableColumn,
         CustomPanel,
         globalSearch,
         columnFilter,
@@ -123,7 +124,8 @@ const Grid = (props) => {
         columns,
         searchColumn,
         isDesktop,
-        updateRowInGrid
+        updateRowInGrid,
+        expandableColumn
     );
     const additionalColumn = extractAdditionalColumn(
         columnToExpand,
@@ -309,6 +311,7 @@ const Grid = (props) => {
                 isExpandContentAvailable={
                     typeof renderExpandedContent === "function"
                 }
+                expandableColumn={expandableColumn}
                 displayExpandedContent={displayExpandedContent}
                 rowActions={rowActions}
                 rowActionCallback={rowActionCallback}
@@ -355,6 +358,7 @@ Grid.propTypes = {
     onRowDelete: PropTypes.func,
     onRowSelect: PropTypes.func,
     calculateRowHeight: PropTypes.func,
+    expandableColumn: PropTypes.bool,
     rowActions: PropTypes.arrayOf(PropTypes.object),
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
