@@ -65,7 +65,7 @@ const updateColumnsInState = jest.fn();
 const isInnerCellSelected = jest.fn();
 const selectInnerCells = jest.fn();
 const data = {
-    id: 1,
+    id: "column_1",
     Header: "Flight",
     moveColumn: jest.fn(),
     findColumn: jest.fn(() => 1),
