@@ -31,6 +31,8 @@
             color: #204d6f;
             vertical-align: top;
             font-weight: bold;
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
             &:hover {
                 border-left: 1px solid var(--border-table);
                 border-right: 1px solid var(--border-table);

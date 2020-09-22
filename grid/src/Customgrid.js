@@ -230,8 +230,7 @@ const Customgrid = (props) => {
         prepareRow,
         preFilteredRows,
         state: { globalFilter, selectedRowIds },
-        setGlobalFilter,
-        toggleAllRowsExpanded
+        setGlobalFilter
     } = useTable(
         {
             columns,
@@ -447,104 +446,114 @@ const Customgrid = (props) => {
                     </div>
                 ) : null}
                 <div className="neo-grid-header__utilities">
-                    {columnChooser !== false ? (
-                        <ColumnReordering
-                            isManageColumnOpen={isManageColumnOpen}
-                            toggleManageColumns={toggleManageColumns}
-                            originalColumns={originalColumns}
-                            isExpandContentAvailable={isExpandContentAvailable}
-                            additionalColumn={
-                                additionalColumn ? [additionalColumn] : []
-                            }
-                            updateColumnStructure={updateColumnStructure}
-                        />
-                    ) : null}
                     {globalSearch !== false ? (
                         <GlobalFilter
                             globalFilter={globalFilter}
                             setGlobalFilter={setGlobalFilter}
                         />
                     ) : null}
-                    {groupSort !== false ? (
-                        <GroupSort
-                            isGroupSortOverLayOpen={isGroupSortOverLayOpen}
-                            toggleGroupSortOverLay={toggleGroupSortOverLay}
-                            originalColumns={originalColumns}
-                            applyGroupSort={applyGroupSort}
-                        />
-                    ) : null}
-                    {exportData !== false ? (
-                        <ExportData
-                            isExportOverlayOpen={isExportOverlayOpen}
-                            toggleExportDataOverlay={toggleExportDataOverlay}
-                            rows={rows}
-                            originalColumns={originalColumns}
-                            columns={columns} // Updated columns structure from manage columns overlay
-                            isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
-                            isExpandContentAvailable={isExpandContentAvailable}
-                            additionalColumn={
-                                additionalColumn ? [additionalColumn] : []
-                            }
-                        />
-                    ) : null}
                     {columnFilter !== false ? (
-                        <div
-                            className="utilities-icon keyword-search"
-                            role="presentation"
-                            data-testid="toggleColumnFilter"
-                            onClick={toggleColumnFilter}
-                        >
-                            <i>
-                                <IconFilter />
-                            </i>
+                        <div className="utilities-icon-container keyword-search-container">
+                            <div
+                                className="utilities-icon keyword-search"
+                                role="presentation"
+                                data-testid="toggleColumnFilter"
+                                onClick={toggleColumnFilter}
+                            >
+                                <i>
+                                    <IconFilter />
+                                </i>
+                            </div>
                         </div>
                     ) : null}
                     {groupSort !== false ? (
-                        <div
-                            className="utilities-icon group-sort"
-                            role="presentation"
-                            data-testid="toggleGroupSortOverLay"
-                            onClick={toggleGroupSortOverLay}
-                        >
-                            <i>
-                                <IconGroupSort />
-                            </i>
+                        <div className="utilities-icon-container group-sort-container">
+                            <div
+                                className="utilities-icon group-sort"
+                                role="presentation"
+                                data-testid="toggleGroupSortOverLay"
+                                onClick={toggleGroupSortOverLay}
+                            >
+                                <i>
+                                    <IconGroupSort />
+                                </i>
+                            </div>
+                            <GroupSort
+                                isGroupSortOverLayOpen={isGroupSortOverLayOpen}
+                                toggleGroupSortOverLay={toggleGroupSortOverLay}
+                                originalColumns={originalColumns}
+                                applyGroupSort={applyGroupSort}
+                            />
                         </div>
                     ) : null}
                     {columnChooser !== false ? (
-                        <div
-                            className="utilities-icon manage-columns"
-                            role="presentation"
-                            data-testid="toggleManageColumns"
-                            onClick={toggleManageColumns}
-                        >
-                            <i>
-                                <IconColumns />
-                            </i>
+                        <div className="utilities-icon-container manage-columns-container">
+                            <div
+                                className="utilities-icon manage-columns"
+                                role="presentation"
+                                data-testid="toggleManageColumns"
+                                onClick={toggleManageColumns}
+                            >
+                                <i>
+                                    <IconColumns />
+                                </i>
+                            </div>
+                            <ColumnReordering
+                                isManageColumnOpen={isManageColumnOpen}
+                                toggleManageColumns={toggleManageColumns}
+                                originalColumns={originalColumns}
+                                isExpandContentAvailable={
+                                    isExpandContentAvailable
+                                }
+                                additionalColumn={
+                                    additionalColumn ? [additionalColumn] : []
+                                }
+                                updateColumnStructure={updateColumnStructure}
+                            />
                         </div>
                     ) : null}
                     {exportData !== false ? (
-                        <div
-                            className="utilities-icon export-data"
-                            role="presentation"
-                            data-testid="toggleExportDataOverlay"
-                            onClick={toggleExportDataOverlay}
-                        >
-                            <i>
-                                <IconShare />
-                            </i>
+                        <div className="utilities-icon-container manage-columns-container">
+                            <div
+                                className="utilities-icon export-data"
+                                role="presentation"
+                                data-testid="toggleExportDataOverlay"
+                                onClick={toggleExportDataOverlay}
+                            >
+                                <i>
+                                    <IconShare />
+                                </i>
+                            </div>
+                            <ExportData
+                                isExportOverlayOpen={isExportOverlayOpen}
+                                toggleExportDataOverlay={
+                                    toggleExportDataOverlay
+                                }
+                                rows={rows}
+                                originalColumns={originalColumns}
+                                columns={columns} // Updated columns structure from manage columns overlay
+                                isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
+                                isExpandContentAvailable={
+                                    isExpandContentAvailable
+                                }
+                                additionalColumn={
+                                    additionalColumn ? [additionalColumn] : []
+                                }
+                            />
                         </div>
                     ) : null}
                     {typeof onGridRefresh === "function" ? (
-                        <div
-                            className="utilities-icon refresh-data"
-                            role="presentation"
-                            data-testid="refreshGrid"
-                            onClick={onGridRefresh}
-                        >
-                            <i>
-                                <IconRefresh />
-                            </i>
+                        <div className="utilities-icon-container refresh-data-container">
+                            <div
+                                className="utilities-icon refresh-data"
+                                role="presentation"
+                                data-testid="refreshGrid"
+                                onClick={onGridRefresh}
+                            >
+                                <i>
+                                    <IconRefresh />
+                                </i>
+                            </div>
                         </div>
                     ) : null}
                 </div>

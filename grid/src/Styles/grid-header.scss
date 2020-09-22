@@ -42,19 +42,25 @@
             i {
                 position: absolute;
                 left: 7px;
-                top: 8px;
+                top: 0;
+                height: 100%;
+                display: flex;
+                align-items: center;
             }
         }
-        .utilities-icon {
-            margin-left: 10px;
-            border: var(--border-grey) solid 1px;
-            padding: 0 8px;
-            border-radius: 3px;
-            cursor: pointer;
-            line-height: 1px;
-            height: 25px;
-            display: flex;
-            align-items: center;
+        .utilities-icon-container {
+            position: relative;
+            .utilities-icon {
+                margin-left: 10px;
+                border: var(--border-grey) solid 1px;
+                padding: 0 8px;
+                border-radius: 3px;
+                cursor: pointer;
+                line-height: 1px;
+                height: 25px;
+                display: flex;
+                align-items: center;
+            }
         }
     }
 }
