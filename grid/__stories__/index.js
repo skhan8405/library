@@ -26,8 +26,10 @@ const GridComponent = (props) => {
         columnFilter,
         groupSort,
         columnChooser,
-        exportData
+        exportData,
+        enableRowDeselection
     } = props;
+    const idAttribute = "travelId";
     const { search } = window.location;
     const urlPageSize = search
         ? parseInt(search.replace("?pagesize=", ""), 10)
@@ -677,7 +679,9 @@ const GridComponent = (props) => {
     const onRowSelect = (selectedRows) => {
         console.log("Rows selected: ");
         console.log(selectedRows);
-        setUserSelectedRows(selectedRows);
+        if (enableRowDeselection) {
+            setUserSelectedRows(selectedRows);
+        }
     };
 
     const loadMoreData = () => {
@@ -732,7 +736,7 @@ const GridComponent = (props) => {
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
                     gridData={gridData}
-                    idAttribute="travelId"
+                    idAttribute={idAttribute}
                     isNextPageAvailable={isNextPageAvailable}
                     loadMoreData={loadMoreData}
                     columns={columns}
