@@ -47,6 +47,9 @@ li {
 .queued-details {
     padding: 10px 5px;
 }
+.remarks-wrap {
+    padding: 0 10px 0 100px;
+}
 .flight-details strong {
     display: block;
     color: #3171b2;
