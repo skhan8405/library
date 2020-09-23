@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Spreadsheet from "../src/index";
 import CargoData from "./data.json";
 
-const SpreadsheetView = () => {
+const GridComponent = () => {
     const gridHeight = "90vh";
     const rows = CargoData;
     const pageSize = 500;
@@ -573,13 +573,4 @@ const SpreadsheetView = () => {
     return null;
 };
 
-export default {
-    title: "Spreadsheet",
-    component: SpreadsheetView
-};
-
-const Template = () => {
-    return <SpreadsheetView />;
-};
-
-export const MainStory = Template.bind({});
+export default GridComponent;

@@ -427,13 +427,13 @@ class ColumnReordering extends React.Component {
 }
 
 ColumnReordering.propTypes = {
-    headerKeys: PropTypes.any,
-    columns: PropTypes.any,
-    existingPinnedHeadersList: PropTypes.any,
-    maxLeftPinnedColumn: PropTypes.any,
-    closeColumnReOrdering: PropTypes.any,
-    handleheaderNameList: PropTypes.any,
-    updateTableAsPerRowChooser: PropTypes.any
+    headerKeys: PropTypes.array,
+    columns: PropTypes.arrayOf(PropTypes.object),
+    existingPinnedHeadersList: PropTypes.arrayOf(PropTypes.object),
+    maxLeftPinnedColumn: PropTypes.number,
+    closeColumnReOrdering: PropTypes.func,
+    handleheaderNameList: PropTypes.func,
+    updateTableAsPerRowChooser: PropTypes.func
 };
 
 export default ColumnReordering;

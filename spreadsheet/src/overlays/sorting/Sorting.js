@@ -350,12 +350,12 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-    sortingParamsObjectList: PropTypes.any,
-    closeSorting: PropTypes.any,
+    sortingParamsObjectList: PropTypes.arrayOf(PropTypes.object),
+    closeSorting: PropTypes.func,
     columnFieldValue: PropTypes.any,
-    clearAllSortingParams: PropTypes.any,
-    setTableAsPerSortingParams: PropTypes.any,
-    handleTableSortSwap: PropTypes.any
+    clearAllSortingParams: PropTypes.func,
+    setTableAsPerSortingParams: PropTypes.func,
+    handleTableSortSwap: PropTypes.func
 };
 
 export default App;

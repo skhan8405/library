@@ -49,10 +49,10 @@ const Card = ({ id, text, moveCard, findCard }) => {
 };
 
 Card.propTypes = {
-    id: PropTypes.any,
-    text: PropTypes.any,
-    moveCard: PropTypes.any,
-    findCard: PropTypes.any
+    id: PropTypes.string,
+    text: PropTypes.object,
+    moveCard: PropTypes.func,
+    findCard: PropTypes.func
 };
 
 export default Card;

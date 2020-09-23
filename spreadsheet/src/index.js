@@ -1671,21 +1671,21 @@ class Spreadsheet extends Component {
 }
 
 Spreadsheet.propTypes = {
-    airportCodes: PropTypes.any,
-    rows: PropTypes.any,
-    columns: PropTypes.any,
-    status: PropTypes.any,
-    count: PropTypes.any,
-    updateCellData: PropTypes.any,
-    selectBulkData: PropTypes.any,
-    pinnedReorder: PropTypes.any,
-    maxLeftPinnedColumn: PropTypes.any,
-    globalSearchLogic: PropTypes.any,
-    closeWarningStatus: PropTypes.any,
-    dataSet: PropTypes.any,
-    pageSize: PropTypes.any,
-    updatedRows: PropTypes.any,
-    saveRows: PropTypes.any
+    airportCodes: PropTypes.array,
+    rows: PropTypes.arrayOf(PropTypes.object),
+    columns: PropTypes.arrayOf(PropTypes.object),
+    status: PropTypes.string,
+    count: PropTypes.number,
+    updateCellData: PropTypes.func,
+    selectBulkData: PropTypes.func,
+    pinnedReorder: PropTypes.arrayOf(PropTypes.object),
+    maxLeftPinnedColumn: PropTypes.number,
+    globalSearchLogic: PropTypes.func,
+    closeWarningStatus: PropTypes.bool,
+    dataSet: PropTypes.arrayOf(PropTypes.object),
+    pageSize: PropTypes.number,
+    updatedRows: PropTypes.func,
+    saveRows: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default Spreadsheet;

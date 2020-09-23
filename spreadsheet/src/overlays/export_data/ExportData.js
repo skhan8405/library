@@ -385,9 +385,9 @@ class ExportData extends React.Component {
 }
 
 ExportData.propTypes = {
-    columnsList: PropTypes.any,
-    closeExport: PropTypes.any,
-    rows: PropTypes.any
+    columnsList: PropTypes.arrayOf(PropTypes.object),
+    closeExport: PropTypes.func,
+    rows: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default ExportData;

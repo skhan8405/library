@@ -1,0 +1,64 @@
+import {
+    Meta,
+    Story,
+    Props,
+    Preview,
+    ArgsTable
+} from "@storybook/addon-docs/blocks";
+import { withKnobs, text, array, object } from "@storybook/addon-knobs";
+import Spreadsheet from "../src/index";
+import GridComponent from "./index.js";
+
+<Meta title="Spreadsheet Component" component={Spreadsheet} />
+
+# Spreadsheet
+
+## Business component for showing list of data in Spreadsheet
+
+`Spreadsheet` component consists of list of data.
+
+### Props
+
+<Props of={Spreadsheet} />
+
+### Code
+
+```jsx
+import { Spreadsheet } from "@neo-ui/spreadsheet";
+
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+/>;
+```
+
+### Variants
+
+#### With all props
+
+<Story name="With all props">
+    <GridComponent />;
+</Story>
+
+```jsx
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+/>
+```
