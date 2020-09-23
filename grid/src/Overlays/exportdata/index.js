@@ -22,15 +22,17 @@ const ExportData = (props) => {
         isExpandContentAvailable,
         additionalColumn
     } = props;
-
+    const convertedAdditionalColumn = additionalColumn
+        ? [additionalColumn]
+        : [];
     // Check if row expand is configured by developer
     const getRemarksColumnIfAvailable = () => {
-        return isExpandContentAvailable ? additionalColumn : [];
+        return isExpandContentAvailable ? convertedAdditionalColumn : [];
     };
 
     // Check if row expand is set visible from manage overlay
     const getRemarksColumnIfSelectedByUser = () => {
-        return isRowExpandEnabled ? additionalColumn : [];
+        return isRowExpandEnabled ? convertedAdditionalColumn : [];
     };
 
     // Full list of columns + expand column

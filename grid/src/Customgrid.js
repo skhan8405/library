@@ -512,9 +512,7 @@ const Customgrid = (props) => {
                                 isExpandContentAvailable={
                                     isExpandContentAvailable
                                 }
-                                additionalColumn={
-                                    additionalColumn ? [additionalColumn] : []
-                                }
+                                additionalColumn={additionalColumn}
                                 updateColumnStructure={updateColumnStructure}
                             />
                         </div>
@@ -543,9 +541,7 @@ const Customgrid = (props) => {
                                 isExpandContentAvailable={
                                     isExpandContentAvailable
                                 }
-                                additionalColumn={
-                                    additionalColumn ? [additionalColumn] : []
-                                }
+                                additionalColumn={additionalColumn}
                             />
                         </div>
                     ) : null}
