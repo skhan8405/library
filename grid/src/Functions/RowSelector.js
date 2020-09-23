@@ -9,8 +9,10 @@ const RowSelector = forwardRef(({ indeterminate, ...rest }, ref) => {
         resolvedRef.current.indeterminate = indeterminate;
     }, [resolvedRef, indeterminate]);
     return (
-        <div className="check-wrap">
-            <input type="checkbox" ref={resolvedRef} {...rest} />
+        <div className="row-selector-cell-container">
+            <div className="check-wrap">
+                <input type="checkbox" ref={resolvedRef} {...rest} />
+            </div>
         </div>
     );
 });

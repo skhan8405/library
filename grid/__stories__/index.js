@@ -26,8 +26,11 @@ const GridComponent = (props) => {
         columnFilter,
         groupSort,
         columnChooser,
-        exportData
+        exportData,
+        enableRowDeselection,
+        expandableColumn
     } = props;
+    const idAttribute = "travelId";
     const { search } = window.location;
     const urlPageSize = search
         ? parseInt(search.replace("?pagesize=", ""), 10)
@@ -108,7 +111,15 @@ const GridComponent = (props) => {
             Header: "Id",
             accessor: "travelId",
             width: 50,
-            disableFilters: true
+            disableFilters: true,
+            displayCell: (rowData) => {
+                const { travelId } = rowData;
+                return (
+                    <div className="travelId-details">
+                        <span>{travelId}</span>
+                    </div>
+                );
+            }
         },
         {
             Header: "Flight",
@@ -244,7 +255,7 @@ const GridComponent = (props) => {
                 const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
-                if (isExpanded) {
+                if (isExpanded === null || isExpanded === true) {
                     return (
                         <div className="details-wrap">
                             <ul>
@@ -677,7 +688,9 @@ const GridComponent = (props) => {
     const onRowSelect = (selectedRows) => {
         console.log("Rows selected: ");
         console.log(selectedRows);
-        setUserSelectedRows(selectedRows);
+        if (enableRowDeselection) {
+            setUserSelectedRows(selectedRows);
+        }
     };
 
     const loadMoreData = () => {
@@ -732,7 +745,7 @@ const GridComponent = (props) => {
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
                     gridData={gridData}
-                    idAttribute="travelId"
+                    idAttribute={idAttribute}
                     isNextPageAvailable={isNextPageAvailable}
                     loadMoreData={loadMoreData}
                     columns={columns}
@@ -741,6 +754,7 @@ const GridComponent = (props) => {
                     rowActionCallback={rowActionCallback}
                     getRowEditOverlay={getRowEditOverlay}
                     calculateRowHeight={calculateRowHeight}
+                    expandableColumn={expandableColumn}
                     onRowUpdate={onRowUpdate}
                     onRowDelete={onRowDelete}
                     onRowSelect={onRowSelect}

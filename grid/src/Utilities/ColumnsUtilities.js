@@ -5,7 +5,8 @@ export const extractColumns = (
     columns,
     searchColumn,
     isDesktop,
-    updateRowInGrid
+    updateRowInGrid,
+    expandableColumn
 ) => {
     if (columns && columns.length > 0) {
         // Remove iPad only columns from desktop and vice-versa
@@ -46,6 +47,7 @@ export const extractColumns = (
                             row={row}
                             columns={columns}
                             updateRowInGrid={updateRowInGrid}
+                            expandableColumn={expandableColumn}
                         />
                     );
                 };

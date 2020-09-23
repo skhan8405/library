@@ -60,6 +60,7 @@ const Customgrid = (props) => {
         searchColumn,
         onRowSelect,
         calculateRowHeight,
+        expandableColumn,
         isExpandContentAvailable,
         displayExpandedContent,
         rowActions,
@@ -75,8 +76,7 @@ const Customgrid = (props) => {
         columnChooser,
         exportData,
         onGridRefresh,
-        rowsToDeselect,
-        groupSortOptions
+        rowsToDeselect
     } = props;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
@@ -230,8 +230,7 @@ const Customgrid = (props) => {
         prepareRow,
         preFilteredRows,
         state: { globalFilter, selectedRowIds },
-        setGlobalFilter,
-        toggleAllRowsExpanded
+        setGlobalFilter
     } = useTable(
         {
             columns,
@@ -296,7 +295,7 @@ const Customgrid = (props) => {
                                         }
                                     />
                                 ) : null}
-                                {isRowExpandEnabled ? (
+                                {isRowExpandEnabled || expandableColumn ? (
                                     <span
                                         className="expander"
                                         {...row.getToggleRowExpandedProps()}
@@ -365,20 +364,19 @@ const Customgrid = (props) => {
         }
     }, [selectedRowIds]);
 
-    // Update the row selection and clear row expands when group sort changes
+    // Update the row selection and clear row expands when data changes
     // Set all row selections to false and find new Ids of already selected rows and make them selected
     useEffect(() => {
         if (!isFirstRendering) {
-            toggleAllRowsExpanded(false);
+            // Deselect all current selections
+            Object.keys(selectedRowIds).forEach((key) => {
+                selectedRowIds[key] = false;
+            });
+            // Make rows selected if user has already made any selections
             if (
                 userSelectedRowIdentifiers &&
                 userSelectedRowIdentifiers.length > 0
             ) {
-                // Deselect all current selections
-                Object.keys(selectedRowIds).forEach((key) => {
-                    selectedRowIds[key] = false;
-                });
-
                 // Loop through already selected rows and find row id and make it selected
                 userSelectedRowIdentifiers.forEach((selectedRowId) => {
                     const updatedRow = preFilteredRows.find((row) => {
@@ -394,7 +392,7 @@ const Customgrid = (props) => {
                 });
             }
         }
-    }, [groupSortOptions]);
+    }, [data]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -448,104 +446,114 @@ const Customgrid = (props) => {
                     </div>
                 ) : null}
                 <div className="neo-grid-header__utilities">
-                    {columnChooser !== false ? (
-                        <ColumnReordering
-                            isManageColumnOpen={isManageColumnOpen}
-                            toggleManageColumns={toggleManageColumns}
-                            originalColumns={originalColumns}
-                            isExpandContentAvailable={isExpandContentAvailable}
-                            additionalColumn={
-                                additionalColumn ? [additionalColumn] : []
-                            }
-                            updateColumnStructure={updateColumnStructure}
-                        />
-                    ) : null}
                     {globalSearch !== false ? (
                         <GlobalFilter
                             globalFilter={globalFilter}
                             setGlobalFilter={setGlobalFilter}
                         />
                     ) : null}
-                    {groupSort !== false ? (
-                        <GroupSort
-                            isGroupSortOverLayOpen={isGroupSortOverLayOpen}
-                            toggleGroupSortOverLay={toggleGroupSortOverLay}
-                            originalColumns={originalColumns}
-                            applyGroupSort={applyGroupSort}
-                        />
-                    ) : null}
-                    {exportData !== false ? (
-                        <ExportData
-                            isExportOverlayOpen={isExportOverlayOpen}
-                            toggleExportDataOverlay={toggleExportDataOverlay}
-                            rows={rows}
-                            originalColumns={originalColumns}
-                            columns={columns} // Updated columns structure from manage columns overlay
-                            isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
-                            isExpandContentAvailable={isExpandContentAvailable}
-                            additionalColumn={
-                                additionalColumn ? [additionalColumn] : []
-                            }
-                        />
-                    ) : null}
                     {columnFilter !== false ? (
-                        <div
-                            className="utilities-icon keyword-search"
-                            role="presentation"
-                            data-testid="toggleColumnFilter"
-                            onClick={toggleColumnFilter}
-                        >
-                            <i>
-                                <IconFilter />
-                            </i>
+                        <div className="utilities-icon-container keyword-search-container">
+                            <div
+                                className="utilities-icon keyword-search"
+                                role="presentation"
+                                data-testid="toggleColumnFilter"
+                                onClick={toggleColumnFilter}
+                            >
+                                <i>
+                                    <IconFilter />
+                                </i>
+                            </div>
                         </div>
                     ) : null}
                     {groupSort !== false ? (
-                        <div
-                            className="utilities-icon group-sort"
-                            role="presentation"
-                            data-testid="toggleGroupSortOverLay"
-                            onClick={toggleGroupSortOverLay}
-                        >
-                            <i>
-                                <IconGroupSort />
-                            </i>
+                        <div className="utilities-icon-container group-sort-container">
+                            <div
+                                className="utilities-icon group-sort"
+                                role="presentation"
+                                data-testid="toggleGroupSortOverLay"
+                                onClick={toggleGroupSortOverLay}
+                            >
+                                <i>
+                                    <IconGroupSort />
+                                </i>
+                            </div>
+                            <GroupSort
+                                isGroupSortOverLayOpen={isGroupSortOverLayOpen}
+                                toggleGroupSortOverLay={toggleGroupSortOverLay}
+                                originalColumns={originalColumns}
+                                applyGroupSort={applyGroupSort}
+                            />
                         </div>
                     ) : null}
                     {columnChooser !== false ? (
-                        <div
-                            className="utilities-icon manage-columns"
-                            role="presentation"
-                            data-testid="toggleManageColumns"
-                            onClick={toggleManageColumns}
-                        >
-                            <i>
-                                <IconColumns />
-                            </i>
+                        <div className="utilities-icon-container manage-columns-container">
+                            <div
+                                className="utilities-icon manage-columns"
+                                role="presentation"
+                                data-testid="toggleManageColumns"
+                                onClick={toggleManageColumns}
+                            >
+                                <i>
+                                    <IconColumns />
+                                </i>
+                            </div>
+                            <ColumnReordering
+                                isManageColumnOpen={isManageColumnOpen}
+                                toggleManageColumns={toggleManageColumns}
+                                originalColumns={originalColumns}
+                                isExpandContentAvailable={
+                                    isExpandContentAvailable
+                                }
+                                additionalColumn={
+                                    additionalColumn ? [additionalColumn] : []
+                                }
+                                updateColumnStructure={updateColumnStructure}
+                            />
                         </div>
                     ) : null}
                     {exportData !== false ? (
-                        <div
-                            className="utilities-icon export-data"
-                            role="presentation"
-                            data-testid="toggleExportDataOverlay"
-                            onClick={toggleExportDataOverlay}
-                        >
-                            <i>
-                                <IconShare />
-                            </i>
+                        <div className="utilities-icon-container manage-columns-container">
+                            <div
+                                className="utilities-icon export-data"
+                                role="presentation"
+                                data-testid="toggleExportDataOverlay"
+                                onClick={toggleExportDataOverlay}
+                            >
+                                <i>
+                                    <IconShare />
+                                </i>
+                            </div>
+                            <ExportData
+                                isExportOverlayOpen={isExportOverlayOpen}
+                                toggleExportDataOverlay={
+                                    toggleExportDataOverlay
+                                }
+                                rows={rows}
+                                originalColumns={originalColumns}
+                                columns={columns} // Updated columns structure from manage columns overlay
+                                isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
+                                isExpandContentAvailable={
+                                    isExpandContentAvailable
+                                }
+                                additionalColumn={
+                                    additionalColumn ? [additionalColumn] : []
+                                }
+                            />
                         </div>
                     ) : null}
                     {typeof onGridRefresh === "function" ? (
-                        <div
-                            className="utilities-icon refresh-data"
-                            role="presentation"
-                            data-testid="refreshGrid"
-                            onClick={onGridRefresh}
-                        >
-                            <i>
-                                <IconRefresh />
-                            </i>
+                        <div className="utilities-icon-container refresh-data-container">
+                            <div
+                                className="utilities-icon refresh-data"
+                                role="presentation"
+                                data-testid="refreshGrid"
+                                onClick={onGridRefresh}
+                            >
+                                <i>
+                                    <IconRefresh />
+                                </i>
+                            </div>
                         </div>
                     ) : null}
                 </div>
@@ -703,6 +711,7 @@ Customgrid.propTypes = {
     searchColumn: PropTypes.func,
     onRowSelect: PropTypes.func,
     calculateRowHeight: PropTypes.func,
+    expandableColumn: PropTypes.bool,
     isExpandContentAvailable: PropTypes.bool,
     displayExpandedContent: PropTypes.func,
     hasNextPage: PropTypes.bool,
@@ -721,8 +730,7 @@ Customgrid.propTypes = {
     columnChooser: PropTypes.bool,
     exportData: PropTypes.bool,
     onGridRefresh: PropTypes.func,
-    rowsToDeselect: PropTypes.array,
-    groupSortOptions: PropTypes.arrayOf(PropTypes.object)
+    rowsToDeselect: PropTypes.array
 };
 
 export default Customgrid;
