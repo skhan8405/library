@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from "react";
 import JsPdf from "jspdf";
 import "jspdf-autotable";
@@ -65,20 +66,21 @@ class ExportData extends React.Component {
     };
 
     selectDownLoadType = (event) => {
-        // eslint-disable-next-line no-shadow
         let { downLaodFileType } = this.state;
         if (
             event.target.checked &&
-            !downLaodFileType.includes(event.target.value)
+            !this.state.downLaodFileType.includes(event.target.value)
         ) {
             downLaodFileType.push(event.target.value);
             this.setState({ downLaodFileType });
         } else {
-            downLaodFileType.forEach(function (value, index) {
-                if (value === event.target.value) {
-                    downLaodFileType = downLaodFileType.splice(index, value);
+            const temp = [];
+            downLaodFileType.forEach(function (value) {
+                if (value !== event.target.value) {
+                    temp.push(value);
                 }
             });
+            downLaodFileType = temp;
             this.setState({ downLaodFileType });
         }
     };
@@ -181,6 +183,18 @@ class ExportData extends React.Component {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    columnSearchLogic = (e) => {
+        const searchKey = String(e.target.value).toLowerCase();
+        const filteredRows = this.props.columnsList.filter((item) => {
+            return item.name.toLowerCase().includes(searchKey);
+        });
+        if (!filteredRows.length) {
+            this.setState({ columnValueList: this.props.columnsList });
+        } else {
+            this.setState({ columnValueList: filteredRows });
+        }
     };
 
     exportValidation = () => {
