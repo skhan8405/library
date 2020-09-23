@@ -487,7 +487,7 @@ ColumnReordering.propTypes = {
     toggleManageColumns: PropTypes.func,
     originalColumns: PropTypes.arrayOf(PropTypes.object),
     isExpandContentAvailable: PropTypes.bool,
-    additionalColumn: PropTypes.arrayOf(PropTypes.object),
+    additionalColumn: PropTypes.object,
     updateColumnStructure: PropTypes.func
 };
 

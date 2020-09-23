@@ -500,7 +500,7 @@ ExportData.propTypes = {
     columns: PropTypes.arrayOf(PropTypes.object),
     originalColumns: PropTypes.arrayOf(PropTypes.object),
     isExpandContentAvailable: PropTypes.bool,
-    additionalColumn: PropTypes.arrayOf(PropTypes.object),
+    additionalColumn: PropTypes.object,
     isRowExpandEnabled: PropTypes.bool
 };
 
