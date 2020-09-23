@@ -66,6 +66,7 @@ const RowOptions = ({
         <div className="row-options-wrap">
             <span
                 className="icon-row-options"
+                data-testid="rowActions-open-link"
                 role="presentation"
                 onClick={openRowOptionsOverlay}
             >
@@ -77,11 +78,13 @@ const RowOptions = ({
                 <ClickAwayListener
                     onClickAway={closeRowOptionsOverlay}
                     className="row-options-overlay"
+                    data-testid="rowActions-kebab-overlay"
                 >
                     <ul>
                         {isRowEditOptionNeeded ? (
                             <li>
                                 <span
+                                    data-testid="rowAction-editRow"
                                     role="presentation"
                                     onClick={openRowEditOverlay}
                                 >
@@ -95,6 +98,7 @@ const RowOptions = ({
                         {isRowDeleteOptionNeeded ? (
                             <li>
                                 <span
+                                    data-testid="rowAction-deleteRow"
                                     role="presentation"
                                     onClick={openDeleteOverlay}
                                 >
@@ -111,6 +115,7 @@ const RowOptions = ({
                                   return (
                                       <li key={value}>
                                           <span
+                                              data-testid="rowAction-additionalAction"
                                               role="presentation"
                                               onClick={() => {
                                                   return additionalActionClicked(

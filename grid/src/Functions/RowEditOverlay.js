@@ -44,6 +44,7 @@ const RowEditOverLay = ({
         >
             <ClickAwayListener
                 className="row-option-action-overlay"
+                data-testid="rowEditOverlay-container"
                 onClickAway={closeRowEditOverlay}
             >
                 {rowEditContent}
@@ -51,6 +52,7 @@ const RowEditOverLay = ({
                     <button
                         type="button"
                         className="save-Button"
+                        data-testid="rowEditOverlay-save"
                         onClick={saveRowEdit}
                     >
                         Save
@@ -58,6 +60,7 @@ const RowEditOverLay = ({
                     <button
                         type="button"
                         className="cancel-Button"
+                        data-testid="rowEditOverlay-cancel"
                         onClick={closeRowEditOverlay}
                     >
                         Cancel

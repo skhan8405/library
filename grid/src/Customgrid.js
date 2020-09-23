@@ -264,11 +264,17 @@ const Customgrid = (props) => {
                     maxWidth: 35,
                     Header: ({ getToggleAllRowsSelectedProps }) => {
                         return (
-                            <RowSelector {...getToggleAllRowsSelectedProps()} />
+                            <RowSelector
+                                data-testid="rowSelector-allRows"
+                                {...getToggleAllRowsSelectedProps()}
+                            />
                         );
                     },
                     Cell: ({ row }) => (
-                        <RowSelector {...row.getToggleRowSelectedProps()} />
+                        <RowSelector
+                            data-testid="rowSelector-singleRow"
+                            {...row.getToggleRowSelectedProps()}
+                        />
                     )
                 },
                 ...hookColumns,
@@ -298,6 +304,7 @@ const Customgrid = (props) => {
                                 {isRowExpandEnabled || expandableColumn ? (
                                     <span
                                         className="expander"
+                                        data-testid="rowExpanderIcon"
                                         {...row.getToggleRowExpandedProps()}
                                     >
                                         <i>
@@ -611,6 +618,7 @@ const Customgrid = (props) => {
                                                 className="table-cell column-heading th"
                                             >
                                                 <div
+                                                    data-testid="column-header-sort"
                                                     {...column.getSortByToggleProps()}
                                                 >
                                                     {column.render("Header")}

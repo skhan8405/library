@@ -14,6 +14,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
         <div className="txt-wrap neo-grid-header_globalFilter">
             <input
                 type="text"
+                data-testid="globalFilter-textbox"
                 value={value || ""}
                 onChange={(e) => {
                     setValue(e.target.value);
