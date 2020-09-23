@@ -10,8 +10,8 @@
     font-size: rem(14);
     color: var(--titlecolor);
     line-height: 32px;
-    top: 60px;
-    right: 25px;
+    top: 38px;
+    right: 0;
     transition: 0.5s;
     background: var(--white);
     border: 1px solid var(--border-grey);
@@ -24,7 +24,7 @@
         content: "";
         top: -10px;
         position: absolute;
-        right: 69px;
+        right: 2px;
     }
     ::-webkit-scrollbar {
         width: 6px;
@@ -148,10 +148,6 @@
         }
     }
     &.neo-grid-popover--column {
-        right: 15px;
-        &:before {
-            right: 40px;
-        }
         .column-warning {
             margin-left: 10px;
             color: var(--danger);
@@ -170,6 +166,7 @@
                 padding: 10px;
                 margin-bottom: 10px;
                 height: 440px;
+                width: 160px;
                 overflow-y: auto;
                 overflow-x: hidden;
             }
@@ -263,7 +260,7 @@
                 position: absolute;
                 bottom: 0px;
                 right: 0px;
-                width: 80.3%;
+                width: 79.3%;
                 display: flex;
                 background: var(--white);
             }
@@ -289,14 +286,7 @@
         }
     }
     &.neo-grid-popover--exports {
-        right: 10px;
-        width: 40%;
-        @media only screen and (max-width: 1024px) {
-            width: auto;
-        }
-        &:before {
-            right: 9px;
-        }
+        width: 550px;
         .export-warning {
             color: var(--danger);
         }
@@ -312,9 +302,6 @@
         }
         .export__chooser {
             width: 45%;
-            @media only screen and (max-width: 1024px) {
-                width: auto;
-            }
             .export__body {
                 padding: 10px;
                 padding-bottom: 10px;
@@ -352,9 +339,6 @@
         }
         .export__settings {
             width: 100%;
-            @media only screen and (max-width: 1024px) {
-                width: auto;
-            }
             .export__close {
                 margin-left: auto;
                 font-size: rem(15);
@@ -397,10 +381,10 @@
                 position: absolute;
                 bottom: 0px;
                 right: 0px;
-                width: 66%;
+                width: 65.5%;
                 display: flex;
                 @media only screen and (max-width: 1024px) {
-                    width: 61.5%;
+                    width: 66.1%;
                 }
             }
             .export__btns {

@@ -20,7 +20,7 @@ describe("render row selected", () => {
         const { container } = render(<RowSelector {...rowData} />);
         const childComponent = container.querySelector("div");
         expect(childComponent).toBeInTheDocument();
-        const checkBox = childComponent.firstChild;
+        const checkBox = childComponent.firstChild.firstChild;
         act(() => {
             checkBox.dispatchEvent(new MouseEvent("click", { bubbles: true }));
         });

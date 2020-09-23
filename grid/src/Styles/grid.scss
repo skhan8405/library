@@ -7,6 +7,16 @@
     .table {
         border-top: 1px solid var(--border-table);
     }
+    .table-row--head {
+        .table-cell {
+            padding: 10px 5px;
+        }
+    }
+    .tbody {
+        .row-selector-cell-container {
+            padding: 10px 5px;
+        }
+    }
     .table-row {
         border-bottom: 1px solid var(--border-table);
         flex-wrap: wrap;
@@ -19,7 +29,6 @@
         display: flex;
     }
     .table-cell {
-        padding: 10px 5px;
         position: relative;
         &:hover {
             .cell-edit {
@@ -31,6 +40,8 @@
             color: #204d6f;
             vertical-align: top;
             font-weight: bold;
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
             &:hover {
                 border-left: 1px solid var(--border-table);
                 border-right: 1px solid var(--border-table);
@@ -64,13 +75,14 @@
         align-items: center;
         height: 100%;
         margin-right: 5px;
+        box-sizing: border-box;
+        padding: 10px 5px;
         .icon-arrow-up {
             transform: rotate(-180deg);
         }
     }
     .expand {
         width: 100%;
-        padding: 0 10px 0 100px;
     }
     .resizer {
         right: -5px;

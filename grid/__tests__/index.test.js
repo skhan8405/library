@@ -1026,7 +1026,7 @@ describe("render Index file ", () => {
         );
         expect(selectedRowCheckboxes.length).toBe(1);
         const idCellContainerElement =
-            selectedRowCheckboxes[0].parentElement.parentElement
+            selectedRowCheckboxes[0].parentElement.parentElement.parentElement
                 .nextElementSibling;
         expect(idCellContainerElement.innerHTML).toBe("0");
     });

@@ -32,7 +32,7 @@ export const columnToExpand = {
         const timeValue = timeStatusArray.shift();
         const timeText = timeStatusArray.join(" ");
         return (
-            <div className="details-wrap">
+            <div className="remarks-wrap">
                 <DisplayTag columnKey="remarks" cellKey="remarks">
                     <ul>
                         <li>{remarks}</li>
@@ -87,17 +87,13 @@ export const onGridRefresh = () => {
     console.log("Grid Refrehsed ");
 };
 
-<!--# GridComponent
-
-<ArgsTable of={Grid} /> -->
-
 <Meta title="Grid Component" component={Grid} />
 
 # Grid
 
-## Business component for showing list of data in Grid
+## Business component for showing large list of data in tabular view
 
-`Grid` component consists of list of data.
+`Grid` component consists of list of props.
 
 ### Props
 
@@ -106,26 +102,19 @@ export const onGridRefresh = () => {
 ### Code
 
 ```jsx
+import "./example.css";
 import { Grid } from "@neo-ui/grid";
+import FlightIcon from "./images/FlightIcon.png";
+import { fetchData } from "./getData";
+import { getValueOfDate } from "./utils/DateUtility";
+import FlightEdit from "./cells/FlightEdit";
+import SrEdit from "./cells/SrEdit";
+import SegmentEdit from "./cells/SegmentEdit";
+import RowEdit from "./cells/RowEdit";
+import CustomPanel from "./panels/CustomPanel";
 
-const GridComponent = (props) => {
-    const {
-        className,
-        title,
-        gridHeight,
-        gridWidth,
-        columnToExpand,
-        rowActions,
-        rowActionCallback,
-        onGridRefresh,
-        isNextPageAvailableCheck,
-        CustomPanel,
-        globalSearch,
-        columnFilter,
-        groupSort,
-        columnChooser,
-        exportData
-    } = props;
+const GridComponent = () => {
+    const idAttribute = "travelId";
     const { search } = window.location;
     const urlPageSize = search
         ? parseInt(search.replace("?pagesize=", ""), 10)
@@ -136,13 +125,11 @@ const GridComponent = (props) => {
     // State for holding grid data
     const [gridData, setGridData] = useState([]);
     // State for notifying if next page is available or not
-    const [isNextPageAvailable, setIsNextPageAvailable] = useState(
-        isNextPageAvailableCheck
-    );
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState(false);
     // State for holding selected rows
     const [userSelectedRows, setUserSelectedRows] = useState([]);
     // State for holding rows to deselect
-    const [rowsToDeselect, setRowsToDeselect] = useState({});
+    const [rowsToDeselect, setRowsToDeselect] = useState([]);
 
     const airportCodeList = [
         "AAA",
@@ -206,7 +193,15 @@ const GridComponent = (props) => {
             Header: "Id",
             accessor: "travelId",
             width: 50,
-            disableFilters: true
+            disableFilters: true,
+            displayCell: (rowData) => {
+                const { travelId } = rowData;
+                return (
+                    <div className="travelId-details">
+                        <span>{travelId}</span>
+                    </div>
+                );
+            }
         },
         {
             Header: "Flight",
@@ -328,7 +323,7 @@ const GridComponent = (props) => {
                 }
             ],
             disableSortBy: true,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (rowData, DisplayTag, isExpanded) => {
                 const {
                     startTime,
                     endTime,
@@ -342,6 +337,85 @@ const GridComponent = (props) => {
                 const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
+                if (isExpanded === null || isExpanded === true) {
+                    return (
+                        <div className="details-wrap">
+                            <ul>
+                                <li>
+                                    <DisplayTag
+                                        columnKey="details"
+                                        cellKey="startTime"
+                                    >
+                                        {startTime}
+                                    </DisplayTag>
+                                    -<DisplayTag
+                                        columnKey="details"
+                                        cellKey="endTime"
+                                    >
+                                        {endTime}
+                                    </DisplayTag>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <DisplayTag
+                                        columnKey="details"
+                                        cellKey="status"
+                                    >
+                                        <span>{status}</span>
+                                    </DisplayTag>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <DisplayTag
+                                        columnKey="details"
+                                        cellKey="additionalStatus"
+                                    >
+                                        {additionalStatus}
+                                    </DisplayTag>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <DisplayTag
+                                        columnKey="details"
+                                        cellKey="flightModel"
+                                    >
+                                        {flightModel}
+                                    </DisplayTag>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <DisplayTag
+                                        columnKey="details"
+                                        cellKey="bodyType"
+                                    >
+                                        {bodyType}
+                                    </DisplayTag>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <span>
+                                        <DisplayTag
+                                            columnKey="details"
+                                            cellKey="type"
+                                        >
+                                            {type}
+                                        </DisplayTag>
+                                    </span>
+                                </li>
+                                <li className="divider">|</li>
+                                <li>
+                                    <DisplayTag
+                                        columnKey="details"
+                                        cellKey="timeStatus"
+                                    >
+                                        <strong>{timeValue} </strong>
+                                        <span>{timeText}</span>
+                                    </DisplayTag>
+                                </li>
+                            </ul>
+                        </div>
+                    );
+                }
                 return (
                     <div className="details-wrap">
                         <ul>
@@ -366,15 +440,6 @@ const GridComponent = (props) => {
                                     cellKey="status"
                                 >
                                     <span>{status}</span>
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="additionalStatus"
-                                >
-                                    {additionalStatus}
                                 </DisplayTag>
                             </li>
                             <li className="divider">|</li>
@@ -628,6 +693,65 @@ const GridComponent = (props) => {
         }
     ];
 
+    const columnToExpand = {
+        Header: "Remarks",
+        innerCells: [
+            { Header: "Remarks", accessor: "remarks" },
+            { Header: "Details", onlyInTablet: true, accessor: "details" }
+        ],
+        displayCell: (rowData, DisplayTag) => {
+            const { remarks, details } = rowData;
+            const {
+                startTime,
+                endTime,
+                status,
+                additionalStatus,
+                flightModel,
+                bodyType,
+                type,
+                timeStatus
+            } = details || {};
+            const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
+            const timeValue = timeStatusArray.shift();
+            const timeText = timeStatusArray.join(" ");
+            return (
+                <div className="details-wrap">
+                    <DisplayTag columnKey="remarks" cellKey="remarks">
+                        <ul>
+                            <li>{remarks}</li>
+                        </ul>
+                    </DisplayTag>
+                    <DisplayTag columnKey="details" cellKey="details">
+                        <ul>
+                            <li>
+                                {startTime} - {endTime}
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{status}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>{additionalStatus}</li>
+                            <li className="divider">|</li>
+                            <li>{flightModel}</li>
+                            <li className="divider">|</li>
+                            <li>{bodyType}</li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{type}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <strong>{timeValue} </strong>
+                                <span>{timeText}</span>
+                            </li>
+                        </ul>
+                    </DisplayTag>
+                </div>
+            );
+        }
+    };
+
     const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
         return (
             <RowEdit
@@ -677,6 +801,20 @@ const GridComponent = (props) => {
         return rowHeight;
     };
 
+    const rowActions = [
+        { label: "edit" },
+        { label: "delete" },
+        { label: "Send SCR", value: "SCR" },
+        { label: "Segment Summary", value: "SegmentSummary" },
+        { label: "Open Summary", value: "OpenSummary" },
+        { label: "Close Summary", value: "CloseSummary" }
+    ];
+
+    const rowActionCallback = (rowData, actionValue) => {
+        console.log(`Row action: ${actionValue}`);
+        console.log(rowData);
+    };
+
     const onRowUpdate = (originalRow, updatedRow) => {
         setGridData((old) =>
             old.map((row) => {
@@ -706,6 +844,10 @@ const GridComponent = (props) => {
         setUserSelectedRows(selectedRows);
     };
 
+    const onGridRefresh = () => {
+        console.log("Grid Refrehsed ");
+    };
+
     const loadMoreData = () => {
         fetchData(index, pageSize).then((data) => {
             if (data && data.length > 0) {
@@ -730,10 +872,7 @@ const GridComponent = (props) => {
 
     const removeRowSelection = (event) => {
         const rowId = event.currentTarget.dataset.id;
-        setRowsToDeselect({
-            idAttribute: "travelId",
-            value: [Number(rowId)]
-        });
+        setRowsToDeselect([Number(rowId)]);
     };
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
@@ -756,11 +895,12 @@ const GridComponent = (props) => {
                     })}
                 </div>
                 <Grid
-                    className={className}
-                    title={title}
-                    gridHeight={gridHeight}
-                    gridWidth={gridWidth}
+                    className="icargoCustomClass"
+                    title="AWBs"
+                    gridHeight="80vh"
+                    gridWidth="100%"
                     gridData={gridData}
+                    idAttribute={idAttribute}
                     isNextPageAvailable={isNextPageAvailable}
                     loadMoreData={loadMoreData}
                     columns={columns}
@@ -769,17 +909,18 @@ const GridComponent = (props) => {
                     rowActionCallback={rowActionCallback}
                     getRowEditOverlay={getRowEditOverlay}
                     calculateRowHeight={calculateRowHeight}
+                    expandableColumn
                     onRowUpdate={onRowUpdate}
                     onRowDelete={onRowDelete}
                     onRowSelect={onRowSelect}
                     onGridRefresh={onGridRefresh}
                     CustomPanel={CustomPanel}
                     rowsToDeselect={rowsToDeselect}
-                    globalSearch={globalSearch}
-                    columnFilter={columnFilter}
-                    groupSort={groupSort}
-                    columnChooser={columnChooser}
-                    exportData={exportData}
+                    globalSearch
+                    columnFilter
+                    groupSort
+                    columnChooser
+                    exportData
                 />
             </div>
         );
@@ -790,39 +931,24 @@ const GridComponent = (props) => {
         </h2>
     );
 };
+
+export default GridComponent;
 ```
 
 ### Variants
 
-#### With class name
+#### With custom classname
 
-<Story name="With Class Name">
-    <GridComponent
-        className="icargoCustomClass"
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="With custom classname">
+    <GridComponent className="icargoCustomClass" />;
 </Story>
 
 ```jsx
 <Grid
-    className={className}
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
+    className="icargoCustomClass"
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -830,33 +956,18 @@ const GridComponent = (props) => {
 />
 ```
 
-#### Without title
+#### With custom title
 
-<Story name="Without title">
-    <GridComponent
-        className="icargoCustomClass"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="With custom title">
+    <GridComponent title="AWBs" />;
 </Story>
 
 ```jsx
 <Grid
-    className={className}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
+    title="AWBs"
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -864,35 +975,18 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With custom height
+#### With custom grid height
 
 <Story name="With custom height">
-    <GridComponent
-        className="icargoCustomClass"
-        title="AWBs"
-        gridHeight="50vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+    <GridComponent gridHeight="80vh" />;
 </Story>
 
 ```jsx
 <Grid
-    className={className}
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
+    gridHeight="80vh"
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -900,35 +994,18 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With custom width
+#### With custom grid width
 
-<Story name="With custom width">
-    <GridComponent
-        className="icargoCustomClass"
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="75%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="With custom grid width">
+    <GridComponent gridWidth="75%" />;
 </Story>
 
 ```jsx
 <Grid
-    className={className}
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
+    gridWidth="75%"
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -936,35 +1013,18 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With Row expand
+#### With row expansion
 
-<Story name="With Row expand">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        columnToExpand={columnToExpand}
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="With row expansion">
+    <GridComponent passColumnToExpand={true} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
+    idAttribute={idAttribute}
+    columns={columns}
     columnToExpand={columnToExpand}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
-    columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -972,38 +1032,44 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With rowAction & rowActionCallback
+#### With column expansion
 
-<Story name="With rowAction & rowActionCallback">
+<Story name="With column expansion">
+    <GridComponent expandableColumn={true} />;
+</Story>
+
+```jsx
+<Grid
+    gridData={gridData}
+    idAttribute={idAttribute}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+    expandableColumn
+/>
+```
+
+#### With row actions
+
+<Story name="With row actions">
     <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
         rowActions={rowActions}
         rowActionCallback={rowActionCallback}
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
     />
     ;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
+    idAttribute={idAttribute}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
     rowActions={rowActions}
     rowActionCallback={rowActionCallback}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
-    columns={columns}
     getRowEditOverlay={getRowEditOverlay}
-    calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
@@ -1013,31 +1079,14 @@ const GridComponent = (props) => {
 #### With grid refresh
 
 <Story name="With grid refresh">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        onGridRefresh={onGridRefresh}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+    <GridComponent onGridRefresh={onGridRefresh} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -1046,34 +1095,17 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With CustomPanel
+#### With custom header panel
 
-<Story name="With CustomPanel">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        CustomPanel={CustomPanel}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="With custom header panel">
+    <GridComponent CustomPanel={CustomPanel} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -1085,31 +1117,14 @@ const GridComponent = (props) => {
 #### With rows deselect
 
 <Story name="With rows deselect">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        rowsToDeselect={GridComponent.rowsToDeselect}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+    <GridComponent enableRowDeselection />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -1118,32 +1133,19 @@ const GridComponent = (props) => {
 />
 ```
 
-#### Without next page
+#### With pagination
 
-<Story name="Without next page">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={false}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="With pagination">
+    <GridComponent isNextPageAvailableCheck={true} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
+    isNextPageAvailableCheck={true}
+    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
@@ -1151,178 +1153,98 @@ const GridComponent = (props) => {
 />
 ```
 
-#### With globalSearch
+#### Hide globalSearch
 
-<Story name="With globalSearch">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={true}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="Hide globalSearch">
+    <GridComponent globalSearch={false} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-    globalSearch={globalSearch}
+    globalSearch={false}
 />
 ```
 
-#### With columnFilter
+#### Hide columnFilter
 
-<Story name="With columnFilter">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={true}
-        groupSort={false}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="Hide columnFilter">
+    <GridComponent columnFilter={false} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-    columnFilter={columnFilter}
+    columnFilter={false}
 />
 ```
 
-#### With groupSort
+#### Hide groupSort
 
-<Story name="With groupSort">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={true}
-        columnChooser={false}
-        exportData={false}
-    />
-    ;
+<Story name="Hide groupSort">
+    <GridComponent groupSort={false} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-    groupSort={groupSort}
+    groupSort={false}
 />
 ```
 
-#### With columnChooser
+#### Hide columnChooser
 
-<Story name="With columnChooser">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={true}
-        exportData={false}
-    />
-    ;
+<Story name="Hide columnChooser">
+    <GridComponent columnChooser={false} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-    columnChooser={columnChooser}
+    columnChooser={false}
 />
 ```
 
-#### With exportData
+#### Hide exportData
 
-<Story name="With exportData">
-    <GridComponent
-        title="AWBs"
-        gridHeight="80vh"
-        gridWidth="100%"
-        isNextPageAvailableCheck={true}
-        globalSearch={false}
-        columnFilter={false}
-        groupSort={false}
-        columnChooser={false}
-        exportData={true}
-    />
-    ;
+<Story name="Hide exportData">
+    <GridComponent exportData={false} />;
 </Story>
 
 ```jsx
 <Grid
-    title={title}
-    gridHeight={gridHeight}
-    gridWidth={gridWidth}
     gridData={gridData}
-    isNextPageAvailable={isNextPageAvailable}
-    loadMoreData={loadMoreData}
+    idAttribute={idAttribute}
     columns={columns}
-    getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-    exportData={exportData}
+    exportData={false}
 />
 ```
 
@@ -1336,11 +1258,12 @@ const GridComponent = (props) => {
         gridWidth="100%"
         isNextPageAvailableCheck={true}
         columnToExpand={columnToExpand}
+        expandableColumn={true}
         rowActions={rowActions}
         rowActionCallback={rowActionCallback}
         onGridRefresh={onGridRefresh}
         CustomPanel={CustomPanel}
-        rowsToDeselect={GridComponent.rowsToDeselect}
+        enableRowDeselection={true}
         globalSearch={true}
         columnFilter={true}
         groupSort={true}
@@ -1357,6 +1280,7 @@ const GridComponent = (props) => {
     gridHeight={gridHeight}
     gridWidth={gridWidth}
     gridData={gridData}
+    idAttribute={idAttribute}
     isNextPageAvailable={isNextPageAvailable}
     loadMoreData={loadMoreData}
     columns={columns}
@@ -1365,6 +1289,7 @@ const GridComponent = (props) => {
     rowActionCallback={rowActionCallback}
     getRowEditOverlay={getRowEditOverlay}
     calculateRowHeight={calculateRowHeight}
+    expandableColumn={expandableColumn}
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
