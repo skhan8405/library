@@ -17,12 +17,14 @@ const RowDeleteOverLay = ({
     return (
         <ClickAwayListener
             className="row-option-action-overlay delete"
+            data-testid="rowDeleteOverlay-container"
             onClickAway={closeRowDeleteOverlay}
         >
             <div className="cancel-save-buttons-delete">
                 <button
                     type="button"
                     className="delete-Button"
+                    data-testid="rowDeleteOverlay-Delete"
                     onClick={deleteRow}
                 >
                     Delete
@@ -30,6 +32,7 @@ const RowDeleteOverLay = ({
                 <button
                     type="button"
                     className="cancel-Button"
+                    data-testid="rowDeleteOverlay-cancel"
                     onClick={closeRowDeleteOverlay}
                 >
                     Cancel

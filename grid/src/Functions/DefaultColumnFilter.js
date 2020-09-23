@@ -5,6 +5,7 @@ const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => {
     return (
         <input
             className="txt"
+            data-testid="columnFilter-textbox"
             value={filterValue || ""}
             onChange={(e) => {
                 setFilter(e.target.value || undefined);
