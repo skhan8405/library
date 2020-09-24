@@ -22,15 +22,17 @@ const ExportData = (props) => {
         isExpandContentAvailable,
         additionalColumn
     } = props;
-
+    const convertedAdditionalColumn = additionalColumn
+        ? [additionalColumn]
+        : [];
     // Check if row expand is configured by developer
     const getRemarksColumnIfAvailable = () => {
-        return isExpandContentAvailable ? additionalColumn : [];
+        return isExpandContentAvailable ? convertedAdditionalColumn : [];
     };
 
     // Check if row expand is set visible from manage overlay
     const getRemarksColumnIfSelectedByUser = () => {
-        return isRowExpandEnabled ? additionalColumn : [];
+        return isRowExpandEnabled ? convertedAdditionalColumn : [];
     };
 
     // Full list of columns + expand column
@@ -255,12 +257,12 @@ const ExportData = (props) => {
         }
     };
 
-    const isCheckboxSelected = (header) => {
-        if (header === "Select All") {
+    const isCheckboxSelected = (columnId) => {
+        if (columnId === "Select All") {
             return managedColumns.length === searchedColumns.length;
         }
         const selectedColumn = managedColumns.filter((column) => {
-            return column.Header === header;
+            return column.columnId === columnId;
         });
         return selectedColumn && selectedColumn.length > 0;
     };
@@ -281,7 +283,7 @@ const ExportData = (props) => {
         if (checked) {
             // Find the index of selected column from original column array and also find the user selected column
             const indexOfColumnToAdd = updatedColumns.findIndex((column) => {
-                return column.Header === value;
+                return column.columnId === value;
             });
             const itemToAdd = updatedColumns[indexOfColumnToAdd];
 
@@ -292,8 +294,8 @@ const ExportData = (props) => {
                 if (prevItemIndex === -1) {
                     prevItemIndex = managedColumns.findIndex((column) => {
                         return (
-                            column.Header ===
-                            updatedColumns[indexOfColumnToAdd - 1].Header
+                            column.columnId ===
+                            updatedColumns[indexOfColumnToAdd - 1].columnId
                         );
                     });
                 }
@@ -305,7 +307,7 @@ const ExportData = (props) => {
         } else {
             setManagedColumns(
                 managedColumns.filter((column) => {
-                    return column.Header !== value;
+                    return column.columnId !== value;
                 })
             );
         }
@@ -372,9 +374,9 @@ const ExportData = (props) => {
                                             <input
                                                 type="checkbox"
                                                 data-testid={`${column.Header}`}
-                                                value={column.Header}
+                                                value={column.columnId}
                                                 checked={isCheckboxSelected(
-                                                    column.Header
+                                                    column.columnId
                                                 )}
                                                 onChange={selectSingleColumn}
                                             />
@@ -498,7 +500,7 @@ ExportData.propTypes = {
     columns: PropTypes.arrayOf(PropTypes.object),
     originalColumns: PropTypes.arrayOf(PropTypes.object),
     isExpandContentAvailable: PropTypes.bool,
-    additionalColumn: PropTypes.arrayOf(PropTypes.object),
+    additionalColumn: PropTypes.object,
     isRowExpandEnabled: PropTypes.bool
 };
 
