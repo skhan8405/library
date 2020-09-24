@@ -64,8 +64,8 @@ const SortingList = (props) => {
 };
 
 SortingList.propTypes = {
-    sortsArray: PropTypes.any,
-    handleReorderListOfSort: PropTypes.any
+    sortsArray: PropTypes.arrayOf(PropTypes.object),
+    handleReorderListOfSort: PropTypes.func
 };
 
 export default SortingList;
