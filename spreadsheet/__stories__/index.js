@@ -3,8 +3,17 @@ import React, { useState, useEffect } from "react";
 import Spreadsheet from "../src/index";
 import CargoData from "./data.json";
 
-const GridComponent = () => {
-    const gridHeight = "90vh";
+const GridComponent = (props) => {
+    const {
+        gridHeight,
+        isGlobalSearch,
+        isColumnFilter,
+        isGroupSort,
+        isColumnChooser,
+        isExportData,
+        isSelectAll
+    } = props;
+    // const gridHeight = "90vh";
     const rows = CargoData;
     const pageSize = 500;
     const maxLeftPinnedColumn = 5;
@@ -567,6 +576,12 @@ const GridComponent = () => {
                 selectBulkData={selectBulkData}
                 maxLeftPinnedColumn={maxLeftPinnedColumn}
                 updatedRows={updatedRows}
+                isGlobalSearch={isGlobalSearch}
+                isColumnFilter={isColumnFilter}
+                isGroupSort={isGroupSort}
+                isColumnChooser={isColumnChooser}
+                isExportData={isExportData}
+                isSelectAll={isSelectAll}
             />
         );
     }

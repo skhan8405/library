@@ -96,7 +96,18 @@ let sortBy;
 class Spreadsheet extends Component {
     constructor(props) {
         super(props);
-        const { dataSet, pageSize, rows, columns } = this.props;
+        const {
+            dataSet,
+            pageSize,
+            rows,
+            columns,
+            isGlobalSearch,
+            isColumnFilter,
+            isGroupSort,
+            isColumnChooser,
+            isExportData,
+            isSelectAll
+        } = this.props;
         const dataSetVar = JSON.parse(JSON.stringify(dataSet));
         dataSetVar.forEach((e, index) => {
             const el = e;
@@ -104,6 +115,12 @@ class Spreadsheet extends Component {
             return el;
         });
         this.state = {
+            isGlobalSearch: isGlobalSearch,
+            isColumnFilter: isColumnFilter,
+            isGroupSort: isGroupSort,
+            isColumnChooser: isColumnChooser,
+            isExportData: isExportData,
+            isSelectAll: isSelectAll,
             warningStatus: "",
             height: 680,
             searchValue: "",
@@ -1563,7 +1580,13 @@ class Spreadsheet extends Component {
             height,
             columns,
             rows,
-            selectedIndexes
+            selectedIndexes,
+            isGlobalSearch,
+            isColumnFilter,
+            isGroupSort,
+            isColumnChooser,
+            isExportData,
+            isSelectAll
         } = this.state;
         return (
             <div onScroll={this.handleScroll} className="iCargo__custom">
@@ -1572,49 +1595,71 @@ class Spreadsheet extends Component {
                         Showing &nbsp;<strong> {count} </strong> &nbsp; records
                     </div>
                     <div className="neo-grid-header__utilities">
-                        <div className="txt-wrap">
-                            <input
-                                data-testid="globalSearch"
-                                type="text"
-                                onChange={(e) => {
-                                    this.handleSearchValue(e.target.value);
-                                    const srchRows = this.getSearchRecords(e);
-                                    this.globalSearchLogic(e, srchRows);
-                                }}
-                                value={searchValue}
-                                className="txt"
-                                placeholder="Search"
-                            />
-                            <i>
-                                <IconSearch />
-                            </i>
-                            <IconFilter />
-                        </div>
-                        <div
-                            role="presentation"
-                            id="openSorting"
-                            className="filterIcons"
-                            onClick={this.sortingPanel}
-                        >
-                            <IconGroupSort />
-                        </div>
-                        {sortingPanelComponent}
-                        <div
-                            role="presentation"
-                            className="filterIcons"
-                            onClick={this.columnReorderingPannel}
-                        >
-                            <IconColumns />
-                        </div>
-                        {columnReorderingComponent}
-                        <div
-                            role="presentation"
-                            className="filterIcons"
-                            onClick={this.exportColumnData}
-                        >
-                            <IconShare />
-                        </div>
-                        {exportComponent}
+                        {isGlobalSearch !== false ? (
+                            <div className="txt-wrap">
+                                <input
+                                    data-testid="globalSearch"
+                                    type="text"
+                                    onChange={(e) => {
+                                        this.handleSearchValue(e.target.value);
+                                        const srchRows = this.getSearchRecords(
+                                            e
+                                        );
+                                        this.globalSearchLogic(e, srchRows);
+                                    }}
+                                    value={searchValue}
+                                    className="txt"
+                                    placeholder="Search"
+                                />
+                                <i>
+                                    <IconSearch />
+                                </i>
+                            </div>
+                        ) : null}
+                        {isColumnFilter !== false ? (
+                            <div className="txt-wrap">
+                                <i>
+                                    <IconFilter />
+                                </i>
+                            </div>
+                        ) : null}
+                        {isGroupSort !== false ? (
+                            <>
+                                <div
+                                    role="presentation"
+                                    id="openSorting"
+                                    className="filterIcons"
+                                    onClick={this.sortingPanel}
+                                >
+                                    <IconGroupSort />
+                                </div>
+                                {sortingPanelComponent}
+                            </>
+                        ) : null}
+                        {isColumnChooser !== false ? (
+                            <>
+                                <div
+                                    role="presentation"
+                                    className="filterIcons"
+                                    onClick={this.columnReorderingPannel}
+                                >
+                                    <IconColumns />
+                                </div>
+                                {columnReorderingComponent}
+                            </>
+                        ) : null}
+                        {isExportData !== false ? (
+                            <>
+                                <div
+                                    role="presentation"
+                                    className="filterIcons"
+                                    onClick={this.exportColumnData}
+                                >
+                                    <IconShare />
+                                </div>
+                                {exportComponent}
+                            </>
+                        ) : null}
                     </div>
                 </div>
                 <ErrorMessage
@@ -1626,7 +1671,7 @@ class Spreadsheet extends Component {
                     clearSearchValue={this.clearSearchValue}
                 />
                 <ExtDataGrid
-                    toolbar={<Toolbar enableFilter />}
+                    toolbar={isColumnFilter ? <Toolbar enableFilter /> : ""}
                     getValidFilterValues={(columnKey) =>
                         this.getValidFilterValues(filteringRows, columnKey)
                     }
@@ -1647,8 +1692,8 @@ class Spreadsheet extends Component {
                     }
                     onAddFilter={(filter) => this.handleFilterChange(filter)}
                     rowSelection={{
-                        showCheckbox: true,
-                        enableShiftSelect: true,
+                        showCheckbox: isSelectAll,
+                        enableShiftSelect: isSelectAll,
                         onRowsSelected: this.onRowsSelected,
                         onRowsDeselected: this.onRowsDeselected,
                         selectBy: {
