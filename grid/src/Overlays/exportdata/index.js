@@ -257,12 +257,12 @@ const ExportData = (props) => {
         }
     };
 
-    const isCheckboxSelected = (header) => {
-        if (header === "Select All") {
+    const isCheckboxSelected = (columnId) => {
+        if (columnId === "Select All") {
             return managedColumns.length === searchedColumns.length;
         }
         const selectedColumn = managedColumns.filter((column) => {
-            return column.Header === header;
+            return column.columnId === columnId;
         });
         return selectedColumn && selectedColumn.length > 0;
     };
@@ -283,7 +283,7 @@ const ExportData = (props) => {
         if (checked) {
             // Find the index of selected column from original column array and also find the user selected column
             const indexOfColumnToAdd = updatedColumns.findIndex((column) => {
-                return column.Header === value;
+                return column.columnId === value;
             });
             const itemToAdd = updatedColumns[indexOfColumnToAdd];
 
@@ -294,8 +294,8 @@ const ExportData = (props) => {
                 if (prevItemIndex === -1) {
                     prevItemIndex = managedColumns.findIndex((column) => {
                         return (
-                            column.Header ===
-                            updatedColumns[indexOfColumnToAdd - 1].Header
+                            column.columnId ===
+                            updatedColumns[indexOfColumnToAdd - 1].columnId
                         );
                     });
                 }
@@ -307,7 +307,7 @@ const ExportData = (props) => {
         } else {
             setManagedColumns(
                 managedColumns.filter((column) => {
-                    return column.Header !== value;
+                    return column.columnId !== value;
                 })
             );
         }
@@ -374,9 +374,9 @@ const ExportData = (props) => {
                                             <input
                                                 type="checkbox"
                                                 data-testid={`${column.Header}`}
-                                                value={column.Header}
+                                                value={column.columnId}
                                                 checked={isCheckboxSelected(
-                                                    column.Header
+                                                    column.columnId
                                                 )}
                                                 onChange={selectSingleColumn}
                                             />
