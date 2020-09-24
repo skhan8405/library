@@ -16,12 +16,16 @@ const ColumnReordering = (props) => {
         isExpandContentAvailable,
         additionalColumn
     } = props;
+
+    const convertedAdditionalColumn = additionalColumn
+        ? [additionalColumn]
+        : [];
     const additionalColumnHeader =
-        additionalColumn && additionalColumn.length
-            ? additionalColumn[0].Header
+        convertedAdditionalColumn && convertedAdditionalColumn.length
+            ? convertedAdditionalColumn[0].Header
             : "";
     const getRemarksColumnIfAvailable = () => {
-        return isExpandContentAvailable ? additionalColumn : [];
+        return isExpandContentAvailable ? convertedAdditionalColumn : [];
     };
 
     const concatedOriginalColumns = originalColumns.concat(
@@ -150,7 +154,7 @@ const ColumnReordering = (props) => {
 
         if (value === additionalColumnHeader) {
             if (checked) {
-                setRemarksColumnToManage(additionalColumn);
+                setRemarksColumnToManage(convertedAdditionalColumn);
             } else {
                 setRemarksColumnToManage([]);
             }
@@ -483,7 +487,7 @@ ColumnReordering.propTypes = {
     toggleManageColumns: PropTypes.func,
     originalColumns: PropTypes.arrayOf(PropTypes.object),
     isExpandContentAvailable: PropTypes.bool,
-    additionalColumn: PropTypes.arrayOf(PropTypes.object),
+    additionalColumn: PropTypes.object,
     updateColumnStructure: PropTypes.func
 };
 
