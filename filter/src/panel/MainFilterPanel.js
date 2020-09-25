@@ -1,101 +1,92 @@
-/* eslint-disable react/destructuring-assignment */
-
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { IconLeftAlign } from "../Utilities/SvgUtilities";
-import SavedFilters from "./SavedFilters";
+import { IButton } from "@neo/button";
+import { IconLeftAlign } from "../utilities/svgUtilities";
 
 let chips;
 let chipCount;
 const MainFilterPanel = (props) => {
     const [listFilter, setListFilter] = useState(false);
-    const [chipArray, setChipArray] = useState([]);
+    const [chipArray, setChipArray] = useState({});
     const [countShow, setCountShow] = useState("none");
+    const { applyFilterChip, showDrawer, CustomPanel } = props;
     useEffect(() => {
-        setChipArray(props.applyFilterChip.applyFilter);
-        if (
-            props.applyFilterChip.applyFilter &&
-            props.applyFilterChip.applyFilter.length > 0
-        ) {
+        setChipArray(applyFilterChip);
+        if (Object.keys(applyFilterChip).length > 0) {
             setCountShow("");
         } else {
             setCountShow("none");
         }
-    }, [props.applyFilterChip]);
+    }, [applyFilterChip]);
+
+    /**
+     * Method to display and not display saved filters list
+     */
     const handleListFilter = () => {
         setListFilter(!listFilter);
     };
+
     if (chipArray) {
-        chipCount = chipArray.length;
-        chips = chipArray.map((item) => {
-            if (item.type) {
+        chipCount = 0;
+
+        chips = Object.entries(chipArray).map(([key, values]) => {
+            if (
+                values.value &&
+                (values.value.length > 0 ||
+                    Object.keys(values.value).length > 0)
+            ) {
+                chipCount += 1;
                 return (
                     <div
                         role="presentation"
                         className="listContent"
-                        data-testid="typecheck"
-                        key={item}
+                        data-testid={`${values.value},${key}`}
+                        key={`${values.value},${key}`}
                         onClick={() => {
-                            props.addAppliedFilters(chipArray);
+                            props.showDrawer();
                         }}
                     >
-                        <span>
-                            {item.name}:{item.type}
-                        </span>
-                        {item.value.map((value) => {
-                            return <div key={value}>{value.value}</div>;
-                        })}
+                        <span key={key}>{key}</span>
+                        {values.condition && values.condition.length > 0 && (
+                            <div key={values.condition}>
+                                {values.condition}
+                                &nbsp;&nbsp;
+                            </div>
+                        )}
+                        {values.value &&
+                            values.value.length > 0 &&
+                            !Array.isArray(values.value) && (
+                                <div key={values.value}>{values.value}</div>
+                            )}
+                        {values.value &&
+                            values.value.length > 0 &&
+                            Array.isArray(values.value) &&
+                            values.value.map((item) => {
+                                return (
+                                    <div key={item}>
+                                        &nbsp;&nbsp;
+                                        {item}
+                                        &nbsp;&nbsp;
+                                    </div>
+                                );
+                            })}
+                        {values.value &&
+                            Object.keys(values.value).length > 0 &&
+                            !values.value.length > 0 &&
+                            Object.keys(values.value).map((item) => {
+                                return (
+                                    <div key={item}>
+                                        &nbsp;&nbsp;
+                                        {item}:{values.value[item]}
+                                        &nbsp;&nbsp;
+                                    </div>
+                                );
+                            })}
                     </div>
                 );
             }
-            if (item.condition) {
-                return (
-                    <div
-                        role="presentation"
-                        className="listContent"
-                        data-testid="conditionValue-check"
-                        key={item}
-                        onClick={() => {
-                            props.addAppliedFilters(chipArray);
-                        }}
-                    >
-                        <span>{item.name}</span>:{item.condition}
-                        {item.amount}
-                    </div>
-                );
-            }
-            if (item.fieldValue) {
-                return (
-                    <div
-                        role="presentation"
-                        className="listContent"
-                        data-testid="fieldValue-check"
-                        key={item}
-                        onClick={() => {
-                            props.addAppliedFilters(chipArray);
-                        }}
-                    >
-                        <span>{item.fieldValue}</span>
-                        {item.value}
-                    </div>
-                );
-            }
-            return (
-                <div
-                    role="presentation"
-                    className="listContent"
-                    data-testid="chipCount-check"
-                    key={item}
-                    onClick={() => {
-                        props.addAppliedFilters(chipArray);
-                    }}
-                >
-                    <span>{item.name}</span>:{item.value}
-                </div>
-            );
+            return <div />;
         });
-    } else {
-        chips = <div />;
     }
 
     return (
@@ -104,7 +95,9 @@ const MainFilterPanel = (props) => {
                 <div className="displayFlex">
                     <div className="alignLeft">
                         <div
-                            style={{ cursor: "pointer" }}
+                            style={{
+                                cursor: "pointer"
+                            }}
                             role="presentation"
                             className="iconLeft"
                             data-testid="handleListFilterCheck"
@@ -112,39 +105,47 @@ const MainFilterPanel = (props) => {
                         >
                             <IconLeftAlign />
                         </div>
-                        <SavedFilters
-                            showFilter={listFilter}
-                            handleListFilter={handleListFilter}
-                            addSavedFilters={props.addSavedFilters}
-                        />
                         <div className="leftSpace">All flights</div>
+                    </div>
+                    <div className="header__custompanel">
+                        <CustomPanel />
                     </div>
                 </div>
                 <div className="secondList">
                     <div className="displayFlex">
-                        <span
-                            style={{ display: countShow }}
-                            className="listContent"
-                        >
-                            count:{chipCount}
-                        </span>
-                        {chips}
-                        <div
-                            style={{ cursor: "pointer" }}
-                            role="presentation"
-                            data-testid="showDrawer-check"
-                            onClick={() => {
-                                props.showDrawer();
-                            }}
-                            className="addFilter"
-                        >
-                            + Add Filter
+                        <div className="filter__tags">
+                            {chipCount > 0 && (
+                                <span
+                                    style={{
+                                        display: countShow
+                                    }}
+                                    className="listContent"
+                                >
+                                    count:
+                                    {chipCount}
+                                </span>
+                            )}
+                            {chips}
+                        </div>
+                        <div>
+                            <IButton
+                                color="link"
+                                size="sm"
+                                style={{
+                                    cursor: "pointer"
+                                }}
+                                role="presentation"
+                                data-testid="showDrawer-check"
+                                onClick={() => {
+                                    showDrawer();
+                                }}
+                                className="addFilter"
+                            >
+                                + Add Filter
+                            </IButton>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="header__btns">
-                <props.customPanel />
             </div>
         </div>
     );
@@ -152,9 +153,8 @@ const MainFilterPanel = (props) => {
 
 MainFilterPanel.propTypes = {
     applyFilterChip: PropTypes.any,
-    addAppliedFilters: PropTypes.any,
-    addSavedFilters: PropTypes.any,
-    showDrawer: PropTypes.any
+    showDrawer: PropTypes.any,
+    CustomPanel: PropTypes.any
 };
 
 export default MainFilterPanel;

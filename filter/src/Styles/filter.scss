@@ -9,7 +9,7 @@
     position: fixed;
     font-size: rem(14);
     color: #1f567e;
-    line-height: 28px;
+    line-height: 32px;
     top: 0px;
     left: 0px;
     transition: 0.5s;
@@ -426,4 +426,29 @@
     .text-danger {
         color: #dc3545;
     }
+}
+
+.control__condition {
+    padding: 0 15px 0 10px;
+}
+.control__close {
+    cursor: pointer;
+}
+.neo-toggle-wrapper {
+    padding: 0 4px 0 10px;
+}
+.control__condition__wrap {
+    display: flex;
+}
+.accordion__item {
+    margin-left: 10px;
+}
+.accordion__list {
+    margin-left: -5px;
+}
+.filter__warning {
+    padding: 0px 10px 0px 10px;
+}
+.filter__recentFilterTitle {
+    padding: 0px 10px 0px 10px;
 }
