@@ -16,10 +16,10 @@ const GridComponent = (props) => {
         title,
         gridHeight,
         gridWidth,
-        columnToExpand,
-        rowActions,
-        rowActionCallback,
-        onGridRefresh,
+        passColumnToExpand,
+        passRowActions,
+        passRowActionCallback,
+        passOnGridRefresh,
         isNextPageAvailableCheck,
         CustomPanel,
         globalSearch,
@@ -613,6 +613,65 @@ const GridComponent = (props) => {
         }
     ];
 
+    const columnToExpand = {
+        Header: "Remarks",
+        innerCells: [
+            { Header: "Remarks", accessor: "remarks" },
+            { Header: "Details", onlyInTablet: true, accessor: "details" }
+        ],
+        displayCell: (rowData, DisplayTag) => {
+            const { remarks, details } = rowData;
+            const {
+                startTime,
+                endTime,
+                status,
+                additionalStatus,
+                flightModel,
+                bodyType,
+                type,
+                timeStatus
+            } = details || {};
+            const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
+            const timeValue = timeStatusArray.shift();
+            const timeText = timeStatusArray.join(" ");
+            return (
+                <div className="remarks-wrap">
+                    <DisplayTag columnKey="remarks" cellKey="remarks">
+                        <ul>
+                            <li>{remarks}</li>
+                        </ul>
+                    </DisplayTag>
+                    <DisplayTag columnKey="details" cellKey="details">
+                        <ul>
+                            <li>
+                                {startTime} - {endTime}
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{status}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>{additionalStatus}</li>
+                            <li className="divider">|</li>
+                            <li>{flightModel}</li>
+                            <li className="divider">|</li>
+                            <li>{bodyType}</li>
+                            <li className="divider">|</li>
+                            <li>
+                                <span>{type}</span>
+                            </li>
+                            <li className="divider">|</li>
+                            <li>
+                                <strong>{timeValue} </strong>
+                                <span>{timeText}</span>
+                            </li>
+                        </ul>
+                    </DisplayTag>
+                </div>
+            );
+        }
+    };
+
     const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
         return (
             <RowEdit
@@ -650,7 +709,7 @@ const GridComponent = (props) => {
                 rowHeight += widthVariable / 1000;
             }
             // Add logic to increase row height if row is expanded
-            if (isExpanded && columnToExpand) {
+            if (isExpanded && passColumnToExpand && columnToExpand) {
                 // Increase height based on the number of inner cells in additional columns
                 rowHeight +=
                     columnToExpand.innerCells &&
@@ -660,6 +719,20 @@ const GridComponent = (props) => {
             }
         }
         return rowHeight;
+    };
+
+    const rowActions = [
+        { label: "edit" },
+        { label: "delete" },
+        { label: "Send SCR", value: "SCR" },
+        { label: "Segment Summary", value: "SegmentSummary" },
+        { label: "Open Summary", value: "OpenSummary" },
+        { label: "Close Summary", value: "CloseSummary" }
+    ];
+
+    const rowActionCallback = (rowData, actionValue) => {
+        console.log(`Row action: ${actionValue}`);
+        console.log(rowData);
     };
 
     const onRowUpdate = (originalRow, updatedRow) => {
@@ -691,6 +764,10 @@ const GridComponent = (props) => {
         if (enableRowDeselection) {
             setUserSelectedRows(selectedRows);
         }
+    };
+
+    const onGridRefresh = () => {
+        console.log("Grid Refrehsed ");
     };
 
     const loadMoreData = () => {
@@ -749,16 +826,18 @@ const GridComponent = (props) => {
                     isNextPageAvailable={isNextPageAvailable}
                     loadMoreData={loadMoreData}
                     columns={columns}
-                    columnToExpand={columnToExpand}
-                    rowActions={rowActions}
-                    rowActionCallback={rowActionCallback}
+                    columnToExpand={passColumnToExpand ? columnToExpand : null}
+                    rowActions={passRowActions ? rowActions : null}
+                    rowActionCallback={
+                        passRowActionCallback ? rowActionCallback : null
+                    }
                     getRowEditOverlay={getRowEditOverlay}
                     calculateRowHeight={calculateRowHeight}
                     expandableColumn={expandableColumn}
                     onRowUpdate={onRowUpdate}
                     onRowDelete={onRowDelete}
                     onRowSelect={onRowSelect}
-                    onGridRefresh={onGridRefresh}
+                    onGridRefresh={passOnGridRefresh ? onGridRefresh : null}
                     CustomPanel={CustomPanel}
                     rowsToDeselect={rowsToDeselect}
                     globalSearch={globalSearch}
