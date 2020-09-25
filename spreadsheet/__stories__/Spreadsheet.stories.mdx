@@ -37,15 +37,28 @@ import { Spreadsheet } from "@neo-ui/spreadsheet";
     selectBulkData={selectBulkData}
     maxLeftPinnedColumn={maxLeftPinnedColumn}
     updatedRows={updatedRows}
+    isGlobalSearch={isGlobalSearch}
+    isColumnFilter={isColumnFilter}
+    isGroupSort={isGroupSort}
+    isColumnChooser={isColumnChooser}
+    isExportData={isExportData}
 />;
 ```
 
 ### Variants
 
-#### With all props
+#### with global search
 
-<Story name="With all props">
-    <GridComponent />;
+<Story name="with global search">
+    <GridComponent
+        isGlobalSearch={true}
+        isColumnFilter={false}
+        isGroupSort={false}
+        isColumnChooser={false}
+        isExportData={false}
+        isSelectAll={true}
+    />
+    ;
 </Story>
 
 ```jsx
@@ -60,5 +73,196 @@ import { Spreadsheet } from "@neo-ui/spreadsheet";
     selectBulkData={selectBulkData}
     maxLeftPinnedColumn={maxLeftPinnedColumn}
     updatedRows={updatedRows}
+    isGlobalSearch={isGlobalSearch}
+    isSelectAll={isSelectAll}
+/>
+```
+
+#### with column filter
+
+<Story name="with column filter">
+    <GridComponent
+        isGlobalSearch={false}
+        isColumnFilter={true}
+        isGroupSort={false}
+        isColumnChooser={false}
+        isExportData={false}
+        isSelectAll={true}
+    />
+    ;
+</Story>
+
+```jsx
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+    isGlobalSearch={isGlobalSearch}
+    isColumnFilter={isColumnFilter}
+    isSelectAll={isSelectAll}
+/>
+```
+
+#### with group sort
+
+<Story name="with group sort">
+    <GridComponent
+        isGlobalSearch={false}
+        isColumnFilter={false}
+        isGroupSort={true}
+        isColumnChooser={false}
+        isExportData={false}
+        isSelectAll={true}
+    />
+    ;
+</Story>
+
+```jsx
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+    isGroupSort={isGroupSort}
+    isSelectAll={isSelectAll}
+/>
+```
+
+#### with column chooser
+
+<Story name="with column chooser">
+    <GridComponent
+        isGlobalSearch={false}
+        isColumnFilter={false}
+        isGroupSort={false}
+        isColumnChooser={true}
+        isExportData={false}
+        isSelectAll={true}
+    />
+    ;
+</Story>
+
+```jsx
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+    isColumnChooser={isColumnChooser}
+    isSelectAll={isSelectAll}
+/>
+```
+
+#### with export data
+
+<Story name="with export data">
+    <GridComponent
+        isGlobalSearch={false}
+        isColumnFilter={false}
+        isGroupSort={false}
+        isColumnChooser={false}
+        isExportData={true}
+        isSelectAll={true}
+    />
+    ;
+</Story>
+
+```jsx
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+    isExportData={isExportData}
+    isSelectAll={isSelectAll}
+/>
+```
+
+<Story name="without select all">
+    <GridComponent
+        isGlobalSearch={false}
+        isColumnFilter={false}
+        isGroupSort={false}
+        isColumnChooser={false}
+        isExportData={false}
+        isSelectAll={false}
+    />
+    ;
+</Story>
+
+```jsx
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+    isExportData={isExportData}
+    isSelectAll={isSelectAll}
+/>
+```
+
+#### With all props
+
+<Story name="With all props">
+    <GridComponent
+        isGlobalSearch={true}
+        isColumnFilter={true}
+        isGroupSort={true}
+        isColumnChooser={true}
+        isExportData={true}
+        isSelectAll={true}
+    />
+    ;
+</Story>
+
+```jsx
+<Spreadsheet
+    rows={data.slice(0, pageSize)}
+    dataSet={data}
+    pageSize={pageSize}
+    count={pageSize}
+    columns={columns}
+    gridHeight={gridHeight}
+    updateCellData={updateCellData}
+    selectBulkData={selectBulkData}
+    maxLeftPinnedColumn={maxLeftPinnedColumn}
+    updatedRows={updatedRows}
+    isGlobalSearch={isGlobalSearch}
+    isColumnFilter={isColumnFilter}
+    isGroupSort={isGroupSort}
+    isColumnChooser={isColumnChooser}
+    isExportData={isExportData}
+    isSelectAll={isSelectAll}
 />
 ```
