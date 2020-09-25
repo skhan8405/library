@@ -18,7 +18,7 @@ import {
 import FormulaProcessor from "./functions/FormulaProcessor";
 
 // eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+// import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const defaultParsePaste = (str) =>
     str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
@@ -106,7 +106,9 @@ class Spreadsheet extends Component {
             isGroupSort,
             isColumnChooser,
             isExportData,
-            isSelectAll
+            isSelectAll,
+            gridHeight,
+            isTitle
         } = this.props;
         const dataSetVar = JSON.parse(JSON.stringify(dataSet));
         dataSetVar.forEach((e, index) => {
@@ -115,14 +117,15 @@ class Spreadsheet extends Component {
             return el;
         });
         this.state = {
-            isGlobalSearch: isGlobalSearch,
-            isColumnFilter: isColumnFilter,
-            isGroupSort: isGroupSort,
-            isColumnChooser: isColumnChooser,
-            isExportData: isExportData,
-            isSelectAll: isSelectAll,
+            isTitle,
+            isGlobalSearch,
+            isColumnFilter,
+            isGroupSort,
+            isColumnChooser,
+            isExportData,
+            isSelectAll,
             warningStatus: "",
-            height: 680,
+            height: gridHeight,
             searchValue: "",
             sortColumn: "",
             sortDirection: "NONE",
@@ -1569,6 +1572,7 @@ class Spreadsheet extends Component {
     }
 
     render() {
+        debugger;
         const {
             count,
             searchValue,
@@ -1581,6 +1585,7 @@ class Spreadsheet extends Component {
             columns,
             rows,
             selectedIndexes,
+            isTitle,
             isGlobalSearch,
             isColumnFilter,
             isGroupSort,
@@ -1592,7 +1597,12 @@ class Spreadsheet extends Component {
             <div onScroll={this.handleScroll} className="iCargo__custom">
                 <div className="neo-grid-header">
                     <div className="neo-grid-header__results">
-                        Showing &nbsp;<strong> {count} </strong> &nbsp; records
+                        {isTitle !== false ? (
+                            <>
+                                Showing &nbsp;<strong> {count} </strong>{" "}
+                                &nbsp;records
+                            </>
+                        ) : null}
                     </div>
                     <div className="neo-grid-header__utilities">
                         {isGlobalSearch !== false ? (
@@ -1730,7 +1740,15 @@ Spreadsheet.propTypes = {
     dataSet: PropTypes.arrayOf(PropTypes.object),
     pageSize: PropTypes.number,
     updatedRows: PropTypes.func,
-    saveRows: PropTypes.arrayOf(PropTypes.object)
+    saveRows: PropTypes.arrayOf(PropTypes.object),
+    isTitle: PropTypes.bool,
+    isGlobalSearch: PropTypes.bool,
+    isColumnFilter: PropTypes.bool,
+    isGroupSort: PropTypes.bool,
+    isColumnChooser: PropTypes.bool,
+    isExportData: PropTypes.bool,
+    isSelectAll: PropTypes.bool,
+    gridHeight: PropTypes.number
 };
 
 export default Spreadsheet;

@@ -381,7 +381,14 @@ let props = {
     updateCellData,
     selectBulkData,
     saveRows,
-    updatedRows: jest.fn()
+    updatedRows: jest.fn(),
+    isTitle: true,
+    isGlobalSearch: true,
+    isColumnFilter: true,
+    isGroupSort: true,
+    isColumnChooser: true,
+    isExportData: true,
+    isSelectAll: true
 };
 
 test("Spreadsheet - onGridRowsUpdated  cell update addition", () => {

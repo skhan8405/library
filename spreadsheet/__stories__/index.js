@@ -5,6 +5,7 @@ import CargoData from "./data.json";
 
 const GridComponent = (props) => {
     const {
+        isTitle,
         gridHeight,
         isGlobalSearch,
         isColumnFilter,
@@ -566,6 +567,7 @@ const GridComponent = (props) => {
     if (data) {
         return (
             <Spreadsheet
+                isTitle={isTitle}
                 rows={data.slice(0, pageSize)}
                 dataSet={data}
                 pageSize={pageSize}
