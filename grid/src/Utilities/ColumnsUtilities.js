@@ -94,30 +94,7 @@ export const extractColumns = (
 
             modifiedColumns.push(column);
         });
-        const updatedColumnStructure = [];
-        modifiedColumns.forEach((modifiedColumn, index) => {
-            if (!modifiedColumn.groupHeader) {
-                updatedColumnStructure.push(modifiedColumn);
-            } else {
-                const existingGroupHeaderColumn = updatedColumnStructure.find(
-                    (colStructure) => {
-                        return (
-                            colStructure.Header === modifiedColumn.groupHeader
-                        );
-                    }
-                );
-                if (!existingGroupHeaderColumn) {
-                    updatedColumnStructure.push({
-                        Header: modifiedColumn.groupHeader,
-                        columnId: `groupedColumn_${index}`,
-                        columns: [modifiedColumn]
-                    });
-                } else {
-                    existingGroupHeaderColumn.columns.push(modifiedColumn);
-                }
-            }
-        });
-        return updatedColumnStructure;
+        return modifiedColumns;
     }
     return [];
 };

@@ -39,10 +39,7 @@ import {
 } from "./Utilities/SvgUtilities";
 import {
     findSelectedRows,
-    findSelectedRowIdAttributes,
-    convertToIndividualColumns,
-    convertColumnsWithInnerCells,
-    updateColumnsBasedOnInnerCells
+    findSelectedRowIdAttributes
 } from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
@@ -81,12 +78,6 @@ const Customgrid = (props) => {
         onGridRefresh,
         rowsToDeselect
     } = props;
-
-    // Convert original columns into a new structure where no columns are grouped
-    // This structure can be used for group sort and export overlays
-    const convertedOriginalColumns = convertToIndividualColumns(
-        originalColumns
-    );
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
     // This will be set as false in useEffect - [].
@@ -167,10 +158,7 @@ const Customgrid = (props) => {
     };
     // Callback method from column manage overlay to update the column structure of the grid
     const updateColumnStructure = (newColumnStructure, remarksColumn) => {
-        const convertedStructure = updateColumnsBasedOnInnerCells(
-            newColumnStructure
-        );
-        setColumns([...convertedStructure]);
+        setColumns([...newColumnStructure]);
         setIsRowExpandEnabled(!!(remarksColumn && remarksColumn.length > 0));
     };
 
@@ -207,7 +195,7 @@ const Customgrid = (props) => {
                 // Return value of the filter method
                 let returnValue = false;
                 // Loop through all column values for each row
-                convertedOriginalColumns.forEach((column) => {
+                originalColumns.forEach((column) => {
                     // Do search for each column
                     returnValue =
                         returnValue ||
@@ -500,7 +488,7 @@ const Customgrid = (props) => {
                             <GroupSort
                                 isGroupSortOverLayOpen={isGroupSortOverLayOpen}
                                 toggleGroupSortOverLay={toggleGroupSortOverLay}
-                                originalColumns={convertedOriginalColumns}
+                                originalColumns={originalColumns}
                                 applyGroupSort={applyGroupSort}
                             />
                         </div>
@@ -520,9 +508,7 @@ const Customgrid = (props) => {
                             <ColumnReordering
                                 isManageColumnOpen={isManageColumnOpen}
                                 toggleManageColumns={toggleManageColumns}
-                                originalColumns={convertColumnsWithInnerCells(
-                                    originalColumns
-                                )}
+                                originalColumns={originalColumns}
                                 isExpandContentAvailable={
                                     isExpandContentAvailable
                                 }
@@ -549,8 +535,8 @@ const Customgrid = (props) => {
                                     toggleExportDataOverlay
                                 }
                                 rows={rows}
-                                originalColumns={convertedOriginalColumns}
-                                columns={convertToIndividualColumns(columns)} // Updated columns structure from manage columns overlay
+                                originalColumns={originalColumns}
+                                columns={columns} // Updated columns structure from manage columns overlay
                                 isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
                                 isExpandContentAvailable={
                                     isExpandContentAvailable
@@ -615,11 +601,7 @@ const Customgrid = (props) => {
                     className="tableContainer__AutoSizer"
                 >
                     {({ height }) => (
-                        <div
-                            {...getTableProps()}
-                            className="table"
-                            style={{ width: "99.5%" }}
-                        >
+                        <div {...getTableProps()} className="table">
                             <div className="thead table-row table-row--head">
                                 {headerGroups.map((headerGroup) => (
                                     <div
@@ -659,7 +641,7 @@ const Customgrid = (props) => {
                                                             : ""
                                                     }`}
                                                 >
-                                                    {column.canFilter
+                                                    {!column.disableFilters
                                                         ? column.render(
                                                               "Filter"
                                                           )
