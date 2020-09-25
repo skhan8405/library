@@ -18,7 +18,7 @@ import {
 import FormulaProcessor from "./functions/FormulaProcessor";
 
 // eslint-disable-next-line import/no-unresolved
-// import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 
 const defaultParsePaste = (str) =>
     str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));
@@ -1572,7 +1572,6 @@ class Spreadsheet extends Component {
     }
 
     render() {
-        debugger;
         const {
             count,
             searchValue,
@@ -1599,7 +1598,7 @@ class Spreadsheet extends Component {
                     <div className="neo-grid-header__results">
                         {isTitle !== false ? (
                             <>
-                                Showing &nbsp;<strong> {count} </strong>{" "}
+                                Showing &nbsp;<strong> {count} </strong>
                                 &nbsp;records
                             </>
                         ) : null}
