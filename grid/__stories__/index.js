@@ -122,7 +122,6 @@ const GridComponent = (props) => {
             }
         },
         {
-            groupHeader: "Flight & Segment",
             Header: "Flight",
             accessor: "flight",
             width: 100,
@@ -161,7 +160,6 @@ const GridComponent = (props) => {
             }
         },
         {
-            groupHeader: "Flight & Segment",
             Header: "Segment",
             accessor: "segment",
             width: 100,
