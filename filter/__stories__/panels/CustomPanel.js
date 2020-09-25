@@ -1,44 +1,61 @@
 import React from "react";
-const CustomPanel = () => {
-    const CloseSegment = () => {
+const customPanel = () => {
+    const CS = () => {
         alert("Close Segment");
     };
-    const OpenSegment = () => {
+    const OS = () => {
         alert("Open Segment");
     };
-    const OpenSummary = () => {
-        alert("Open Summary");
+    const Segment = () => {
+        alert("Segment");
     };
-    const CloseSummary = () => {
-        alert("Close Summary");
+
+    const Summary = () => {
+        alert("Summary");
+    };
+    const OSEG = () => {
+        alert("Open Seg");
+    };
+    const CSEG = () => {
+        alert("Close Seg");
     };
 
     const buttonPanelData = [
         {
             label: "Close Segment",
-            value: "Close Segment",
-            handleEvent: CloseSegment,
+            value: "CS",
+            handleEvent: CS,
             children: []
         },
         {
             label: "Open Segment",
-            value: "Open Segment",
-            handleEvent: OpenSegment,
+            value: "OS",
+            handleEvent: OS,
             children: []
         },
         {
             label: "...",
-            value: "...",
+            value: "SegmentSummary",
             children: [
                 {
-                    label: "Open Summary",
-                    value: "OpenSummary",
-                    handleEvent: OpenSummary
+                    label: "Segment",
+                    value: "segment",
+                    handleEvent: Segment
                 },
                 {
-                    label: "Close Summary",
-                    value: "handleEvent",
-                    handleEvent: CloseSummary
+                    label: "Summary",
+                    value: "summary",
+                    handleEvent: Summary
+                },
+                {
+                    label: "Open Segment",
+                    value: "OSEG",
+                    handleEvent: OSEG
+                },
+                {
+                    label: "Close Segment",
+                    value: "CSEG",
+                    handleEvent: CSEG
                 }
             ]
         }
@@ -53,22 +70,33 @@ const CustomPanel = () => {
                 ? buttonPanelData.map((action) => {
                       const { label, children, handleEvent } = action;
                       const isChildrenPresent = children && children.length > 0;
+                      const popOverClassName = isChildrenPresent
+                          ? "dropdown-content dropdown__popover"
+                          : "dropdown-content";
                       return (
-                          <div className="dropdown">
-                              <button className="dropbtn" onClick={handleEvent}>
+                          <div className="dropdown" key={label}>
+                              <button
+                                  type="button"
+                                  className="dropbtn"
+                                  onClick={handleEvent}
+                              >
                                   {label}
                               </button>
 
-                              <div className="dropdown-content">
+                              <div className={popOverClassName}>
                                   {isChildrenPresent
-                                      ? children.map((action) => {
+                                      ? children.map((childAction) => {
                                             const {
                                                 label,
                                                 handleEvent
-                                            } = action;
+                                            } = childAction;
                                             return (
-                                                <div className="dropdown">
+                                                <div
+                                                    className="dropdown"
+                                                    key={label}
+                                                >
                                                     <button
+                                                        type="button"
                                                         className="dropbtn"
                                                         onClick={handleEvent}
                                                     >
@@ -87,4 +115,4 @@ const CustomPanel = () => {
     );
 };
 
-export default CustomPanel;
+export default customPanel;

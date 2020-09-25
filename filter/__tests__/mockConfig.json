@@ -1,0 +1,16 @@
+{
+    "config": [
+        {
+            "name": "ITextField",
+            "path": "../__stories__/addPackages"
+        },
+        {
+            "name": "IAirport",
+            "path": "../__stories__/addPackages"
+        },
+        {
+            "name": "IDatePicker",
+            "path": "../__stories__/addPackages"
+        }
+    ]
+}

@@ -1,41 +1,35 @@
-/* eslint-disable react/destructuring-assignment */
-
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import {
-    Accordion,
-    AccordionItem,
-    AccordionItemHeading,
-    AccordionItemButton,
-    AccordionItemPanel
-} from "react-accessible-accordion";
-import { IconUpArrow, IconDownArrow } from "../Utilities/SvgUtilities";
+    IAccordion,
+    IAccordionItem,
+    IAccordionItemTitle,
+    IAccordionItemBody
+} from "@neo-ui/accordion";
+import PropTypes from "prop-types";
 
 export default function LeftDrawer(props) {
     const [leftDrawData, setLeftDrawData] = useState([]);
     const [leftDrawTemp, setLeftDrawTemp] = useState([]);
-    const [showUpArrow, setShowUpArrow] = useState("none");
-    const [showDownArrow, setShowDownArrow] = useState("");
-
+    const { filterData } = props;
     useEffect(() => {
         const typeArray = [];
-        setLeftDrawData(props.filterData.filter);
-        setLeftDrawTemp(props.filterData.filter);
-        props.filterData.filter.forEach((item) => {
+        setLeftDrawData(filterData.filter);
+        setLeftDrawTemp(filterData.filter);
+        filterData.filter.forEach((item) => {
             if (item.types) {
                 item.types.forEach((type) => {
                     typeArray.push(type.name);
                 });
             }
         });
-    }, [props.filterData.filter]);
+    }, [filterData.filter]);
+
     /**
      * Method To filter out the filters displayed at the left drawer
-     * @param {*} e triggered on typing on the search field
+     * @param {*} e triggered while typing on the search field
      */
     const searchFilterHandler = (e) => {
         let filteredList = [];
-        // eslint-disable-next-line no-unused-vars
         const searchKey = e.target.value;
         if (leftDrawData) {
             filteredList = leftDrawTemp.filter((item) => {
@@ -47,82 +41,41 @@ export default function LeftDrawer(props) {
         }
         setLeftDrawData(filteredList);
     };
-
-    const handleAccordian = () => {
-        if (showUpArrow === "none" || showDownArrow === "") {
-            setShowUpArrow("");
-            setShowDownArrow("none");
-        } else {
-            setShowUpArrow("none");
-            setShowDownArrow("");
-        }
-    };
-
-    const accordianHeads = leftDrawData.map((item, index) => {
-        if (item.types && item.types.length > 0) {
+    const filterList = leftDrawData.map((item, index) => {
+        if (item.isSubFilters) {
             return (
-                <div key={`${item.name}+${index}`}>
-                    <Accordion
-                        allowZeroExpanded
-                        className="accordion"
-                        key={`${item.name}|${index}`}
-                    >
-                        <AccordionItem
-                            className="card"
-                            key={`${item.name}=${index}`}
-                        >
-                            <AccordionItemHeading
-                                onClick={() => {
-                                    handleAccordian();
-                                }}
-                                className="card-header"
-                                key={`${item.name}>${index}`}
-                            >
-                                <AccordionItemButton
-                                    className="arrows"
-                                    key={`${item.name},${index}`}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    {item.name}
-                                    <div
-                                        className="accordionDown"
-                                        style={{
-                                            display: showDownArrow
-                                        }}
-                                    >
-                                        <IconDownArrow />
-                                    </div>
-                                    <div
-                                        className="accordionUp"
-                                        style={{
-                                            display: showUpArrow
-                                        }}
-                                    >
-                                        <IconUpArrow />
-                                    </div>
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel className="firstAccordion">
+                <div key={`${item.name}+${index}`} className="accordion__list">
+                    <IAccordion className="accordion-no-border">
+                        <IAccordionItem>
+                            <IAccordionItemTitle>
+                                {item.name}
+                            </IAccordionItemTitle>
+                            <IAccordionItemBody>
                                 {item.types &&
                                     item.types.map((type) => {
                                         return (
                                             <div
+                                                className="accordion__item"
                                                 role="presentation"
                                                 style={{
                                                     fontWeight: type.weight,
                                                     cursor: "pointer"
                                                 }}
-                                                data-testid="firstAccordion"
+                                                data-testid={`${type.name}:${item.name}`}
                                                 onClick={() => {
-                                                    props.portValuesFromLeftToRight(
+                                                    props.accordionFromLeftToRight(
                                                         item.name,
+                                                        item.isSubFilters,
                                                         type.name,
                                                         type.dataType,
-                                                        type.condition
+                                                        type.condition,
+                                                        type.required,
+                                                        type.label,
+                                                        type.props
                                                     );
-                                                    props.setInitialValuePort(
-                                                        item.name,
-                                                        type.name
+                                                    props.setInitialValueFilterGroup(
+                                                        type.label,
+                                                        type.dataType
                                                     );
                                                 }}
                                                 key={`${type.name}:${item.name}`}
@@ -131,30 +84,31 @@ export default function LeftDrawer(props) {
                                             </div>
                                         );
                                     })}
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    </Accordion>
+                            </IAccordionItemBody>
+                        </IAccordionItem>
+                    </IAccordion>
                 </div>
             );
         }
-        return <div key={index} />;
-    });
-    const dateTimeHeads = leftDrawData.map((item, index) => {
-        if (item.dataType === "DateTime") {
+        if (!item.isSubFilters) {
             return (
                 <div className="fieldHeads" key={`${item.name},${index}`}>
                     <li
                         key={`${item.name}_${index}`}
                         role="presentation"
                         style={{ fontWeight: item.weight }}
-                        data-testid="fieldHeads"
+                        data-testid={item.name}
                         onClick={() => {
                             props.fromLeftToRight(
                                 item.name,
+                                item.isSubFilters,
                                 item.dataType,
-                                item.condition
+                                item.condition,
+                                item.required,
+                                item.label,
+                                item.props
                             );
-                            props.setInitialValueDate("date");
+                            props.setInitialValueIndividualFields(item);
                         }}
                     >
                         {item.name}
@@ -162,57 +116,7 @@ export default function LeftDrawer(props) {
                 </div>
             );
         }
-        return <div key={index} />;
-    });
-    const dateTimeRangeHeads = leftDrawData.map((item, index) => {
-        if (item.dataType === "DateTimeRange") {
-            return (
-                <div className="fieldHeads" key={`${item.name},${index}`}>
-                    <li
-                        key={`${item.name}_${index}`}
-                        role="presentation"
-                        style={{ fontWeight: item.weight }}
-                        data-testid="fieldHeads"
-                        onClick={() => {
-                            props.fromLeftToRight(
-                                item.name,
-                                item.dataType,
-                                item.condition
-                            );
-                            props.setInitialValueDateRange();
-                        }}
-                    >
-                        {item.name}
-                    </li>
-                </div>
-            );
-        }
-        return <div key={index} />;
-    });
-    const normalHeads = leftDrawData.map((item, index) => {
-        if (item.dataType === "TextField") {
-            return (
-                <div className="normalHeads" key={`${item.name}>${index}`}>
-                    <li
-                        key={`${item.name}_${index}`}
-                        role="presentation"
-                        style={{ fontWeight: item.weight }}
-                        data-testid="normalHeads"
-                        onClick={() => {
-                            props.fromLeftToRight(
-                                item.name,
-                                item.dataType,
-                                item.condition
-                            );
-                            // props.addedFilterCount();
-                        }}
-                    >
-                        {item.name}
-                    </li>
-                </div>
-            );
-        }
-        return <div key={index} />;
+        return <div />;
     });
     return (
         <div>
@@ -226,10 +130,7 @@ export default function LeftDrawer(props) {
                 onChange={searchFilterHandler}
             />
             <div className="leftDrawer">
-                <div>{accordianHeads}</div>
-                <div>{dateTimeHeads}</div>
-                <div>{dateTimeRangeHeads}</div>
-                <div>{normalHeads}</div>
+                <div>{filterList}</div>
             </div>
         </div>
     );
@@ -238,8 +139,7 @@ export default function LeftDrawer(props) {
 LeftDrawer.propTypes = {
     filterData: PropTypes.any,
     fromLeftToRight: PropTypes.any,
-    portValuesFromLeftToRight: PropTypes.any,
-    setInitialValueDate: PropTypes.any,
-    setInitialValueDateRange: PropTypes.any,
-    setInitialValuePort: PropTypes.any
+    accordionFromLeftToRight: PropTypes.any,
+    setInitialValueFilterGroup: PropTypes.any,
+    setInitialValueIndividualFields: PropTypes.any
 };
