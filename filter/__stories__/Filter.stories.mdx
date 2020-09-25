@@ -1,0 +1,141 @@
+
+import { Meta, Story, Props, Preview } from "@storybook/addon-docs/blocks";
+import { withKnobs, text, array, object } from "@storybook/addon-knobs";
+import { MockedProvider } from "@apollo/react-testing";
+import Filter from "../src/index";
+import FilterData from "./data.json";
+import Form from "./Form";
+import { mockData } from "../__mocks__/graphqlDataMock";
+import "react-datepicker/dist/react-datepicker.css";
+import "bootstrap/dist/css/bootstrap.css";
+import "./variables.css";
+import "./example.css";
+import customPanel from "./panels/customPanel";
+
+export const appliedFilters = (appliedFilter) => {
+    alert(`AppliedFilters:${JSON.stringify(appliedFilter)}`);
+};
+
+<Meta title="Filter Component" component={Filter} />
+
+# Filter
+
+`Filter` component is a collection of filter types. Filter type controls are using iCargo components which are dynamically binded from a config file.
+
+Values of fields are connected to `formik state`.
+
+<Story name="default">
+    <MockedProvider addTypename={false} mocks={mockData}>
+        <Form>
+            <Filter
+                filterDataProp={FilterData}
+                appliedFiltersProp={appliedFilters}
+                CustomPanel={customPanel}
+            />
+        </Form>
+    </MockedProvider>
+</Story>
+
+
+### Props
+
+<Props of={Filter} />
+
+### Code
+
+```jsx
+import Filter from "@neo-ui/filter";
+
+<Filter
+    filterDataProp={FilterData}
+    appliedFiltersProp={appliedFilters}
+    CustomPanel={customPanel}
+/>;
+```
+
+### Props Overview
+
+"filterDataProp" - this props accepts filter json data
+
+"appliedFiltersProp" - this is a callback method which returns applied filtered in formik structure
+
+"CustomPanel" - this props accepts the header customPanel data.
+
+### Sample data
+
+Below mentioned is the json structure which is used to bind filter options.
+
+```jsx
+{
+    "filter": [
+        {
+            "name": "Departure Port",
+            "isSubFilters": true,
+            "types": [
+                {
+                    "name": "Airport",
+                    "dataType": "IAirport",
+                    "condition": [],
+                    "required": true,
+                    "label": "dptAirport",
+                    "props": { "name": "dptAirport.value" }
+                },
+                {
+                    "name": "Airport Group",
+                    "dataType": "ITextField",
+                    "condition": [
+                        { "label": "equal to", " value": "equal to" },
+                        {
+                            "label": "greater than",
+                            "value": "greater than"
+                        },
+                        {
+                            "label": "less than",
+                            "value": "less than"
+                        }
+                    ],
+                    "required": true,
+                    "label": "dptAirportGroup",
+                    "props": { "name": "dptAirportGroup.value" }
+                }
+            ]
+        },
+        {
+            "name": "Date",
+            "isSubFilters": false,
+            "condition": [],
+            "dataType": "IDatePicker",
+            "required": true,
+            "label": "Date",
+            "props": { "name": "Date.value" }
+        }
+    ]
+}
+
+```
+
+### Json Attibute Overview
+
+"name" - this property is used to identify a control
+
+"isSubFilters" - this property is used to identify whether a filter is having sub filters.
+
+"condition" - this array is used to show the conditional dropdownlist, if the array is empty toggle control will be hidden else will show the options added.
+
+"dataType" - this property accepts the iCargo component name(eg:- ITextField/IAirport).
+
+"required" - this property accepts boolean value which enables the control required/not.
+
+"label" - this property accepts label name for the field.
+
+"props" - this property accepts prop values for the field.
+
+
+### Apply Filter callback method
+
+Apply filter feature will return a call back method which includes the control name & value. Below will be `formik` structure.
+
+##### Example
+```jsx
+AppliedFilters:{"bookingProfile":{"condition":"equal to","value":"Booked"}}
+```

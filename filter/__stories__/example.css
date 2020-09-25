@@ -1,11 +1,14 @@
 /* CustomPanel Styles
 * ------------------------------------------------------ */
+button:focus {
+    outline: none;
+    border: 0;
+}
 
 .dropbtn {
     background-color: white;
-    color: #566a81;
+    color: #00b4b4;
     font-size: 14px;
-    font-weight: bold;
     border: none;
     cursor: pointer;
 }
@@ -14,6 +17,9 @@
     padding: 5px 10px;
     position: relative;
     display: inline-block;
+    border: #00b4b4 solid 1px;
+    border-radius: 3px;
+    margin-left: 5px;
 }
 
 .dropdown-content {
@@ -46,6 +52,18 @@
     display: block;
 }
 
+.dropdown__popover {
+    display: block;
+    border: #333 solid 1px;
+    box-shadow: 0 3px 5px 3px rgba(0, 0, 0, 0.1);
+    left: -105px;
+}
+.dropdown__popover .dropdown {
+    border: 0;
+}
+.dropdown__popover button {
+    color: #333;
+}
 .dropdown:hover .dropbtn {
     background-color: white;
 }
