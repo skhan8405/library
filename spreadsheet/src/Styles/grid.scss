@@ -9,6 +9,9 @@
         color: #204d6f;
         vertical-align: top;
         font-weight: bold;
+        .react-grid-HeaderRow {
+            overflow-x: unset;
+        }
     }
 }
 .globalSeachInput {
@@ -288,6 +291,9 @@ input.editor-checkbox {
             border-radius: 0px;
             width: 30px;
         }
+    }
+    .react-grid-HeaderRow {
+        overflow-x: unset !important;
     }
 }
 .tools {
