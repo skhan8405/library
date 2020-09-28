@@ -385,6 +385,7 @@ let props = {
     isTitle: true,
     isGlobalSearch: true,
     isColumnFilter: true,
+    columnFilterStyle: "txt-wrap",
     isGroupSort: true,
     isColumnChooser: true,
     isExportData: true,

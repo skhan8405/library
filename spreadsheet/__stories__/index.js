@@ -9,6 +9,7 @@ const GridComponent = (props) => {
         gridHeight,
         isGlobalSearch,
         isColumnFilter,
+        columnFilterStyle,
         isGroupSort,
         isColumnChooser,
         isExportData,
@@ -580,6 +581,7 @@ const GridComponent = (props) => {
                 updatedRows={updatedRows}
                 isGlobalSearch={isGlobalSearch}
                 isColumnFilter={isColumnFilter}
+                columnFilterStyle={columnFilterStyle}
                 isGroupSort={isGroupSort}
                 isColumnChooser={isColumnChooser}
                 isExportData={isExportData}
