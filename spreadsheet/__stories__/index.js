@@ -15,7 +15,6 @@ const GridComponent = (props) => {
         isExportData,
         isSelectAll
     } = props;
-    // const gridHeight = "90vh";
     const rows = CargoData;
     const pageSize = 500;
     const maxLeftPinnedColumn = 5;

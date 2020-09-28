@@ -11,7 +11,7 @@ import {
     SortCopy,
     IconClose,
     SortDelete
-} from "../../Utilities/SvgUtilities";
+} from "../../utilities/SvgUtilities";
 
 const HTML5toTouch = {
     backends: [
