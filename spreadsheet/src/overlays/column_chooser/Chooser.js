@@ -57,12 +57,33 @@ class ColumnReordering extends React.Component {
     /**
      * Method to Select all options in the coloumn list onClick of Select All button
      */
+    // selectAllToColumnReOrderList = () => {
+    //     debugger;
+    //     const { columnReorderEntityList, isAllSelected } = this.state;
+    //     this.resetColumnReorderList();
+    //     let existingColumnReorderEntityList = columnReorderEntityList;
+    //     let isExistingAllSelect = isAllSelected;
+    //     if (isExistingAllSelect) {
+    //         existingColumnReorderEntityList = [];
+    //         isExistingAllSelect = false;
+    //     }
+    //     this.setState({
+    //         columnReorderEntityList: existingColumnReorderEntityList,
+    //         isAllSelected: isExistingAllSelect,
+    //         leftPinnedColumList: []
+    //     });
+    // };
+
     selectAllToColumnReOrderList = () => {
-        const { columnReorderEntityList, isAllSelected } = this.state;
         this.resetColumnReorderList();
+        const { columnReorderEntityList, isAllSelected } = this.state;
         let existingColumnReorderEntityList = columnReorderEntityList;
+        const { columns } = this.props;
         let isExistingAllSelect = isAllSelected;
-        if (isExistingAllSelect) {
+        if (!isExistingAllSelect) {
+            existingColumnReorderEntityList = columns.map((item) => item.name);
+            isExistingAllSelect = true;
+        } else {
             existingColumnReorderEntityList = [];
             isExistingAllSelect = false;
         }
