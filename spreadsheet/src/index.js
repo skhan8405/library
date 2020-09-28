@@ -108,7 +108,8 @@ class Spreadsheet extends Component {
             isExportData,
             isSelectAll,
             gridHeight,
-            isTitle
+            isTitle,
+            columnFilterStyle
         } = this.props;
         const dataSetVar = JSON.parse(JSON.stringify(dataSet));
         dataSetVar.forEach((e, index) => {
@@ -120,6 +121,7 @@ class Spreadsheet extends Component {
             isTitle,
             isGlobalSearch,
             isColumnFilter,
+            columnFilterStyle,
             isGroupSort,
             isColumnChooser,
             isExportData,
@@ -1587,6 +1589,7 @@ class Spreadsheet extends Component {
             isTitle,
             isGlobalSearch,
             isColumnFilter,
+            columnFilterStyle,
             isGroupSort,
             isColumnChooser,
             isExportData,
@@ -1626,7 +1629,7 @@ class Spreadsheet extends Component {
                             </div>
                         ) : null}
                         {isColumnFilter !== false ? (
-                            <div className="txt-wrap">
+                            <div className={columnFilterStyle}>
                                 <i>
                                     <IconFilter />
                                 </i>
@@ -1743,6 +1746,7 @@ Spreadsheet.propTypes = {
     isTitle: PropTypes.bool,
     isGlobalSearch: PropTypes.bool,
     isColumnFilter: PropTypes.bool,
+    columnFilterStyle: PropTypes.string,
     isGroupSort: PropTypes.bool,
     isColumnChooser: PropTypes.bool,
     isExportData: PropTypes.bool,
