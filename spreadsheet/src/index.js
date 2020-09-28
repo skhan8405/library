@@ -14,11 +14,11 @@ import {
     IconGroupSort,
     IconSearch,
     IconFilter
-} from "./Utilities/SvgUtilities";
+} from "./utilities/SvgUtilities";
 import FormulaProcessor from "./functions/FormulaProcessor";
 
 // eslint-disable-next-line import/no-unresolved
-import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
+import "!style-loader!css-loader!sass-loader!./styles/main.scss";
 
 const defaultParsePaste = (str) =>
     str.split(/\r\n|\n|\r/).map((row) => row.split("\t"));

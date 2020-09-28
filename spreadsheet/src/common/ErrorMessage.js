@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 import { SEARCH_NOT_FOUNT_ERROR } from "./ErrorConstants";
-import { IconClose } from "../Utilities/SvgUtilities";
+import { IconClose } from "../utilities/SvgUtilities";
 
 const ErrorMessage = (props) => {
     const [status, setStatus] = useState(props.status);

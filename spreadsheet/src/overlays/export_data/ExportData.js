@@ -10,7 +10,7 @@ import {
     IconExcel,
     IconClose,
     IconPdf
-} from "../../Utilities/SvgUtilities";
+} from "../../utilities/SvgUtilities";
 
 class ExportData extends React.Component {
     constructor(props) {
