@@ -95,20 +95,19 @@ class ColumnReordering extends React.Component {
                 (item) => item === typeToBeAdded
             );
             while (indexOfInsertion > 0) {
+                let check = indexOfInsertion;
                 if (
                     existingColumnReorderEntityList.includes(
-                        columnSelectList[indexOfInsertion - 1]
+                        columnSelectList[check - 1]
                     )
                 ) {
                     if (
                         !existingLeftPinnedList.includes(
-                            columnSelectList[indexOfInsertion - 1]
+                            columnSelectList[check - 1]
                         )
                     ) {
-                        indexOfInsertion = existingColumnReorderEntityList.findIndex(
-                            // eslint-disable-next-line no-loop-func
-                            (item) =>
-                                item === columnSelectList[indexOfInsertion - 1]
+                        check = existingColumnReorderEntityList.findIndex(
+                            (item) => item === columnSelectList[check - 1]
                         );
                         indexOfInsertion += 1;
                         break;
@@ -267,8 +266,8 @@ class ColumnReordering extends React.Component {
         } = this.props;
         return (
             <ClickAwayListener onClickAway={this.handleClick}>
-                <div className="neo-popover neo-popover--column columns--grid">
-                    <div className="neo-popover__column column__grid">
+                <div className="neo-spreadsheet-popover neo-spreadsheet-popover--column columns--grid">
+                    <div className="neo-spreadsheet-popover__column column__grid">
                         <div className="column__chooser">
                             <div className="column__header">
                                 <div className="">
