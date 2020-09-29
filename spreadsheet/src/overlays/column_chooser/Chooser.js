@@ -268,10 +268,10 @@ class ColumnReordering extends React.Component {
         return (
             <ClickAwayListener onClickAway={this.handleClick}>
                 <div
-                    className="neo-popover neo-popover--column columns--grid"
+                    className="neo-spreadsheet-popover neo-spreadsheet-popover--column columns--grid"
                     // ref={this.setWrapperRef}
                 >
-                    <div className="neo-popover__column column__grid">
+                    <div className="neo-spreadsheet-popover__column column__grid">
                         <div className="column__chooser">
                             <div className="column__header">
                                 <div className="">

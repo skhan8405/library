@@ -237,9 +237,9 @@ class ExportData extends React.Component {
         return (
             <ClickAwayListener
                 onClickAway={this.handleClick}
-                className="neo-popover neo-popover--exports exports--grid"
+                className="neo-spreadsheet-popover neo-spreadsheet-popover--exports exports--grid"
             >
-                <div className="neo-popover__export export__grid">
+                <div className="neo-spreadsheet-popover__export export__grid">
                     <div className="export__chooser">
                         <div className="export__header">
                             <div className="">
