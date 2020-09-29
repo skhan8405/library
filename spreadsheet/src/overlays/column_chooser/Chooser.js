@@ -6,7 +6,7 @@ import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import PropTypes from "prop-types";
 import ClickAwayListener from "react-click-away-listener";
 import ColumnsList from "./columnsList";
-import { IconClose, IconJustify } from "../../utilities/SvgUtilities";
+import { IconClose, IconJustify } from "../../utilities/svgUtilities";
 
 const HTML5toTouch = {
     backends: [
@@ -267,10 +267,7 @@ class ColumnReordering extends React.Component {
         } = this.props;
         return (
             <ClickAwayListener onClickAway={this.handleClick}>
-                <div
-                    className="neo-popover neo-popover--column columns--grid"
-                    // ref={this.setWrapperRef}
-                >
+                <div className="neo-popover neo-popover--column columns--grid">
                     <div className="neo-popover__column column__grid">
                         <div className="column__chooser">
                             <div className="column__header">

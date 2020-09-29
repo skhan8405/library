@@ -5,8 +5,6 @@ let timeout;
 class ExtDataGrid extends ReactDataGrid {
     componentDidMount() {
         this._mounted = true;
-        // eslint-disable-next-line prefer-destructuring
-
         [this.dataGridComponent] = document.getElementsByClassName(
             "react-grid-Viewport"
         );
