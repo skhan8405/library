@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import PropTypes from "prop-types";
-import { ItemTypes } from "./ItemTypes";
+import { ItemTypes } from "./itemTypes";
 import ColumnItem from "./columnItem";
 
 const ColumnsList = (props) => {

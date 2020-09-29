@@ -1,16 +1,15 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
-
 import React, { useState, useEffect } from "react";
-import { SEARCH_NOT_FOUNT_ERROR } from "./ErrorConstants";
-import { IconClose } from "../utilities/SvgUtilities";
+import PropTypes from "prop-types";
+import { SEARCH_NOT_FOUNT_ERROR } from "./errorConstants";
+import { IconClose } from "../utilities/svgUtilities";
 
 const ErrorMessage = (props) => {
-    const [status, setStatus] = useState(props.status);
+    const { status, closeWarningStatus, clearSearchValue } = props;
+    const [errorStatus, setStatus] = useState(status);
     useEffect(() => {
-        setStatus(props.status);
-    }, [props.status]);
-    if (status === "invalid") {
+        setStatus(status);
+    }, [status]);
+    if (errorStatus === "invalid") {
         return (
             <div id="errorMsg">
                 <div className="alert alert-danger" role="alert">
@@ -20,8 +19,8 @@ const ErrorMessage = (props) => {
                     role="presentation"
                     className="notification-close"
                     onClick={() => {
-                        props.closeWarningStatus();
-                        props.clearSearchValue();
+                        closeWarningStatus();
+                        clearSearchValue();
                     }}
                 >
                     <i>
@@ -32,6 +31,12 @@ const ErrorMessage = (props) => {
         );
     }
     return <div />;
+};
+
+ErrorMessage.propTypes = {
+    status: PropTypes.any,
+    closeWarningStatus: PropTypes.func,
+    clearSearchValue: PropTypes.any
 };
 
 export default ErrorMessage;

@@ -1,22 +1,21 @@
 import React from "react";
 import { useDrag, useDrop } from "react-dnd";
 import PropTypes from "prop-types";
-import { ItemTypes } from "./ItemTypes";
+import { ItemTypes } from "./itemTypes";
 
 const style = {
     cursor: "move"
 };
 
 const Card = ({ id, text, moveCard, findCard }) => {
-    const originalIndex = findCard(id).index;
+    const originalIndexValue = findCard(id).index;
 
     const [{ isDragging }, drag] = useDrag({
-        item: { type: ItemTypes.CARD, id, originalIndex },
+        item: { type: ItemTypes.CARD, id, originalIndexValue },
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         }),
         end: (dropResult, monitor) => {
-            // eslint-disable-next-line no-shadow
             const { id: droppedId, originalIndex } = monitor.getItem();
             const didDrop = monitor.didDrop();
             if (!didDrop) {

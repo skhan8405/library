@@ -3,19 +3,19 @@ import { Toolbar, Data, Filters, Editors } from "react-data-grid-addons";
 import PropTypes from "prop-types";
 import { range } from "lodash";
 import ExtDataGrid from "./common/extDataGrid";
-import DatePicker from "./functions/DatePicker";
-import ErrorMessage from "./common/ErrorMessage";
-import ColumnReordering from "./overlays/column_chooser/Chooser";
-import Sorting from "./overlays/sorting/Sorting";
-import ExportData from "./overlays/export_data/ExportData";
+import DatePicker from "./functions/datePicker";
+import ErrorMessage from "./common/errorMessage";
+import ColumnReordering from "./overlays/column_chooser/chooser";
+import Sorting from "./overlays/sorting/sorting";
+import ExportData from "./overlays/export_data/exportData";
 import {
     IconColumns,
     IconShare,
     IconGroupSort,
     IconSearch,
     IconFilter
-} from "./utilities/SvgUtilities";
-import FormulaProcessor from "./functions/FormulaProcessor";
+} from "./utilities/svgUtilities";
+import FormulaProcessor from "./functions/formulaProcessor";
 
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./styles/main.scss";
@@ -54,7 +54,7 @@ let sortBy;
     };
 
     // actual implementation
-    sortBy = function () {
+    sortBy = function (...args) {
         const fields = [];
         const nFields = arguments.length;
         let field;
@@ -63,8 +63,7 @@ let sortBy;
 
         // preprocess sorting options
         for (let i = 0; i < nFields; i++) {
-            // eslint-disable-next-line prefer-rest-params
-            field = arguments[i];
+            field = args[i];
             if (typeof field === "string") {
                 name = field;
                 cmp = defaultCmp;
@@ -150,8 +149,7 @@ class Spreadsheet extends Component {
             columnKeyArray: [],
             operation: "",
             formulaKeyArray: [],
-            // eslint-disable-next-line react/no-unused-state
-            pinnedReorder: false,
+            // pinnedReorder: false,
             columns: columns.map((item) => {
                 const colItem = item;
                 if (colItem.editor === "DatePicker") {
@@ -387,7 +385,6 @@ class Spreadsheet extends Component {
         });
     };
 
-    // eslint-disable-next-line react/sort-comp
     handleTableSortSwap = (reorderedSwap) => {
         swapSortList = reorderedSwap;
     };
@@ -464,15 +461,14 @@ class Spreadsheet extends Component {
 
         if (swapList.length > 0) {
             for (let i = 0; i < tempList.length; i++) {
-                if (tempList[i] === swapList[i])
-                    // eslint-disable-next-line react/no-unused-state
-                    this.setState({ pinnedReorder: true });
+                if (tempList[i] === swapList[i]) {
+                    // this.setState({ pinnedReorder: true });
+                }
             }
         }
         this.closeColumnReOrdering();
         swapList = [];
-        // eslint-disable-next-line react/no-unused-state
-        this.setState({ pinnedReorder: false });
+        // this.setState({ pinnedReorder: false });
     };
 
     /**
@@ -818,7 +814,6 @@ class Spreadsheet extends Component {
             rows
         } = this.state;
         this.setState({ selectedIndexes: [] });
-        // eslint-disable-next-line consistent-return
         const comparer = (a, b) => {
             if (sortDirection === "ASC") {
                 return a[sortColumn] > b[sortColumn] ? 1 : -1;
@@ -826,6 +821,7 @@ class Spreadsheet extends Component {
             if (sortDirection === "DESC") {
                 return a[sortColumn] < b[sortColumn] ? 1 : -1;
             }
+            return null;
         };
         const hasFilter = Object.keys(junk).length > 0;
         const hasSearchKey = String(searchValue).toLowerCase() !== "";
@@ -906,24 +902,22 @@ class Spreadsheet extends Component {
         }
     };
 
-    getRowsAsync = async (rows, filters) => {
+    getRowsAsync = async (row, filters) => {
         let filterVal = { ...filters };
         if (Object.keys(filters).length <= 0) {
             filterVal = {};
         }
         selectors.getRows({ rows: [], filters: {} });
-        // eslint-disable-next-line object-shorthand
-        return selectors.getRows({ rows: rows, filters: filterVal });
+        return selectors.getRows({ rows: row, filters: filterVal });
     };
 
-    getrows = (rows, filters) => {
+    getrows = (row, filters) => {
         let filterVal = { ...filters };
         if (Object.keys(filters).length <= 0) {
             filterVal = {};
         }
         selectors.getRows({ rows: [], filters: {} });
-        // eslint-disable-next-line object-shorthand
-        return selectors.getRows({ rows: rows, filters: filterVal });
+        return selectors.getRows({ rows: row, filters: filterVal });
     };
 
     /**
@@ -1401,7 +1395,6 @@ class Spreadsheet extends Component {
 
     loadMoreRows = (from, newRowsCount) => {
         return new Promise((resolve) => {
-            // const hasFilter = Object.keys(this.state.junk).length > 0;
             const { dataSet, subDataSet } = this.state;
             let to = from + newRowsCount;
             if (this.isSubset() && subDataSet.length > 0) {

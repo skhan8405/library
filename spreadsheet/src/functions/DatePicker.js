@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -23,7 +22,9 @@ export default class DatePicker extends React.Component {
     // returning updated object with the date value in the required format
     getValue() {
         const updated = {};
-        const date = new Date(this.state.value);
+        const { value } = this.state;
+        const { column } = this.props;
+        const date = new Date(value);
         const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
             year: "numeric",
             month: "numeric",
@@ -36,7 +37,7 @@ export default class DatePicker extends React.Component {
             ,
             { value: year }
         ] = dateTimeFormat.formatToParts(date);
-        updated[this.props.column.key] = `${year}-${month}-${day}`;
+        updated[column.key] = `${year}-${month}-${day}`;
         return updated;
     }
 
@@ -46,6 +47,7 @@ export default class DatePicker extends React.Component {
     }
 
     render() {
+        const { value } = this.state;
         return (
             <div>
                 <input
@@ -53,7 +55,7 @@ export default class DatePicker extends React.Component {
                     ref={(ref) => {
                         this.input = ref;
                     }}
-                    value={this.state.value}
+                    value={value}
                     onChange={this.onValueChanged}
                 />
             </div>

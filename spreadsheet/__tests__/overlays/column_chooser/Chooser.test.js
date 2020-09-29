@@ -7,7 +7,7 @@ import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
-import ColumnReordering from "../../../src/overlays/column_chooser/Chooser";
+import ColumnReordering from "../../../src/overlays/column_chooser/chooser";
 import ColumnsList from "../../../src/overlays/column_chooser/columnsList";
 
 let container;

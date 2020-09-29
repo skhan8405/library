@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 import React from "react";
 import JsPdf from "jspdf";
 import "jspdf-autotable";
@@ -10,7 +9,7 @@ import {
     IconExcel,
     IconClose,
     IconPdf
-} from "../../utilities/SvgUtilities";
+} from "../../utilities/svgUtilities";
 
 class ExportData extends React.Component {
     constructor(props) {
@@ -21,7 +20,6 @@ class ExportData extends React.Component {
             columnEntityList: columnsList,
             isAllSelected: true,
             downLaodFileType: [],
-            // eslint-disable-next-line react/no-unused-state
             warning: "",
             clickTag: "none"
         };
@@ -69,7 +67,7 @@ class ExportData extends React.Component {
         let { downLaodFileType } = this.state;
         if (
             event.target.checked &&
-            !this.state.downLaodFileType.includes(event.target.value)
+            !downLaodFileType.includes(event.target.value)
         ) {
             downLaodFileType.push(event.target.value);
             this.setState({ downLaodFileType });
@@ -86,7 +84,6 @@ class ExportData extends React.Component {
     };
 
     exportRowData = () => {
-        // eslint-disable-next-line no-shadow
         const { columnEntityList, downLaodFileType } = this.state;
         const columnValueList = columnEntityList;
         const filteredRow = [];
@@ -186,19 +183,19 @@ class ExportData extends React.Component {
     };
 
     columnSearchLogic = (e) => {
+        const { columnsList } = this.props;
         const searchKey = String(e.target.value).toLowerCase();
-        const filteredRows = this.props.columnsList.filter((item) => {
+        const filteredRows = columnsList.filter((item) => {
             return item.name.toLowerCase().includes(searchKey);
         });
         if (!filteredRows.length) {
-            this.setState({ columnValueList: this.props.columnsList });
+            this.setState({ columnValueList: columnsList });
         } else {
             this.setState({ columnValueList: filteredRows });
         }
     };
 
     exportValidation = () => {
-        // eslint-disable-next-line no-shadow
         const { columnEntityList, downLaodFileType } = this.state;
         const columnLength = columnEntityList.length;
         const fileLength = downLaodFileType.length;
@@ -206,16 +203,13 @@ class ExportData extends React.Component {
             this.exportRowData();
             this.setState({ clickTag: "none" });
         } else if (columnLength === 0) {
-            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "Column" });
             this.setState({ clickTag: "" });
         } else if (fileLength === 0) {
-            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "File Type" });
             this.setState({ clickTag: "" });
         }
         if (columnLength === 0 && fileLength === 0) {
-            // eslint-disable-next-line react/no-unused-state
             this.setState({ warning: "File Type & Column" });
             this.setState({ clickTag: "" });
         }
@@ -231,7 +225,8 @@ class ExportData extends React.Component {
             isAllSelected,
             columnValueList,
             columnEntityList,
-            clickTag
+            clickTag,
+            warning
         } = this.state;
         const { closeExport } = this.props;
         return (
@@ -364,7 +359,7 @@ class ExportData extends React.Component {
                             <div className="exportWarning">
                                 <span style={{ display: clickTag }}>
                                     <strong>
-                                        Select at least one file type
+                                        Select at least one {warning}
                                     </strong>
                                 </span>
                             </div>

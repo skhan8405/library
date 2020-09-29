@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import PropTypes from "prop-types";
-import Card from "./SortItem";
-import { ItemTypes } from "./ItemTypes";
+import Card from "./sortItem";
+import { ItemTypes } from "./itemTypes";
 
 const SortingList = (props) => {
     const { sortsArray } = props;
