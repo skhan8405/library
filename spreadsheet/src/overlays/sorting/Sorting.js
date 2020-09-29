@@ -268,11 +268,11 @@ class App extends React.Component {
         const { closeSorting } = this.props;
         return (
             <ClickAwayListener onClickAway={this.handleClick}>
-                <div className="neo-popover">
-                    <div className="neo-popover__sort">
-                        <div className="neo-popover__title">
+                <div className="neo-spreadsheet-popover">
+                    <div className="neo-spreadsheet-popover__sort">
+                        <div className="neo-spreadsheet-popover__title">
                             <h2>Sort</h2>
-                            <div className="neo-popover__close">
+                            <div className="neo-spreadsheet-popover__close">
                                 <i
                                     role="presentation"
                                     data-testid="closeSorting"
@@ -283,7 +283,7 @@ class App extends React.Component {
                             </div>
                         </div>
 
-                        <div className="neo-popover__content">
+                        <div className="neo-spreadsheet-popover__content">
                             <DndProvider
                                 backend={MultiBackend}
                                 options={HTML5toTouch}
