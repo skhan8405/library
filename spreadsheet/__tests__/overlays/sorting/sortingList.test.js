@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { DndProvider } from "react-dnd";
