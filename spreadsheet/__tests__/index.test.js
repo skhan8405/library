@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 import React from "react";
 import ReactTestUtils, { act } from "react-dom/test-utils";
 import Spreadsheet from "../src/index";

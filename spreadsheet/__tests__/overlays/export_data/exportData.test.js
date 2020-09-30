@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-undef */
-
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils, { act } from "react-dom/test-utils";
