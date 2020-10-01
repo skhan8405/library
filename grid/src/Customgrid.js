@@ -62,7 +62,6 @@ const Customgrid = (props) => {
         calculateRowHeight,
         expandableColumn,
         isExpandContentAvailable,
-        displayExpandedContent,
         rowActions,
         rowActionCallback,
         hasNextPage,
@@ -259,6 +258,7 @@ const Customgrid = (props) => {
                     disableResizing: true,
                     disableFilters: true,
                     disableSortBy: true,
+                    display: true,
                     minWidth: 35,
                     width: 35,
                     maxWidth: 35,
@@ -284,6 +284,7 @@ const Customgrid = (props) => {
                     disableResizing: true,
                     disableFilters: true,
                     disableSortBy: true,
+                    display: true,
                     minWidth: 35,
                     width: 35,
                     maxWidth: 35,
@@ -424,15 +425,17 @@ const Customgrid = (props) => {
                     {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
                     {isRowExpandEnabled && row.isExpanded ? (
                         <div className="expand">
-                            {displayExpandedContent
-                                ? displayExpandedContent(row)
+                            {additionalColumn &&
+                            additionalColumn.Cell &&
+                            typeof additionalColumn.Cell === "function"
+                                ? additionalColumn.Cell(row)
                                 : null}
                         </div>
                     ) : null}
                 </div>
             );
         },
-        [prepareRow, rows, isRowExpandEnabled, displayExpandedContent]
+        [prepareRow, rows, isRowExpandEnabled, additionalColumn]
     );
 
     // Render table and other components as required
@@ -717,7 +720,6 @@ Customgrid.propTypes = {
     calculateRowHeight: PropTypes.func,
     expandableColumn: PropTypes.bool,
     isExpandContentAvailable: PropTypes.bool,
-    displayExpandedContent: PropTypes.func,
     hasNextPage: PropTypes.bool,
     isNextPageLoading: PropTypes.bool,
     loadNextPage: PropTypes.func,

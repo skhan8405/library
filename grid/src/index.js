@@ -4,8 +4,6 @@ import {
     extractColumns,
     extractAdditionalColumn
 } from "./Utilities/ColumnsUtilities";
-import { AdditionalColumnContext } from "./Utilities/TagsContext";
-import AdditionalColumnTag from "./Functions/AdditionalColumnTag";
 import Customgrid from "./Customgrid";
 // eslint-disable-next-line import/no-unresolved
 import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
@@ -143,27 +141,6 @@ const Grid = (props) => {
     // Create columns variable, to be used by grid component
     const gridColumns = processedColumns || [];
 
-    // Local variable for keeping the expanded row rendering method
-    const renderExpandedContent = additionalColumn
-        ? additionalColumn.displayCell
-        : null;
-
-    // #region - Check if data is hidden or not and display data in rendered section
-
-    // Process data to be rendered to expanded view and return that data to the render function
-    const displayExpandedContent = (row) => {
-        const { original } = row;
-        const additionalColumnObj = additionalColumn;
-        return (
-            <AdditionalColumnContext.Provider
-                value={{ additionalColumn: additionalColumnObj }}
-            >
-                {renderExpandedContent(original, AdditionalColumnTag)}
-            </AdditionalColumnContext.Provider>
-        );
-    };
-    // #endregion
-
     // Add logic to calculate height of each row, based on the content of  or more columns
     // This can be used only if developer using the component has not passed a function to calculate row height
     const calculateDefaultRowHeight = (row, columnsInGrid) => {
@@ -293,6 +270,7 @@ const Grid = (props) => {
             </div>
         );
     }
+
     return (
         <div className={`grid-component-container ${className || ""}`}>
             <Customgrid
@@ -315,11 +293,8 @@ const Grid = (props) => {
                         ? calculateRowHeight
                         : calculateDefaultRowHeight
                 }
-                isExpandContentAvailable={
-                    typeof renderExpandedContent === "function"
-                }
+                isExpandContentAvailable={additionalColumn !== null}
                 expandableColumn={expandableColumn}
-                displayExpandedContent={displayExpandedContent}
                 rowActions={rowActions}
                 rowActionCallback={rowActionCallback}
                 hasNextPage={isNextPageAvailable}
