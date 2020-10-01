@@ -58,16 +58,37 @@ const Grid = (props) => {
         const rowAccessorValue = original[accessor];
         // Check if inner cells are available and save value to boolean var
         const isInnerCellsPresent = innerCells && innerCells.length > 0;
-        // Enter if cell value is object or array
-        if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
-            // Enter if cell value is array
-            if (rowAccessorValue.length > 0) {
-                // Loop through cell array value and check if searched text is present
-                rowAccessorValue.forEach((value) => {
+        // Check if the column needs to be skipped from search
+        if (column.isSearchable ? true: false) {
+            // Enter if cell value is object or array
+            if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
+                // Enter if cell value is array
+                if (rowAccessorValue.length > 0) {
+                    // Loop through cell array value and check if searched text is present
+                    rowAccessorValue.forEach((value) => {
+                        innerCells.forEach((cell) => {
+                            const dataAccessor = value[cell.accessor];
+                            const isSearchEnabled = (cell.isSearchable ? true: false);
+                            if (
+                                dataAccessor &&
+                                isSearchEnabled &&
+                                dataAccessor
+                                    .toString()
+                                    .toLowerCase()
+                                    .includes(searchText)
+                            ) {
+                                isValuePresent = true;
+                            }
+                        });
+                    });
+                } else {
+                    // If cell value is an object, loop through inner cells and check if searched text is present
                     innerCells.forEach((cell) => {
-                        const dataAccessor = value[cell.accessor];
+                        const dataAccessor = original[accessor][cell.accessor];
+                        const isSearchEnabled = (cell.isSearchable ? true: false);
                         if (
                             dataAccessor &&
+                            isSearchEnabled &&
                             dataAccessor
                                 .toString()
                                 .toLowerCase()
@@ -76,30 +97,16 @@ const Grid = (props) => {
                             isValuePresent = true;
                         }
                     });
-                });
+                }
             } else {
-                // If cell value is an object, loop through inner cells and check if searched text is present
-                innerCells.forEach((cell) => {
-                    const dataAccessor = original[accessor][cell.accessor];
-                    if (
-                        dataAccessor &&
-                        dataAccessor
-                            .toString()
-                            .toLowerCase()
-                            .includes(searchText)
-                    ) {
-                        isValuePresent = true;
-                    }
-                });
-            }
-        } else {
-            // If cell value is not an object or array, convert it to text and check if searched text is present
-            const dataAccessor = original[accessor];
-            if (
-                dataAccessor &&
-                dataAccessor.toString().toLowerCase().includes(searchText)
-            ) {
-                isValuePresent = true;
+                // If cell value is not an object or array, convert it to text and check if searched text is present
+                const dataAccessor = original[accessor];
+                if (
+                    dataAccessor &&
+                    dataAccessor.toString().toLowerCase().includes(searchText)
+                ) {
+                    isValuePresent = true;
+                }
             }
         }
         return isValuePresent;
