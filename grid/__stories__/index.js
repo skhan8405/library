@@ -667,7 +667,7 @@ const GridComponent = (props) => {
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
             return (
-                <div className="remarks-wrap">
+                <div className="remarks-wrap details-wrap">
                     <DisplayTag columnKey="remarks" cellKey="remarks">
                         <ul>
                             <li>{remarks}</li>
