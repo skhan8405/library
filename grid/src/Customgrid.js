@@ -452,7 +452,7 @@ const Customgrid = (props) => {
                     <span>{title || "Rows"}</span>
                 </div>
                 {CustomPanel ? (
-                    <div className="neo-grid-header_customPanel">
+                    <div className="neo-grid-header__customPanel">
                         <CustomPanel />
                     </div>
                 ) : null}
