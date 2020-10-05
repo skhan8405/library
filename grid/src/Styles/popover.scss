@@ -197,8 +197,7 @@
                 width: 768px;
                 padding-bottom: 60px;
                 .form-check {
-                    height: auto;
-                    margin-bottom: 5px;
+                    margin-bottom: 4px;
                 }
             }
             .column__reorder {
@@ -298,9 +297,6 @@
             .export__body {
                 display: flex;
                 padding: 10px;
-                .form-check {
-                    height: auto;
-                }
             }
             .export__reorder {
                 border: 1px solid var(--dark-grey);

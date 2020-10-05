@@ -564,6 +564,18 @@ li {
     margin: 0 10px;
 }
 
+.table-cell--content-edit input,
+.table-cell--content-edit select {
+    display: inline-block;
+    height: 30px;
+    width: 120px;
+    border-radius: 3px;
+    border: var(--light-grey) solid 1px;
+    padding: 2px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
 /*  CustomPanel Styles
 *  ------------------------------------------------------ */
 .dropbtn {

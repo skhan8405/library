@@ -222,7 +222,7 @@ describe("CellDisplayAndEdit unit test", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        fireEvent.click(component.getByTestId("cancel"));
+        fireEvent.click(component.getByTestId("cell-edit-cancel"));
     });
     it("should save values in edit option by clicking on save button after making value change", () => {
         const { getByTestId } = render(
@@ -247,7 +247,7 @@ describe("CellDisplayAndEdit unit test", () => {
         const setState = jest.fn(() => editedRowValue);
         const useStateSpy = jest.spyOn(React, "useState");
         useStateSpy.mockImplementation(() => [editedRowValue, setState]);
-        fireEvent.click(getByTestId("ok"));
+        fireEvent.click(getByTestId("cell-edit-save"));
     });
     it("should not render component", () => {
         act(() => {

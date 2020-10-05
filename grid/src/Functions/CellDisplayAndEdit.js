@@ -81,8 +81,8 @@ const CellDisplayAndEdit = ({
                             <button
                                 type="button"
                                 aria-label="Cell Edit Save Button"
-                                className="ok"
-                                data-testid="ok"
+                                className="neo-btn neo-btn-primary btn btn-secondary"
+                                data-testid="cell-edit-save"
                                 onClick={saveEdit}
                             >
                                 <IconTick />
@@ -90,8 +90,8 @@ const CellDisplayAndEdit = ({
                             <button
                                 type="button"
                                 aria-label="Cell Edit Cancel Button"
-                                className="cancel"
-                                data-testid="cancel"
+                                className="neo-btn neo-btn-default btn btn-secondary"
+                                data-testid="cell-edit-cancel"
                                 onClick={closeEdit}
                             >
                                 <IconCancel />
