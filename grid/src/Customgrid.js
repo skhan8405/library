@@ -146,10 +146,10 @@ const Customgrid = (props) => {
     };
 
     // Local state value for hiding/unhiding column management overlay
-    const [isManageColumnOpen, setManageColumnOpen] = useState(false);
+    const [isManageColumnOverlayOpen, setManageColumnOpen] = useState(false);
     // Toggle column manage overlay show/hide state value based on UI clicks
-    const toggleManageColumns = () => {
-        setManageColumnOpen(!isManageColumnOpen);
+    const toggleManageColumnsOverlay = () => {
+        setManageColumnOpen(!isManageColumnOverlayOpen);
     };
     // Callback method from column manage overlay to update the column structure of the grid
     const updateColumnStructure = (updatedColumns, updatedAdditionalColumn) => {
@@ -502,16 +502,20 @@ const Customgrid = (props) => {
                             <div
                                 className="utilities-icon manage-columns"
                                 role="presentation"
-                                data-testid="toggleManageColumns"
-                                onClick={toggleManageColumns}
+                                data-testid="toggleManageColumnsOverlay"
+                                onClick={toggleManageColumnsOverlay}
                             >
                                 <i>
                                     <IconColumns />
                                 </i>
                             </div>
                             <ColumnReordering
-                                isManageColumnOverlayOpen={isManageColumnOpen}
-                                toggleManageColumnsOverlay={toggleManageColumns}
+                                isManageColumnOverlayOpen={
+                                    isManageColumnOverlayOpen
+                                }
+                                toggleManageColumnsOverlay={
+                                    toggleManageColumnsOverlay
+                                }
                                 columns={[...columns]}
                                 additionalColumn={{ ...additionalColumn }}
                                 updateColumnStructure={updateColumnStructure}

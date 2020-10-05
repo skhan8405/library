@@ -384,6 +384,7 @@ const ColumnReordering = (props) => {
                                 <button
                                     type="button"
                                     className="neo-btn neo-btn-default btn btn-secondary"
+                                    data-testid="reset_columnsManage"
                                     onClick={resetColumnUpdate}
                                 >
                                     Reset
@@ -391,6 +392,7 @@ const ColumnReordering = (props) => {
                                 <button
                                     type="button"
                                     className="neo-btn neo-btn-default btn btn-secondary"
+                                    data-testid="cancel_columnsManage"
                                     onClick={toggleManageColumnsOverlay}
                                 >
                                     Cancel
@@ -398,8 +400,8 @@ const ColumnReordering = (props) => {
                                 <button
                                     type="button"
                                     className="neo-btn neo-btn-primary btn btn-secondary"
+                                    data-testid="save_columnsManage"
                                     onClick={onColumnChooserSave}
-                                    data-testid="saveButton"
                                 >
                                     Save
                                 </button>

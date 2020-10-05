@@ -159,13 +159,16 @@ const GroupSort = (props) => {
                             onClick={addSortingOptions}
                         >
                             <span>+</span>
-                            <div className="sort__txt">New Sort</div>
+                            <div className="sort__txt" data-testid="addSort">
+                                New Sort
+                            </div>
                         </div>
                     </div>
                     <div className="sort__footer">
                         <div className="sort__btns">
                             <button
                                 type="button"
+                                data-testid="clearSort"
                                 className="neo-btn neo-btn-link btn btn-secondary"
                                 onClick={clearSortingOptions}
                             >
@@ -173,6 +176,7 @@ const GroupSort = (props) => {
                             </button>
                             <button
                                 type="button"
+                                data-testid="saveSort"
                                 className="neo-btn neo-btn-primary btn btn-secondary"
                                 onClick={applySort}
                             >
