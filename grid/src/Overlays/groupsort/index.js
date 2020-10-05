@@ -13,15 +13,15 @@ const GroupSort = (props) => {
         isGroupSortOverLayOpen,
         toggleGroupSortOverLay,
         applyGroupSort,
-        originalColumns
+        columns
     } = props;
 
     const sortingOrders = ["Ascending", "Descending"];
     const defaultSortingOption = [
         {
-            sortBy: originalColumns[0].accessor,
-            sortOn: originalColumns[0].innerCells
-                ? originalColumns[0].innerCells[0].accessor
+            sortBy: columns[0].accessor,
+            sortOn: columns[0].innerCells
+                ? columns[0].innerCells[0].accessor
                 : "value",
             order: sortingOrders[0]
         }
@@ -137,7 +137,7 @@ const GroupSort = (props) => {
                         >
                             <SortingList
                                 sortOptions={sortOptions}
-                                originalColumns={originalColumns}
+                                columns={columns}
                                 updateSortingOptions={updateSortingOptions}
                                 updateSingleSortingOption={
                                     updateSingleSortingOption
@@ -190,7 +190,7 @@ const GroupSort = (props) => {
 GroupSort.propTypes = {
     isGroupSortOverLayOpen: PropTypes.bool,
     toggleGroupSortOverLay: PropTypes.func,
-    originalColumns: PropTypes.arrayOf(PropTypes.object),
+    columns: PropTypes.arrayOf(PropTypes.object),
     applyGroupSort: PropTypes.func
 };
 

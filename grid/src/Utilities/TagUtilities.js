@@ -6,7 +6,7 @@ export const checkInnerCells = (column, cellKey) => {
                 return cell.accessor === cellKey;
             });
             if (innerCellData) {
-                return true;
+                return innerCellData.display === true;
             }
         }
     }

@@ -48,7 +48,7 @@ export const extractColumns = (
             }
 
             // Add an indentifier that this is a column not for expanded region
-            elem.displayInExpandedRegion = false;
+            elem.isDisplayInExpandedRegion = false;
 
             // Configure Cell function (which is used by react-table component), based on the user defined function displayCell
             if (!elem.Cell && elem.displayCell) {
@@ -119,8 +119,13 @@ export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
         // Add column Id
         element.columnId = `rowExpand`;
 
+        // Set display flag to true if not present
+        if (element.display !== false) {
+            element.display = true;
+        }
+
         // Add an indentifier that this is a column for expanded region
-        element.displayInExpandedRegion = true;
+        element.isDisplayInExpandedRegion = true;
 
         // Remove iPad only columns from desktop and vice-versa
         if (isInnerCellsPresent) {
@@ -144,12 +149,13 @@ export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
 
             // Configure Cell function (which is custom function), to bind data into expanded region
             if (!element.Cell && element.displayCell) {
-                element.Cell = (row) => {
+                element.Cell = (row, updatedAdditionalColumn) => {
                     const { original } = row;
-                    const additionalColumnObj = additionalColumn;
                     return (
                         <AdditionalColumnContext.Provider
-                            value={{ additionalColumn: additionalColumnObj }}
+                            value={{
+                                additionalColumn: updatedAdditionalColumn
+                            }}
                         >
                             {element.displayCell(original, AdditionalColumnTag)}
                         </AdditionalColumnContext.Provider>

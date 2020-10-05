@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
     extractColumns,
@@ -57,7 +57,7 @@ const Grid = (props) => {
         // Check if inner cells are available and save value to boolean var
         const isInnerCellsPresent = innerCells && innerCells.length > 0;
         // Check if the column needs to be skipped from search
-        if (column.isSearchable ? true: false) {
+        if (column.isSearchable) {
             // Enter if cell value is object or array
             if (typeof rowAccessorValue === "object" && isInnerCellsPresent) {
                 // Enter if cell value is array
@@ -66,7 +66,7 @@ const Grid = (props) => {
                     rowAccessorValue.forEach((value) => {
                         innerCells.forEach((cell) => {
                             const dataAccessor = value[cell.accessor];
-                            const isSearchEnabled = (cell.isSearchable ? true: false);
+                            const isSearchEnabled = cell.isSearchable;
                             if (
                                 dataAccessor &&
                                 isSearchEnabled &&
@@ -83,7 +83,7 @@ const Grid = (props) => {
                     // If cell value is an object, loop through inner cells and check if searched text is present
                     innerCells.forEach((cell) => {
                         const dataAccessor = original[accessor][cell.accessor];
-                        const isSearchEnabled = (cell.isSearchable ? true: false);
+                        const isSearchEnabled = cell.isSearchable;
                         if (
                             dataAccessor &&
                             isSearchEnabled &&
@@ -277,10 +277,9 @@ const Grid = (props) => {
                 title={title}
                 gridHeight={gridHeight}
                 gridWidth={gridWidth}
-                managableColumns={useMemo(() => gridColumns)} // React table wants all parameters passed into useTable function to be memoized
-                originalColumns={gridColumns}
-                additionalColumn={additionalColumn}
-                data={useMemo(() => data)} // React table wants all parameters passed into useTable function to be memoized
+                managableColumns={gridColumns} // React table wants all parameters passed into useTable function to be memoized
+                expandedRowData={additionalColumn}
+                data={data} // React table wants all parameters passed into useTable function to be memoized
                 idAttribute={idAttribute}
                 getRowEditOverlay={getRowEditOverlay}
                 updateRowInGrid={updateRowInGrid}

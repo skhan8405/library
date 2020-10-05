@@ -50,8 +50,7 @@ const Customgrid = (props) => {
         gridHeight,
         gridWidth,
         managableColumns,
-        originalColumns,
-        additionalColumn,
+        expandedRowData,
         data,
         idAttribute,
         getRowEditOverlay,
@@ -61,7 +60,6 @@ const Customgrid = (props) => {
         onRowSelect,
         calculateRowHeight,
         expandableColumn,
-        isExpandContentAvailable,
         rowActions,
         rowActionCallback,
         hasNextPage,
@@ -86,10 +84,8 @@ const Customgrid = (props) => {
     // Local state value for holding columns configuration
     const [columns, setColumns] = useState(managableColumns);
 
-    // Local state value for holding the boolean value to check if row expand is available
-    const [isRowExpandEnabled, setIsRowExpandEnabled] = useState(
-        isExpandContentAvailable
-    );
+    // Local state value for holding the additional column configuration
+    const [additionalColumn, setAdditionalColumn] = useState(expandedRowData);
 
     // Variable to check if row options are available
     const isRowActionsAvailable = rowActions && rowActions.length > 0;
@@ -156,9 +152,9 @@ const Customgrid = (props) => {
         setManageColumnOpen(!isManageColumnOpen);
     };
     // Callback method from column manage overlay to update the column structure of the grid
-    const updateColumnStructure = (newColumnStructure, remarksColumn) => {
-        setColumns([...newColumnStructure]);
-        setIsRowExpandEnabled(!!(remarksColumn && remarksColumn.length > 0));
+    const updateColumnStructure = (updatedColumns, updatedAdditionalColumn) => {
+        setColumns([...updatedColumns]);
+        setAdditionalColumn(updatedAdditionalColumn);
     };
 
     // Local state value for hiding/unhiding export data overlay
@@ -194,7 +190,7 @@ const Customgrid = (props) => {
                 // Return value of the filter method
                 let returnValue = false;
                 // Loop through all column values for each row
-                originalColumns.forEach((column) => {
+                managableColumns.forEach((column) => {
                     // Do search for each column
                     returnValue =
                         returnValue ||
@@ -203,7 +199,7 @@ const Customgrid = (props) => {
                 return returnValue;
             });
         },
-        [originalColumns, searchColumn]
+        [managableColumns, searchColumn]
     );
 
     // Finds the rows selected by users from selectedRowIds and updates the state value and triggers the callback function.
@@ -219,6 +215,12 @@ const Customgrid = (props) => {
             onRowSelect(rowsSelectedByUser);
         }
     };
+
+    const isRowExpandEnabled =
+        additionalColumn &&
+        additionalColumn.display === true &&
+        additionalColumn.Cell &&
+        typeof additionalColumn.Cell === "function";
 
     // Initialize react-table instance with the values received through properties
     const {
@@ -337,8 +339,8 @@ const Customgrid = (props) => {
     // Update the column chooser overlay, when user is updating column configuration from outside Grid
     useEffect(() => {
         setColumns(managableColumns);
-        setIsRowExpandEnabled(isExpandContentAvailable);
-    }, [managableColumns, isExpandContentAvailable]);
+        setAdditionalColumn(expandedRowData);
+    }, [managableColumns, expandedRowData]);
 
     // Update the boolean value used to identify if this is the first time render of Grid
     useEffect(() => {
@@ -412,24 +414,23 @@ const Customgrid = (props) => {
                 <div {...row.getRowProps({ style })} className="table-row tr">
                     <div className="table-row-wrap">
                         {row.cells.map((cell) => {
-                            return (
-                                <div
-                                    {...cell.getCellProps()}
-                                    className="table-cell td"
-                                >
-                                    {cell.render("Cell")}
-                                </div>
-                            );
+                            if (cell.column.display === true) {
+                                return (
+                                    <div
+                                        {...cell.getCellProps()}
+                                        className="table-cell td"
+                                    >
+                                        {cell.render("Cell")}
+                                    </div>
+                                );
+                            }
+                            return null;
                         })}
                     </div>
                     {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
                     {isRowExpandEnabled && row.isExpanded ? (
                         <div className="expand">
-                            {additionalColumn &&
-                            additionalColumn.Cell &&
-                            typeof additionalColumn.Cell === "function"
-                                ? additionalColumn.Cell(row)
-                                : null}
+                            {additionalColumn.Cell(row, additionalColumn)}
                         </div>
                     ) : null}
                 </div>
@@ -491,7 +492,7 @@ const Customgrid = (props) => {
                             <GroupSort
                                 isGroupSortOverLayOpen={isGroupSortOverLayOpen}
                                 toggleGroupSortOverLay={toggleGroupSortOverLay}
-                                originalColumns={originalColumns}
+                                columns={managableColumns}
                                 applyGroupSort={applyGroupSort}
                             />
                         </div>
@@ -509,13 +510,10 @@ const Customgrid = (props) => {
                                 </i>
                             </div>
                             <ColumnReordering
-                                isManageColumnOpen={isManageColumnOpen}
-                                toggleManageColumns={toggleManageColumns}
-                                originalColumns={originalColumns}
-                                isExpandContentAvailable={
-                                    isExpandContentAvailable
-                                }
-                                additionalColumn={additionalColumn}
+                                isManageColumnOverlayOpen={isManageColumnOpen}
+                                toggleManageColumnsOverlay={toggleManageColumns}
+                                columns={[...columns]}
+                                additionalColumn={{ ...additionalColumn }}
                                 updateColumnStructure={updateColumnStructure}
                             />
                         </div>
@@ -538,12 +536,7 @@ const Customgrid = (props) => {
                                     toggleExportDataOverlay
                                 }
                                 rows={rows}
-                                originalColumns={originalColumns}
-                                columns={columns} // Updated columns structure from manage columns overlay
-                                isRowExpandEnabled={isRowExpandEnabled} // Updated additional column structure from manage columns overlay
-                                isExpandContentAvailable={
-                                    isExpandContentAvailable
-                                }
+                                columns={columns}
                                 additionalColumn={additionalColumn}
                             />
                         </div>
@@ -611,53 +604,60 @@ const Customgrid = (props) => {
                                         {...headerGroup.getHeaderGroupProps()}
                                         className="tr"
                                     >
-                                        {headerGroup.headers.map((column) => (
-                                            <div
-                                                {...column.getHeaderProps()}
-                                                className="table-cell column-heading th"
-                                            >
-                                                <div
-                                                    data-testid="column-header-sort"
-                                                    {...column.getSortByToggleProps()}
-                                                >
-                                                    {column.render("Header")}
-                                                    <span>
-                                                        {column.isSorted ? (
-                                                            <i>
-                                                                <IconSort
-                                                                    className={
-                                                                        column.isSortedDesc
-                                                                            ? "sort-asc"
-                                                                            : "sort-desc"
-                                                                    }
-                                                                />
-                                                            </i>
-                                                        ) : (
-                                                            ""
-                                                        )}
-                                                    </span>
-                                                </div>
-                                                <div
-                                                    className={`txt-wrap column-filter ${
-                                                        isFilterOpen
-                                                            ? "open"
-                                                            : ""
-                                                    }`}
-                                                >
-                                                    {!column.disableFilters
-                                                        ? column.render(
-                                                              "Filter"
-                                                          )
-                                                        : null}
-                                                </div>
-                                                {column.canResize && (
+                                        {headerGroup.headers.map((column) => {
+                                            if (column.display === true) {
+                                                return (
                                                     <div
-                                                        {...column.getResizerProps()}
-                                                        className="resizer"
-                                                    />
-                                                )}
-                                            </div>
-                                        ))}
+                                                        {...column.getHeaderProps()}
+                                                        className="table-cell column-heading th"
+                                                    >
+                                                        <div
+                                                            data-testid="column-header-sort"
+                                                            {...column.getSortByToggleProps()}
+                                                        >
+                                                            {column.render(
+                                                                "Header"
+                                                            )}
+                                                            <span>
+                                                                {column.isSorted ? (
+                                                                    <i>
+                                                                        <IconSort
+                                                                            className={
+                                                                                column.isSortedDesc
+                                                                                    ? "sort-asc"
+                                                                                    : "sort-desc"
+                                                                            }
+                                                                        />
+                                                                    </i>
+                                                                ) : (
+                                                                    ""
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                        <div
+                                                            className={`txt-wrap column-filter ${
+                                                                isFilterOpen
+                                                                    ? "open"
+                                                                    : ""
+                                                            }`}
+                                                        >
+                                                            {!column.disableFilters
+                                                                ? column.render(
+                                                                      "Filter"
+                                                                  )
+                                                                : null}
+                                                        </div>
+                                                        {column.canResize && (
+                                                            <div
+                                                                {...column.getResizerProps()}
+                                                                className="resizer"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        })}
                                     </div>
                                 ))}
                             </div>
@@ -709,7 +709,6 @@ Customgrid.propTypes = {
     gridHeight: PropTypes.string,
     gridWidth: PropTypes.string,
     managableColumns: PropTypes.arrayOf(PropTypes.object),
-    originalColumns: PropTypes.arrayOf(PropTypes.object),
     data: PropTypes.arrayOf(PropTypes.object),
     idAttribute: PropTypes.string,
     getRowEditOverlay: PropTypes.func,
@@ -726,7 +725,7 @@ Customgrid.propTypes = {
     doGroupSort: PropTypes.func,
     getToggleAllRowsSelectedProps: PropTypes.func,
     row: PropTypes.arrayOf(PropTypes.object),
-    additionalColumn: PropTypes.object,
+    expandedRowData: PropTypes.object,
     rowActions: PropTypes.arrayOf(PropTypes.object),
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
