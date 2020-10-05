@@ -277,9 +277,9 @@ const Grid = (props) => {
                 title={title}
                 gridHeight={gridHeight}
                 gridWidth={gridWidth}
-                managableColumns={gridColumns} // React table wants all parameters passed into useTable function to be memoized
+                managableColumns={gridColumns}
                 expandedRowData={additionalColumn}
-                data={data} // React table wants all parameters passed into useTable function to be memoized
+                data={data}
                 idAttribute={idAttribute}
                 getRowEditOverlay={getRowEditOverlay}
                 updateRowInGrid={updateRowInGrid}
@@ -292,7 +292,6 @@ const Grid = (props) => {
                         ? calculateRowHeight
                         : calculateDefaultRowHeight
                 }
-                isExpandContentAvailable={additionalColumn !== null}
                 expandableColumn={expandableColumn}
                 rowActions={rowActions}
                 rowActionCallback={rowActionCallback}
