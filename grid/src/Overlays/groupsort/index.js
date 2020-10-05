@@ -166,14 +166,14 @@ const GroupSort = (props) => {
                         <div className="sort__btns">
                             <button
                                 type="button"
-                                className="btns"
+                                className="neo-btn neo-btn-link btn btn-secondary"
                                 onClick={clearSortingOptions}
                             >
                                 Clear All
                             </button>
                             <button
                                 type="button"
-                                className="btns btns__save"
+                                className="neo-btn neo-btn-primary btn btn-secondary"
                                 onClick={applySort}
                             >
                                 Ok

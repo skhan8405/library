@@ -14,7 +14,7 @@
     right: 0;
     transition: 0.5s;
     background: var(--white);
-    border: 1px solid var(--border-grey);
+    border: 1px solid var(--light-grey);
     &:before {
         width: 0px;
         height: 0px;
@@ -40,7 +40,7 @@
     }
     &__title {
         display: flex;
-        border-bottom: 1px solid var(--border-grey);
+        border-bottom: 1px solid var(--light-grey);
         padding: 5px 10px;
         h2 {
             font-size: rem(14);
@@ -123,20 +123,6 @@
             .sort__btns {
                 margin-left: auto;
             }
-            .btns {
-                border: none;
-                background: var(--white);
-                border-radius: 5px;
-                width: 88px;
-                margin-left: 10px;
-                height: 28px;
-                color: var(--button-blue);
-                cursor: pointer;
-            }
-            .btns__save {
-                color: var(--white);
-                background: var(--button-blue);
-            }
         }
         .icon-close {
             font-size: rem(15);
@@ -210,6 +196,10 @@
                 height: 380px;
                 width: 768px;
                 padding-bottom: 60px;
+                .form-check {
+                    height: auto;
+                    margin-bottom: 5px;
+                }
             }
             .column__reorder {
                 border: 1px solid #8da3b4;
@@ -256,29 +246,16 @@
             }
             .column__footer {
                 padding: 10px;
-                border-top: 1px solid var(--border-grey);
+                border-top: 1px solid var(--light-grey);
                 position: absolute;
                 bottom: 0px;
                 right: 0px;
-                width: 79.3%;
+                width: 79.2%;
                 display: flex;
                 background: var(--white);
             }
             .column__btns {
                 margin-left: auto;
-            }
-            .btns {
-                border: 1px solid var(--button-blue);
-                background: #fff;
-                border-radius: 5px;
-                width: 98px;
-                margin-left: 10px;
-                color: var(--button-blue);
-                height: 32px;
-            }
-            .btns__save {
-                color: #fff;
-                background: var(--button-blue);
             }
             .icon-close {
                 font-size: rem(15);
@@ -295,7 +272,7 @@
         display: flex;
         .export__header {
             padding: 10px;
-            border-bottom: var(--border-grey) solid 1px;
+            border-bottom: var(--light-grey) solid 1px;
             color: #3c425e;
             font-size: rem(13);
             display: flex;
@@ -321,6 +298,9 @@
             .export__body {
                 display: flex;
                 padding: 10px;
+                .form-check {
+                    height: auto;
+                }
             }
             .export__reorder {
                 border: 1px solid var(--dark-grey);
@@ -339,15 +319,9 @@
                     line-height: normal;
                 }
             }
-            .check-wrap {
-                line-height: normal;
-                input {
-                    margin: 0px;
-                }
-            }
             .export__footer {
                 padding: 15px 10px;
-                border-top: 1px solid var(--border-grey);
+                border-top: 1px solid var(--light-grey);
                 position: absolute;
                 bottom: 0px;
                 right: 0px;
@@ -359,19 +333,6 @@
             }
             .export__btns {
                 margin-left: auto;
-            }
-            .btns {
-                border: 1px solid var(--button-blue);
-                background: var(--white);
-                border-radius: 5px;
-                width: 98px;
-                margin-left: 10px;
-                color: var(--button-blue);
-                height: 32px;
-            }
-            .btns__save {
-                color: var(--white);
-                background: var(--button-blue);
             }
             .exportWarning {
                 position: absolute;

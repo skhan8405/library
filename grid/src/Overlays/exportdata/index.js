@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import PropTypes from "prop-types";
 import update from "immutability-helper";
-import ColumnSearch from "../common/columnsSearch";
 import JsPdf from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import ColumnSearch from "../common/columnsSearch";
 import {
     IconCsv,
     IconExcel,
@@ -329,9 +329,10 @@ const ExportData = (props) => {
                         <div className="export__as">Export As</div>
                         <div className="export__body">
                             <div className="export__reorder">
-                                <div className="check-wrap">
+                                <div className="form-check">
                                     <input
                                         type="checkbox"
+                                        className="form-check-input custom-checkbox form-check-input"
                                         id="chk_pdf"
                                         data-testid="chk_pdf_test"
                                         value="pdf"
@@ -347,9 +348,10 @@ const ExportData = (props) => {
                                 </div>
                             </div>
                             <div className="export__reorder">
-                                <div className="check-wrap">
+                                <div className="form-check">
                                     <input
                                         type="checkbox"
+                                        className="form-check-input custom-checkbox form-check-input"
                                         id="chk_excel"
                                         data-testid="chk_excel_test"
                                         value="excel"
@@ -367,9 +369,10 @@ const ExportData = (props) => {
                                 </div>
                             </div>
                             <div className="export__reorder">
-                                <div className="check-wrap">
+                                <div className="form-check">
                                     <input
                                         type="checkbox"
+                                        className="form-check-input custom-checkbox form-check-input"
                                         id="chk_csv"
                                         data-testid="chk_csv_test"
                                         value="csv"
@@ -395,7 +398,7 @@ const ExportData = (props) => {
                                 <button
                                     type="button"
                                     data-testid="cancel_button"
-                                    className="btns"
+                                    className="neo-btn neo-btn-primary btn btn-secondary"
                                     onClick={toggleExportDataOverlay}
                                 >
                                     Cancel
@@ -403,7 +406,7 @@ const ExportData = (props) => {
                                 <button
                                     type="button"
                                     data-testid="export_button"
-                                    className="btns btns__save"
+                                    className="neo-btn neo-btn-default btn btn-secondary"
                                     onClick={exportRowData}
                                 >
                                     Export

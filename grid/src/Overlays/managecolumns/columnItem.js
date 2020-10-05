@@ -65,20 +65,27 @@ const ColumnItem = ({
                               return (
                                   <div className="column__wrap" key={cellId}>
                                       <div className="column__checkbox">
-                                          <input
-                                              type="checkbox"
-                                              data-testid={`selectInnerCell_${id}_${cellId}`}
-                                              data-columnid={id}
-                                              data-cellid={cellId}
-                                              data-isadditionalcolumn={
-                                                  isadditionalcolumn
-                                              }
-                                              checked={display}
-                                              onChange={onInnerCellChange}
-                                          />
-                                      </div>
-                                      <div className="column__txt">
-                                          {Header}
+                                          <div className="form-check">
+                                              <input
+                                                  type="checkbox"
+                                                  id={`chk_selectInnerCell_${cellId}`}
+                                                  className="form-check-input custom-checkbox form-check-input"
+                                                  data-testid={`selectInnerCell_${id}_${cellId}`}
+                                                  data-columnid={id}
+                                                  data-cellid={cellId}
+                                                  data-isadditionalcolumn={
+                                                      isadditionalcolumn
+                                                  }
+                                                  checked={display}
+                                                  onChange={onInnerCellChange}
+                                              />
+                                              <label
+                                                  htmlFor={`chk_selectInnerCell_${cellId}`}
+                                                  className="form-check-label"
+                                              >
+                                                  {Header}
+                                              </label>
+                                          </div>
                                       </div>
                                   </div>
                               );

@@ -48,10 +48,10 @@ const RowEditOverLay = ({
                 onClickAway={closeRowEditOverlay}
             >
                 {rowEditContent}
-                <div className="cancel-save-buttons">
+                <div className="btn-wrap">
                     <button
                         type="button"
-                        className="save-Button"
+                        className="neo-btn neo-btn-primary btn btn-secondary"
                         data-testid="rowEditOverlay-save"
                         onClick={saveRowEdit}
                     >
@@ -59,7 +59,7 @@ const RowEditOverLay = ({
                     </button>
                     <button
                         type="button"
-                        className="cancel-Button"
+                        className="neo-btn neo-btn-default btn btn-secondary"
                         data-testid="rowEditOverlay-cancel"
                         onClick={closeRowEditOverlay}
                     >

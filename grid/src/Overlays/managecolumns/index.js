@@ -338,28 +338,37 @@ const ColumnReordering = (props) => {
                                                               key={`${cellId}`}
                                                           >
                                                               <div className="column__checkbox">
-                                                                  <input
-                                                                      type="checkbox"
-                                                                      data-testid={`selectInnerCell_${managedAdditionalColumnColumnId}_${cellId}`}
-                                                                      data-columnid={
-                                                                          managedAdditionalColumnColumnId
-                                                                      }
-                                                                      data-cellid={
-                                                                          cellId
-                                                                      }
-                                                                      data-isadditionalcolumn={
-                                                                          managedAdditionalColumnDisplayType
-                                                                      }
-                                                                      checked={
-                                                                          display
-                                                                      }
-                                                                      onChange={
-                                                                          onInnerCellChange
-                                                                      }
-                                                                  />
-                                                              </div>
-                                                              <div className="column__txt">
-                                                                  {Header}
+                                                                  <div className="form-check">
+                                                                      <input
+                                                                          type="checkbox"
+                                                                          id={`chk_selectInnerCell_${cellId}`}
+                                                                          className="form-check-input custom-checkbox form-check-input"
+                                                                          data-testid={`selectInnerCell_${managedAdditionalColumnColumnId}_${cellId}`}
+                                                                          data-columnid={
+                                                                              managedAdditionalColumnColumnId
+                                                                          }
+                                                                          data-cellid={
+                                                                              cellId
+                                                                          }
+                                                                          data-isadditionalcolumn={
+                                                                              managedAdditionalColumnDisplayType
+                                                                          }
+                                                                          checked={
+                                                                              display
+                                                                          }
+                                                                          onChange={
+                                                                              onInnerCellChange
+                                                                          }
+                                                                      />
+                                                                      <label
+                                                                          htmlFor={`chk_selectInnerCell_${cellId}`}
+                                                                          className="form-check-label"
+                                                                      >
+                                                                          {
+                                                                              Header
+                                                                          }
+                                                                      </label>
+                                                                  </div>
                                                               </div>
                                                           </div>
                                                       );
@@ -374,21 +383,21 @@ const ColumnReordering = (props) => {
                             <div className="column__btns">
                                 <button
                                     type="button"
-                                    className="btns"
+                                    className="neo-btn neo-btn-default btn btn-secondary"
                                     onClick={resetColumnUpdate}
                                 >
                                     Reset
                                 </button>
                                 <button
                                     type="button"
-                                    className="btns"
+                                    className="neo-btn neo-btn-default btn btn-secondary"
                                     onClick={toggleManageColumnsOverlay}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="button"
-                                    className="btns btns__save"
+                                    className="neo-btn neo-btn-primary btn btn-secondary"
                                     onClick={onColumnChooserSave}
                                     data-testid="saveButton"
                                 >

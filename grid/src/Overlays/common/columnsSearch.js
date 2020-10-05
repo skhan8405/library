@@ -90,33 +90,53 @@ const ColumnSearch = ({
             />
             <div className="column__selectAll">
                 <div className="column__checkbox">
-                    <input
-                        type="checkbox"
-                        data-testid="selectAllSearchableColumns"
-                        data-columnid="all"
-                        checked={isSearchableColumnSelected("all")}
-                        onChange={onSearchableColumnChange}
-                    />
+                    <div className="form-check">
+                        <input
+                            type="checkbox"
+                            id="chk_selectAllSearchableColumns"
+                            className="form-check-input custom-checkbox form-check-input"
+                            data-testid="selectAllSearchableColumns"
+                            data-columnid="all"
+                            checked={isSearchableColumnSelected("all")}
+                            onChange={onSearchableColumnChange}
+                        />
+                        <label
+                            htmlFor="chk_selectAllSearchableColumns"
+                            className="form-check-label column__selectTxt"
+                        >
+                            Select All
+                        </label>
+                    </div>
                 </div>
-                <div className="column__selectTxt">Select All</div>
             </div>
             {searchableColumns.map((column) => {
                 const { columnId, Header, isDisplayInExpandedRegion } = column;
                 return (
                     <div className="column__wrap" key={columnId}>
                         <div className="column__checkbox">
-                            <input
-                                type="checkbox"
-                                data-testid={`selectSingleSearchableColumn_${columnId}`}
-                                data-columnid={columnId}
-                                data-isadditionalcolumn={
-                                    isDisplayInExpandedRegion
-                                }
-                                checked={isSearchableColumnSelected(columnId)}
-                                onChange={onSearchableColumnChange}
-                            />
+                            <div className="form-check">
+                                <input
+                                    type="checkbox"
+                                    id={`chk_selectSearchableColumn_${columnId}`}
+                                    className="form-check-input custom-checkbox form-check-input"
+                                    data-testid={`selectSingleSearchableColumn_${columnId}`}
+                                    data-columnid={columnId}
+                                    data-isadditionalcolumn={
+                                        isDisplayInExpandedRegion
+                                    }
+                                    checked={isSearchableColumnSelected(
+                                        columnId
+                                    )}
+                                    onChange={onSearchableColumnChange}
+                                />
+                                <label
+                                    htmlFor={`chk_selectSearchableColumn_${columnId}`}
+                                    className="form-check-label column__txt"
+                                >
+                                    {Header}
+                                </label>
+                            </div>
                         </div>
-                        <div className="column__txt">{Header}</div>
                     </div>
                 );
             })}
