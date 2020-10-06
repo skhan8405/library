@@ -249,7 +249,7 @@ const Grid = (props) => {
 
     useEffect(() => {
         setIsNextPageLoading(false);
-    }, [gridData]);
+    }, [gridData, pageInfo]);
 
     // Sort the data based on the user selected group sort optipons
     const data =
