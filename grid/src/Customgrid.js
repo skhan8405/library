@@ -53,6 +53,7 @@ const Customgrid = (props) => {
         expandedRowData,
         data,
         idAttribute,
+        totalRecordsCount,
         getRowEditOverlay,
         updateRowInGrid,
         deleteRowFromGrid,
@@ -448,7 +449,11 @@ const Customgrid = (props) => {
         <div className="table-wrapper" style={{ width: gridWidth || "100%" }}>
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
-                    <strong>{rows.length}</strong>
+                    <strong>
+                        {rows.length === data.length
+                            ? totalRecordsCount
+                            : rows.length}
+                    </strong>
                     <span>{title || "Rows"}</span>
                 </div>
                 {CustomPanel ? (
@@ -715,6 +720,7 @@ Customgrid.propTypes = {
     managableColumns: PropTypes.arrayOf(PropTypes.object),
     data: PropTypes.arrayOf(PropTypes.object),
     idAttribute: PropTypes.string,
+    totalRecordsCount: PropTypes.number,
     getRowEditOverlay: PropTypes.func,
     updateRowInGrid: PropTypes.func,
     deleteRowFromGrid: PropTypes.func,

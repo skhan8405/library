@@ -35,15 +35,16 @@ const GridComponent = (props) => {
     const urlPageSize = search
         ? parseInt(search.replace("?pagesize=", ""), 10)
         : NaN;
-    const pageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
-    // State for holding index value for API call
-    const [index, setIndex] = useState(0);
+    const gridPageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
+    // State for holding page info
+    const [pageInfo, setPageInfo] = useState({
+        pageNum: 1,
+        pageSize: gridPageSize,
+        total: 20000,
+        lastPage: isNextPageAvailableCheck !== true
+    });
     // State for holding grid data
     const [gridData, setGridData] = useState([]);
-    // State for notifying if next page is available or not
-    const [isNextPageAvailable, setIsNextPageAvailable] = useState(
-        isNextPageAvailableCheck
-    );
     // State for holding selected rows
     const [userSelectedRows, setUserSelectedRows] = useState([]);
     // State for holding rows to deselect
@@ -802,24 +803,33 @@ const GridComponent = (props) => {
         console.log("Grid Refrehsed ");
     };
 
-    const loadMoreData = () => {
-        fetchData(index, pageSize).then((data) => {
+    const loadMoreData = (updatedPageInfo) => {
+        fetchData(updatedPageInfo).then((data) => {
             if (data && data.length > 0) {
                 setGridData(gridData.concat(data));
-                setIndex(index + pageSize);
+                setPageInfo({
+                    ...pageInfo,
+                    pageNum: updatedPageInfo.pageNum
+                });
             } else {
-                setIsNextPageAvailable(false);
+                setPageInfo({
+                    ...pageInfo,
+                    pageNum: updatedPageInfo.pageNum,
+                    lastPage: true
+                });
             }
         });
     };
 
     useEffect(() => {
-        fetchData(index, pageSize).then((data) => {
+        fetchData(pageInfo).then((data) => {
             if (data && data.length > 0) {
                 setGridData(data);
-                setIndex(index + pageSize);
             } else {
-                setIsNextPageAvailable(false);
+                setPageInfo({
+                    ...pageInfo,
+                    lastPage: true
+                });
             }
         });
     }, []);
@@ -828,6 +838,8 @@ const GridComponent = (props) => {
         const rowId = event.currentTarget.dataset.id;
         setRowsToDeselect([Number(rowId)]);
     };
+
+    const paginationType = "index";
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
@@ -855,7 +867,8 @@ const GridComponent = (props) => {
                     gridWidth={gridWidth}
                     gridData={gridData}
                     idAttribute={idAttribute}
-                    isNextPageAvailable={isNextPageAvailable}
+                    paginationType={paginationType}
+                    pageInfo={pageInfo}
                     loadMoreData={loadMoreData}
                     columns={columns}
                     columnToExpand={passColumnToExpand ? columnToExpand : null}

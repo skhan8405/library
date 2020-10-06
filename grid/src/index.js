@@ -16,7 +16,8 @@ const Grid = (props) => {
         gridWidth,
         gridData,
         idAttribute,
-        isNextPageAvailable,
+        paginationType,
+        pageInfo,
         loadMoreData,
         columns,
         columnToExpand,
@@ -229,9 +230,20 @@ const Grid = (props) => {
     // Gets called when page scroll reaches the bottom of the grid.
     // Trigger call back and get the grid data updated.
     const loadNextPage = () => {
-        if (isNextPageAvailable) {
+        const { lastPage, pageNum, pageSize, endCursor } = pageInfo;
+        if (!lastPage) {
             setIsNextPageLoading(true);
-            loadMoreData();
+            if (paginationType === "index") {
+                loadMoreData({
+                    pageNum: pageNum + 1,
+                    pageSize
+                });
+            } else {
+                loadMoreData({
+                    endCursor,
+                    pageSize
+                });
+            }
         }
     };
 
@@ -271,6 +283,7 @@ const Grid = (props) => {
         );
     }
 
+    const { total, lastPage } = pageInfo;
     return (
         <div className={`grid-component-container ${className || ""}`}>
             <Customgrid
@@ -281,6 +294,7 @@ const Grid = (props) => {
                 expandedRowData={additionalColumn}
                 data={data}
                 idAttribute={idAttribute}
+                totalRecordsCount={total}
                 getRowEditOverlay={getRowEditOverlay}
                 updateRowInGrid={updateRowInGrid}
                 deleteRowFromGrid={deleteRowFromGrid}
@@ -295,7 +309,7 @@ const Grid = (props) => {
                 expandableColumn={expandableColumn}
                 rowActions={rowActions}
                 rowActionCallback={rowActionCallback}
-                hasNextPage={isNextPageAvailable}
+                hasNextPage={!lastPage}
                 isNextPageLoading={isNextPageLoading}
                 loadNextPage={loadNextPage}
                 doGroupSort={doGroupSort}
@@ -330,7 +344,8 @@ Grid.propTypes = {
     columnToExpand: PropTypes.object,
     gridData: PropTypes.arrayOf(PropTypes.object),
     idAttribute: PropTypes.string,
-    isNextPageAvailable: PropTypes.bool,
+    paginationType: PropTypes.string,
+    pageInfo: PropTypes.object,
     loadMoreData: PropTypes.func,
     getRowEditOverlay: PropTypes.func,
     onRowUpdate: PropTypes.func,
