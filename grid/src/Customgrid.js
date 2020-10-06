@@ -83,7 +83,7 @@ const Customgrid = (props) => {
     const [isFirstRendering, setIsFirstRendering] = useState(true);
 
     // Local state value for holding columns configuration
-    const [columns, setColumns] = useState([...managableColumns]);
+    const [gridColumns, setGridColumns] = useState([...managableColumns]);
 
     // Local state value for holding the additional column configuration
     const [additionalColumn, setAdditionalColumn] = useState(expandedRowData);
@@ -154,7 +154,7 @@ const Customgrid = (props) => {
     };
     // Callback method from column manage overlay to update the column structure of the grid
     const updateColumnStructure = (updatedColumns, updatedAdditionalColumn) => {
-        setColumns([...updatedColumns]);
+        setGridColumns([...updatedColumns]);
         setAdditionalColumn(updatedAdditionalColumn);
     };
 
@@ -223,6 +223,8 @@ const Customgrid = (props) => {
         additionalColumn.display === true &&
         additionalColumn.Cell &&
         typeof additionalColumn.Cell === "function";
+
+    const columns = useMemo(() => gridColumns);
 
     // Initialize react-table instance with the values received through properties
     const {
@@ -340,7 +342,7 @@ const Customgrid = (props) => {
 
     // Update state, when user is updating columns configuration from outside Grid
     useEffect(() => {
-        setColumns(managableColumns);
+        setGridColumns(managableColumns);
     }, [managableColumns]);
 
     // Update state, when user is updating additional column configuration from outside Grid
@@ -550,7 +552,7 @@ const Customgrid = (props) => {
                                     toggleExportDataOverlay
                                 }
                                 rows={rows}
-                                columns={columns}
+                                columns={gridColumns}
                                 additionalColumn={additionalColumn}
                             />
                         </div>
@@ -577,7 +579,7 @@ const Customgrid = (props) => {
                     <div className="overlay">
                         <RowEditOverlay
                             row={editedRowData}
-                            columns={columns}
+                            columns={gridColumns}
                             additionalColumn={additionalColumn}
                             getRowEditOverlay={getRowEditOverlay}
                             closeRowEditOverlay={closeRowEditOverlay}
