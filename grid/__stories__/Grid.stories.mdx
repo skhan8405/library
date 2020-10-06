@@ -43,8 +43,21 @@ const GridComponent = () => {
         ? parseInt(search.replace("?pagesize=", ""), 10)
         : NaN;
     const pageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
-    // State for holding index value for API call
-    const [index, setIndex] = useState(0);
+    const paginationType = "index";
+    // State for holding index page info
+    const [indexPageInfo, setIndexPageInfo] = useState({
+        pageNum: 1,
+        pageSize: gridPageSize,
+        total: 20000,
+        lastPage: isNextPageAvailableCheck !== true
+    });
+    // State for holding cursor page info
+    const [cursorPageInfo, setCursorPageInfo] = useState({
+        endCursor: 299,
+        pageSize: gridPageSize,
+        total: 20000,
+        lastPage: isNextPageAvailableCheck !== true
+    });
     // State for holding grid data
     const [gridData, setGridData] = useState([]);
     // State for notifying if next page is available or not
@@ -117,6 +130,7 @@ const GridComponent = () => {
             accessor: "travelId",
             width: 50,
             disableFilters: true,
+            isSearchable: true,
             displayCell: (rowData) => {
                 const { travelId } = rowData;
                 return (
@@ -133,14 +147,17 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "Flight No",
-                    accessor: "flightno"
+                    accessor: "flightno",
+                    isSearchable: true
                 },
                 {
                     Header: "Date",
-                    accessor: "date"
+                    accessor: "date",
+                    isSearchable: true
                 }
             ],
             sortValue: "flightno",
+            isSearchable: true,
             displayCell: (rowData, DisplayTag) => {
                 const { flightno, date } = rowData.flight;
                 return (
@@ -171,14 +188,17 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "From",
-                    accessor: "from"
+                    accessor: "from",
+                    isSearchable: true
                 },
                 {
                     Header: "To",
-                    accessor: "to"
+                    accessor: "to",
+                    isSearchable: true
                 }
             ],
             disableSortBy: true,
+            isSearchable: false,
             displayCell: (rowData, DisplayTag) => {
                 const { from, to } = rowData.segment;
                 return (
@@ -214,38 +234,47 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "Flight Model",
-                    accessor: "flightModel"
+                    accessor: "flightModel",
+                    isSearchable: true
                 },
                 {
                     Header: "Body Type",
-                    accessor: "bodyType"
+                    accessor: "bodyType",
+                    isSearchable: true
                 },
                 {
                     Header: "Type",
-                    accessor: "type"
+                    accessor: "type",
+                    isSearchable: true
                 },
                 {
                     Header: "Start Time",
-                    accessor: "startTime"
+                    accessor: "startTime",
+                    isSearchable: true
                 },
                 {
                     Header: "End Time",
-                    accessor: "endTime"
+                    accessor: "endTime",
+                    isSearchable: true
                 },
                 {
                     Header: "Status",
-                    accessor: "status"
+                    accessor: "status",
+                    isSearchable: true
                 },
                 {
                     Header: "Additional Status",
-                    accessor: "additionalStatus"
+                    accessor: "additionalStatus",
+                    isSearchable: true
                 },
                 {
                     Header: "Time Status",
-                    accessor: "timeStatus"
+                    accessor: "timeStatus",
+                    isSearchable: true
                 }
             ],
             disableSortBy: true,
+            isSearchable: true,
             displayCell: (rowData, DisplayTag, isExpanded) => {
                 const {
                     startTime,
@@ -416,14 +445,17 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "Percentage",
-                    accessor: "percentage"
+                    accessor: "percentage",
+                    isSearchable: true
                 },
                 {
                     Header: "Value",
-                    accessor: "value"
+                    accessor: "value",
+                    isSearchable: true
                 }
             ],
             sortValue: "percentage",
+            isSearchable: true,
             displayCell: (rowData, DisplayTag) => {
                 const { percentage, value } = rowData.weight;
                 const splitValue = value ? value.split("/") : [];
@@ -455,14 +487,17 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "Percentage",
-                    accessor: "percentage"
+                    accessor: "percentage",
+                    isSearchable: true
                 },
                 {
                     Header: "Value",
-                    accessor: "value"
+                    accessor: "value",
+                    isSearchable: true
                 }
             ],
             sortValue: "percentage",
+            isSearchable: true,
             displayCell: (rowData, DisplayTag) => {
                 const { percentage, value } = rowData.volume;
                 const splitValue = value ? value.split("/") : [];
@@ -494,14 +529,17 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "Position",
-                    accessor: "position"
+                    accessor: "position",
+                    isSearchable: true
                 },
                 {
                     Header: "Value",
-                    accessor: "value"
+                    accessor: "value",
+                    isSearchable: true
                 }
             ],
             disableSortBy: true,
+            isSearchable: true,
             displayCell: (rowData, DisplayTag) => {
                 const { uldPositions } = rowData;
                 return (
@@ -538,11 +576,13 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "Revenue",
-                    accessor: "revenue"
+                    accessor: "revenue",
+                    isSearchable: true
                 },
                 {
                     Header: "Yeild",
-                    accessor: "yeild"
+                    accessor: "yeild",
+                    isSearchable: true
                 }
             ],
             displayCell: (rowData, DisplayTag) => {
@@ -558,12 +598,14 @@ const GridComponent = () => {
                     </div>
                 );
             },
-            sortValue: "revenue"
+            sortValue: "revenue",
+            isSearchable: true
         },
         {
             Header: "SR",
             accessor: "sr",
             width: 90,
+            isSearchable: true,
             displayCell: (rowData) => {
                 const { sr } = rowData;
                 return (
@@ -588,14 +630,17 @@ const GridComponent = () => {
             innerCells: [
                 {
                     Header: "Sr",
-                    accessor: "sr"
+                    accessor: "sr",
+                    isSearchable: true
                 },
                 {
                     Header: "Volume",
-                    accessor: "volume"
+                    accessor: "volume",
+                    isSearchable: true
                 }
             ],
             disableSortBy: true,
+            isSearchable: false,
             displayCell: (rowData, DisplayTag) => {
                 const { sr, volume } = rowData.queuedBooking;
                 return (
@@ -638,7 +683,7 @@ const GridComponent = () => {
             const timeValue = timeStatusArray.shift();
             const timeText = timeStatusArray.join(" ");
             return (
-                <div className="details-wrap">
+                <div className="remarks-wrap details-wrap">
                     <DisplayTag columnKey="remarks" cellKey="remarks">
                         <ul>
                             <li>{remarks}</li>
@@ -771,24 +816,57 @@ const GridComponent = () => {
         console.log("Grid Refrehsed ");
     };
 
-    const loadMoreData = () => {
-        fetchData(index, pageSize).then((data) => {
+    const loadMoreData = (updatedPageInfo) => {
+        const info = { ...updatedPageInfo };
+        if (info.endCursor) {
+            info.endCursor += info.pageSize;
+        }
+        fetchData(info).then((data) => {
             if (data && data.length > 0) {
                 setGridData(gridData.concat(data));
-                setIndex(index + pageSize);
+                if (paginationType === "index") {
+                    setIndexPageInfo({
+                        ...indexPageInfo,
+                        pageNum: updatedPageInfo.pageNum
+                    });
+                } else {
+                    setCursorPageInfo({
+                        ...cursorPageInfo,
+                        endCursor: info.endCursor
+                    });
+                }
+            } else if (paginationType === "index") {
+                setIndexPageInfo({
+                    ...indexPageInfo,
+                    pageNum: updatedPageInfo.pageNum,
+                    lastPage: true
+                });
             } else {
-                setIsNextPageAvailable(false);
+                setCursorPageInfo({
+                    ...cursorPageInfo,
+                    endCursor: info.endCursor,
+                    lastPage: true
+                });
             }
         });
     };
 
     useEffect(() => {
-        fetchData(index, pageSize).then((data) => {
+        const pageInfo =
+            paginationType === "index" ? indexPageInfo : cursorPageInfo;
+        fetchData(pageInfo).then((data) => {
             if (data && data.length > 0) {
                 setGridData(data);
-                setIndex(index + pageSize);
+            } else if (paginationType === "index") {
+                setIndexPageInfo({
+                    ...indexPageInfo,
+                    lastPage: true
+                });
             } else {
-                setIsNextPageAvailable(false);
+                setCursorPageInfo({
+                    ...cursorPageInfo,
+                    lastPage: true
+                });
             }
         });
     }, []);
@@ -797,6 +875,8 @@ const GridComponent = () => {
         const rowId = event.currentTarget.dataset.id;
         setRowsToDeselect([Number(rowId)]);
     };
+    const gridPageInfo =
+        paginationType === "index" ? indexPageInfo : cursorPageInfo;
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
@@ -824,7 +904,8 @@ const GridComponent = () => {
                     gridWidth="100%"
                     gridData={gridData}
                     idAttribute={idAttribute}
-                    isNextPageAvailable={isNextPageAvailable}
+                    paginationType={paginationType}
+                    pageInfo={gridPageInfo}
                     loadMoreData={loadMoreData}
                     columns={columns}
                     columnToExpand={columnToExpand}
@@ -871,6 +952,8 @@ export default GridComponent;
     className="icargoCustomClass"
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -890,6 +973,8 @@ export default GridComponent;
     title="AWBs"
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -909,6 +994,8 @@ export default GridComponent;
     gridHeight="80vh"
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -928,6 +1015,8 @@ export default GridComponent;
     gridWidth="75%"
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -946,6 +1035,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     columnToExpand={columnToExpand}
     calculateRowHeight={calculateRowHeight}
@@ -965,6 +1056,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -984,6 +1077,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     rowActions={rowActions}
@@ -1005,6 +1100,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1024,6 +1121,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1043,6 +1142,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1064,6 +1165,8 @@ export default GridComponent;
     isNextPageAvailableCheck
     loadMoreData={loadMoreData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1082,6 +1185,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1101,6 +1206,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1120,6 +1227,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1139,6 +1248,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1158,6 +1269,8 @@ export default GridComponent;
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -1200,7 +1313,8 @@ export default GridComponent;
     gridWidth={gridWidth}
     gridData={gridData}
     idAttribute={idAttribute}
-    isNextPageAvailable={isNextPageAvailable}
+    paginationType={paginationType}
+    pageInfo={gridPageInfo}
     loadMoreData={loadMoreData}
     columns={columns}
     columnToExpand={columnToExpand}

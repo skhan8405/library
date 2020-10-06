@@ -874,6 +874,8 @@ const GridComponent = (props) => {
         const rowId = event.currentTarget.dataset.id;
         setRowsToDeselect([Number(rowId)]);
     };
+    const gridPageInfo =
+        paginationType === "index" ? indexPageInfo : cursorPageInfo;
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
@@ -902,11 +904,7 @@ const GridComponent = (props) => {
                     gridData={gridData}
                     idAttribute={idAttribute}
                     paginationType={paginationType}
-                    pageInfo={
-                        paginationType === "index"
-                            ? indexPageInfo
-                            : cursorPageInfo
-                    }
+                    pageInfo={gridPageInfo}
                     loadMoreData={loadMoreData}
                     columns={columns}
                     columnToExpand={passColumnToExpand ? columnToExpand : null}
