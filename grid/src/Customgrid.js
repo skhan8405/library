@@ -338,11 +338,15 @@ const Customgrid = (props) => {
         }
     });
 
-    // Update the column chooser overlay, when user is updating column configuration from outside Grid
+    // Update state, when user is updating columns configuration from outside Grid
     useEffect(() => {
         setColumns(managableColumns);
+    }, [managableColumns]);
+
+    // Update state, when user is updating additional column configuration from outside Grid
+    useEffect(() => {
         setAdditionalColumn(expandedRowData);
-    }, [managableColumns, expandedRowData]);
+    }, [expandedRowData]);
 
     // Update the boolean value used to identify if this is the first time render of Grid
     useEffect(() => {
@@ -522,8 +526,8 @@ const Customgrid = (props) => {
                                 toggleManageColumnsOverlay={
                                     toggleManageColumnsOverlay
                                 }
-                                columns={columns}
-                                additionalColumn={additionalColumn}
+                                columns={managableColumns}
+                                additionalColumn={expandedRowData}
                                 updateColumnStructure={updateColumnStructure}
                             />
                         </div>
