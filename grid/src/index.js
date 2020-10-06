@@ -233,14 +233,14 @@ const Grid = (props) => {
         const { lastPage, pageNum, pageSize, endCursor } = pageInfo;
         if (!lastPage) {
             setIsNextPageLoading(true);
-            if (paginationType === "index") {
+            if (paginationType === "cursor") {
                 loadMoreData({
-                    pageNum: pageNum + 1,
+                    endCursor,
                     pageSize
                 });
             } else {
                 loadMoreData({
-                    endCursor,
+                    pageNum: pageNum + 1,
                     pageSize
                 });
             }
@@ -255,6 +255,15 @@ const Grid = (props) => {
     const data =
         gridData && gridData.length > 0 ? getSortedData([...gridData]) : [];
 
+    if (!pageInfo) {
+        return (
+            <div className={`grid-component-container ${className || ""}`}>
+                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                    <span className="error">Invalid Page Info</span>
+                </h2>
+            </div>
+        );
+    }
     if (!(data && data.length > 0)) {
         return (
             <div className={`grid-component-container ${className || ""}`}>
