@@ -83,7 +83,7 @@ const Customgrid = (props) => {
     const [isFirstRendering, setIsFirstRendering] = useState(true);
 
     // Local state value for holding columns configuration
-    const [columns, setColumns] = useState(managableColumns);
+    const [columns, setColumns] = useState([...managableColumns]);
 
     // Local state value for holding the additional column configuration
     const [additionalColumn, setAdditionalColumn] = useState(expandedRowData);
@@ -219,6 +219,7 @@ const Customgrid = (props) => {
 
     const isRowExpandEnabled =
         additionalColumn &&
+        Object.keys(additionalColumn).length > 0 &&
         additionalColumn.display === true &&
         additionalColumn.Cell &&
         typeof additionalColumn.Cell === "function";
@@ -521,8 +522,8 @@ const Customgrid = (props) => {
                                 toggleManageColumnsOverlay={
                                     toggleManageColumnsOverlay
                                 }
-                                columns={[...columns]}
-                                additionalColumn={{ ...additionalColumn }}
+                                columns={columns}
+                                additionalColumn={additionalColumn}
                                 updateColumnStructure={updateColumnStructure}
                             />
                         </div>
@@ -573,7 +574,6 @@ const Customgrid = (props) => {
                         <RowEditOverlay
                             row={editedRowData}
                             columns={columns}
-                            isRowExpandEnabled={isRowExpandEnabled}
                             additionalColumn={additionalColumn}
                             getRowEditOverlay={getRowEditOverlay}
                             closeRowEditOverlay={closeRowEditOverlay}

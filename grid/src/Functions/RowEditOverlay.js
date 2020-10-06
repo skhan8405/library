@@ -7,7 +7,6 @@ import RowEditTag from "./RowEditTag";
 const RowEditOverLay = ({
     row,
     columns,
-    isRowExpandEnabled,
     additionalColumn,
     getRowEditOverlay,
     closeRowEditOverlay,
@@ -38,8 +37,7 @@ const RowEditOverLay = ({
         <RowEditContext.Provider
             value={{
                 columns,
-                additionalColumn,
-                isRowExpandEnabled
+                additionalColumn
             }}
         >
             <ClickAwayListener
@@ -73,7 +71,6 @@ const RowEditOverLay = ({
 RowEditOverLay.propTypes = {
     row: PropTypes.object,
     columns: PropTypes.arrayOf(PropTypes.object),
-    isRowExpandEnabled: PropTypes.bool,
     additionalColumn: PropTypes.object,
     getRowEditOverlay: PropTypes.func,
     closeRowEditOverlay: PropTypes.func,

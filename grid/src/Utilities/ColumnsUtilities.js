@@ -56,7 +56,6 @@ export const extractColumns = (
                     return (
                         <CellDisplayAndEdit
                             row={row}
-                            columns={columns}
                             updateRowInGrid={updateRowInGrid}
                             expandableColumn={expandableColumn}
                         />

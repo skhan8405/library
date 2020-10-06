@@ -34,13 +34,20 @@ const ColumnReordering = (props) => {
         ]
     };
 
+    // Check if additional Column is present or not
+    const isAdditionalColumnPresent =
+        additionalColumn &&
+        Object.keys(additionalColumn).length > 0 &&
+        additionalColumn.innerCells &&
+        additionalColumn.innerCells.length > 0;
+
     // Set state variables for:
     // managedColumns - main columns displayed in colum setting region
     // managedAdditionalColumn - additional column displayed in colum setting region
     // isErrorDisplayed - to see if error message has to be displayed or not
-    const [managedColumns, setManagedColumns] = useState(columns);
+    const [managedColumns, setManagedColumns] = useState([...columns]);
     const [managedAdditionalColumn, setManagedAdditionalColumn] = useState(
-        additionalColumn
+        isAdditionalColumnPresent ? additionalColumn : null
     );
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
@@ -65,10 +72,12 @@ const ColumnReordering = (props) => {
                     $set: updatedManagedColumns
                 })
             );
-            setManagedAdditionalColumn(
-                changeColumnSelection(managedAdditionalColumn, checked)
-            );
-        } else if (isadditionalcolumn === "true") {
+            if (isAdditionalColumnPresent) {
+                setManagedAdditionalColumn(
+                    changeColumnSelection(managedAdditionalColumn, checked)
+                );
+            }
+        } else if (isAdditionalColumnPresent && isadditionalcolumn === "true") {
             // Update additional column state value
             setManagedAdditionalColumn(
                 changeColumnSelection(managedAdditionalColumn, checked)
@@ -125,32 +134,31 @@ const ColumnReordering = (props) => {
             if (dataset) {
                 const { columnid, cellid, isadditionalcolumn } = dataset;
                 if (isadditionalcolumn === "false") {
-                    const updatedManagedColumns = [...managedColumns];
-                    const selectedColumn = updatedManagedColumns.find(
-                        (column) => {
-                            return column.columnId === columnid;
-                        }
-                    );
-                    if (selectedColumn) {
-                        const { innerCells } = selectedColumn;
-                        if (innerCells && innerCells.length > 0) {
-                            selectedColumn.innerCells = innerCells.map(
-                                (cell) => {
-                                    const updatedCell = cell;
-                                    if (updatedCell.cellId === cellid) {
-                                        updatedCell.display = checked;
+                    setManagedColumns(() => {
+                        return [...managedColumns].map((column) => {
+                            const updatedColumn = { ...column };
+                            const { columnId, innerCells } = updatedColumn;
+                            if (
+                                columnId === columnid &&
+                                innerCells &&
+                                innerCells.length > 0
+                            ) {
+                                updatedColumn.innerCells = [...innerCells].map(
+                                    (cell) => {
+                                        const updatedCell = { ...cell };
+                                        const { cellId } = updatedCell;
+                                        if (cellId === cellid) {
+                                            updatedCell.display = checked;
+                                        }
+                                        return updatedCell;
                                     }
-                                    return updatedCell;
-                                }
-                            );
-                        }
-                    }
-                    setManagedColumns(
-                        update(managedColumns, {
-                            $set: updatedManagedColumns
-                        })
-                    );
+                                );
+                            }
+                            return updatedColumn;
+                        });
+                    });
                 } else if (
+                    isAdditionalColumnPresent &&
                     managedAdditionalColumn &&
                     managedAdditionalColumn.innerCells &&
                     managedAdditionalColumn.innerCells.length > 0
@@ -230,33 +238,18 @@ const ColumnReordering = (props) => {
         }
     };
 
-    useEffect(() => {
-        setManagedColumns(
-            update(managedColumns, {
-                $set: columns
-            })
-        );
-        setManagedAdditionalColumn(
-            update(managedAdditionalColumn, {
-                $set: additionalColumn
-            })
-        );
-    }, [columns, additionalColumn]);
-
     if (isManageColumnOverlayOpen) {
-        const isAdditionalColumnPresent = additionalColumn !== null;
         const isAdditionalColumnSelected =
             managedAdditionalColumn !== null &&
+            managedAdditionalColumn.innerCells &&
+            managedAdditionalColumn.innerCells.length > 0 &&
             managedAdditionalColumn.display === true;
         const additionalColumnHeader = isAdditionalColumnPresent
             ? additionalColumn.Header
             : "";
-        const managedAdditionalColumnInnercells =
-            isAdditionalColumnSelected &&
-            managedAdditionalColumn.innerCells &&
-            managedAdditionalColumn.innerCells.length > 0
-                ? managedAdditionalColumn.innerCells
-                : [];
+        const managedAdditionalColumnInnercells = isAdditionalColumnSelected
+            ? managedAdditionalColumn.innerCells
+            : [];
         const managedAdditionalColumnColumnId = isAdditionalColumnSelected
             ? managedAdditionalColumn.columnId
             : "";
@@ -275,7 +268,7 @@ const ColumnReordering = (props) => {
                             <strong>Column Chooser</strong>
                         </div>
                         <ColumnSearch
-                            columns={columns}
+                            columns={[...columns]}
                             additionalColumn={additionalColumn}
                             managedColumns={managedColumns}
                             managedAdditionalColumn={managedAdditionalColumn}

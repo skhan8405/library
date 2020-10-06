@@ -15,7 +15,12 @@ const ColumnSearch = ({
         if (columnsList && columnsList.length > 0) {
             allCoulmns = [...columnsList];
         }
-        if (additionalColumnItem) {
+        if (
+            additionalColumnItem &&
+            Object.keys(additionalColumnItem).length > 0 &&
+            additionalColumnItem.innerCells &&
+            additionalColumnItem.innerCells.length > 0
+        ) {
             allCoulmns.push(additionalColumnItem);
         }
         return allCoulmns;
