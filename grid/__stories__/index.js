@@ -131,12 +131,12 @@ const GridComponent = (props) => {
                 {
                     Header: "Flight No",
                     accessor: "flightno",
-                    isSearchable: false
+                    isSearchable: true
                 },
                 {
                     Header: "Date",
                     accessor: "date",
-                    isSearchable: false
+                    isSearchable: true
                 }
             ],
             sortValue: "flightno",
