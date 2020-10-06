@@ -190,10 +190,22 @@ describe("Reference test cases", () => {
             remarks: "Enim aute magna."
         }
     ];
+    const pageInfo = {
+        pageNum: 1,
+        pageSize: 300,
+        total: 20000,
+        lastPage: true
+    };
 
     // Keep a data structure with only 1 row.
     // This is used to test the load more function (which is used to load next page)
     const smallData = [...data];
+    const smallPageInfo = {
+        pageNum: 1,
+        pageSize: 1,
+        total: 20000,
+        lastPage: false
+    };
 
     // Add more items to the Grid data structure
     for (let i = 0; i < 50; i++) {
@@ -362,12 +374,13 @@ describe("Reference test cases", () => {
     // Set screen size before starting the tests.
     // Grid will be loaded based on this screen size.
     mockOffsetSize(600, 600);
-    it("load Grid with small data and isNextPageAvailable as true. This will trigger the load next page function", () => {
+    it("load Grid with small data and next page as true. This will trigger the load next page function", () => {
         const { container } = render(
             <Grid
                 gridData={smallData}
                 idAttribute="travelId"
-                isNextPageAvailable
+                paginationType="index"
+                pageInfo={smallPageInfo}
                 loadMoreData={mockLoadMoreData}
                 columns={gridColumns}
                 calculateRowHeight={mockCalculateRowHeight}
@@ -387,7 +400,8 @@ describe("Reference test cases", () => {
             <Grid
                 gridData={data}
                 idAttribute="travelId"
-                isNextPageAvailable={false}
+                paginationType="index"
+                pageInfo={pageInfo}
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 calculateRowHeight={mockCalculateRowHeight}
@@ -415,7 +429,8 @@ describe("Reference test cases", () => {
             <Grid
                 gridData={data}
                 idAttribute="travelId"
-                isNextPageAvailable={false}
+                paginationType="index"
+                pageInfo={pageInfo}
                 columns={gridColumns}
                 calculateRowHeight={mockCalculateRowHeight}
                 onRowUpdate={mockOnRowUpdate}
@@ -450,7 +465,8 @@ describe("Reference test cases", () => {
             <Grid
                 gridData={data}
                 idAttribute="travelId"
-                isNextPageAvailable={false}
+                paginationType="index"
+                pageInfo={pageInfo}
                 columns={gridColumns}
                 calculateRowHeight={mockCalculateRowHeight}
                 rowActions={mockRowActions}
