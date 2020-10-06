@@ -36,9 +36,17 @@ const GridComponent = (props) => {
         ? parseInt(search.replace("?pagesize=", ""), 10)
         : NaN;
     const gridPageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
-    // State for holding page info
-    const [pageInfo, setPageInfo] = useState({
+    const paginationType = "index";
+    // State for holding index page info
+    const [indexPageInfo, setIndexPageInfo] = useState({
         pageNum: 1,
+        pageSize: gridPageSize,
+        total: 20000,
+        lastPage: isNextPageAvailableCheck !== true
+    });
+    // State for holding cursor page info
+    const [cursorPageInfo, setCursorPageInfo] = useState({
+        endCursor: 299,
         pageSize: gridPageSize,
         total: 20000,
         lastPage: isNextPageAvailableCheck !== true
@@ -808,17 +816,34 @@ const GridComponent = (props) => {
     };
 
     const loadMoreData = (updatedPageInfo) => {
-        fetchData(updatedPageInfo).then((data) => {
+        const info = { ...updatedPageInfo };
+        if (info.endCursor) {
+            info.endCursor += info.pageSize;
+        }
+        fetchData(info).then((data) => {
             if (data && data.length > 0) {
                 setGridData(gridData.concat(data));
-                setPageInfo({
-                    ...pageInfo,
-                    pageNum: updatedPageInfo.pageNum
+                if (paginationType === "index") {
+                    setIndexPageInfo({
+                        ...indexPageInfo,
+                        pageNum: updatedPageInfo.pageNum
+                    });
+                } else {
+                    setCursorPageInfo({
+                        ...cursorPageInfo,
+                        endCursor: info.endCursor
+                    });
+                }
+            } else if (paginationType === "index") {
+                setIndexPageInfo({
+                    ...indexPageInfo,
+                    pageNum: updatedPageInfo.pageNum,
+                    lastPage: true
                 });
             } else {
-                setPageInfo({
-                    ...pageInfo,
-                    pageNum: updatedPageInfo.pageNum,
+                setCursorPageInfo({
+                    ...cursorPageInfo,
+                    endCursor: info.endCursor,
                     lastPage: true
                 });
             }
@@ -826,12 +851,19 @@ const GridComponent = (props) => {
     };
 
     useEffect(() => {
+        const pageInfo =
+            paginationType === "index" ? indexPageInfo : cursorPageInfo;
         fetchData(pageInfo).then((data) => {
             if (data && data.length > 0) {
                 setGridData(data);
+            } else if (paginationType === "index") {
+                setIndexPageInfo({
+                    ...indexPageInfo,
+                    lastPage: true
+                });
             } else {
-                setPageInfo({
-                    ...pageInfo,
+                setCursorPageInfo({
+                    ...cursorPageInfo,
                     lastPage: true
                 });
             }
@@ -842,8 +874,6 @@ const GridComponent = (props) => {
         const rowId = event.currentTarget.dataset.id;
         setRowsToDeselect([Number(rowId)]);
     };
-
-    const paginationType = "index";
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
@@ -872,7 +902,11 @@ const GridComponent = (props) => {
                     gridData={gridData}
                     idAttribute={idAttribute}
                     paginationType={paginationType}
-                    pageInfo={pageInfo}
+                    pageInfo={
+                        paginationType === "index"
+                            ? indexPageInfo
+                            : cursorPageInfo
+                    }
                     loadMoreData={loadMoreData}
                     columns={columns}
                     columnToExpand={passColumnToExpand ? columnToExpand : null}
