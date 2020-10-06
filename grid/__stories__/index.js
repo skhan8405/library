@@ -789,6 +789,10 @@ const GridComponent = (props) => {
                 return row !== originalRow;
             })
         );
+        setPageInfo({
+            ...pageInfo,
+            total: pageInfo.total - 1
+        });
     };
 
     const onRowSelect = (selectedRows) => {
