@@ -46,10 +46,10 @@ const Grid = (props) => {
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
 
     // Local state value for holding columns configuration
-    const [gridColumns, setGridColumns] = useState([]);
+    const [gridColumns, setGridColumns] = useState(columns);
 
     // Local state value for holding the additional column configuration
-    const [additionalColumn, setAdditionalColumn] = useState(null);
+    const [additionalColumn, setAdditionalColumn] = useState(columnToExpand);
 
     // Logic for searching in each column
     const searchColumn = (column, original, searchText) => {
