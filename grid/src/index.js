@@ -190,22 +190,30 @@ const Grid = (props) => {
     };
     // Function to return sorted data
     const getSortedData = (originalData, groupSortOptions) => {
-        return originalData.sort((x, y) => {
-            let compareResult = 0;
-            groupSortOptions.forEach((option) => {
-                const { sortBy, sortOn, order } = option;
-                const newResult =
-                    sortOn === "value"
-                        ? compareValues(order, x[sortBy], y[sortBy])
-                        : compareValues(
-                              order,
-                              x[sortBy][sortOn],
-                              y[sortBy][sortOn]
-                          );
-                compareResult = compareResult || newResult;
+        if (
+            originalData &&
+            originalData.length > 0 &&
+            groupSortOptions &&
+            groupSortOptions.length > 0
+        ) {
+            return originalData.sort((x, y) => {
+                let compareResult = 0;
+                groupSortOptions.forEach((option) => {
+                    const { sortBy, sortOn, order } = option;
+                    const newResult =
+                        sortOn === "value"
+                            ? compareValues(order, x[sortBy], y[sortBy])
+                            : compareValues(
+                                  order,
+                                  x[sortBy][sortOn],
+                                  y[sortBy][sortOn]
+                              );
+                    compareResult = compareResult || newResult;
+                });
+                return compareResult;
             });
-            return compareResult;
-        });
+        }
+        return originalData;
     };
     // #endregion
 
