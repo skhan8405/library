@@ -471,7 +471,8 @@ const Customgrid = (props) => {
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
                     <strong>
-                        {rows.length === gridData.length
+                        {totalRecordsCount > 0 &&
+                        rows.length === gridData.length
                             ? totalRecordsCount
                             : rows.length}
                     </strong>

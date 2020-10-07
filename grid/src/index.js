@@ -290,7 +290,7 @@ const Grid = (props) => {
                 expandedRowData={additionalColumn}
                 gridData={gridData}
                 idAttribute={idAttribute}
-                totalRecordsCount={pageInfo ? pageInfo.total : -1}
+                totalRecordsCount={pageInfo ? pageInfo.total : 0}
                 getRowEditOverlay={getRowEditOverlay}
                 updateRowInGrid={updateRowInGrid}
                 deleteRowFromGrid={deleteRowFromGrid}
