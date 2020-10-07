@@ -20,7 +20,7 @@ const GridComponent = (props) => {
         passRowActions,
         passRowActionCallback,
         passOnGridRefresh,
-        isNextPageAvailableCheck,
+        hasPagination,
         CustomPanel,
         globalSearch,
         columnFilter,
@@ -31,25 +31,21 @@ const GridComponent = (props) => {
         expandableColumn
     } = props;
     const idAttribute = "travelId";
-    const { search } = window.location;
-    const urlPageSize = search
-        ? parseInt(search.replace("?pagesize=", ""), 10)
-        : NaN;
-    const gridPageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
-    const paginationType = "index";
+    const gridPageSize = 300;
+    const paginationType = "index"; // or - "cursor"
     // State for holding index page info
     const [indexPageInfo, setIndexPageInfo] = useState({
         pageNum: 1,
         pageSize: gridPageSize,
         total: 20000,
-        lastPage: isNextPageAvailableCheck !== true
+        lastPage: false
     });
     // State for holding cursor page info
     const [cursorPageInfo, setCursorPageInfo] = useState({
         endCursor: 299,
         pageSize: gridPageSize,
         total: 20000,
-        lastPage: isNextPageAvailableCheck !== true
+        lastPage: false
     });
     // State for holding grid data
     const [gridData, setGridData] = useState([]);
@@ -797,10 +793,17 @@ const GridComponent = (props) => {
                 return row !== originalRow;
             })
         );
-        setPageInfo({
-            ...pageInfo,
-            total: pageInfo.total - 1
-        });
+        if (paginationType === "index") {
+            setIndexPageInfo({
+                ...indexPageInfo,
+                total: indexPageInfo.total - 1
+            });
+        } else {
+            setCursorPageInfo({
+                ...cursorPageInfo,
+                total: indexPageInfo.total - 1
+            });
+        }
     };
 
     const onRowSelect = (selectedRows) => {
@@ -903,8 +906,8 @@ const GridComponent = (props) => {
                     gridWidth={gridWidth}
                     gridData={gridData}
                     idAttribute={idAttribute}
-                    paginationType={paginationType}
-                    pageInfo={gridPageInfo}
+                    paginationType={hasPagination ? paginationType : null}
+                    pageInfo={hasPagination ? gridPageInfo : null}
                     loadMoreData={loadMoreData}
                     columns={columns}
                     columnToExpand={passColumnToExpand ? columnToExpand : null}
