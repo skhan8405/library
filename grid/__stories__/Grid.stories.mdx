@@ -25,111 +25,34 @@ import CustomPanel from "./panels/CustomPanel";
 ### Code
 
 ```jsx
-import "./example.css";
-import { Grid } from "@neo-ui/grid";
-import FlightIcon from "./images/FlightIcon.png";
-import { fetchData } from "./getData";
-import { getValueOfDate } from "./utils/DateUtility";
-import FlightEdit from "./cells/FlightEdit";
-import SrEdit from "./cells/SrEdit";
-import SegmentEdit from "./cells/SegmentEdit";
-import RowEdit from "./cells/RowEdit";
-import CustomPanel from "./panels/CustomPanel";
-
 const GridComponent = () => {
-    const idAttribute = "travelId";
-    const { search } = window.location;
-    const urlPageSize = search
-        ? parseInt(search.replace("?pagesize=", ""), 10)
-        : NaN;
-    const pageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
-    const paginationType = "index";
-    // State for holding index page info
-    const [indexPageInfo, setIndexPageInfo] = useState({
+    const paginationType = "index"; // or - "cursor"
+
+    // If paginationType = "index"
+    const pageInfo = {
         pageNum: 1,
-        pageSize: gridPageSize,
+        pageSize: 300,
         total: 20000,
-        lastPage: isNextPageAvailableCheck !== true
-    });
-    // State for holding cursor page info
-    const [cursorPageInfo, setCursorPageInfo] = useState({
+        lastPage: false // or - true
+    };
+    // Else if paginationType = "cursor"
+    const pageInfo = {
         endCursor: 299,
-        pageSize: gridPageSize,
+        pageSize: 300,
         total: 20000,
-        lastPage: isNextPageAvailableCheck !== true
-    });
-    // State for holding grid data
-    const [gridData, setGridData] = useState([]);
-    // State for notifying if next page is available or not
-    const [isNextPageAvailable, setIsNextPageAvailable] = useState(false);
-    // State for holding selected rows
-    const [userSelectedRows, setUserSelectedRows] = useState([]);
-    // State for holding rows to deselect
-    const [rowsToDeselect, setRowsToDeselect] = useState([]);
+        lastPage: false // or - true
+    };
 
-    const airportCodeList = [
-        "AAA",
-        "AAB",
-        "AAC",
-        "ABA",
-        "ABB",
-        "ABC",
-        "ACA",
-        "ACB",
-        "ACC",
-        "BAA",
-        "BAB",
-        "BAC",
-        "BBA",
-        "BBB",
-        "BBC",
-        "BCA",
-        "BCB",
-        "BCC",
-        "CAA",
-        "CAB",
-        "CAC",
-        "CBA",
-        "CBB",
-        "CBC",
-        "CCA",
-        "CCB",
-        "CCC",
-        "XXX",
-        "XXY",
-        "XXZ",
-        "XYX",
-        "XYY",
-        "XYZ",
-        "XZX",
-        "XZY",
-        "XZZ",
-        "YXX",
-        "YXY",
-        "YXZ",
-        "YYX",
-        "YYY",
-        "YYZ",
-        "YZX",
-        "YZY",
-        "YZZ",
-        "ZXX",
-        "ZXY",
-        "ZXZ",
-        "ZYX",
-        "ZYY",
-        "ZYZ",
-        "ZZX",
-        "ZZY",
-        "ZZZ"
-    ];
-
+    const idAttribute = "travelId";
+    const gridData = // JSON Data
     const columns = [
         {
             Header: "Id",
             accessor: "travelId",
             width: 50,
             disableFilters: true,
+            disableSortBy: true,
+            disableResizing: true,
             isSearchable: true,
             displayCell: (rowData) => {
                 const { travelId } = rowData;
@@ -180,539 +103,19 @@ const GridComponent = () => {
                     />
                 );
             }
-        },
-        {
-            Header: "Segment",
-            accessor: "segment",
-            width: 100,
-            innerCells: [
-                {
-                    Header: "From",
-                    accessor: "from",
-                    isSearchable: true
-                },
-                {
-                    Header: "To",
-                    accessor: "to",
-                    isSearchable: true
-                }
-            ],
-            disableSortBy: true,
-            isSearchable: false,
-            displayCell: (rowData, DisplayTag) => {
-                const { from, to } = rowData.segment;
-                return (
-                    <div className="segment-details">
-                        <DisplayTag columnKey="segment" cellKey="from">
-                            <span>{from}</span>
-                        </DisplayTag>
-                        <i>
-                            <img src={FlightIcon} alt="segment" />
-                        </i>
-                        <DisplayTag columnKey="segment" cellKey="to">
-                            <span>{to}</span>
-                        </DisplayTag>
-                    </div>
-                );
-            },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
-                return (
-                    <SegmentEdit
-                        airportCodeList={airportCodeList}
-                        rowData={rowData}
-                        DisplayTag={DisplayTag}
-                        rowUpdateCallBack={rowUpdateCallBack}
-                    />
-                );
-            }
-        },
-        {
-            Header: "Details",
-            accessor: "details",
-            onlyInDesktop: true,
-            width: 300,
-            innerCells: [
-                {
-                    Header: "Flight Model",
-                    accessor: "flightModel",
-                    isSearchable: true
-                },
-                {
-                    Header: "Body Type",
-                    accessor: "bodyType",
-                    isSearchable: true
-                },
-                {
-                    Header: "Type",
-                    accessor: "type",
-                    isSearchable: true
-                },
-                {
-                    Header: "Start Time",
-                    accessor: "startTime",
-                    isSearchable: true
-                },
-                {
-                    Header: "End Time",
-                    accessor: "endTime",
-                    isSearchable: true
-                },
-                {
-                    Header: "Status",
-                    accessor: "status",
-                    isSearchable: true
-                },
-                {
-                    Header: "Additional Status",
-                    accessor: "additionalStatus",
-                    isSearchable: true
-                },
-                {
-                    Header: "Time Status",
-                    accessor: "timeStatus",
-                    isSearchable: true
-                }
-            ],
-            disableSortBy: true,
-            isSearchable: true,
-            displayCell: (rowData, DisplayTag, isExpanded) => {
-                const {
-                    startTime,
-                    endTime,
-                    status,
-                    additionalStatus,
-                    flightModel,
-                    bodyType,
-                    type,
-                    timeStatus
-                } = rowData.details;
-                const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
-                const timeValue = timeStatusArray.shift();
-                const timeText = timeStatusArray.join(" ");
-                if (isExpanded === null || isExpanded === true) {
-                    return (
-                        <div className="details-wrap">
-                            <ul>
-                                <li>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="startTime"
-                                    >
-                                        {startTime}
-                                    </DisplayTag>
-                                    -<DisplayTag
-                                        columnKey="details"
-                                        cellKey="endTime"
-                                    >
-                                        {endTime}
-                                    </DisplayTag>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="status"
-                                    >
-                                        <span>{status}</span>
-                                    </DisplayTag>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="additionalStatus"
-                                    >
-                                        {additionalStatus}
-                                    </DisplayTag>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="flightModel"
-                                    >
-                                        {flightModel}
-                                    </DisplayTag>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="bodyType"
-                                    >
-                                        {bodyType}
-                                    </DisplayTag>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <span>
-                                        <DisplayTag
-                                            columnKey="details"
-                                            cellKey="type"
-                                        >
-                                            {type}
-                                        </DisplayTag>
-                                    </span>
-                                </li>
-                                <li className="divider">|</li>
-                                <li>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="timeStatus"
-                                    >
-                                        <strong>{timeValue} </strong>
-                                        <span>{timeText}</span>
-                                    </DisplayTag>
-                                </li>
-                            </ul>
-                        </div>
-                    );
-                }
-                return (
-                    <div className="details-wrap">
-                        <ul>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="startTime"
-                                >
-                                    {startTime}
-                                </DisplayTag>
-                                -<DisplayTag
-                                    columnKey="details"
-                                    cellKey="endTime"
-                                >
-                                    {endTime}
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="status"
-                                >
-                                    <span>{status}</span>
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="flightModel"
-                                >
-                                    {flightModel}
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="bodyType"
-                                >
-                                    {bodyType}
-                                </DisplayTag>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>
-                                    <DisplayTag
-                                        columnKey="details"
-                                        cellKey="type"
-                                    >
-                                        {type}
-                                    </DisplayTag>
-                                </span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <DisplayTag
-                                    columnKey="details"
-                                    cellKey="timeStatus"
-                                >
-                                    <strong>{timeValue} </strong>
-                                    <span>{timeText}</span>
-                                </DisplayTag>
-                            </li>
-                        </ul>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "Weight",
-            accessor: "weight",
-            width: 130,
-            innerCells: [
-                {
-                    Header: "Percentage",
-                    accessor: "percentage",
-                    isSearchable: true
-                },
-                {
-                    Header: "Value",
-                    accessor: "value",
-                    isSearchable: true
-                }
-            ],
-            sortValue: "percentage",
-            isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
-                const { percentage, value } = rowData.weight;
-                const splitValue = value ? value.split("/") : [];
-                let valuePrefix;
-                let valueSuffix = "";
-                if (splitValue.length === 2) {
-                    valuePrefix = splitValue[0];
-                    valueSuffix = splitValue[1];
-                }
-                return (
-                    <div className="weight-details">
-                        <DisplayTag columnKey="weight" cellKey="percentage">
-                            <strong className="per">{percentage}</strong>
-                        </DisplayTag>
-                        <DisplayTag columnKey="weight" cellKey="value">
-                            <span>
-                                <strong>{valuePrefix}/</strong>
-                                {valueSuffix}
-                            </span>
-                        </DisplayTag>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "Volume",
-            accessor: "volume",
-            width: 100,
-            innerCells: [
-                {
-                    Header: "Percentage",
-                    accessor: "percentage",
-                    isSearchable: true
-                },
-                {
-                    Header: "Value",
-                    accessor: "value",
-                    isSearchable: true
-                }
-            ],
-            sortValue: "percentage",
-            isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
-                const { percentage, value } = rowData.volume;
-                const splitValue = value ? value.split("/") : [];
-                let valuePrefix;
-                let valueSuffix = "";
-                if (splitValue.length === 2) {
-                    valuePrefix = splitValue[0];
-                    valueSuffix = splitValue[1];
-                }
-                return (
-                    <div className="weight-details">
-                        <DisplayTag columnKey="volume" cellKey="percentage">
-                            <strong className="per">{percentage}</strong>
-                        </DisplayTag>
-                        <DisplayTag columnKey="volume" cellKey="value">
-                            <span>
-                                <strong>{valuePrefix}/</strong>
-                                {valueSuffix}
-                            </span>
-                        </DisplayTag>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "ULD Positions",
-            accessor: "uldPositions",
-            width: 120,
-            innerCells: [
-                {
-                    Header: "Position",
-                    accessor: "position",
-                    isSearchable: true
-                },
-                {
-                    Header: "Value",
-                    accessor: "value",
-                    isSearchable: true
-                }
-            ],
-            disableSortBy: true,
-            isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
-                const { uldPositions } = rowData;
-                return (
-                    <div className="uld-details">
-                        <ul>
-                            {uldPositions.map((positions) => {
-                                const { position, value } = positions;
-                                return (
-                                    <li key={`${position}_${value}`}>
-                                        <DisplayTag
-                                            columnKey="uldPositions"
-                                            cellKey="position"
-                                        >
-                                            <span>{positions.position}</span>
-                                        </DisplayTag>
-                                        <DisplayTag
-                                            columnKey="uldPositions"
-                                            cellKey="value"
-                                        >
-                                            <strong>{positions.value}</strong>
-                                        </DisplayTag>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
-                );
-            }
-        },
-        {
-            Header: "Revenue/Yield",
-            accessor: "revenue",
-            width: 120,
-            innerCells: [
-                {
-                    Header: "Revenue",
-                    accessor: "revenue",
-                    isSearchable: true
-                },
-                {
-                    Header: "Yeild",
-                    accessor: "yeild",
-                    isSearchable: true
-                }
-            ],
-            displayCell: (rowData, DisplayTag) => {
-                const { revenue, yeild } = rowData.revenue;
-                return (
-                    <div className="revenue-details">
-                        <DisplayTag columnKey="revenue" cellKey="revenue">
-                            <span className="large">{revenue}</span>
-                        </DisplayTag>
-                        <DisplayTag columnKey="revenue" cellKey="yeild">
-                            <span>{yeild}</span>
-                        </DisplayTag>
-                    </div>
-                );
-            },
-            sortValue: "revenue",
-            isSearchable: true
-        },
-        {
-            Header: "SR",
-            accessor: "sr",
-            width: 90,
-            isSearchable: true,
-            displayCell: (rowData) => {
-                const { sr } = rowData;
-                return (
-                    <div className="sr-details">
-                        <span>{sr}</span>
-                    </div>
-                );
-            },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
-                return (
-                    <SrEdit
-                        rowData={rowData}
-                        rowUpdateCallBack={rowUpdateCallBack}
-                    />
-                );
-            }
-        },
-        {
-            Header: "Queued Booking",
-            accessor: "queuedBooking",
-            width: 130,
-            innerCells: [
-                {
-                    Header: "Sr",
-                    accessor: "sr",
-                    isSearchable: true
-                },
-                {
-                    Header: "Volume",
-                    accessor: "volume",
-                    isSearchable: true
-                }
-            ],
-            disableSortBy: true,
-            isSearchable: false,
-            displayCell: (rowData, DisplayTag) => {
-                const { sr, volume } = rowData.queuedBooking;
-                return (
-                    <div className="queued-details">
-                        <DisplayTag columnKey="queuedBooking" cellKey="sr">
-                            <span>
-                                <strong>{sr}</strong>
-                            </span>
-                        </DisplayTag>
-                        <DisplayTag columnKey="queuedBooking" cellKey="volume">
-                            <span>
-                                <strong>{volume}</strong>
-                            </span>
-                        </DisplayTag>
-                    </div>
-                );
-            }
         }
     ];
 
     const columnToExpand = {
         Header: "Remarks",
-        innerCells: [
-            { Header: "Remarks", accessor: "remarks" },
-            { Header: "Details", onlyInTablet: true, accessor: "details" }
-        ],
+        innerCells: [{ Header: "Remarks", accessor: "remarks" }],
         displayCell: (rowData, DisplayTag) => {
-            const { remarks, details } = rowData;
-            const {
-                startTime,
-                endTime,
-                status,
-                additionalStatus,
-                flightModel,
-                bodyType,
-                type,
-                timeStatus
-            } = details || {};
-            const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
-            const timeValue = timeStatusArray.shift();
-            const timeText = timeStatusArray.join(" ");
+            const { remarks } = rowData;
             return (
                 <div className="remarks-wrap details-wrap">
                     <DisplayTag columnKey="remarks" cellKey="remarks">
                         <ul>
                             <li>{remarks}</li>
-                        </ul>
-                    </DisplayTag>
-                    <DisplayTag columnKey="details" cellKey="details">
-                        <ul>
-                            <li>
-                                {startTime} - {endTime}
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{status}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>{additionalStatus}</li>
-                            <li className="divider">|</li>
-                            <li>{flightModel}</li>
-                            <li className="divider">|</li>
-                            <li>{bodyType}</li>
-                            <li className="divider">|</li>
-                            <li>
-                                <span>{type}</span>
-                            </li>
-                            <li className="divider">|</li>
-                            <li>
-                                <strong>{timeValue} </strong>
-                                <span>{timeText}</span>
-                            </li>
                         </ul>
                     </DisplayTag>
                 </div>
@@ -721,57 +124,19 @@ const GridComponent = () => {
     };
 
     const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
-        return (
-            <RowEdit
-                airportCodeList={airportCodeList}
-                DisplayTag={DisplayTag}
-                rowData={rowData}
-                rowUpdateCallBack={rowUpdateCallBack}
-            />
+        // Return a react component with required data bound to it, using DisplayTag.
+        // Call back rowUpdateCallBack, whenever user is making any updates to the data.
         );
     };
 
     const calculateRowHeight = (row, gridColumns) => {
-        // Minimum height for each row
-        let rowHeight = 50;
-        if (gridColumns && gridColumns.length > 0 && row) {
-            // Get properties of a row
-            const { original, isExpanded } = row;
-            // Find the column with maximum width configured, from grid columns list
-            const columnWithMaxWidth = [...gridColumns].sort((a, b) => {
-                return b.width - a.width;
-            })[0];
-            // Get column properties including the user resized column width (totalFlexWidth)
-            const { id, width, totalFlexWidth } = columnWithMaxWidth;
-            // Get row value of that column
-            const rowValue = original[id];
-            if (rowValue) {
-                // Find the length of text of data in that column
-                const textLength = Object.values(rowValue).join(",").length;
-                // This is a formula that was created for the test data used.
-                rowHeight += Math.ceil((75 * textLength) / totalFlexWidth);
-                const widthVariable =
-                    totalFlexWidth > width
-                        ? totalFlexWidth - width
-                        : width - totalFlexWidth;
-                rowHeight += widthVariable / 1000;
-            }
-            // Add logic to increase row height if row is expanded
-            if (isExpanded && columnToExpand) {
-                // Increase height based on the number of inner cells in additional columns
-                rowHeight +=
-                    columnToExpand.innerCells &&
-                    columnToExpand.innerCells.length > 0
-                        ? columnToExpand.innerCells.length * 35
-                        : 35;
-            }
-        }
-        return rowHeight;
+        // Do calculation and return an integer value
+        return 50;
     };
 
     const rowActions = [
-        { label: "edit" },
-        { label: "delete" },
+        { label: "edit" }, // Value is not required
+        { label: "delete" }, // Value is not required
         { label: "Send SCR", value: "SCR" },
         { label: "Segment Summary", value: "SegmentSummary" },
         { label: "Open Summary", value: "OpenSummary" },
@@ -779,160 +144,61 @@ const GridComponent = () => {
     ];
 
     const rowActionCallback = (rowData, actionValue) => {
-        console.log(`Row action: ${actionValue}`);
-        console.log(rowData);
+        // Will get user selected 'actionValue' and corresponding 'rowData'
     };
 
     const onRowUpdate = (originalRow, updatedRow) => {
-        setGridData((old) =>
-            old.map((row) => {
-                let newRow = row;
-                if (
-                    Object.entries(row).toString() ===
-                    Object.entries(originalRow).toString()
-                ) {
-                    newRow = updatedRow;
-                }
-                return newRow;
-            })
-        );
+        // Update grid data by replacing old data with new data
     };
 
     const onRowDelete = (originalRow) => {
-        setGridData((old) =>
-            old.filter((row) => {
-                return row !== originalRow;
-            })
-        );
+        // Update grid data by removing data
     };
 
     const onRowSelect = (selectedRows) => {
-        console.log("Rows selected: ");
-        console.log(selectedRows);
-        setUserSelectedRows(selectedRows);
+        // Will get an array of selected rows
     };
 
     const onGridRefresh = () => {
-        console.log("Grid Refrehsed ");
+        // Refresh Grid data
     };
 
     const loadMoreData = (updatedPageInfo) => {
-        const info = { ...updatedPageInfo };
-        if (info.endCursor) {
-            info.endCursor += info.pageSize;
-        }
-        fetchData(info).then((data) => {
-            if (data && data.length > 0) {
-                setGridData(gridData.concat(data));
-                if (paginationType === "index") {
-                    setIndexPageInfo({
-                        ...indexPageInfo,
-                        pageNum: updatedPageInfo.pageNum
-                    });
-                } else {
-                    setCursorPageInfo({
-                        ...cursorPageInfo,
-                        endCursor: info.endCursor
-                    });
-                }
-            } else if (paginationType === "index") {
-                setIndexPageInfo({
-                    ...indexPageInfo,
-                    pageNum: updatedPageInfo.pageNum,
-                    lastPage: true
-                });
-            } else {
-                setCursorPageInfo({
-                    ...cursorPageInfo,
-                    endCursor: info.endCursor,
-                    lastPage: true
-                });
-            }
-        });
+        // If paginationType is "index", updatedPageInfo will be { (pageNum + 1), pageSize}
+        // Else if paginationType is "cursor", updatedPageInfo will be { endCursor, pageSize}
+        // Based on the pageInfo, make API call and re-render grid with updated data.
     };
 
-    useEffect(() => {
-        const pageInfo =
-            paginationType === "index" ? indexPageInfo : cursorPageInfo;
-        fetchData(pageInfo).then((data) => {
-            if (data && data.length > 0) {
-                setGridData(data);
-            } else if (paginationType === "index") {
-                setIndexPageInfo({
-                    ...indexPageInfo,
-                    lastPage: true
-                });
-            } else {
-                setCursorPageInfo({
-                    ...cursorPageInfo,
-                    lastPage: true
-                });
-            }
-        });
-    }, []);
-
-    const removeRowSelection = (event) => {
-        const rowId = event.currentTarget.dataset.id;
-        setRowsToDeselect([Number(rowId)]);
-    };
-    const gridPageInfo =
-        paginationType === "index" ? indexPageInfo : cursorPageInfo;
-
-    if (gridData && gridData.length > 0 && columns && columns.length > 0) {
-        return (
-            <div>
-                <div className="selectedRows">
-                    {userSelectedRows.map((row) => {
-                        return (
-                            <div className="selectedRow" key={row.travelId}>
-                                <p>Travel Id : {row.travelId}</p>
-                                <button
-                                    type="button"
-                                    onClick={removeRowSelection}
-                                    data-id={row.travelId}
-                                >
-                                    Remove
-                                </button>
-                            </div>
-                        );
-                    })}
-                </div>
-                <Grid
-                    className="icargoCustomClass"
-                    title="AWBs"
-                    gridHeight="80vh"
-                    gridWidth="100%"
-                    gridData={gridData}
-                    idAttribute={idAttribute}
-                    paginationType={paginationType}
-                    pageInfo={gridPageInfo}
-                    loadMoreData={loadMoreData}
-                    columns={columns}
-                    columnToExpand={columnToExpand}
-                    rowActions={rowActions}
-                    rowActionCallback={rowActionCallback}
-                    getRowEditOverlay={getRowEditOverlay}
-                    calculateRowHeight={calculateRowHeight}
-                    expandableColumn
-                    onRowUpdate={onRowUpdate}
-                    onRowDelete={onRowDelete}
-                    onRowSelect={onRowSelect}
-                    onGridRefresh={onGridRefresh}
-                    CustomPanel={CustomPanel}
-                    rowsToDeselect={rowsToDeselect}
-                    globalSearch
-                    columnFilter
-                    groupSort
-                    columnChooser
-                    exportData
-                />
-            </div>
-        );
-    }
     return (
-        <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-            Initializing Grid...
-        </h2>
+        <Grid
+            className="icargoCustomClass" // Optional
+            title="AWBs" // Optional
+            gridHeight="80vh" // Optional
+            gridWidth="100%" // Optional
+            gridData={gridData} // Required
+            idAttribute={idAttribute} // Required
+            paginationType={paginationType} // Required
+            pageInfo={pageInfo} // Required
+            loadMoreData={loadMoreData} // Optional
+            columns={columns} // Required
+            columnToExpand={columnToExpand} // Optional
+            rowActions={rowActions} // Optional
+            rowActionCallback={rowActionCallback} // Optional
+            getRowEditOverlay={getRowEditOverlay} // Optional
+            calculateRowHeight={calculateRowHeight} // Required
+            expandableColumn // Optional
+            onRowUpdate={onRowUpdate} // Optional
+            onRowDelete={onRowDelete} // Optional
+            onRowSelect={onRowSelect} // Optional
+            onGridRefresh={onGridRefresh} // Optional
+            CustomPanel={CustomPanel} // Optional - Any react component that has to be rendered inside the Grid header
+            rowsToDeselect={rowsToDeselect} // Optional
+            globalSearch // Optional
+            columnFilter // Optional
+            groupSort // Optional
+            columnChooser // Optional
+            exportData // Optional
+        />
     );
 };
 
@@ -1032,6 +298,26 @@ export default GridComponent;
 </Story>
 
 ```jsx
+const columnToExpand = {
+    Header: "Remarks",
+    innerCells: [
+        { Header: "Remarks", accessor: "remarks" },
+        { Header: "Details", onlyInTablet: true, accessor: "details" }
+    ],
+    displayCell: (rowData, DisplayTag) => {
+        const { remarks } = rowData;
+        return (
+            <div className="remarks-wrap details-wrap">
+                <DisplayTag columnKey="remarks" cellKey="remarks">
+                    <ul>
+                        <li>{remarks}</li>
+                    </ul>
+                </DisplayTag>
+            </div>
+        );
+    }
+};
+
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
@@ -1043,7 +329,7 @@ export default GridComponent;
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-/>
+/>;
 ```
 
 #### With column expansion
@@ -1053,6 +339,8 @@ export default GridComponent;
 </Story>
 
 ```jsx
+expandableColumn = true // or - expandableColumn = false
+
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
@@ -1074,6 +362,19 @@ export default GridComponent;
 </Story>
 
 ```jsx
+const rowActions = [
+    { label: "edit" }, // Value is not required
+    { label: "delete" }, // Value is not required
+    { label: "Send SCR", value: "SCR" },
+    { label: "Segment Summary", value: "SegmentSummary" },
+    { label: "Open Summary", value: "OpenSummary" },
+    { label: "Close Summary", value: "CloseSummary" }
+];
+
+const rowActionCallback = (rowData, actionValue) => {
+    // Will get user selected 'actionValue' and corresponding 'rowData'
+};
+
 <Grid
     gridData={gridData}
     idAttribute={idAttribute}
@@ -1087,7 +388,7 @@ export default GridComponent;
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-/>
+/>;
 ```
 
 #### With grid refresh
@@ -1160,9 +461,32 @@ export default GridComponent;
 </Story>
 
 ```jsx
+const paginationType = "index"; // or - paginationType = "cursor"
+
+// If paginationType = "index"
+const pageInfo = {
+    pageNum: 1,
+    pageSize: 300,
+    total: 20000,
+    lastPage: false // or - lastPage: true
+};
+
+// If paginationType = "cursor"
+const pageInfo = {
+    endCursor: 299,
+    pageSize: 300,
+    total: 20000,
+    lastPage: false // or - lastPage: true
+};
+
+const loadMoreData = (updatedPageInfo) => {
+    // If paginationType is "index", updatedPageInfo will be { (pageNum + 1), pageSize}
+    // Else if paginationType is "cursor", updatedPageInfo will be { endCursor, pageSize}
+    // Based on the pageInfo, make API call and re-render grid with updated data.
+};
+
 <Grid
     gridData={gridData}
-    isNextPageAvailableCheck
     loadMoreData={loadMoreData}
     idAttribute={idAttribute}
     paginationType={paginationType}
@@ -1172,7 +496,7 @@ export default GridComponent;
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-/>
+/>;
 ```
 
 #### Hide globalSearch
