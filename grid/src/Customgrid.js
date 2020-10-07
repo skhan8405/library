@@ -88,9 +88,6 @@ const Customgrid = (props) => {
     // Local state value for holding the additional column configuration
     const [additionalColumn, setAdditionalColumn] = useState(expandedRowData);
 
-    // Variable to check if row options are available
-    const isRowActionsAvailable = rowActions && rowActions.length > 0;
-
     // Variables used for handling infinite loading
     const itemCount = hasNextPage ? gridData.length + 1 : gridData.length;
     const loadMoreItems = isNextPageLoading
@@ -247,6 +244,8 @@ const Customgrid = (props) => {
             columns,
             data,
             defaultColumn,
+            rowActions,
+            rowActionCallback,
             globalFilter: globalFilterLogic,
             autoResetFilters: false,
             autoResetGlobalFilter: false,
@@ -263,7 +262,7 @@ const Customgrid = (props) => {
         useResizeColumns,
         (hooks) => {
             // Add checkbox for all rows in grid, with different properties for header row and body rows
-            hooks.allColumns.push((hookColumns) => [
+            hooks.allColumns.push((hookColumns, hook) => [
                 {
                     id: "selection",
                     columnId: "column_custom_0",
@@ -301,19 +300,22 @@ const Customgrid = (props) => {
                     width: 35,
                     maxWidth: 35,
                     Cell: ({ row }) => {
+                        const { instance } = hook;
                         return (
                             <div className="action">
-                                {isRowActionsAvailable ? (
-                                    <RowOptions
-                                        row={row}
-                                        rowActions={rowActions}
-                                        rowActionCallback={rowActionCallback}
-                                        bindRowEditOverlay={bindRowEditOverlay}
-                                        bindRowDeleteOverlay={
-                                            bindRowDeleteOverlay
-                                        }
-                                    />
-                                ) : null}
+                                <RowOptions
+                                    row={row}
+                                    rowActions={
+                                        instance ? instance.rowActions : []
+                                    }
+                                    rowActionCallback={
+                                        instance
+                                            ? instance.rowActionCallback
+                                            : null
+                                    }
+                                    bindRowEditOverlay={bindRowEditOverlay}
+                                    bindRowDeleteOverlay={bindRowDeleteOverlay}
+                                />
                                 {isRowExpandEnabled || expandableColumn ? (
                                     <span
                                         className="expander"
