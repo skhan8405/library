@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
     extractColumns,
@@ -44,8 +44,12 @@ const Grid = (props) => {
 
     // Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-    // Local state for group sort options
-    const [groupSortOptions, setGroupSortOptions] = useState([]);
+
+    // Local state value for holding columns configuration
+    const [gridColumns, setGridColumns] = useState([]);
+
+    // Local state value for holding the additional column configuration
+    const [additionalColumn, setAdditionalColumn] = useState(null);
 
     // Logic for searching in each column
     const searchColumn = (column, original, searchText) => {
@@ -125,23 +129,6 @@ const Grid = (props) => {
         }
     };
 
-    // Extract/add and modify required data from user configured columns and expand columns
-    const processedColumns = extractColumns(
-        columns,
-        searchColumn,
-        isDesktop,
-        updateRowInGrid,
-        expandableColumn
-    );
-    const additionalColumn = extractAdditionalColumn(
-        columnToExpand,
-        isDesktop,
-        updateRowInGrid
-    );
-
-    // Create columns variable, to be used by grid component
-    const gridColumns = processedColumns || [];
-
     // Add logic to calculate height of each row, based on the content of  or more columns
     // This can be used only if developer using the component has not passed a function to calculate row height
     const calculateDefaultRowHeight = (row, columnsInGrid) => {
@@ -202,7 +189,7 @@ const Grid = (props) => {
         return returnValue;
     };
     // Function to return sorted data
-    const getSortedData = (originalData) => {
+    const getSortedData = (originalData, groupSortOptions) => {
         return originalData.sort((x, y) => {
             let compareResult = 0;
             groupSortOptions.forEach((option) => {
@@ -221,11 +208,6 @@ const Grid = (props) => {
         });
     };
     // #endregion
-
-    // Gets called when group sort is applied or cleared
-    const doGroupSort = (sortOptions) => {
-        setGroupSortOptions(sortOptions);
-    };
 
     // Gets called when page scroll reaches the bottom of the grid.
     // Trigger call back and get the grid data updated.
@@ -251,9 +233,23 @@ const Grid = (props) => {
         setIsNextPageLoading(false);
     }, [gridData, pageInfo]);
 
-    // Sort the data based on the user selected group sort optipons
-    const data =
-        gridData && gridData.length > 0 ? getSortedData([...gridData]) : [];
+    useEffect(() => {
+        setGridColumns(
+            extractColumns(
+                columns,
+                searchColumn,
+                isDesktop,
+                updateRowInGrid,
+                expandableColumn
+            )
+        );
+    }, [columns]);
+
+    useEffect(() => {
+        setAdditionalColumn(
+            extractAdditionalColumn(columnToExpand, isDesktop, updateRowInGrid)
+        );
+    }, [columnToExpand]);
 
     if (!pageInfo) {
         return (
@@ -264,7 +260,7 @@ const Grid = (props) => {
             </div>
         );
     }
-    if (!(data && data.length > 0)) {
+    if (!(gridData && gridData.length > 0)) {
         return (
             <div className={`grid-component-container ${className || ""}`}>
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
@@ -273,7 +269,7 @@ const Grid = (props) => {
             </div>
         );
     }
-    if (!(processedColumns && processedColumns.length > 0)) {
+    if (!(gridColumns && gridColumns.length > 0)) {
         return (
             <div className={`grid-component-container ${className || ""}`}>
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
@@ -301,7 +297,7 @@ const Grid = (props) => {
                 gridWidth={gridWidth}
                 managableColumns={gridColumns}
                 expandedRowData={additionalColumn}
-                data={useMemo(() => data)}
+                gridData={gridData}
                 idAttribute={idAttribute}
                 totalRecordsCount={total}
                 getRowEditOverlay={getRowEditOverlay}
@@ -321,7 +317,7 @@ const Grid = (props) => {
                 hasNextPage={!lastPage}
                 isNextPageLoading={isNextPageLoading}
                 loadNextPage={loadNextPage}
-                doGroupSort={doGroupSort}
+                getSortedData={getSortedData}
                 CustomPanel={CustomPanel}
                 globalSearch={globalSearch}
                 columnFilter={columnFilter}

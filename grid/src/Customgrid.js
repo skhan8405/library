@@ -51,7 +51,7 @@ const Customgrid = (props) => {
         gridWidth,
         managableColumns,
         expandedRowData,
-        data,
+        gridData,
         idAttribute,
         totalRecordsCount,
         getRowEditOverlay,
@@ -66,7 +66,7 @@ const Customgrid = (props) => {
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
-        doGroupSort,
+        getSortedData,
         CustomPanel,
         globalSearch,
         columnFilter,
@@ -92,11 +92,11 @@ const Customgrid = (props) => {
     const isRowActionsAvailable = rowActions && rowActions.length > 0;
 
     // Variables used for handling infinite loading
-    const itemCount = hasNextPage ? data.length + 1 : data.length;
+    const itemCount = hasNextPage ? gridData.length + 1 : gridData.length;
     const loadMoreItems = isNextPageLoading
         ? () => {}
         : loadNextPage || (() => {});
-    const isItemLoaded = (index) => !hasNextPage || index < data.length;
+    const isItemLoaded = (index) => !hasNextPage || index < gridData.length;
 
     // Local state value for checking if column filter is open/closed
     const [isFilterOpen, setFilterOpen] = useState(false);
@@ -137,13 +137,15 @@ const Customgrid = (props) => {
 
     // Local state value for checking if group Sort Overlay is open/closed.
     const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
+    // Local state for group sort options
+    const [groupSortOptions, setGroupSortOptions] = useState([]);
     // Toggle group Sort state value based on UI clicks
     const toggleGroupSortOverLay = () => {
         setGroupSortOverLay(!isGroupSortOverLayOpen);
     };
     // Call apply group sort function from parent
     const applyGroupSort = (sortOptions) => {
-        doGroupSort(sortOptions);
+        setGroupSortOptions(sortOptions);
     };
 
     // Local state value for hiding/unhiding column management overlay
@@ -225,6 +227,7 @@ const Customgrid = (props) => {
         typeof additionalColumn.Cell === "function";
 
     const columns = useMemo(() => gridColumns);
+    const data = useMemo(() => getSortedData([...gridData], groupSortOptions));
 
     // Initialize react-table instance with the values received through properties
     const {
@@ -235,7 +238,8 @@ const Customgrid = (props) => {
         prepareRow,
         preFilteredRows,
         state: { globalFilter, selectedRowIds },
-        setGlobalFilter
+        setGlobalFilter,
+        toggleRowSelected
     } = useTable(
         {
             columns,
@@ -366,7 +370,7 @@ const Customgrid = (props) => {
                 });
                 if (rowToDeselect) {
                     const { id } = rowToDeselect;
-                    selectedRowIds[id] = false;
+                    toggleRowSelected(id, false);
                     updateSelectedRows(preFilteredRows, selectedRowIds);
                 }
             });
@@ -386,15 +390,12 @@ const Customgrid = (props) => {
     // Set all row selections to false and find new Ids of already selected rows and make them selected
     useEffect(() => {
         if (!isFirstRendering) {
-            // Deselect all current selections
-            Object.keys(selectedRowIds).forEach((key) => {
-                selectedRowIds[key] = false;
-            });
             // Make rows selected if user has already made any selections
             if (
                 userSelectedRowIdentifiers &&
                 userSelectedRowIdentifiers.length > 0
             ) {
+                const updatedSelectedRowIds = [];
                 // Loop through already selected rows and find row id and make it selected
                 userSelectedRowIdentifiers.forEach((selectedRowId) => {
                     const updatedRow = preFilteredRows.find((row) => {
@@ -404,13 +405,23 @@ const Customgrid = (props) => {
                     if (updatedRow) {
                         const { id } = updatedRow;
                         if (updatedRow) {
-                            selectedRowIds[id] = true;
+                            toggleRowSelected(id, true);
+                            updatedSelectedRowIds.push(id);
+                        }
+                    }
+                });
+                // Loop through already selected rows and find row id that are not selected yet and update it to false
+                Object.entries(selectedRowIds).forEach((objEntry) => {
+                    if (objEntry && objEntry.length > 0) {
+                        const rowId = objEntry[0];
+                        if (!updatedSelectedRowIds.includes(rowId)) {
+                            toggleRowSelected(rowId, false);
                         }
                     }
                 });
             }
         }
-    }, [data]);
+    }, [gridData, groupSortOptions]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
@@ -457,7 +468,7 @@ const Customgrid = (props) => {
             <div className="neo-grid-header">
                 <div className="neo-grid-header__results">
                     <strong>
-                        {rows.length === data.length
+                        {rows.length === gridData.length
                             ? totalRecordsCount
                             : rows.length}
                     </strong>
@@ -724,7 +735,7 @@ Customgrid.propTypes = {
     gridHeight: PropTypes.string,
     gridWidth: PropTypes.string,
     managableColumns: PropTypes.arrayOf(PropTypes.object),
-    data: PropTypes.arrayOf(PropTypes.object),
+    gridData: PropTypes.arrayOf(PropTypes.object),
     idAttribute: PropTypes.string,
     totalRecordsCount: PropTypes.number,
     getRowEditOverlay: PropTypes.func,
@@ -738,7 +749,7 @@ Customgrid.propTypes = {
     hasNextPage: PropTypes.bool,
     isNextPageLoading: PropTypes.bool,
     loadNextPage: PropTypes.func,
-    doGroupSort: PropTypes.func,
+    getSortedData: PropTypes.func,
     getToggleAllRowsSelectedProps: PropTypes.func,
     row: PropTypes.arrayOf(PropTypes.object),
     expandedRowData: PropTypes.object,
