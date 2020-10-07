@@ -220,19 +220,21 @@ const Grid = (props) => {
     // Gets called when page scroll reaches the bottom of the grid.
     // Trigger call back and get the grid data updated.
     const loadNextPage = () => {
-        const { lastPage, pageNum, pageSize, endCursor } = pageInfo;
-        if (!lastPage) {
-            setIsNextPageLoading(true);
-            if (paginationType === "cursor") {
-                loadMoreData({
-                    endCursor,
-                    pageSize
-                });
-            } else {
-                loadMoreData({
-                    pageNum: pageNum + 1,
-                    pageSize
-                });
+        if (pageInfo) {
+            const { lastPage, pageNum, pageSize, endCursor } = pageInfo;
+            if (!lastPage) {
+                setIsNextPageLoading(true);
+                if (paginationType === "cursor") {
+                    loadMoreData({
+                        endCursor,
+                        pageSize
+                    });
+                } else {
+                    loadMoreData({
+                        pageNum: pageNum + 1,
+                        pageSize
+                    });
+                }
             }
         }
     };
@@ -259,15 +261,6 @@ const Grid = (props) => {
         );
     }, [columnToExpand]);
 
-    if (!pageInfo) {
-        return (
-            <div className={`grid-component-container ${className || ""}`}>
-                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    <span className="error">Invalid Page Info</span>
-                </h2>
-            </div>
-        );
-    }
     if (!(gridData && gridData.length > 0)) {
         return (
             <div className={`grid-component-container ${className || ""}`}>
@@ -286,17 +279,7 @@ const Grid = (props) => {
             </div>
         );
     }
-    if (!idAttribute) {
-        return (
-            <div className={`grid-component-container ${className || ""}`}>
-                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    <span className="error">Id Attribute not passed</span>
-                </h2>
-            </div>
-        );
-    }
 
-    const { total, lastPage } = pageInfo;
     return (
         <div className={`grid-component-container ${className || ""}`}>
             <Customgrid
@@ -307,7 +290,7 @@ const Grid = (props) => {
                 expandedRowData={additionalColumn}
                 gridData={gridData}
                 idAttribute={idAttribute}
-                totalRecordsCount={total}
+                totalRecordsCount={pageInfo ? pageInfo.total : -1}
                 getRowEditOverlay={getRowEditOverlay}
                 updateRowInGrid={updateRowInGrid}
                 deleteRowFromGrid={deleteRowFromGrid}
@@ -322,7 +305,7 @@ const Grid = (props) => {
                 expandableColumn={expandableColumn}
                 rowActions={rowActions}
                 rowActionCallback={rowActionCallback}
-                hasNextPage={!lastPage}
+                hasNextPage={pageInfo ? !pageInfo.lastPage : false}
                 isNextPageLoading={isNextPageLoading}
                 loadNextPage={loadNextPage}
                 getSortedData={getSortedData}

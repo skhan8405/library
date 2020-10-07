@@ -208,14 +208,16 @@ const Customgrid = (props) => {
     // Finds the rows selected by users from selectedRowIds and updates the state value and triggers the callback function.
     // This is used in useeffects for row selection and row deselection
     const updateSelectedRows = (rows, selectedRowIds) => {
-        const rowsSelectedByUser = findSelectedRows(rows, selectedRowIds);
-        const rowIdentifiers = findSelectedRowIdAttributes(
-            rowsSelectedByUser,
-            idAttribute
-        );
-        setUserSelectedRowIdentifiers(rowIdentifiers);
-        if (onRowSelect) {
-            onRowSelect(rowsSelectedByUser);
+        if (idAttribute) {
+            const rowsSelectedByUser = findSelectedRows(rows, selectedRowIds);
+            const rowIdentifiers = findSelectedRowIdAttributes(
+                rowsSelectedByUser,
+                idAttribute
+            );
+            setUserSelectedRowIdentifiers(rowIdentifiers);
+            if (onRowSelect) {
+                onRowSelect(rowsSelectedByUser);
+            }
         }
     };
 
@@ -362,7 +364,7 @@ const Customgrid = (props) => {
     // Update the select state of row in Grid using thehook provided by useTable method
     // Find the row Id using the key - value passed from props and use toggleRowSelected method
     useEffect(() => {
-        if (rowsToDeselect && rowsToDeselect.length) {
+        if (rowsToDeselect && rowsToDeselect.length && idAttribute) {
             rowsToDeselect.forEach((rowId) => {
                 const rowToDeselect = preFilteredRows.find((row) => {
                     const { original } = row;
@@ -393,7 +395,8 @@ const Customgrid = (props) => {
             // Make rows selected if user has already made any selections
             if (
                 userSelectedRowIdentifiers &&
-                userSelectedRowIdentifiers.length > 0
+                userSelectedRowIdentifiers.length > 0 &&
+                idAttribute
             ) {
                 const updatedSelectedRowIds = [];
                 // Loop through already selected rows and find row id and make it selected
