@@ -45,12 +45,6 @@ const Grid = (props) => {
     // Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
 
-    // Local state value for holding columns configuration
-    const [gridColumns, setGridColumns] = useState(columns);
-
-    // Local state value for holding the additional column configuration
-    const [additionalColumn, setAdditionalColumn] = useState(columnToExpand);
-
     // Logic for searching in each column
     const searchColumn = (column, original, searchText) => {
         // Return value
@@ -128,6 +122,22 @@ const Grid = (props) => {
             onRowDelete(original);
         }
     };
+
+    // Local state value for holding columns configuration
+    const [gridColumns, setGridColumns] = useState(
+        extractColumns(
+            columns,
+            searchColumn,
+            isDesktop,
+            updateRowInGrid,
+            expandableColumn
+        )
+    );
+
+    // Local state value for holding the additional column configuration
+    const [additionalColumn, setAdditionalColumn] = useState(
+        extractAdditionalColumn(columnToExpand, isDesktop, updateRowInGrid)
+    );
 
     // Add logic to calculate height of each row, based on the content of  or more columns
     // This can be used only if developer using the component has not passed a function to calculate row height

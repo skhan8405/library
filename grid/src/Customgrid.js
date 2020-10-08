@@ -439,14 +439,14 @@ const Customgrid = (props) => {
                     <div className="table-row-wrap">
                         {row.cells.map((cell) => {
                             if (cell.column.display === true) {
-                                return (
-                                    <div
-                                        {...cell.getCellProps()}
-                                        className="table-cell td"
-                                    >
-                                        {cell.render("Cell")}
-                                    </div>
-                                );
+                            return (
+                                <div
+                                    {...cell.getCellProps()}
+                                    className="table-cell td"
+                                >
+                                    {cell.render("Cell")}
+                                </div>
+                            );
                             }
                             return null;
                         })}
@@ -637,7 +637,13 @@ const Customgrid = (props) => {
                                         className="tr"
                                     >
                                         {headerGroup.headers.map((column) => {
-                                            if (column.display === true) {
+                                            if (
+                                                !(
+                                                    column.isGroupHeader ===
+                                                        false &&
+                                                    column.display === false
+                                                )
+                                            ) {
                                                 return (
                                                     <div
                                                         {...column.getHeaderProps()}
@@ -673,7 +679,7 @@ const Customgrid = (props) => {
                                                                     : ""
                                                             }`}
                                                         >
-                                                            {!column.disableFilters
+                                                            {column.canFilter
                                                                 ? column.render(
                                                                       "Filter"
                                                                   )

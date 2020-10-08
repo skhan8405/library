@@ -50,6 +50,9 @@ export const extractColumns = (
             // Add an indentifier that this is a column not for expanded region
             elem.isDisplayInExpandedRegion = false;
 
+            // Add an indentifier that this is not a group header item
+            elem.isGroupHeader = false;
+
             // Configure Cell function (which is used by react-table component), based on the user defined function displayCell
             if (!elem.Cell && elem.displayCell) {
                 elem.Cell = (row) => {
@@ -105,7 +108,7 @@ export const extractColumns = (
             modifiedColumns.push(elem);
         });
         return modifiedColumns;
-    }
+                    }
     return [];
 };
 
