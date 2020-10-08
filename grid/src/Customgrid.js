@@ -439,14 +439,14 @@ const Customgrid = (props) => {
                     <div className="table-row-wrap">
                         {row.cells.map((cell) => {
                             if (cell.column.display === true) {
-                            return (
-                                <div
-                                    {...cell.getCellProps()}
-                                    className="table-cell td"
-                                >
-                                    {cell.render("Cell")}
-                                </div>
-                            );
+                                return (
+                                    <div
+                                        {...cell.getCellProps()}
+                                        className="table-cell td"
+                                    >
+                                        {cell.render("Cell")}
+                                    </div>
+                                );
                             }
                             return null;
                         })}
@@ -679,7 +679,11 @@ const Customgrid = (props) => {
                                                                     : ""
                                                             }`}
                                                         >
-                                                            {column.canFilter
+                                                            {/* column.canFilter - should be used to identify if column is filterable */}
+                                                            {/* But bug of react-table will set canFilter to true (even if it is false) after doing a global search */}
+                                                            {/* Hence checking if filter logic is present as a function for a column */}
+                                                            {typeof column.filter ===
+                                                            "function"
                                                                 ? column.render(
                                                                       "Filter"
                                                                   )

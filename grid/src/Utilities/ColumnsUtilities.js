@@ -108,7 +108,7 @@ export const extractColumns = (
             modifiedColumns.push(elem);
         });
         return modifiedColumns;
-                    }
+    }
     return [];
 };
 
