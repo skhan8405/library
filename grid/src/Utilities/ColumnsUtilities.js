@@ -61,6 +61,7 @@ export const extractColumns = (
                             row={row}
                             updateRowInGrid={updateRowInGrid}
                             expandableColumn={expandableColumn}
+                            isDesktop={isDesktop}
                         />
                     );
                 };
@@ -159,7 +160,11 @@ export const extractAdditionalColumn = (additionalColumn, isDesktop) => {
                                 additionalColumn: updatedAdditionalColumn
                             }}
                         >
-                            {element.displayCell(original, AdditionalColumnTag)}
+                            {element.displayCell(
+                                original,
+                                AdditionalColumnTag,
+                                isDesktop
+                            )}
                         </AdditionalColumnContext.Provider>
                     );
                 };
