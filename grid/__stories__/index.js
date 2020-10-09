@@ -20,7 +20,7 @@ const GridComponent = (props) => {
         passRowActions,
         passRowActionCallback,
         passOnGridRefresh,
-        isNextPageAvailableCheck,
+        hasPagination,
         CustomPanel,
         globalSearch,
         columnFilter,
@@ -31,25 +31,21 @@ const GridComponent = (props) => {
         expandableColumn
     } = props;
     const idAttribute = "travelId";
-    const { search } = window.location;
-    const urlPageSize = search
-        ? parseInt(search.replace("?pagesize=", ""), 10)
-        : NaN;
-    const gridPageSize = !Number.isNaN(urlPageSize) ? Number(urlPageSize) : 300;
-    const paginationType = "index";
+    const gridPageSize = 300;
+    const paginationType = "index"; // or - "cursor"
     // State for holding index page info
     const [indexPageInfo, setIndexPageInfo] = useState({
         pageNum: 1,
         pageSize: gridPageSize,
         total: 20000,
-        lastPage: isNextPageAvailableCheck !== true
+        lastPage: false
     });
     // State for holding cursor page info
     const [cursorPageInfo, setCursorPageInfo] = useState({
         endCursor: 299,
         pageSize: gridPageSize,
         total: 20000,
-        lastPage: isNextPageAvailableCheck !== true
+        lastPage: false
     });
     // State for holding grid data
     const [gridData, setGridData] = useState([]);
@@ -122,7 +118,12 @@ const GridComponent = (props) => {
             width: 50,
             disableFilters: true,
             isSearchable: true,
-            displayCell: (rowData) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { travelId } = rowData;
                 return (
                     <div className="travelId-details">
@@ -149,7 +150,12 @@ const GridComponent = (props) => {
             ],
             sortValue: "flightno",
             isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { flightno, date } = rowData.flight;
                 return (
                     <div className="flight-details">
@@ -162,7 +168,13 @@ const GridComponent = (props) => {
                     </div>
                 );
             },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
+            editCell: (
+                rowData,
+                DisplayTag,
+                rowUpdateCallBack,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 return (
                     <FlightEdit
                         rowData={rowData}
@@ -190,7 +202,12 @@ const GridComponent = (props) => {
             ],
             disableSortBy: true,
             isSearchable: false,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { from, to } = rowData.segment;
                 return (
                     <div className="segment-details">
@@ -206,7 +223,13 @@ const GridComponent = (props) => {
                     </div>
                 );
             },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
+            editCell: (
+                rowData,
+                DisplayTag,
+                rowUpdateCallBack,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 return (
                     <SegmentEdit
                         airportCodeList={airportCodeList}
@@ -266,7 +289,12 @@ const GridComponent = (props) => {
             ],
             disableSortBy: true,
             isSearchable: true,
-            displayCell: (rowData, DisplayTag, isExpanded) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const {
                     startTime,
                     endTime,
@@ -280,7 +308,10 @@ const GridComponent = (props) => {
                 const timeStatusArray = timeStatus ? timeStatus.split(" ") : [];
                 const timeValue = timeStatusArray.shift();
                 const timeText = timeStatusArray.join(" ");
-                if (isExpanded === null || isExpanded === true) {
+                if (
+                    isExpandableColumn === null ||
+                    isExpandableColumn === true
+                ) {
                     return (
                         <div className="details-wrap">
                             <ul>
@@ -449,7 +480,12 @@ const GridComponent = (props) => {
             ],
             sortValue: "percentage",
             isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { percentage, value } = rowData.weight;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix;
@@ -491,7 +527,12 @@ const GridComponent = (props) => {
             ],
             sortValue: "percentage",
             isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { percentage, value } = rowData.volume;
                 const splitValue = value ? value.split("/") : [];
                 let valuePrefix;
@@ -533,7 +574,12 @@ const GridComponent = (props) => {
             ],
             disableSortBy: true,
             isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { uldPositions } = rowData;
                 return (
                     <div className="uld-details">
@@ -578,7 +624,12 @@ const GridComponent = (props) => {
                     isSearchable: true
                 }
             ],
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { revenue, yeild } = rowData.revenue;
                 return (
                     <div className="revenue-details">
@@ -599,7 +650,12 @@ const GridComponent = (props) => {
             accessor: "sr",
             width: 90,
             isSearchable: true,
-            displayCell: (rowData) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { sr } = rowData;
                 return (
                     <div className="sr-details">
@@ -607,7 +663,13 @@ const GridComponent = (props) => {
                     </div>
                 );
             },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
+            editCell: (
+                rowData,
+                DisplayTag,
+                rowUpdateCallBack,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 return (
                     <SrEdit
                         rowData={rowData}
@@ -634,7 +696,12 @@ const GridComponent = (props) => {
             ],
             disableSortBy: true,
             isSearchable: false,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
                 const { sr, volume } = rowData.queuedBooking;
                 return (
                     <div className="queued-details">
@@ -660,7 +727,7 @@ const GridComponent = (props) => {
             { Header: "Remarks", accessor: "remarks" },
             { Header: "Details", onlyInTablet: true, accessor: "details" }
         ],
-        displayCell: (rowData, DisplayTag) => {
+        displayCell: (rowData, DisplayTag, isDesktop) => {
             const { remarks, details } = rowData;
             const {
                 startTime,
@@ -797,10 +864,17 @@ const GridComponent = (props) => {
                 return row !== originalRow;
             })
         );
-        setPageInfo({
-            ...pageInfo,
-            total: pageInfo.total - 1
-        });
+        if (paginationType === "index") {
+            setIndexPageInfo({
+                ...indexPageInfo,
+                total: indexPageInfo.total - 1
+            });
+        } else {
+            setCursorPageInfo({
+                ...cursorPageInfo,
+                total: indexPageInfo.total - 1
+            });
+        }
     };
 
     const onRowSelect = (selectedRows) => {
@@ -903,8 +977,8 @@ const GridComponent = (props) => {
                     gridWidth={gridWidth}
                     gridData={gridData}
                     idAttribute={idAttribute}
-                    paginationType={paginationType}
-                    pageInfo={gridPageInfo}
+                    paginationType={hasPagination ? paginationType : null}
+                    pageInfo={hasPagination ? gridPageInfo : null}
                     loadMoreData={loadMoreData}
                     columns={columns}
                     columnToExpand={passColumnToExpand ? columnToExpand : null}

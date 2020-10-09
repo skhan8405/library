@@ -479,19 +479,18 @@ describe("Reference test cases", () => {
         );
         const gridContainer = container;
         expect(gridContainer).toBeInTheDocument();
-        // Find link to open the row actions overlay
-        const rowActionOpenLinks = getAllByTestId("rowActions-open-link");
+
+        // Open actions overlay to test Edit row
+        let rowActionOpenLinks = getAllByTestId("rowActions-open-link");
         act(() => {
             rowActionOpenLinks[0].dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-
         // Check if row actions overlay has been opened
-        const rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        let rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
         expect(rowActionsOverlay).toBeInTheDocument();
-
-        // Test edit link functionality
+        // Click edit link
         const editActionLink = getByTestId("rowAction-editRow");
         act(() => {
             editActionLink.dispatchEvent(
@@ -515,12 +514,17 @@ describe("Reference test cases", () => {
         // Row update call back should be called once.
         expect(mockOnRowUpdate).toBeCalledTimes(1);
 
-        // Open overlay for testing delete link
+        // Open overlay to test Delete row
+        rowActionOpenLinks = getAllByTestId("rowActions-open-link");
         act(() => {
             rowActionOpenLinks[0].dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
+        // Check if row actions overlay has been opened
+        rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        expect(rowActionsOverlay).toBeInTheDocument();
         // Find and click delete link
         const deleteActionLink = getByTestId("rowAction-deleteRow");
         act(() => {
@@ -533,7 +537,7 @@ describe("Reference test cases", () => {
             "rowDeleteOverlay-container"
         );
         expect(rowDeleteOverlayContainer).toBeInTheDocument();
-        // Click on the save button of row edit overlay
+        // Click on the Delete button of row delete overlay
         const rowDeleteOverlaySaveButton = getByTestId(
             "rowDeleteOverlay-Delete"
         );
@@ -545,13 +549,18 @@ describe("Reference test cases", () => {
         // Row update call back should be called once.
         expect(mockOnRowDelete).toBeCalledTimes(1);
 
-        // Open overlay for testing additional action
+        // Open overlay to test additional action
+        rowActionOpenLinks = getAllByTestId("rowActions-open-link");
         act(() => {
             rowActionOpenLinks[0].dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        // Find and click delete link
+        // Check if row actions overlay has been opened
+        rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        expect(rowActionsOverlay).toBeInTheDocument();
+        // Find and click additional action item
         const additionalActionLinks = getAllByTestId(
             "rowAction-additionalAction"
         );
