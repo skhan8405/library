@@ -132,7 +132,8 @@ describe("render row edit overlay", () => {
             width: 50,
             disableFilters: true,
             columnId: "column_0",
-            display: true
+            display: true,
+            isGroupHeader: false
         },
         {
             Header: "Flight",
@@ -157,7 +158,8 @@ describe("render row edit overlay", () => {
             sortValue: "flightno",
             columnId: "column_1",
             display: true,
-            isSearchable: true
+            isSearchable: true,
+            isGroupHeader: false
         },
         {
             Header: "Segment",
@@ -182,7 +184,8 @@ describe("render row edit overlay", () => {
             disableSortBy: true,
             columnId: "column_2",
             display: true,
-            isSearchable: true
+            isSearchable: true,
+            isGroupHeader: false
         },
         {
             Header: "Weight",
@@ -207,7 +210,16 @@ describe("render row edit overlay", () => {
             sortValue: "percentage",
             columnId: "column_3",
             display: true,
-            isSearchable: true
+            isSearchable: true,
+            isGroupHeader: false
+        },
+        {
+            Header: "SR",
+            accessor: "sr",
+            width: 90,
+            columnId: "column_4",
+            display: true,
+            isGroupHeader: false
         }
     ];
 
@@ -235,7 +247,8 @@ describe("render row edit overlay", () => {
     const mockUpdateDateValue = jest.fn();
     const getRowEditOverlayMock = jest.fn(
         (rowData, DisplayTag, rowUpdateCallBack) => {
-            const { flightno, date } = rowData.flight;
+            const { flight, sr } = rowData;
+            const { flightno, date } = flight;
             return (
                 <div>
                     <DisplayTag columnKey="flight" cellKey="flightno">
@@ -254,6 +267,13 @@ describe("render row edit overlay", () => {
                             onChange={mockUpdateDateValue}
                         />
                     </DisplayTag>
+                    <DisplayTag columnKey="sr" cellKey="sr">
+                        <input
+                            type="text"
+                            value={sr}
+                            onChange={() => rowUpdateCallBack("nothing")}
+                        />
+                    </DisplayTag>
                 </div>
             );
         }
@@ -261,20 +281,19 @@ describe("render row edit overlay", () => {
     const closeRowEditOverlayMock = jest.fn();
     const updateRowInGridMock = jest.fn();
 
-    it("Should render", () => {
+    it("Cancel function should be called", () => {
         const { getByText } = render(
             <RowEditOverLay
                 row={rowdata}
                 columns={columnsdata}
-                isRowExpandEnabled
                 additionalColumn={additionalColumndata}
                 getRowEditOverlay={getRowEditOverlayMock}
                 closeRowEditOverlay={closeRowEditOverlayMock}
                 updateRowInGrid={updateRowInGridMock}
             />
         );
-        expect(getByText("Save")).toBeInTheDocument();
-        expect(getByText("Cancel")).toBeInTheDocument();
+        fireEvent.click(getByText("Cancel"));
+        expect(closeRowEditOverlayMock).toHaveBeenCalledTimes(1);
     });
 
     it("Save function should be called", () => {
@@ -282,13 +301,15 @@ describe("render row edit overlay", () => {
             <RowEditOverLay
                 row={rowdata}
                 columns={columnsdata}
-                isRowExpandEnabled
                 additionalColumn={additionalColumndata}
                 getRowEditOverlay={getRowEditOverlayMock}
                 closeRowEditOverlay={closeRowEditOverlayMock}
                 updateRowInGrid={updateRowInGridMock}
             />
         );
+
+        expect(getByText("Save")).toBeInTheDocument();
+        expect(getByText("Cancel")).toBeInTheDocument();
 
         const flightNoInput = getByTestId("flightnoinput");
         expect(flightNoInput.value).toBe("XX2225");
@@ -299,22 +320,6 @@ describe("render row edit overlay", () => {
         useStateSpy.mockImplementation(() => [newrowdata, setState]);
 
         fireEvent.click(getByText("Save"));
-        expect(getRowEditOverlayMock).toHaveBeenCalledTimes(3);
-    });
-
-    it("Cancel function should be called", () => {
-        const { getByText } = render(
-            <RowEditOverLay
-                row={rowdata}
-                columns={columnsdata}
-                isRowExpandEnabled
-                additionalColumn={additionalColumndata}
-                getRowEditOverlay={getRowEditOverlayMock}
-                closeRowEditOverlay={closeRowEditOverlayMock}
-                updateRowInGrid={updateRowInGridMock}
-            />
-        );
-        fireEvent.click(getByText("Cancel"));
-        expect(closeRowEditOverlayMock).toHaveBeenCalledTimes(2);
+        expect(updateRowInGridMock).toHaveBeenCalledTimes(1);
     });
 });

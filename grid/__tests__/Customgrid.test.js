@@ -35,7 +35,8 @@ describe("render Customgrid", () => {
             width: 50,
             disableFilters: true,
             columnId: "column_0",
-            display: true
+            display: true,
+            isGroupHeader: false
         },
         {
             Header: "Flight",
@@ -61,7 +62,8 @@ describe("render Customgrid", () => {
             sortValue: "flightno",
             Cell: mockDisplayCell,
             display: false,
-            isSearchable: true
+            isSearchable: true,
+            isGroupHeader: false
         },
         {
             Header: "SR",
@@ -69,7 +71,8 @@ describe("render Customgrid", () => {
             width: 90,
             columnId: "column_2",
             display: true,
-            isSearchable: true
+            isSearchable: true,
+            isGroupHeader: false
         }
     ];
 
@@ -335,43 +338,6 @@ describe("render Customgrid", () => {
         return null;
     });
     const mockSelectBulkData = jest.fn();
-    const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {
-        // Minimum height for each row
-        let rowHeight = 50;
-        if (columnsInGrid && columnsInGrid.length > 0 && row) {
-            // Get properties of a row
-            const { original, isExpanded } = row;
-            // Find the column with maximum width configured, from grid columns list
-            const columnWithMaxWidth = [...columnsInGrid].sort((a, b) => {
-                return b.width - a.width;
-            })[0];
-            // Get column properties including the user resized column width (totalFlexWidth)
-            const { id, width, totalFlexWidth } = columnWithMaxWidth;
-            // Get row value of that column
-            const rowValue = original[id];
-            if (rowValue) {
-                // Find the length of text of data in that column
-                const textLength = Object.values(rowValue).join(",").length;
-                // This is a formula that was created for the test data used.
-                rowHeight += Math.ceil((80 * textLength) / totalFlexWidth);
-                const widthVariable =
-                    totalFlexWidth > width
-                        ? totalFlexWidth - width
-                        : width - totalFlexWidth;
-                rowHeight += widthVariable / 1000;
-            }
-            // Add logic to increase row height if row is expanded
-            if (isExpanded && additionalColumn) {
-                // Increase height based on the number of inner cells in additional columns
-                rowHeight +=
-                    additionalColumn.innerCells &&
-                    additionalColumn.innerCells.length > 0
-                        ? additionalColumn.innerCells.length * 35
-                        : 35;
-            }
-        }
-        return rowHeight;
-    });
     const mockIsExpandContentAvailable = true;
     const mockDisplayExpandedContent = jest.fn((rowData, DisplayTag) => {
         const { remarks, details } = rowData;
@@ -452,7 +418,6 @@ describe("render Customgrid", () => {
                 deleteRowFromGrid={mockDeleteRowFromGrid}
                 searchColumn={mocksearchColumn}
                 onRowSelect={mockSelectBulkData}
-                calculateRowHeight={mockCalculateRowHeight}
                 isExpandContentAvailable={mockIsExpandContentAvailable}
                 displayExpandedContent={mockDisplayExpandedContent}
                 rowActions={mockRowActions}
@@ -463,20 +428,6 @@ describe("render Customgrid", () => {
                 getSortedData={mockGetSortedData}
             />
         );
-        // Column Filter Search
-        const toggleColumnFilter = container.querySelector(
-            "[data-testid='toggleColumnFilter']"
-        );
-        act(() => {
-            toggleColumnFilter.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        const columnInput = getAllByTestId("columnFilter-textbox")[0];
-        fireEvent.change(columnInput, { target: { value: "222" } });
-        expect(columnInput.value).toBe("222");
-        fireEvent.change(columnInput, { target: { value: "" } });
-        expect(columnInput.value).toBe("");
 
         // Apply Sort
         const toggleGroupSortOverLay = container.querySelector(
@@ -645,7 +596,6 @@ describe("render Customgrid", () => {
                 deleteRowFromGrid={mockDeleteRowFromGrid}
                 searchColumn={mocksearchColumn}
                 onRowSelect={mockSelectBulkData}
-                calculateRowHeight={mockCalculateRowHeight}
                 isExpandContentAvailable={mockIsExpandContentAvailable}
                 displayExpandedContent={mockDisplayExpandedContent}
                 rowActions={mockRowActions}

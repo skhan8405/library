@@ -489,7 +489,7 @@ const Customgrid = (props) => {
                 </div>
                 {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
                 {isRowExpandEnabled && row.isExpanded ? (
-                    <div className="expand">
+                    <div className="expand" data-testid="rowExpandedRegion">
                         {additionalColumn.Cell(row, additionalColumn)}
                     </div>
                 ) : null}
