@@ -1,6 +1,6 @@
 export const findSelectedColumn = (columnsToSearch, columnKey) => {
     let selectedColumn = null;
-    columnsToSearch.map((col) => {
+    columnsToSearch.forEach((col) => {
         const { isGroupHeader, display, id, accessor, columns } = col;
         if (
             isGroupHeader === false &&
@@ -8,18 +8,14 @@ export const findSelectedColumn = (columnsToSearch, columnKey) => {
             (id === columnKey || accessor === columnKey)
         ) {
             selectedColumn = col;
-            return false;
-        }
-        if (columns && columns.length > 0) {
+        } else if (columns && columns.length > 0) {
             const selectedGroupedColumn = columns.find((groupedCol) => {
                 return (
                     groupedCol.id === columnKey && groupedCol.display === true
                 );
             });
             selectedColumn = selectedGroupedColumn;
-            return false;
         }
-        return false;
     });
     return selectedColumn;
 };
