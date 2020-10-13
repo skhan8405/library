@@ -456,7 +456,7 @@ li {
     padding: 10px 5px;
 }
 .remarks-wrap {
-    padding: 0 10px 0 100px;
+    padding: 0 10px 10px 100px;
 }
 .flight-details strong {
     display: block;

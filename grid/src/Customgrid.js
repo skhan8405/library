@@ -19,6 +19,7 @@ import { VariableSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import PropTypes from "prop-types";
+import { renderToString } from "react-dom/server";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
@@ -59,7 +60,6 @@ const Customgrid = (props) => {
         deleteRowFromGrid,
         searchColumn,
         onRowSelect,
-        calculateRowHeight,
         expandableColumn,
         rowActions,
         rowActionCallback,
@@ -236,7 +236,7 @@ const Customgrid = (props) => {
         rows,
         prepareRow,
         preFilteredRows,
-        state: { globalFilter, selectedRowIds },
+        state: { globalFilter, selectedRowIds, expanded },
         setGlobalFilter,
         toggleRowSelected
     } = useTable(
@@ -341,21 +341,26 @@ const Customgrid = (props) => {
         }
     );
 
-    // Handle the row height calculation while expanding a row or resizing a column
-    useEffect(() => {
+    // Recalculate row height from a particular index in the list
+    const reRenderListData = (index) => {
+        const indexToReset = index && index >= 0 ? index : 0;
         if (listRef && listRef.current) {
-            listRef.current.resetAfterIndex(0, true);
+            listRef.current.resetAfterIndex(indexToReset, true);
         }
-    });
+    };
 
     // Update state, when user is updating columns configuration from outside Grid
+    // Recalculate the row height from index 0 as columns config has been changed
     useEffect(() => {
         setGridColumns(managableColumns);
+        reRenderListData(0);
     }, [managableColumns]);
 
     // Update state, when user is updating additional column configuration from outside Grid
+    // Recalculate the row height from index 0 as additional columns config has been changed
     useEffect(() => {
         setAdditionalColumn(expandedRowData);
+        reRenderListData(0);
     }, [expandedRowData]);
 
     // Update the boolean value used to identify if this is the first time render of Grid
@@ -390,8 +395,20 @@ const Customgrid = (props) => {
         }
     }, [selectedRowIds]);
 
+    // Recalculate the row height from expanded row index
+    useEffect(() => {
+        if (expanded) {
+            const expandedKeys = Object.keys(expanded);
+            if (expandedKeys && expandedKeys.length > 0) {
+                reRenderListData(expandedKeys[0]);
+            }
+        }
+        reRenderListData(0);
+    }, [expanded]);
+
     // Update the row selection and clear row expands when data changes
     // Set all row selections to false and find new Ids of already selected rows and make them selected
+    // Recalculate the row height from index 0 as data has been changed
     useEffect(() => {
         if (!isFirstRendering) {
             // Make rows selected if user has already made any selections
@@ -426,39 +443,84 @@ const Customgrid = (props) => {
                 });
             }
         }
+        reRenderListData(0);
     }, [gridData, groupSortOptions]);
+
+    // Create HTML structure of a single row that has to be bind to Grid
+    const renderSingleRow = (row, style) => {
+        prepareRow(row);
+        const rowElement = (
+            <div {...row.getRowProps({ style })} className="table-row tr">
+                <div className="table-row-wrap">
+                    {row.cells.map((cell) => {
+                        if (cell.column.display === true) {
+                            return (
+                                <div
+                                    {...cell.getCellProps()}
+                                    className="table-cell td"
+                                >
+                                    {cell.render("Cell")}
+                                </div>
+                            );
+                        }
+                        return null;
+                    })}
+                </div>
+                {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
+                {isRowExpandEnabled && row.isExpanded ? (
+                    <div className="expand">
+                        {additionalColumn.Cell(row, additionalColumn)}
+                    </div>
+                ) : null}
+            </div>
+        );
+        return rowElement;
+    };
+
+    // Find the required row height for each row value that can be used in the list.
+    // Bind the row HTML structure into a hidden element and get the clientHeight of that element and then distroy the hidden element.
+    const getItemSize = useCallback(
+        (index) => {
+            const newHiddenSizingEl = document.createElement("div");
+            newHiddenSizingEl.classList.add("row-height-calculator");
+            newHiddenSizingEl.classList.add("tr");
+            newHiddenSizingEl.classList.add("table-row");
+            newHiddenSizingEl.classList.add(`hidden-sizing-element-${index}`);
+            newHiddenSizingEl.style.display = "flex";
+            newHiddenSizingEl.style.flex = "1 0 auto";
+            newHiddenSizingEl.style.position = "absolute";
+            newHiddenSizingEl.style.left = "0";
+            newHiddenSizingEl.style.top = "0";
+            newHiddenSizingEl.style.width = "100%";
+            newHiddenSizingEl.style.minWidth = "70px";
+            newHiddenSizingEl.style.pointerEvents = "none";
+            newHiddenSizingEl.style.visibility = "hidden";
+            const rowItemElement = renderSingleRow(rows[index]);
+            newHiddenSizingEl.innerHTML = renderToString(rowItemElement);
+            const tableContainerList = document.getElementsByClassName(
+                "tableContainer__List"
+            );
+            if (tableContainerList && tableContainerList.length > 0) {
+                const tableContainer = tableContainerList[0];
+                const tableRowsContainer = tableContainer.firstElementChild;
+                if (tableRowsContainer) {
+                    tableRowsContainer.appendChild(newHiddenSizingEl);
+                    const rowHeight = newHiddenSizingEl.clientHeight || 100;
+                    tableRowsContainer.removeChild(newHiddenSizingEl);
+                    return rowHeight;
+                }
+            }
+            return 100;
+        },
+        [rows, expanded]
+    );
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
             // if (isItemLoaded(index)) - This check never became false during testing. Hence avoiding it to reach 100% code coverage in JEST test.
             const row = rows[index];
-            prepareRow(row);
-            return (
-                <div {...row.getRowProps({ style })} className="table-row tr">
-                    <div className="table-row-wrap">
-                        {row.cells.map((cell) => {
-                            if (cell.column.display === true) {
-                                return (
-                                    <div
-                                        {...cell.getCellProps()}
-                                        className="table-cell td"
-                                    >
-                                        {cell.render("Cell")}
-                                    </div>
-                                );
-                            }
-                            return null;
-                        })}
-                    </div>
-                    {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
-                    {isRowExpandEnabled && row.isExpanded ? (
-                        <div className="expand">
-                            {additionalColumn.Cell(row, additionalColumn)}
-                        </div>
-                    ) : null}
-                </div>
-            );
+            return renderSingleRow(row, style);
         },
         [prepareRow, rows, isRowExpandEnabled, additionalColumn]
     );
@@ -720,14 +782,7 @@ const Customgrid = (props) => {
                                             height={height - 60}
                                             itemCount={rows.length}
                                             itemSize={(index) => {
-                                                return calculateRowHeight(
-                                                    rows[index],
-                                                    headerGroups &&
-                                                        headerGroups.length
-                                                        ? headerGroups[0]
-                                                              .headers
-                                                        : []
-                                                );
+                                                return getItemSize(index);
                                             }}
                                             onItemsRendered={onItemsRendered}
                                             overscanCount={20}
@@ -759,7 +814,6 @@ Customgrid.propTypes = {
     deleteRowFromGrid: PropTypes.func,
     searchColumn: PropTypes.func,
     onRowSelect: PropTypes.func,
-    calculateRowHeight: PropTypes.func,
     expandableColumn: PropTypes.bool,
     isExpandContentAvailable: PropTypes.bool,
     hasNextPage: PropTypes.bool,
