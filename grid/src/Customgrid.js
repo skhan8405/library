@@ -178,6 +178,19 @@ const Customgrid = (props) => {
         []
     );
 
+    // Local state value for storing user expanded/collapsed row Id and expanded state
+    const [userExpandedRowDetails, setUserExpandedRowDetails] = useState(null);
+
+    // Update state value with the row id on which user has clicked the expand/collpase functionality
+    const setExpandedRowDetails = (rowId, isRowExpanded) => {
+        if (rowId) {
+            setUserExpandedRowDetails({
+                id: rowId,
+                isExpanded: isRowExpanded
+            });
+        }
+    };
+
     // Global Search Filter Logic - React table wants all parameters passed into useTable function to be memoized
     const globalFilterLogic = useCallback(
         (rowsToFilter, columnsToFilter, filterValue) => {
@@ -236,7 +249,7 @@ const Customgrid = (props) => {
         rows,
         prepareRow,
         preFilteredRows,
-        state: { globalFilter, selectedRowIds, expanded },
+        state: { globalFilter, selectedRowIds },
         setGlobalFilter,
         toggleRowSelected
     } = useTable(
@@ -320,7 +333,15 @@ const Customgrid = (props) => {
                                     <span
                                         className="expander"
                                         data-testid="rowExpanderIcon"
-                                        {...row.getToggleRowExpandedProps()}
+                                        {...row.getToggleRowExpandedProps({
+                                            onClick: () => {
+                                                setExpandedRowDetails(
+                                                    row.id,
+                                                    row.isExpanded
+                                                );
+                                                row.toggleRowExpanded();
+                                            }
+                                        })}
                                     >
                                         <i>
                                             <IconAngle
@@ -343,7 +364,8 @@ const Customgrid = (props) => {
 
     // Recalculate row height from a particular index in the list
     const reRenderListData = (index) => {
-        const indexToReset = index && index >= 0 ? index : 0;
+        const numIndex = Number(index);
+        const indexToReset = numIndex && numIndex >= 0 ? numIndex : 0;
         if (listRef && listRef.current) {
             listRef.current.resetAfterIndex(indexToReset, true);
         }
@@ -395,16 +417,15 @@ const Customgrid = (props) => {
         }
     }, [selectedRowIds]);
 
-    // Recalculate the row height from expanded row index
+    // Recalculate the row height from expanded/collapsed row index
     useEffect(() => {
-        if (expanded) {
-            const expandedKeys = Object.keys(expanded);
-            if (expandedKeys && expandedKeys.length > 0) {
-                reRenderListData(expandedKeys[0]);
+        if (userExpandedRowDetails) {
+            const { id } = userExpandedRowDetails;
+            if (id) {
+                reRenderListData(id);
             }
         }
-        reRenderListData(0);
-    }, [expanded]);
+    }, [userExpandedRowDetails]);
 
     // Update the row selection and clear row expands when data changes
     // Set all row selections to false and find new Ids of already selected rows and make them selected
@@ -512,7 +533,7 @@ const Customgrid = (props) => {
             }
             return 100;
         },
-        [rows, expanded]
+        [rows, userExpandedRowDetails]
     );
 
     // Render each row and cells in each row, using attributes from react window list.
