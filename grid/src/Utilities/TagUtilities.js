@@ -2,19 +2,24 @@ export const findSelectedColumn = (columnsToSearch, columnKey) => {
     let selectedColumn = null;
     columnsToSearch.forEach((col) => {
         const { isGroupHeader, display, id, accessor, columns } = col;
-        if (
-            isGroupHeader === false &&
-            display === true &&
-            (id === columnKey || accessor === columnKey)
-        ) {
-            selectedColumn = col;
-        } else if (columns && columns.length > 0) {
-            const selectedGroupedColumn = columns.find((groupedCol) => {
-                return (
-                    groupedCol.id === columnKey && groupedCol.display === true
-                );
-            });
-            selectedColumn = selectedGroupedColumn;
+        if (!selectedColumn) {
+            if (
+                isGroupHeader === false &&
+                display === true &&
+                (id === columnKey || accessor === columnKey)
+            ) {
+                selectedColumn = col;
+            } else if (columns && columns.length > 0) {
+                const selectedGroupedColumn = columns.find((groupedCol) => {
+                    return (
+                        groupedCol.id === columnKey &&
+                        groupedCol.display === true
+                    );
+                });
+                if (selectedGroupedColumn) {
+                    selectedColumn = selectedGroupedColumn;
+                }
+            }
         }
     });
     return selectedColumn;
