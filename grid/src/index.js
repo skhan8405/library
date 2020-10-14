@@ -232,7 +232,10 @@ const Grid = (props) => {
 
     if (!(gridData && gridData.length > 0)) {
         return (
-            <div className={`grid-component-container ${className || ""}`}>
+            <div
+                data-testid="gridComponent"
+                className={`grid-component-container ${className || ""}`}
+            >
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
                     <span className="error">Invalid Data</span>
                 </h2>
@@ -241,7 +244,10 @@ const Grid = (props) => {
     }
     if (!(gridColumns && gridColumns.length > 0)) {
         return (
-            <div className={`grid-component-container ${className || ""}`}>
+            <div
+                data-testid="gridComponent"
+                className={`grid-component-container ${className || ""}`}
+            >
                 <h2 style={{ textAlign: "center", marginTop: "70px" }}>
                     <span className="error">Invalid Column Configuration</span>
                 </h2>
@@ -250,7 +256,10 @@ const Grid = (props) => {
     }
 
     return (
-        <div className={`grid-component-container ${className || ""}`}>
+        <div
+            data-testid="gridComponent"
+            className={`grid-component-container ${className || ""}`}
+        >
             <Customgrid
                 title={title}
                 gridHeight={gridHeight}
