@@ -747,6 +747,7 @@ const Customgrid = (props) => {
                                                         className="table-cell column-heading th"
                                                     >
                                                         <div
+                                                            className="column-heading-title"
                                                             data-testid="column-header-sort"
                                                             {...column.getSortByToggleProps()}
                                                         >

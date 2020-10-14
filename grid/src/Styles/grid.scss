@@ -6,21 +6,19 @@
 .neo-grid {
     .table {
         border-top: 1px solid var(--border-grey);
-        .row-selector-cell-container {
-            .form-check {
-                align-items: flex-start;
-            }
-        }
     }
     .table-row--head {
         background: var(--secondary);
         .table-cell {
-            padding: 10px 5px;
+            padding: 8px 4px;
         }
     }
     .tbody {
         .row-selector-cell-container {
-            padding: 10px 5px;
+            padding: 8px 4px;
+            height: 100%;
+            display: flex;
+            align-items: flex-start;
         }
     }
     .table-row {
@@ -54,7 +52,9 @@
         }
         &.column-heading {
             color: #204d6f;
-            vertical-align: top;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             font-weight: bold;
             border-left: 1px solid transparent;
             border-right: 1px solid transparent;
@@ -66,9 +66,15 @@
                 padding: 0;
                 width: rem(53) !important;
             }
+            .column-heading-title {
+                height: 100%;
+                display: flex;
+                align-items: center;
+            }
             .txt-wrap {
                 display: none;
-                margin-top: 5px;
+                margin-top: auto;
+                padding-top: 5px;
                 &.open {
                     display: block;
                 }
