@@ -77,6 +77,9 @@ const Customgrid = (props) => {
         rowsToDeselect
     } = props;
 
+    // Over scan count for react-window list
+    const overScanCount = 20;
+
     // Local state to check if this is the first rendering of the Grid. Default value is true
     // This will be set as false in useEffect - [].
     // Selectedrows data will be passed to parent only if isFirstRendering is false
@@ -362,12 +365,23 @@ const Customgrid = (props) => {
         }
     );
 
-    // Recalculate row height from a particular index in the list
+    // Recalculate row height from index 50 less than the last rendered item index in the list
     const reRenderListData = (index) => {
         const numIndex = Number(index);
-        const indexToReset = numIndex && numIndex >= 0 ? numIndex : 0;
+        let indexToReset = numIndex && numIndex >= 0 ? numIndex : 0;
         if (listRef && listRef.current) {
-            listRef.current.resetAfterIndex(indexToReset, true);
+            const { current } = listRef;
+            if (current) {
+                const { _instanceProps } = current;
+                if (_instanceProps && indexToReset === 0) {
+                    const expectedItemsCount = overScanCount + 30;
+                    const { lastMeasuredIndex } = _instanceProps;
+                    if (lastMeasuredIndex > expectedItemsCount) {
+                        indexToReset = lastMeasuredIndex - expectedItemsCount;
+                    }
+                }
+                listRef.current.resetAfterIndex(indexToReset, true);
+            }
         }
     };
 
@@ -375,14 +389,14 @@ const Customgrid = (props) => {
     // Recalculate the row height from index 0 as columns config has been changed
     useEffect(() => {
         setGridColumns(managableColumns);
-        reRenderListData(0);
+        reRenderListData();
     }, [managableColumns]);
 
     // Update state, when user is updating additional column configuration from outside Grid
     // Recalculate the row height from index 0 as additional columns config has been changed
     useEffect(() => {
         setAdditionalColumn(expandedRowData);
-        reRenderListData(0);
+        reRenderListData();
     }, [expandedRowData]);
 
     // Update the boolean value used to identify if this is the first time render of Grid
@@ -464,7 +478,7 @@ const Customgrid = (props) => {
                 });
             }
         }
-        reRenderListData(0);
+        reRenderListData();
     }, [gridData, groupSortOptions]);
 
     // Create HTML structure of a single row that has to be bind to Grid
@@ -806,7 +820,7 @@ const Customgrid = (props) => {
                                                 return getItemSize(index);
                                             }}
                                             onItemsRendered={onItemsRendered}
-                                            overscanCount={20}
+                                            overscanCount={overScanCount}
                                             className="tableContainer__List"
                                         >
                                             {RenderRow}
