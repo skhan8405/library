@@ -62,7 +62,7 @@
                 border-left: 1px solid var(--border-grey);
                 border-right: 1px solid var(--border-grey);
             }
-            &:last-child {
+            &.withScroll:last-child {
                 padding: 0;
                 width: rem(53) !important;
             }

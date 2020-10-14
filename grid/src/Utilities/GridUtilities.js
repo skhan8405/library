@@ -1,3 +1,25 @@
+export const updatedActionsHeaderClass = () => {
+    const tableContainerList = document.getElementsByClassName(
+        "tableContainer__List"
+    );
+    if (tableContainerList && tableContainerList.length > 0) {
+        const tableContainer = tableContainerList[0];
+        const columnHeadings = document.getElementsByClassName(
+            "column-heading"
+        );
+        if (columnHeadings && columnHeadings.length > 0) {
+            const lastColumnHeading = columnHeadings[columnHeadings.length - 1];
+            if (tableContainer.offsetHeight < tableContainer.scrollHeight) {
+                if (!lastColumnHeading.classList.contains("withScroll")) {
+                    lastColumnHeading.classList.add("withScroll");
+                }
+            } else if (lastColumnHeading.classList.contains("withScroll")) {
+                lastColumnHeading.classList.remove("withScroll");
+            }
+        }
+    }
+};
+
 export const findSelectedRows = (rows, selectedRowIds) => {
     const rowsSelectedByUser = [];
     if (rows && rows.length > 0 && selectedRowIds) {

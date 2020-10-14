@@ -40,7 +40,8 @@ import {
 } from "./Utilities/SvgUtilities";
 import {
     findSelectedRows,
-    findSelectedRowIdAttributes
+    findSelectedRowIdAttributes,
+    updatedActionsHeaderClass
 } from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
@@ -384,6 +385,11 @@ const Customgrid = (props) => {
             }
         }
     };
+
+    // Add class to last table column header (for actions) if table body is having scroll
+    useEffect(() => {
+        updatedActionsHeaderClass();
+    });
 
     // Update state, when user is updating columns configuration from outside Grid
     // Recalculate the row height from index 0 as columns config has been changed
