@@ -13,7 +13,7 @@ export const updatedActionsHeaderClass = () => {
                 if (!lastColumnHeading.classList.contains("withScroll")) {
                     lastColumnHeading.classList.add("withScroll");
                 }
-            } else if (lastColumnHeading.classList.contains("withScroll")) {
+            } else {
                 lastColumnHeading.classList.remove("withScroll");
             }
         }
