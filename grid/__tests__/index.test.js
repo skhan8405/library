@@ -13,6 +13,10 @@ describe("render Index file ", () => {
             configurable: true,
             value: height
         });
+        Object.defineProperty(HTMLElement.prototype, "scrollHeight", {
+            configurable: true,
+            value: height - 100
+        });
         Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
             configurable: true,
             value: width

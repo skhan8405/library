@@ -13,6 +13,10 @@ describe("render Customgrid", () => {
             configurable: true,
             value: height
         });
+        Object.defineProperty(HTMLElement.prototype, "scrollHeight", {
+            configurable: true,
+            value: height + 200
+        });
         Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
             configurable: true,
             value: width
