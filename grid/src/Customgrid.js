@@ -720,11 +720,7 @@ const Customgrid = (props) => {
                     overflowY: "hidden"
                 }}
             >
-                <AutoSizer
-                    disableWidth
-                    disableResizing
-                    className="tableContainer__AutoSizer"
-                >
+                <AutoSizer disableWidth className="tableContainer__AutoSizer">
                     {({ height }) => (
                         <div {...getTableProps()} className="table">
                             <div className="thead table-row table-row--head">
