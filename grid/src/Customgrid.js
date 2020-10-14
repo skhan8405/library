@@ -253,7 +253,7 @@ const Customgrid = (props) => {
         rows,
         prepareRow,
         preFilteredRows,
-        state: { globalFilter, selectedRowIds },
+        state: { globalFilter, selectedRowIds, filters, sortBy },
         setGlobalFilter,
         toggleRowSelected
     } = useTable(
@@ -390,6 +390,11 @@ const Customgrid = (props) => {
     useEffect(() => {
         updatedActionsHeaderClass();
     });
+
+    // Rerender list to calculate row height after doing column sort/filter and global search
+    useEffect(() => {
+        reRenderListData();
+    }, [globalFilter, filters, sortBy]);
 
     // Update state, when user is updating columns configuration from outside Grid
     // Recalculate the row height from index 0 as columns config has been changed
