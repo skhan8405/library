@@ -22,6 +22,7 @@ const GridComponent = (props) => {
         passOnGridRefresh,
         hasPagination,
         CustomPanel,
+        enableGroupHeaders,
         globalSearch,
         columnFilter,
         groupSort,
@@ -111,7 +112,7 @@ const GridComponent = (props) => {
         "ZZZ"
     ];
 
-    const columns = [
+    const originalColumns = [
         {
             Header: "Id",
             accessor: "travelId",
@@ -723,6 +724,14 @@ const GridComponent = (props) => {
         }
     ];
 
+    const columns = originalColumns.map((column) => {
+        const updatedColumn = column;
+        if (!enableGroupHeaders && column.groupHeader) {
+            delete updatedColumn.groupHeader;
+        }
+        return updatedColumn;
+    });
+
     const columnToExpand = {
         Header: "Remarks",
         innerCells: [
@@ -978,7 +987,7 @@ const GridComponent = (props) => {
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
                     gridData={gridData}
-                    idAttribute={idAttribute}
+                    idAttribute={enableRowDeselection ? idAttribute : ""}
                     paginationType={hasPagination ? paginationType : null}
                     pageInfo={hasPagination ? gridPageInfo : null}
                     loadMoreData={loadMoreData}

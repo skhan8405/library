@@ -57,7 +57,11 @@ const GridComponent = () => {
             disableSortBy: true,
             disableResizing: true,
             isSearchable: true,
-            displayCell: (rowData) => {
+            displayCell: (rowData, DisplayTag, isDesktop, isExpandableColumn) => {
+                // rowData -> Entire row data from gridData
+                // DisplayTag -> HOC provided by Grid, to control the show/hide of data inside each cell
+                // isDesktop -> Whether Grid considers this screen as desktop or tablet
+                // isExpandableColumn -> If the row of this data is in expanded state or not
                 const { travelId } = rowData;
                 return (
                     <div className="travelId-details">
@@ -67,6 +71,7 @@ const GridComponent = () => {
             }
         },
         {
+            groupHeader: "Flight & Segment", // Required only if a group header has to be displayed for columns. Columns with same groupHeader property value will be grouped under one column
             Header: "Flight",
             accessor: "flight",
             width: 100,
@@ -84,7 +89,11 @@ const GridComponent = () => {
             ],
             sortValue: "flightno",
             isSearchable: true,
-            displayCell: (rowData, DisplayTag) => {
+            displayCell: (rowData, DisplayTag, isDesktop, isExpandableColumn) => {
+                // rowData -> Entire row data from gridData
+                // DisplayTag -> HOC provided by Grid, to control the show/hide of data inside each cell
+                // isDesktop -> Whether Grid considers this screen as desktop or tablet
+                // isExpandableColumn -> If the row of this data is in expanded state or not
                 const { flightno, date } = rowData.flight;
                 return (
                     <div className="flight-details">
@@ -97,7 +106,12 @@ const GridComponent = () => {
                     </div>
                 );
             },
-            editCell: (rowData, DisplayTag, rowUpdateCallBack) => {
+            editCell: (rowData, DisplayTag, rowUpdateCallBack, isDesktop, isExpandableColumn) => {
+                // rowData -> Entire row data from gridData
+                // DisplayTag -> HOC provided by Grid, to control the show/hide of data inside each cell
+                // rowUpdateCallBack -> Callback method provided by Grid, which has to be called whenever user edits any field in edit form
+                // isDesktop -> Whether Grid considers this screen as desktop or tablet
+                // isExpandableColumn -> If the row of this data is in expanded state or not
                 return (
                     <FlightEdit
                         rowData={rowData}
@@ -106,13 +120,59 @@ const GridComponent = () => {
                     />
                 );
             }
+        },
+        {
+            groupHeader: "Flight & Segment",  // Required only if a group header has to be displayed for columns. Columns with same groupHeader property value will be grouped under one column
+            Header: "Segment",
+            accessor: "segment",
+            width: 100,
+            innerCells: [
+                {
+                    Header: "From",
+                    accessor: "from",
+                    isSearchable: true
+                },
+                {
+                    Header: "To",
+                    accessor: "to",
+                    isSearchable: true
+                }
+            ],
+            disableSortBy: true,
+            isSearchable: false,
+            displayCell: (
+                rowData,
+                DisplayTag,
+                isDesktop,
+                isExpandableColumn
+            ) => {
+                // rowData -> Entire row data from gridData
+                // DisplayTag -> HOC provided by Grid, to control the show/hide of data inside each cell
+                // rowUpdateCallBack -> Callback method provided by Grid, which has to be called whenever user edits any field in edit form
+                // isDesktop -> Whether Grid considers this screen as desktop or tablet
+                // isExpandableColumn -> If the row of this data is in expanded state or not
+                const { from, to } = rowData.segment;
+                return (
+                    <div className="segment-details">
+                        <DisplayTag columnKey="segment" cellKey="from">
+                            <span>{from}</span>
+                        </DisplayTag>
+                        <i>
+                            <img src={FlightIcon} alt="segment" />
+                        </i>
+                        <DisplayTag columnKey="segment" cellKey="to">
+                            <span>{to}</span>
+                        </DisplayTag>
+                    </div>
+                );
+            }
         }
     ];
 
     const columnToExpand = {
         Header: "Remarks",
         innerCells: [{ Header: "Remarks", accessor: "remarks" }],
-        displayCell: (rowData, DisplayTag) => {
+        displayCell: (rowData, DisplayTag, isDesktop) => {
             const { remarks } = rowData;
             return (
                 <div className="remarks-wrap details-wrap">
@@ -196,7 +256,7 @@ const GridComponent = () => {
             gridHeight="80vh"
             gridWidth="100%"
             gridData={gridData} // *Required
-            idAttribute={idAttribute} // *Required
+            idAttribute={idAttribute}
             paginationType={paginationType}
             pageInfo={pageInfo}
             loadMoreData={loadMoreData}
@@ -237,7 +297,6 @@ export default GridComponent;
 <Grid
     className="icargoCustomClass"
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -256,7 +315,6 @@ export default GridComponent;
 <Grid
     title="AWBs"
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -275,7 +333,6 @@ export default GridComponent;
 <Grid
     gridHeight="80vh"
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -294,7 +351,6 @@ export default GridComponent;
 <Grid
     gridWidth="75%"
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -332,7 +388,6 @@ const columnToExpand = {
 
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     columnToExpand={columnToExpand}
     calculateRowHeight={calculateRowHeight}
@@ -353,7 +408,6 @@ expandableColumn = true // or - expandableColumn = false
 
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -405,7 +459,6 @@ const onRowDelete = (originalRow) => {
 
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     rowActions={rowActions}
@@ -431,7 +484,6 @@ const onGridRefresh = () => {
 
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -453,7 +505,6 @@ const CustomPanel = <CustomPanel />
 
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -521,7 +572,6 @@ const loadMoreData = (updatedPageInfo) => {
 
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     paginationType={paginationType}
     pageInfo={gridPageInfo}
     loadMoreData={loadMoreData}
@@ -533,6 +583,24 @@ const loadMoreData = (updatedPageInfo) => {
 />;
 ```
 
+#### With grouped headers
+
+<Story name="With grouped headers">
+    <GridComponent enableGroupHeaders />;
+</Story>
+
+```jsx
+<Grid
+    gridData={gridData}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+    exportData={false}
+/>
+```
+
 #### Hide globalSearch
 
 <Story name="Hide globalSearch">
@@ -542,7 +610,6 @@ const loadMoreData = (updatedPageInfo) => {
 ```jsx
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -561,7 +628,6 @@ const loadMoreData = (updatedPageInfo) => {
 ```jsx
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -580,7 +646,6 @@ const loadMoreData = (updatedPageInfo) => {
 ```jsx
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -599,7 +664,6 @@ const loadMoreData = (updatedPageInfo) => {
 ```jsx
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -618,7 +682,6 @@ const loadMoreData = (updatedPageInfo) => {
 ```jsx
 <Grid
     gridData={gridData}
-    idAttribute={idAttribute}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
     onRowUpdate={onRowUpdate}
@@ -643,6 +706,7 @@ const loadMoreData = (updatedPageInfo) => {
         passRowActionCallback
         passOnGridRefresh
         CustomPanel={CustomPanel}
+        enableGroupHeaders
         enableRowDeselection
         globalSearch
         columnFilter
