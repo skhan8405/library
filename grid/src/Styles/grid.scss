@@ -39,6 +39,11 @@
                 display: block;
             }
         }
+        &.group-column-heading.column-heading {
+            .column-heading-title {
+                justify-content: center;
+            }
+        }
         &.column-heading {
             color: #204d6f;
             display: flex;

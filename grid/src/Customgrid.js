@@ -40,7 +40,8 @@ import {
 import {
     findSelectedRows,
     findSelectedRowIdAttributes,
-    updatedActionsHeaderClass
+    updatedActionsHeaderClass,
+    convertToIndividualColumns
 } from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
@@ -207,12 +208,14 @@ const Customgrid = (props) => {
                 // Return value of the filter method
                 let returnValue = false;
                 // Loop through all column values for each row
-                managableColumns.forEach((column) => {
-                    // Do search for each column
-                    returnValue =
-                        returnValue ||
-                        searchColumn(column, original, searchText);
-                });
+                convertToIndividualColumns([...managableColumns]).forEach(
+                    (column) => {
+                        // Do search for each column
+                        returnValue =
+                            returnValue ||
+                            searchColumn(column, original, searchText);
+                    }
+                );
                 return returnValue;
             });
         },
@@ -287,6 +290,7 @@ const Customgrid = (props) => {
                     disableFilters: true,
                     disableSortBy: true,
                     display: true,
+                    isGroupHeader: false,
                     minWidth: 35,
                     width: 35,
                     maxWidth: 35,
@@ -313,6 +317,7 @@ const Customgrid = (props) => {
                     disableFilters: true,
                     disableSortBy: true,
                     display: true,
+                    isGroupHeader: false,
                     minWidth: 35,
                     width: 35,
                     maxWidth: 35,
@@ -712,7 +717,8 @@ const Customgrid = (props) => {
                                                 isSorted,
                                                 isSortedDesc,
                                                 filter,
-                                                canResize
+                                                canResize,
+                                                isGroupHeader
                                             } = column;
                                             if (
                                                 display === undefined ||
@@ -721,7 +727,12 @@ const Customgrid = (props) => {
                                                 return (
                                                     <div
                                                         {...column.getHeaderProps()}
-                                                        className="table-cell column-heading th"
+                                                        className={`table-cell column-heading th ${
+                                                            isGroupHeader ===
+                                                            true
+                                                                ? "group-column-heading"
+                                                                : ""
+                                                        }`}
                                                     >
                                                         <div
                                                             className="column-heading-title"
