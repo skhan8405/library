@@ -12,6 +12,7 @@ import {
     IconClose,
     IconPdf
 } from "../../Utilities/SvgUtilities";
+import { convertToIndividualColumns } from "../../Utilities/GridUtilities";
 
 const ExportData = (props) => {
     const {
@@ -21,6 +22,13 @@ const ExportData = (props) => {
         columns,
         additionalColumn
     } = props;
+
+    // Check if additional Column is present or not
+    const isAdditionalColumnPresent =
+        additionalColumn &&
+        Object.keys(additionalColumn).length > 0 &&
+        additionalColumn.innerCells &&
+        additionalColumn.innerCells.length > 0;
 
     // Set state variables for:
     // managedColumns - main columns displayed in colum setting region
@@ -34,46 +42,67 @@ const ExportData = (props) => {
     const [downloadTypes, setDownloadTypes] = useState([]);
     const [warning, setWarning] = useState("");
 
-    // Updates the column display value accordingly
-    const changeColumnSelection = (column, flag) => {
-        return update(column, {
-            display: { $set: flag }
-        });
+    // Update display value of column based on columnId
+    const updatedDisplayOfColumn = (column, columnid, flag) => {
+        const updatedColumn = { ...column };
+        const { isGroupHeader, columnId } = column;
+        const groupedColumns = column.columns;
+        if (
+            isGroupHeader === true &&
+            groupedColumns &&
+            groupedColumns.length > 0
+        ) {
+            let atleastOneColumnDisplayed = false;
+            const updatedColumns = [...groupedColumns].map((col) => {
+                const updatedCol = col;
+                if (
+                    (columnid &&
+                        (columnid === "all" || columnid === col.columnId)) ||
+                    columnid === undefined
+                ) {
+                    updatedCol.display = flag;
+                }
+                atleastOneColumnDisplayed =
+                    atleastOneColumnDisplayed || updatedCol.display;
+                return updatedCol;
+            });
+            updatedColumn.display = atleastOneColumnDisplayed;
+            updatedColumn.columns = updatedColumns;
+        } else if (
+            (columnid && (columnid === "all" || columnid === columnId)) ||
+            columnid === undefined
+        ) {
+            updatedColumn.display = flag;
+        }
+        return updatedColumn;
     };
 
-    // update the display flag value of column or all columns in managedColumns state, based on the selection
+    // Update display value of managedAdditionalColumn state with given value
+    const updatedDisplayOfAdditionalColumn = (flag) => {
+        setManagedAdditionalColumn(
+            update(managedAdditionalColumn, {
+                display: { $set: flag }
+            })
+        );
+    };
+
+    // update the display flag value of column or all columns in managedColumns and managedAdditionalColumn state, based on the selection
     const updateColumns = (columnid, isadditionalcolumn, checked) => {
-        if (columnid === "all") {
-            // Update both main columns and additional column state values
-            const updatedManagedColumns = managedColumns.map((column) => {
-                return changeColumnSelection(column, checked);
-            });
-            setManagedColumns(
-                update(updatedManagedColumns, {
-                    $set: updatedManagedColumns
-                })
-            );
-            setManagedAdditionalColumn(
-                changeColumnSelection(managedAdditionalColumn, checked)
-            );
-        } else if (isadditionalcolumn === "true") {
-            // Update additional column state value
-            setManagedAdditionalColumn(
-                changeColumnSelection(managedAdditionalColumn, checked)
-            );
-        } else {
-            // Update main columns state value
-            const indexOfColumn = managedColumns.findIndex((column) => {
-                return column.columnId === columnid;
+        if (
+            columnid === "all" ||
+            (isAdditionalColumnPresent && isadditionalcolumn === "true")
+        ) {
+            // Update additional column state if columnid is "all" or selected column has "isadditionalcolumn"
+            updatedDisplayOfAdditionalColumn(checked);
+        }
+        if (isadditionalcolumn !== "true") {
+            // Update main columns state based on selection and columnid, if selected column doesn't have "isadditionalcolumn"
+            const updatedManagedColumns = [...managedColumns].map((column) => {
+                return updatedDisplayOfColumn(column, columnid, checked);
             });
             setManagedColumns(
                 update(managedColumns, {
-                    [indexOfColumn]: {
-                        $set: changeColumnSelection(
-                            managedColumns[indexOfColumn],
-                            checked
-                        )
-                    }
+                    $set: updatedManagedColumns
                 })
             );
         }
@@ -147,7 +176,9 @@ const ExportData = (props) => {
 
         setWarning("");
 
-        const filteredManagedColumns = managedColumns.filter((column) => {
+        const filteredManagedColumns = convertToIndividualColumns(
+            managedColumns
+        ).filter((column) => {
             return column.display === true;
         });
 
