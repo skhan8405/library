@@ -55,10 +55,15 @@ const ColumnReordering = (props) => {
     // Update display value of column based on columnId
     const updatedDisplayOfColumn = (column, flag, columnid) => {
         const updatedColumn = { ...column };
-        const { isGroupHeader, columns, columnId } = column;
-        if (isGroupHeader === true && columns && columns.length > 0) {
+        const { isGroupHeader, columnId } = column;
+        const groupedColumns = column.columns;
+        if (
+            isGroupHeader === true &&
+            groupedColumns &&
+            groupedColumns.length > 0
+        ) {
             let atleastOneColumnDisplayed = false;
-            const updatedColumns = [...columns].map((col) => {
+            const updatedColumns = [...groupedColumns].map((col) => {
                 const updatedCol = col;
                 if (
                     (columnid &&
@@ -151,9 +156,9 @@ const ColumnReordering = (props) => {
                             const {
                                 columnId,
                                 innerCells,
-                                isGroupHeader,
-                                columns
+                                isGroupHeader
                             } = updatedColumn;
+                            const groupedColumns = updatedColumn.columns;
                             if (
                                 columnId === columnid &&
                                 innerCells &&
@@ -171,10 +176,10 @@ const ColumnReordering = (props) => {
                                 );
                             } else if (
                                 isGroupHeader === true &&
-                                columns &&
-                                columns.length > 0
+                                groupedColumns &&
+                                groupedColumns.length > 0
                             ) {
-                                const updatedColumns = [...columns].map(
+                                const updatedColumns = [...groupedColumns].map(
                                     (col) => {
                                         const updatedCol = col;
                                         if (
@@ -228,10 +233,15 @@ const ColumnReordering = (props) => {
     const resetColumnUpdate = () => {
         const columnsToReset = [...columns].map((column) => {
             const colToReset = column;
-            const { isGroupHeader, columns, innerCells } = column;
+            const { isGroupHeader, innerCells } = column;
+            const groupedColumns = column.columns;
             colToReset.display = true;
-            if (isGroupHeader === true && columns && columns.length > 0) {
-                const updatedColumns = [...columns].map((col) => {
+            if (
+                isGroupHeader === true &&
+                groupedColumns &&
+                groupedColumns.length > 0
+            ) {
+                const updatedColumns = [...groupedColumns].map((col) => {
                     const updatedCol = col;
                     updatedCol.display = true;
                     return updatedCol;

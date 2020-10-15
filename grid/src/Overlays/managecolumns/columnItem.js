@@ -67,8 +67,7 @@ const ColumnItem = ({
                             columnId,
                             Header,
                             display,
-                            isDisplayInExpandedRegion,
-                            innerCells
+                            isDisplayInExpandedRegion
                         } = col;
                         return (
                             <GroupedColumnItem
@@ -76,7 +75,7 @@ const ColumnItem = ({
                                 Header={Header}
                                 display={display}
                                 isadditionalcolumn={isDisplayInExpandedRegion}
-                                innerCells={innerCells}
+                                innerCells={col.innerCells}
                                 onInnerCellChange={onInnerCellChange}
                             />
                         );
@@ -133,6 +132,8 @@ ColumnItem.propTypes = {
     moveColumn: PropTypes.func,
     findColumn: PropTypes.func,
     isadditionalcolumn: PropTypes.bool,
+    isGroupHeader: PropTypes.bool,
+    columns: PropTypes.arrayOf(PropTypes.object),
     innerCells: PropTypes.arrayOf(PropTypes.object),
     onInnerCellChange: PropTypes.func
 };
