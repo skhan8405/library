@@ -518,7 +518,6 @@ describe("render Index file ", () => {
                 rowActions={mockRowActions}
                 rowActionCallback={mockRowActionCallback}
                 getRowEditOverlay={mockGetRowEditOverlay}
-                calculateRowHeight={mockCalculateRowHeight}
                 onRowUpdate={mockUpdateRowData}
                 onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
