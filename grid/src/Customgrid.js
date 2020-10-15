@@ -736,6 +736,12 @@ const Customgrid = (props) => {
                                                                 ? "group-column-heading"
                                                                 : ""
                                                         }`}
+                                                        data-testid={
+                                                            isGroupHeader ===
+                                                            true
+                                                                ? "grid-group-header"
+                                                                : "grid-header"
+                                                        }
                                                     >
                                                         <div
                                                             className="column-heading-title"
