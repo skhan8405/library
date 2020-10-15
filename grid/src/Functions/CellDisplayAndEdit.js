@@ -112,7 +112,8 @@ const CellDisplayAndEdit = ({
 CellDisplayAndEdit.propTypes = {
     row: PropTypes.object,
     updateRowInGrid: PropTypes.func,
-    expandableColumn: PropTypes.bool
+    expandableColumn: PropTypes.bool,
+    isDesktop: PropTypes.bool
 };
 
 export default CellDisplayAndEdit;
