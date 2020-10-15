@@ -81,7 +81,7 @@ describe("Group Sort-index test Cases", () => {
             <GroupSort
                 isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                 toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                columns={columns}
+                gridColumns={columns}
                 applyGroupSort={mockApplyGroupSortOverlay}
             />
         );
@@ -97,7 +97,7 @@ describe("Group Sort-index test Cases", () => {
                 <GroupSort
                     isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    columns={columns}
+                    gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
                 />,
                 container
@@ -125,7 +125,7 @@ describe("Group Sort-index test Cases", () => {
                 <GroupSort
                     isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    columns={columns}
+                    gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
                 />,
                 container
@@ -153,7 +153,7 @@ describe("Group Sort-index test Cases", () => {
                 <GroupSort
                     isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    columns={columns}
+                    gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
                 />,
                 container
@@ -189,7 +189,7 @@ describe("Group Sort-index test Cases", () => {
                 <GroupSort
                     isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    columns={columns}
+                    gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
                 />,
                 container
@@ -236,7 +236,7 @@ describe("Group Sort-index test Cases", () => {
                 <GroupSort
                     isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    columns={columns}
+                    gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
                 />,
                 container
@@ -282,7 +282,7 @@ describe("Group Sort-index test Cases", () => {
                 <GroupSort
                     isGroupSortOverLayOpen={isGroupSortLayOverOpen}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    columns={columns}
+                    gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
                 />,
                 container
@@ -315,7 +315,7 @@ describe("Group Sort-index test Cases", () => {
                 <GroupSort
                     isGroupSortOverLayOpen={false}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
-                    columns={columns}
+                    gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
                 />,
                 container
