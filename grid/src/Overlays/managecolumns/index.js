@@ -51,9 +51,8 @@ const ColumnReordering = (props) => {
     );
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
-    // #region - Column chooser region
     // Update display value of column based on columnId
-    const updatedDisplayOfColumn = (column, flag, columnid) => {
+    const updatedDisplayOfColumn = (column, columnid, flag) => {
         const updatedColumn = { ...column };
         const { isGroupHeader, columnId } = column;
         const groupedColumns = column.columns;
@@ -87,6 +86,17 @@ const ColumnReordering = (props) => {
         return updatedColumn;
     };
 
+    // Update display value of inner cells based on columnId & cellId
+    const updatedDisplayOfInnerCells = (innerCells, cellid, flag) => {
+        return [...innerCells].map((cell) => {
+            const updatedCell = { ...cell };
+            const { cellId } = cell;
+            if (cellId === cellid || cellid === "all") {
+                updatedCell.display = flag;
+            }
+            return updatedCell;
+        });
+    };
     // Update display value of managedAdditionalColumn state with given value
     const updatedDisplayOfAdditionalColumn = (flag) => {
         setManagedAdditionalColumn(
@@ -96,6 +106,7 @@ const ColumnReordering = (props) => {
         );
     };
 
+    // #region - Column chooser region
     // update the display flag value of column or all columns in managedColumns and managedAdditionalColumn state, based on the selection
     const updateColumns = (columnid, isadditionalcolumn, checked) => {
         if (
@@ -108,7 +119,7 @@ const ColumnReordering = (props) => {
         if (isadditionalcolumn !== "true") {
             // Update main columns state based on selection and columnid, if selected column doesn't have "isadditionalcolumn"
             const updatedManagedColumns = [...managedColumns].map((column) => {
-                return updatedDisplayOfColumn(column, checked, columnid);
+                return updatedDisplayOfColumn(column, columnid, checked);
             });
             setManagedColumns(
                 update(managedColumns, {
@@ -164,15 +175,10 @@ const ColumnReordering = (props) => {
                                 innerCells &&
                                 innerCells.length > 0
                             ) {
-                                updatedColumn.innerCells = [...innerCells].map(
-                                    (cell) => {
-                                        const updatedCell = { ...cell };
-                                        const { cellId } = updatedCell;
-                                        if (cellId === cellid) {
-                                            updatedCell.display = checked;
-                                        }
-                                        return updatedCell;
-                                    }
+                                updatedColumn.innerCells = updatedDisplayOfInnerCells(
+                                    [...innerCells],
+                                    cellid,
+                                    checked
                                 );
                             } else if (
                                 isGroupHeader === true &&
@@ -187,16 +193,11 @@ const ColumnReordering = (props) => {
                                             col.innerCells &&
                                             col.innerCells.length > 0
                                         ) {
-                                            updatedCol.innerCells = [
-                                                ...col.innerCells
-                                            ].map((cell) => {
-                                                const updatedCell = { ...cell };
-                                                const { cellId } = updatedCell;
-                                                if (cellId === cellid) {
-                                                    updatedCell.display = checked;
-                                                }
-                                                return updatedCell;
-                                            });
+                                            updatedCol.innerCells = updatedDisplayOfInnerCells(
+                                                [...col.innerCells],
+                                                cellid,
+                                                checked
+                                            );
                                         }
                                         return updatedCol;
                                     }
@@ -243,18 +244,28 @@ const ColumnReordering = (props) => {
             ) {
                 const updatedColumns = [...groupedColumns].map((col) => {
                     const updatedCol = col;
+                    const groupedColInnerCells = col.innerCells;
                     updatedCol.display = true;
+                    if (
+                        groupedColInnerCells &&
+                        groupedColInnerCells.length > 0
+                    ) {
+                        updatedCol.innerCells = updatedDisplayOfInnerCells(
+                            [...groupedColInnerCells],
+                            "all",
+                            true
+                        );
+                    }
                     return updatedCol;
                 });
                 colToReset.columns = updatedColumns;
             }
             if (innerCells && innerCells.length > 0) {
-                const innerCellsToReset = [...innerCells].map((cell) => {
-                    const cellToReset = cell;
-                    cellToReset.display = true;
-                    return cellToReset;
-                });
-                colToReset.innerCells = innerCellsToReset;
+                colToReset.innerCells = updatedDisplayOfInnerCells(
+                    [...innerCells],
+                    "all",
+                    true
+                );
             }
             return colToReset;
         });
