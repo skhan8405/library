@@ -28,17 +28,6 @@
             margin-bottom: rem(50);
         }
     }
-    .row-height-calculator.table-row {
-        &:last-child {
-            margin-bottom: 0;
-        }
-        .table-row {
-            width: 100%;
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
-    }
     .table-row-wrap {
         width: 100%;
         display: flex;

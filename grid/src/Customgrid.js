@@ -19,7 +19,6 @@ import { VariableSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import PropTypes from "prop-types";
-import { renderToString } from "react-dom/server";
 import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
@@ -61,6 +60,7 @@ const Customgrid = (props) => {
         deleteRowFromGrid,
         searchColumn,
         onRowSelect,
+        calculateRowHeight,
         expandableColumn,
         rowActions,
         rowActionCallback,
@@ -523,44 +523,6 @@ const Customgrid = (props) => {
         return rowElement;
     };
 
-    // Find the required row height for each row value that can be used in the list.
-    // Bind the row HTML structure into a hidden element and get the clientHeight of that element and then distroy the hidden element.
-    const getItemSize = useCallback(
-        (index) => {
-            const newHiddenSizingEl = document.createElement("div");
-            newHiddenSizingEl.classList.add("row-height-calculator");
-            newHiddenSizingEl.classList.add("tr");
-            newHiddenSizingEl.classList.add("table-row");
-            newHiddenSizingEl.classList.add(`hidden-sizing-element-${index}`);
-            newHiddenSizingEl.style.display = "flex";
-            newHiddenSizingEl.style.flex = "1 0 auto";
-            newHiddenSizingEl.style.position = "absolute";
-            newHiddenSizingEl.style.left = "0";
-            newHiddenSizingEl.style.top = "0";
-            newHiddenSizingEl.style.width = "100%";
-            newHiddenSizingEl.style.minWidth = "70px";
-            newHiddenSizingEl.style.pointerEvents = "none";
-            newHiddenSizingEl.style.visibility = "hidden";
-            const rowItemElement = renderSingleRow(rows[index]);
-            newHiddenSizingEl.innerHTML = renderToString(rowItemElement);
-            const tableContainerList = document.getElementsByClassName(
-                "tableContainer__List"
-            );
-            if (tableContainerList && tableContainerList.length > 0) {
-                const tableContainer = tableContainerList[0];
-                const tableRowsContainer = tableContainer.firstElementChild;
-                if (tableRowsContainer) {
-                    tableRowsContainer.appendChild(newHiddenSizingEl);
-                    const rowHeight = newHiddenSizingEl.clientHeight || 100;
-                    tableRowsContainer.removeChild(newHiddenSizingEl);
-                    return rowHeight;
-                }
-            }
-            return 100;
-        },
-        [rows, userExpandedRowDetails]
-    );
-
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
@@ -833,7 +795,16 @@ const Customgrid = (props) => {
                                             height={height - 60}
                                             itemCount={rows.length}
                                             itemSize={(index) => {
-                                                return getItemSize(index);
+                                                return calculateRowHeight(
+                                                    rows[index],
+                                                    headerGroups &&
+                                                        headerGroups.length
+                                                        ? headerGroups[
+                                                              headerGroups.length -
+                                                                  1
+                                                          ].headers
+                                                        : []
+                                                );
                                             }}
                                             onItemsRendered={onItemsRendered}
                                             overscanCount={overScanCount}
@@ -865,6 +836,7 @@ Customgrid.propTypes = {
     deleteRowFromGrid: PropTypes.func,
     searchColumn: PropTypes.func,
     onRowSelect: PropTypes.func,
+    calculateRowHeight: PropTypes.func,
     expandableColumn: PropTypes.bool,
     isExpandContentAvailable: PropTypes.bool,
     hasNextPage: PropTypes.bool,
