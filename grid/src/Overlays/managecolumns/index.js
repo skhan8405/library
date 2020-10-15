@@ -97,6 +97,7 @@ const ColumnReordering = (props) => {
             return updatedCell;
         });
     };
+
     // Update display value of managedAdditionalColumn state with given value
     const updatedDisplayOfAdditionalColumn = (flag) => {
         setManagedAdditionalColumn(

@@ -13,10 +13,7 @@ const groupedColumnItem = ({
         innerCells && innerCells.length > 0 && display === true;
 
     return (
-        <div
-            className="column__innerCells__wrap"
-            key={`groupedColumnItem_${id}`}
-        >
+        <div className="column__innerCells__wrap">
             {isItemToBeDisplayed ? <strong>{Header}</strong> : null}
             {isItemToBeDisplayed
                 ? innerCells.map((cell) => {

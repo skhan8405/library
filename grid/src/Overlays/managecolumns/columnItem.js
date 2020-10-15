@@ -71,6 +71,7 @@ const ColumnItem = ({
                         } = col;
                         return (
                             <GroupedColumnItem
+                                key={columnId}
                                 id={columnId}
                                 Header={Header}
                                 display={display}
