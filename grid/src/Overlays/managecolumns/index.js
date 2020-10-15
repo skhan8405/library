@@ -52,58 +52,69 @@ const ColumnReordering = (props) => {
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
     // #region - Column chooser region
-
-    // Updates the column display value accordingly
-    const changeColumnSelection = (column, flag) => {
-        return update(column, {
-            display: { $set: flag }
-        });
+    // Update display value of column based on columnId
+    const updatedDisplayOfColumn = (column, flag, columnid) => {
+        const updatedColumn = { ...column };
+        const { isGroupHeader, columns, columnId } = column;
+        if (isGroupHeader === true && columns && columns.length > 0) {
+            let atleastOneColumnDisplayed = false;
+            const updatedColumns = [...columns].map((col) => {
+                const updatedCol = col;
+                if (
+                    (columnid &&
+                        (columnid === "all" || columnid === col.columnId)) ||
+                    columnid === undefined
+                ) {
+                    updatedCol.display = flag;
+                }
+                atleastOneColumnDisplayed =
+                    atleastOneColumnDisplayed || updatedCol.display;
+                return updatedCol;
+            });
+            updatedColumn.display = atleastOneColumnDisplayed;
+            updatedColumn.columns = updatedColumns;
+        } else if (
+            (columnid && (columnid === "all" || columnid === columnId)) ||
+            columnid === undefined
+        ) {
+            updatedColumn.display = flag;
+        }
+        return updatedColumn;
     };
 
-    // update the display flag value of column or all columns in managedColumns state, based on the selection
+    // Update display value of managedAdditionalColumn state with given value
+    const updatedDisplayOfAdditionalColumn = (flag) => {
+        setManagedAdditionalColumn(
+            update(managedAdditionalColumn, {
+                display: { $set: flag }
+            })
+        );
+    };
+
+    // update the display flag value of column or all columns in managedColumns and managedAdditionalColumn state, based on the selection
     const updateColumns = (columnid, isadditionalcolumn, checked) => {
-        if (columnid === "all") {
-            // Update both main columns and additional column state values
-            const updatedManagedColumns = managedColumns.map((column) => {
-                return changeColumnSelection(column, checked);
-            });
-            setManagedColumns(
-                update(updatedManagedColumns, {
-                    $set: updatedManagedColumns
-                })
-            );
-            if (isAdditionalColumnPresent) {
-                setManagedAdditionalColumn(
-                    changeColumnSelection(managedAdditionalColumn, checked)
-                );
-            }
-        } else if (isAdditionalColumnPresent && isadditionalcolumn === "true") {
-            // Update additional column state value
-            setManagedAdditionalColumn(
-                changeColumnSelection(managedAdditionalColumn, checked)
-            );
-        } else {
-            // Update main columns state value
-            const indexOfColumn = managedColumns.findIndex((column) => {
-                return column.columnId === columnid;
+        if (
+            columnid === "all" ||
+            (isAdditionalColumnPresent && isadditionalcolumn === "true")
+        ) {
+            // Update additional column state if columnid is "all" or selected column has "isadditionalcolumn"
+            updatedDisplayOfAdditionalColumn(checked);
+        }
+        if (isadditionalcolumn !== "true") {
+            // Update main columns state based on selection and columnid, if selected column doesn't have "isadditionalcolumn"
+            const updatedManagedColumns = [...managedColumns].map((column) => {
+                return updatedDisplayOfColumn(column, checked, columnid);
             });
             setManagedColumns(
                 update(managedColumns, {
-                    [indexOfColumn]: {
-                        $set: changeColumnSelection(
-                            managedColumns[indexOfColumn],
-                            checked
-                        )
-                    }
+                    $set: updatedManagedColumns
                 })
             );
         }
     };
-
     // #endregion
 
     // #region - Column settings region
-
     // Updates the order of columns in managedColumns state
     const onColumnReorder = (reorderedColumns) => {
         setManagedColumns(
@@ -137,7 +148,12 @@ const ColumnReordering = (props) => {
                     setManagedColumns(() => {
                         return [...managedColumns].map((column) => {
                             const updatedColumn = { ...column };
-                            const { columnId, innerCells } = updatedColumn;
+                            const {
+                                columnId,
+                                innerCells,
+                                isGroupHeader,
+                                columns
+                            } = updatedColumn;
                             if (
                                 columnId === columnid &&
                                 innerCells &&
@@ -153,6 +169,34 @@ const ColumnReordering = (props) => {
                                         return updatedCell;
                                     }
                                 );
+                            } else if (
+                                isGroupHeader === true &&
+                                columns &&
+                                columns.length > 0
+                            ) {
+                                const updatedColumns = [...columns].map(
+                                    (col) => {
+                                        const updatedCol = col;
+                                        if (
+                                            col.columnId === columnid &&
+                                            col.innerCells &&
+                                            col.innerCells.length > 0
+                                        ) {
+                                            updatedCol.innerCells = [
+                                                ...col.innerCells
+                                            ].map((cell) => {
+                                                const updatedCell = { ...cell };
+                                                const { cellId } = updatedCell;
+                                                if (cellId === cellid) {
+                                                    updatedCell.display = checked;
+                                                }
+                                                return updatedCell;
+                                            });
+                                        }
+                                        return updatedCol;
+                                    }
+                                );
+                                updatedColumn.columns = updatedColumns;
                             }
                             return updatedColumn;
                         });
@@ -182,17 +226,24 @@ const ColumnReordering = (props) => {
     // #endregion
 
     const resetColumnUpdate = () => {
-        const columnsToReset = [...columns].map((col) => {
-            const colToReset = col;
+        const columnsToReset = [...columns].map((column) => {
+            const colToReset = column;
+            const { isGroupHeader, columns, innerCells } = column;
             colToReset.display = true;
-            if (colToReset.innerCells && colToReset.innerCells.length > 0) {
-                const innerCellsToReset = [...colToReset.innerCells].map(
-                    (cell) => {
-                        const cellToReset = cell;
-                        cellToReset.display = true;
-                        return cellToReset;
-                    }
-                );
+            if (isGroupHeader === true && columns && columns.length > 0) {
+                const updatedColumns = [...columns].map((col) => {
+                    const updatedCol = col;
+                    updatedCol.display = true;
+                    return updatedCol;
+                });
+                colToReset.columns = updatedColumns;
+            }
+            if (innerCells && innerCells.length > 0) {
+                const innerCellsToReset = [...innerCells].map((cell) => {
+                    const cellToReset = cell;
+                    cellToReset.display = true;
+                    return cellToReset;
+                });
                 colToReset.innerCells = innerCellsToReset;
             }
             return colToReset;

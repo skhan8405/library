@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import update from "immutability-helper";
+import { convertToIndividualColumns } from "../../Utilities/GridUtilities";
 
 const ColumnSearch = ({
     columns,
@@ -9,6 +10,8 @@ const ColumnSearch = ({
     managedAdditionalColumn,
     updateColumns
 }) => {
+    const gridColumns = convertToIndividualColumns(columns);
+
     // Returns a single array that contains main columns as well as the expanded columns
     const getAllColumns = (columnsList, additionalColumnItem) => {
         let allCoulmns = [];
@@ -27,14 +30,14 @@ const ColumnSearch = ({
     };
 
     const [searchableColumns, setSearchableColumns] = useState(
-        getAllColumns(columns, additionalColumn)
+        getAllColumns(gridColumns, additionalColumn)
     );
 
     // Update searched columns state based on the searched value
     const onColumnSearch = (event) => {
         let { value } = event ? event.target : "";
         value = value ? value.toLowerCase() : "";
-        const allColumns = getAllColumns(columns, additionalColumn);
+        const allColumns = getAllColumns(gridColumns, additionalColumn);
         if (value !== "") {
             setSearchableColumns(
                 allColumns.filter((column) => {
@@ -49,14 +52,14 @@ const ColumnSearch = ({
     // Check if the display value of column or all columns in managedColumns state is true/false
     const isSearchableColumnSelected = (columnId) => {
         const allManagedColumns = getAllColumns(
-            managedColumns,
+            convertToIndividualColumns(managedColumns),
             managedAdditionalColumn
         );
         const filteredAllManagedColumns = allManagedColumns.filter((column) => {
             return column.display === true;
         });
         if (columnId === "all") {
-            const allColumns = getAllColumns(columns, additionalColumn);
+            const allColumns = getAllColumns(gridColumns, additionalColumn);
             return filteredAllManagedColumns.length === allColumns.length;
         }
         const selectedColumn = filteredAllManagedColumns.find((column) => {
@@ -79,7 +82,7 @@ const ColumnSearch = ({
     useEffect(() => {
         setSearchableColumns(
             update(searchableColumns, {
-                $set: getAllColumns(columns, additionalColumn)
+                $set: getAllColumns(gridColumns, additionalColumn)
             })
         );
     }, [columns, additionalColumn]);

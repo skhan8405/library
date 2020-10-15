@@ -6,6 +6,7 @@ import MultiBackend, { TouchTransition } from "react-dnd-multi-backend";
 import ClickAwayListener from "react-click-away-listener";
 import PropTypes from "prop-types";
 import SortingList from "./sortingList";
+import { convertToIndividualColumns } from "../../Utilities/GridUtilities";
 import { IconClose } from "../../Utilities/SvgUtilities";
 
 const GroupSort = (props) => {
@@ -13,9 +14,10 @@ const GroupSort = (props) => {
         isGroupSortOverLayOpen,
         toggleGroupSortOverLay,
         applyGroupSort,
-        columns
+        gridColumns
     } = props;
 
+    const columns = convertToIndividualColumns(gridColumns);
     const sortingOrders = ["Ascending", "Descending"];
     const defaultSortingOption = [
         {
@@ -194,7 +196,7 @@ const GroupSort = (props) => {
 GroupSort.propTypes = {
     isGroupSortOverLayOpen: PropTypes.bool,
     toggleGroupSortOverLay: PropTypes.func,
-    columns: PropTypes.arrayOf(PropTypes.object),
+    gridColumns: PropTypes.arrayOf(PropTypes.object),
     applyGroupSort: PropTypes.func
 };
 

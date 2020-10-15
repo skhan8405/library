@@ -44,7 +44,9 @@ const ColumnsList = (props) => {
                         columnId,
                         Header,
                         isDisplayInExpandedRegion,
-                        innerCells
+                        innerCells,
+                        isGroupHeader,
+                        columns
                     } = column;
                     return (
                         <ColumnItem
@@ -54,6 +56,8 @@ const ColumnsList = (props) => {
                             findColumn={findColumn}
                             columnHeader={Header}
                             isadditionalcolumn={isDisplayInExpandedRegion}
+                            isGroupHeader={isGroupHeader}
+                            columns={columns}
                             innerCells={innerCells}
                             onInnerCellChange={onInnerCellChange}
                         />

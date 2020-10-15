@@ -629,7 +629,7 @@ const Customgrid = (props) => {
                             <GroupSort
                                 isGroupSortOverLayOpen={isGroupSortOverLayOpen}
                                 toggleGroupSortOverLay={toggleGroupSortOverLay}
-                                columns={managableColumns}
+                                gridColumns={managableColumns}
                                 applyGroupSort={applyGroupSort}
                             />
                         </div>
@@ -733,7 +733,11 @@ const Customgrid = (props) => {
             >
                 <AutoSizer disableWidth className="tableContainer__AutoSizer">
                     {({ height }) => (
-                        <div {...getTableProps()} className="table">
+                        <div
+                            {...getTableProps()}
+                            className="table"
+                            style={{ width: "99.5%" }}
+                        >
                             <div className="thead table-row table-row--head">
                                 {headerGroups.map((headerGroup) => (
                                     <div
@@ -741,12 +745,16 @@ const Customgrid = (props) => {
                                         className="tr"
                                     >
                                         {headerGroup.headers.map((column) => {
+                                            const {
+                                                display,
+                                                isSorted,
+                                                isSortedDesc,
+                                                filter,
+                                                canResize
+                                            } = column;
                                             if (
-                                                !(
-                                                    column.isGroupHeader ===
-                                                        false &&
-                                                    column.display === false
-                                                )
+                                                display === undefined ||
+                                                display === true
                                             ) {
                                                 return (
                                                     <div
@@ -762,11 +770,11 @@ const Customgrid = (props) => {
                                                                 "Header"
                                                             )}
                                                             <span>
-                                                                {column.isSorted ? (
+                                                                {isSorted ? (
                                                                     <i>
                                                                         <IconSort
                                                                             className={
-                                                                                column.isSortedDesc
+                                                                                isSortedDesc
                                                                                     ? "sort-asc"
                                                                                     : "sort-desc"
                                                                             }
@@ -787,14 +795,14 @@ const Customgrid = (props) => {
                                                             {/* column.canFilter - should be used to identify if column is filterable */}
                                                             {/* But bug of react-table will set canFilter to true (even if it is false) after doing a global search */}
                                                             {/* Hence checking if filter logic is present as a function for a column */}
-                                                            {typeof column.filter ===
+                                                            {typeof filter ===
                                                             "function"
                                                                 ? column.render(
                                                                       "Filter"
                                                                   )
                                                                 : null}
                                                         </div>
-                                                        {column.canResize && (
+                                                        {canResize && (
                                                             <div
                                                                 {...column.getResizerProps()}
                                                                 className="resizer"

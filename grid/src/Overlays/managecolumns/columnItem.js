@@ -3,6 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 import PropTypes from "prop-types";
 import { ItemTypes } from "./ItemTypes";
 import { IconJustify } from "../../Utilities/SvgUtilities";
+import GroupedColumnItem from "./groupedColumnItem";
 
 const ColumnItem = ({
     id,
@@ -10,6 +11,8 @@ const ColumnItem = ({
     moveColumn,
     findColumn,
     isadditionalcolumn,
+    isGroupHeader,
+    columns,
     innerCells,
     onInnerCellChange
 }) => {
@@ -58,40 +61,67 @@ const ColumnItem = ({
                     </i>
                 </div>
                 <div className="columnItem__Header">{columnHeader}</div>
-                <div className="column__innerCells__wrap">
-                    {innerCells && innerCells.length > 0
-                        ? innerCells.map((cell) => {
-                              const { cellId, Header, display } = cell;
-                              return (
-                                  <div className="column__wrap" key={cellId}>
-                                      <div className="column__checkbox">
-                                          <div className="form-check">
-                                              <input
-                                                  type="checkbox"
-                                                  id={`chk_selectInnerCell_${cellId}`}
-                                                  className="form-check-input custom-checkbox form-check-input"
-                                                  data-testid={`selectInnerCell_${id}_${cellId}`}
-                                                  data-columnid={id}
-                                                  data-cellid={cellId}
-                                                  data-isadditionalcolumn={
-                                                      isadditionalcolumn
-                                                  }
-                                                  checked={display}
-                                                  onChange={onInnerCellChange}
-                                              />
-                                              <label
-                                                  htmlFor={`chk_selectInnerCell_${cellId}`}
-                                                  className="form-check-label"
-                                              >
-                                                  {Header}
-                                              </label>
+                {isGroupHeader === true && columns && columns.length > 0 ? (
+                    columns.map((col) => {
+                        const {
+                            columnId,
+                            Header,
+                            display,
+                            isDisplayInExpandedRegion,
+                            innerCells
+                        } = col;
+                        return (
+                            <GroupedColumnItem
+                                id={columnId}
+                                Header={Header}
+                                display={display}
+                                isadditionalcolumn={isDisplayInExpandedRegion}
+                                innerCells={innerCells}
+                                onInnerCellChange={onInnerCellChange}
+                            />
+                        );
+                    })
+                ) : (
+                    <div className="column__innerCells__wrap">
+                        {innerCells && innerCells.length > 0
+                            ? innerCells.map((cell) => {
+                                  const { cellId, Header, display } = cell;
+                                  return (
+                                      <div
+                                          className="column__wrap"
+                                          key={cellId}
+                                      >
+                                          <div className="column__checkbox">
+                                              <div className="form-check">
+                                                  <input
+                                                      type="checkbox"
+                                                      id={`chk_selectInnerCell_${cellId}`}
+                                                      className="form-check-input custom-checkbox form-check-input"
+                                                      data-testid={`selectInnerCell_${id}_${cellId}`}
+                                                      data-columnid={id}
+                                                      data-cellid={cellId}
+                                                      data-isadditionalcolumn={
+                                                          isadditionalcolumn
+                                                      }
+                                                      checked={display}
+                                                      onChange={
+                                                          onInnerCellChange
+                                                      }
+                                                  />
+                                                  <label
+                                                      htmlFor={`chk_selectInnerCell_${cellId}`}
+                                                      className="form-check-label"
+                                                  >
+                                                      {Header}
+                                                  </label>
+                                              </div>
                                           </div>
                                       </div>
-                                  </div>
-                              );
-                          })
-                        : null}
-                </div>
+                                  );
+                              })
+                            : null}
+                    </div>
+                )}
             </div>
         </div>
     );

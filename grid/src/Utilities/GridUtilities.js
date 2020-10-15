@@ -53,3 +53,16 @@ export const findSelectedRowIdAttributes = (selectedRows, idAttribute) => {
     }
     return rowIdentifiers;
 };
+
+export const convertToIndividualColumns = (managableColumns) => {
+    let modifiedColumns = [];
+    managableColumns.forEach((item) => {
+        const { columns } = item;
+        if (columns && columns.length > 0) {
+            modifiedColumns = [...modifiedColumns, ...columns];
+        } else {
+            modifiedColumns.push(item);
+        }
+    });
+    return [...modifiedColumns];
+};

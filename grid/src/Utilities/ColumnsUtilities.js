@@ -108,7 +108,33 @@ export const extractColumns = (
 
             modifiedColumns.push(elem);
         });
-        return modifiedColumns;
+
+        const updatedColumnStructure = [];
+        modifiedColumns.forEach((modifiedColumn, index) => {
+            if (!modifiedColumn.groupHeader) {
+                updatedColumnStructure.push(modifiedColumn);
+            } else {
+                const existingGroupHeaderColumn = updatedColumnStructure.find(
+                    (colStructure) => {
+                        return (
+                            colStructure.Header === modifiedColumn.groupHeader
+                        );
+                    }
+                );
+                if (!existingGroupHeaderColumn) {
+                    updatedColumnStructure.push({
+                        Header: modifiedColumn.groupHeader,
+                        columnId: `groupedColumn_${index}`,
+                        isGroupHeader: true,
+                        display: true,
+                        columns: [modifiedColumn]
+                    });
+                } else {
+                    existingGroupHeaderColumn.columns.push(modifiedColumn);
+                }
+            }
+        });
+        return updatedColumnStructure;
     }
     return [];
 };
