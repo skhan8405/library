@@ -41,7 +41,8 @@ import {
     findSelectedRows,
     findSelectedRowIdAttributes,
     updatedActionsHeaderClass,
-    convertToIndividualColumns
+    convertToIndividualColumns,
+    checkdisplayOfGroupedColumns
 } from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
@@ -721,7 +722,9 @@ const Customgrid = (props) => {
                                                 isGroupHeader
                                             } = column;
                                             if (
-                                                display === undefined ||
+                                                checkdisplayOfGroupedColumns(
+                                                    column
+                                                ) ||
                                                 display === true
                                             ) {
                                                 return (

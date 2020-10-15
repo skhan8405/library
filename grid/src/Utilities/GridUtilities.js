@@ -66,3 +66,18 @@ export const convertToIndividualColumns = (managableColumns) => {
     });
     return [...modifiedColumns];
 };
+
+export const checkdisplayOfGroupedColumns = (groupedColumn) => {
+    if (groupedColumn) {
+        const { headers } = groupedColumn;
+        if (headers && headers.length > 0) {
+            const headerToDisplay = headers.find((header) => {
+                return header.display === true;
+            });
+            if (headerToDisplay) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
