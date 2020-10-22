@@ -399,6 +399,7 @@ describe("Reference test cases", () => {
         const { container, getAllByTestId } = render(
             <Grid
                 gridData={data}
+                rowsToOverscan={20}
                 idAttribute="travelId"
                 paginationType="index"
                 pageInfo={pageInfo}

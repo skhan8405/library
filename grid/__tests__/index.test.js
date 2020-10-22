@@ -824,6 +824,7 @@ describe("render Index file ", () => {
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
                 gridData={data}
+                rowsToOverscan={20}
                 idAttribute="travelId"
                 paginationType="index"
                 pageInfo={pageInfo}
