@@ -597,7 +597,24 @@ const loadMoreData = (updatedPageInfo) => {
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-    exportData={false}
+/>
+```
+
+#### With custom overscan count
+
+<Story name="With custom overscan count">
+    <GridComponent rowsToOverscan={20} />;
+</Story>
+
+```jsx
+<Grid
+    gridData={gridData}
+    rowsToOverscan={20}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
 />
 ```
 
@@ -699,6 +716,7 @@ const loadMoreData = (updatedPageInfo) => {
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
+        rowsToOverscan={20}
         hasPagination
         passColumnToExpand
         expandableColumn
@@ -724,6 +742,7 @@ const loadMoreData = (updatedPageInfo) => {
     gridHeight={gridHeight}
     gridWidth={gridWidth}
     gridData={gridData}
+    rowsToOverscan={20}
     idAttribute={idAttribute}
     paginationType={paginationType}
     pageInfo={gridPageInfo}

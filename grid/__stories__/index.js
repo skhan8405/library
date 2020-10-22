@@ -16,6 +16,7 @@ const GridComponent = (props) => {
         title,
         gridHeight,
         gridWidth,
+        rowsToOverscan,
         passColumnToExpand,
         passRowActions,
         passRowActionCallback,
@@ -987,6 +988,7 @@ const GridComponent = (props) => {
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
                     gridData={gridData}
+                    rowsToOverscan={rowsToOverscan}
                     idAttribute={enableRowDeselection ? idAttribute : ""}
                     paginationType={hasPagination ? paginationType : null}
                     pageInfo={hasPagination ? gridPageInfo : null}

@@ -55,6 +55,7 @@ const Customgrid = (props) => {
         managableColumns,
         expandedRowData,
         gridData,
+        rowsToOverscan,
         idAttribute,
         totalRecordsCount,
         getRowEditOverlay,
@@ -81,7 +82,10 @@ const Customgrid = (props) => {
     } = props;
 
     // Over scan count for react-window list
-    const overScanCount = 20;
+    const overScanCount =
+        rowsToOverscan && typeof rowsToOverscan === "number"
+            ? rowsToOverscan
+            : 10;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
     // This will be set as false in useEffect - [].
@@ -849,6 +853,7 @@ Customgrid.propTypes = {
     gridWidth: PropTypes.string,
     managableColumns: PropTypes.arrayOf(PropTypes.object),
     gridData: PropTypes.arrayOf(PropTypes.object),
+    rowsToOverscan: PropTypes.number,
     idAttribute: PropTypes.string,
     totalRecordsCount: PropTypes.number,
     getRowEditOverlay: PropTypes.func,

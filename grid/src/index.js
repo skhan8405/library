@@ -15,6 +15,7 @@ const Grid = (props) => {
         gridHeight,
         gridWidth,
         gridData,
+        rowsToOverscan,
         idAttribute,
         paginationType,
         pageInfo,
@@ -308,6 +309,7 @@ const Grid = (props) => {
                 managableColumns={gridColumns}
                 expandedRowData={additionalColumn}
                 gridData={gridData}
+                rowsToOverscan={rowsToOverscan}
                 idAttribute={idAttribute}
                 totalRecordsCount={pageInfo ? pageInfo.total : 0}
                 getRowEditOverlay={getRowEditOverlay}
@@ -358,6 +360,7 @@ Grid.propTypes = {
     columns: PropTypes.arrayOf(PropTypes.object),
     columnToExpand: PropTypes.object,
     gridData: PropTypes.arrayOf(PropTypes.object),
+    rowsToOverscan: PropTypes.number,
     idAttribute: PropTypes.string,
     paginationType: PropTypes.string,
     pageInfo: PropTypes.object,
