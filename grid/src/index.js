@@ -125,20 +125,10 @@ const Grid = (props) => {
     };
 
     // Local state value for holding columns configuration
-    const [gridColumns, setGridColumns] = useState(
-        extractColumns(
-            columns,
-            searchColumn,
-            isDesktop,
-            updateRowInGrid,
-            expandableColumn
-        )
-    );
+    const [gridColumns, setGridColumns] = useState([]);
 
     // Local state value for holding the additional column configuration
-    const [additionalColumn, setAdditionalColumn] = useState(
-        extractAdditionalColumn(columnToExpand, isDesktop, updateRowInGrid)
-    );
+    const [additionalColumn, setAdditionalColumn] = useState(null);
 
     // Add logic to calculate height of each row, based on the content of  or more columns
     // This can be used only if developer using the component has not passed a function to calculate row height

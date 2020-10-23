@@ -543,308 +543,327 @@ const Customgrid = (props) => {
         [prepareRow, rows, isRowExpandEnabled, additionalColumn]
     );
 
-    // Render table and other components as required
-    // Use properties and methods provided by react-table
-    // Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
-    // Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
-    // React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
-    return (
-        <div className="table-wrapper" style={{ width: gridWidth || "100%" }}>
-            <div className="neo-grid-header">
-                <div className="neo-grid-header__results">
-                    <strong>
-                        {totalRecordsCount > 0 &&
-                        rows.length === gridData.length
-                            ? totalRecordsCount
-                            : rows.length}
-                    </strong>
-                    <span>{title || "Rows"}</span>
-                </div>
-                {CustomPanel ? (
-                    <div className="neo-grid-header__customPanel">
-                        <CustomPanel />
+    if (!isFirstRendering) {
+        // Render table and other components as required
+        // Use properties and methods provided by react-table
+        // Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
+        // Infinite loader used for lazy loading, with the properties passed here and other values calculated at the top
+        // React window list is used for implementing virtualization, specifying the item count in a frame and height of each rows in it.
+        return (
+            <div
+                className="table-wrapper"
+                style={{ width: gridWidth || "100%" }}
+            >
+                <div className="neo-grid-header">
+                    <div className="neo-grid-header__results">
+                        <strong>
+                            {totalRecordsCount > 0 &&
+                            rows.length === gridData.length
+                                ? totalRecordsCount
+                                : rows.length}
+                        </strong>
+                        <span>{title || "Rows"}</span>
                     </div>
-                ) : null}
-                <div className="neo-grid-header__utilities">
-                    {globalSearch !== false ? (
-                        <GlobalFilter
-                            globalFilter={globalFilter}
-                            setGlobalFilter={setGlobalFilter}
-                        />
-                    ) : null}
-                    {columnFilter !== false ? (
-                        <div className="utilities-icon-container keyword-search-container">
-                            <div
-                                className="utilities-icon keyword-search"
-                                role="presentation"
-                                data-testid="toggleColumnFilter"
-                                onClick={toggleColumnFilter}
-                            >
-                                <i>
-                                    <IconFilter />
-                                </i>
-                            </div>
+                    {CustomPanel ? (
+                        <div className="neo-grid-header__customPanel">
+                            <CustomPanel />
                         </div>
                     ) : null}
-                    {groupSort !== false ? (
-                        <div className="utilities-icon-container group-sort-container">
-                            <div
-                                className="utilities-icon group-sort"
-                                role="presentation"
-                                data-testid="toggleGroupSortOverLay"
-                                onClick={toggleGroupSortOverLay}
-                            >
-                                <i>
-                                    <IconGroupSort />
-                                </i>
-                            </div>
-                            <GroupSort
-                                isGroupSortOverLayOpen={isGroupSortOverLayOpen}
-                                toggleGroupSortOverLay={toggleGroupSortOverLay}
-                                gridColumns={managableColumns}
-                                applyGroupSort={applyGroupSort}
+                    <div className="neo-grid-header__utilities">
+                        {globalSearch !== false ? (
+                            <GlobalFilter
+                                globalFilter={globalFilter}
+                                setGlobalFilter={setGlobalFilter}
                             />
-                        </div>
-                    ) : null}
-                    {columnChooser !== false ? (
-                        <div className="utilities-icon-container manage-columns-container">
-                            <div
-                                className="utilities-icon manage-columns"
-                                role="presentation"
-                                data-testid="toggleManageColumnsOverlay"
-                                onClick={toggleManageColumnsOverlay}
-                            >
-                                <i>
-                                    <IconColumns />
-                                </i>
+                        ) : null}
+                        {columnFilter !== false ? (
+                            <div className="utilities-icon-container keyword-search-container">
+                                <div
+                                    className="utilities-icon keyword-search"
+                                    role="presentation"
+                                    data-testid="toggleColumnFilter"
+                                    onClick={toggleColumnFilter}
+                                >
+                                    <i>
+                                        <IconFilter />
+                                    </i>
+                                </div>
                             </div>
-                            <ColumnReordering
-                                isManageColumnOverlayOpen={
-                                    isManageColumnOverlayOpen
-                                }
-                                toggleManageColumnsOverlay={
-                                    toggleManageColumnsOverlay
-                                }
-                                columns={managableColumns}
-                                additionalColumn={expandedRowData}
-                                updateColumnStructure={updateColumnStructure}
-                            />
-                        </div>
-                    ) : null}
-                    {exportData !== false ? (
-                        <div className="utilities-icon-container manage-columns-container">
-                            <div
-                                className="utilities-icon export-data"
-                                role="presentation"
-                                data-testid="toggleExportDataOverlay"
-                                onClick={toggleExportDataOverlay}
-                            >
-                                <i>
-                                    <IconShare />
-                                </i>
+                        ) : null}
+                        {groupSort !== false ? (
+                            <div className="utilities-icon-container group-sort-container">
+                                <div
+                                    className="utilities-icon group-sort"
+                                    role="presentation"
+                                    data-testid="toggleGroupSortOverLay"
+                                    onClick={toggleGroupSortOverLay}
+                                >
+                                    <i>
+                                        <IconGroupSort />
+                                    </i>
+                                </div>
+                                <GroupSort
+                                    isGroupSortOverLayOpen={
+                                        isGroupSortOverLayOpen
+                                    }
+                                    toggleGroupSortOverLay={
+                                        toggleGroupSortOverLay
+                                    }
+                                    gridColumns={managableColumns}
+                                    applyGroupSort={applyGroupSort}
+                                />
                             </div>
-                            <ExportData
-                                isExportOverlayOpen={isExportOverlayOpen}
-                                toggleExportDataOverlay={
-                                    toggleExportDataOverlay
-                                }
-                                rows={rows}
+                        ) : null}
+                        {columnChooser !== false ? (
+                            <div className="utilities-icon-container manage-columns-container">
+                                <div
+                                    className="utilities-icon manage-columns"
+                                    role="presentation"
+                                    data-testid="toggleManageColumnsOverlay"
+                                    onClick={toggleManageColumnsOverlay}
+                                >
+                                    <i>
+                                        <IconColumns />
+                                    </i>
+                                </div>
+                                <ColumnReordering
+                                    isManageColumnOverlayOpen={
+                                        isManageColumnOverlayOpen
+                                    }
+                                    toggleManageColumnsOverlay={
+                                        toggleManageColumnsOverlay
+                                    }
+                                    columns={managableColumns}
+                                    additionalColumn={expandedRowData}
+                                    updateColumnStructure={
+                                        updateColumnStructure
+                                    }
+                                />
+                            </div>
+                        ) : null}
+                        {exportData !== false ? (
+                            <div className="utilities-icon-container manage-columns-container">
+                                <div
+                                    className="utilities-icon export-data"
+                                    role="presentation"
+                                    data-testid="toggleExportDataOverlay"
+                                    onClick={toggleExportDataOverlay}
+                                >
+                                    <i>
+                                        <IconShare />
+                                    </i>
+                                </div>
+                                <ExportData
+                                    isExportOverlayOpen={isExportOverlayOpen}
+                                    toggleExportDataOverlay={
+                                        toggleExportDataOverlay
+                                    }
+                                    rows={rows}
+                                    columns={gridColumns}
+                                    additionalColumn={additionalColumn}
+                                />
+                            </div>
+                        ) : null}
+                        {typeof onGridRefresh === "function" ? (
+                            <div className="utilities-icon-container refresh-data-container">
+                                <div
+                                    className="utilities-icon refresh-data"
+                                    role="presentation"
+                                    data-testid="refreshGrid"
+                                    onClick={onGridRefresh}
+                                >
+                                    <i>
+                                        <IconRefresh />
+                                    </i>
+                                </div>
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+
+                <div className="table-popus">
+                    {isRowEditOverlyOpen ? (
+                        <div className="overlay">
+                            <RowEditOverlay
+                                row={editedRowData}
                                 columns={gridColumns}
                                 additionalColumn={additionalColumn}
+                                getRowEditOverlay={getRowEditOverlay}
+                                closeRowEditOverlay={closeRowEditOverlay}
+                                updateRowInGrid={updateRowInGrid}
                             />
                         </div>
                     ) : null}
-                    {typeof onGridRefresh === "function" ? (
-                        <div className="utilities-icon-container refresh-data-container">
-                            <div
-                                className="utilities-icon refresh-data"
-                                role="presentation"
-                                data-testid="refreshGrid"
-                                onClick={onGridRefresh}
-                            >
-                                <i>
-                                    <IconRefresh />
-                                </i>
-                            </div>
+                    {isRowDeleteOverlyOpen ? (
+                        <div className="overlay">
+                            <RowDeleteOverLay
+                                row={deletedRowData}
+                                closeRowDeleteOverlay={closeRowDeleteOverlay}
+                                deleteRowFromGrid={deleteRowFromGrid}
+                            />
                         </div>
                     ) : null}
                 </div>
-            </div>
 
-            <div className="table-popus">
-                {isRowEditOverlyOpen ? (
-                    <div className="overlay">
-                        <RowEditOverlay
-                            row={editedRowData}
-                            columns={gridColumns}
-                            additionalColumn={additionalColumn}
-                            getRowEditOverlay={getRowEditOverlay}
-                            closeRowEditOverlay={closeRowEditOverlay}
-                            updateRowInGrid={updateRowInGrid}
-                        />
-                    </div>
-                ) : null}
-                {isRowDeleteOverlyOpen ? (
-                    <div className="overlay">
-                        <RowDeleteOverLay
-                            row={deletedRowData}
-                            closeRowDeleteOverlay={closeRowDeleteOverlay}
-                            deleteRowFromGrid={deleteRowFromGrid}
-                        />
-                    </div>
-                ) : null}
-            </div>
-
-            <div
-                className="tableContainer table-outer neo-grid"
-                style={{
-                    height: gridHeight || "50vh",
-                    overflowX: "auto",
-                    overflowY: "hidden"
-                }}
-            >
-                <AutoSizer disableWidth className="tableContainer__AutoSizer">
-                    {({ height }) => (
-                        <div
-                            {...getTableProps()}
-                            className="table"
-                            style={{ width: "99.5%" }}
-                        >
-                            <div className="thead table-row table-row--head">
-                                {headerGroups.map((headerGroup) => (
-                                    <div
-                                        {...headerGroup.getHeaderGroupProps()}
-                                        className="tr"
-                                    >
-                                        {headerGroup.headers.map((column) => {
-                                            const {
-                                                display,
-                                                isSorted,
-                                                isSortedDesc,
-                                                filter,
-                                                canResize,
-                                                isGroupHeader
-                                            } = column;
-                                            if (
-                                                checkdisplayOfGroupedColumns(
-                                                    column
-                                                ) ||
-                                                display === true
-                                            ) {
-                                                return (
-                                                    <div
-                                                        {...column.getHeaderProps()}
-                                                        className={`table-cell column-heading th ${
-                                                            isGroupHeader ===
-                                                            true
-                                                                ? "group-column-heading"
-                                                                : ""
-                                                        }`}
-                                                        data-testid={
-                                                            isGroupHeader ===
-                                                            true
-                                                                ? "grid-group-header"
-                                                                : "grid-header"
-                                                        }
-                                                    >
-                                                        <div
-                                                            className="column-heading-title"
-                                                            data-testid="column-header-sort"
-                                                            {...column.getSortByToggleProps()}
-                                                        >
-                                                            {column.render(
-                                                                "Header"
-                                                            )}
-                                                            <span>
-                                                                {isSorted ? (
-                                                                    <i>
-                                                                        <IconSort
-                                                                            className={
-                                                                                isSortedDesc
-                                                                                    ? "sort-asc"
-                                                                                    : "sort-desc"
-                                                                            }
-                                                                        />
-                                                                    </i>
-                                                                ) : (
-                                                                    ""
-                                                                )}
-                                                            </span>
-                                                        </div>
-                                                        <div
-                                                            className={`txt-wrap column-filter ${
-                                                                isFilterOpen
-                                                                    ? "open"
-                                                                    : ""
-                                                            }`}
-                                                        >
-                                                            {/* column.canFilter - should be used to identify if column is filterable */}
-                                                            {/* But bug of react-table will set canFilter to true (even if it is false) after doing a global search */}
-                                                            {/* Hence checking if filter logic is present as a function for a column */}
-                                                            {typeof filter ===
-                                                            "function"
-                                                                ? column.render(
-                                                                      "Filter"
-                                                                  )
-                                                                : null}
-                                                        </div>
-                                                        {canResize && (
-                                                            <div
-                                                                {...column.getResizerProps()}
-                                                                className="resizer"
-                                                            />
-                                                        )}
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        })}
-                                    </div>
-                                ))}
-                            </div>
-                            <div {...getTableBodyProps()} className="tbody">
-                                <InfiniteLoader
-                                    isItemLoaded={isItemLoaded}
-                                    itemCount={itemCount}
-                                    loadMoreItems={loadMoreItems}
-                                    className="tableContainer__InfiniteLoader"
-                                >
-                                    {({ onItemsRendered, ref }) => (
-                                        <List
-                                            ref={(list) => {
-                                                ref(list);
-                                                listRef.current = list;
-                                            }}
-                                            style={{ overflowX: "hidden" }}
-                                            height={height - 60}
-                                            itemCount={rows.length}
-                                            itemSize={(index) => {
-                                                return calculateRowHeight(
-                                                    rows[index],
-                                                    headerGroups &&
-                                                        headerGroups.length
-                                                        ? headerGroups[
-                                                              headerGroups.length -
-                                                                  1
-                                                          ].headers
-                                                        : []
-                                                );
-                                            }}
-                                            onItemsRendered={onItemsRendered}
-                                            overscanCount={overScanCount}
-                                            className="tableContainer__List"
+                <div
+                    className="tableContainer table-outer neo-grid"
+                    style={{
+                        height: gridHeight || "50vh",
+                        overflowX: "auto",
+                        overflowY: "hidden"
+                    }}
+                >
+                    <AutoSizer
+                        disableWidth
+                        className="tableContainer__AutoSizer"
+                    >
+                        {({ height }) => (
+                            <div
+                                {...getTableProps()}
+                                className="table"
+                                style={{ width: "99.5%" }}
+                            >
+                                <div className="thead table-row table-row--head">
+                                    {headerGroups.map((headerGroup) => (
+                                        <div
+                                            {...headerGroup.getHeaderGroupProps()}
+                                            className="tr"
                                         >
-                                            {RenderRow}
-                                        </List>
-                                    )}
-                                </InfiniteLoader>
+                                            {headerGroup.headers.map(
+                                                (column) => {
+                                                    const {
+                                                        display,
+                                                        isSorted,
+                                                        isSortedDesc,
+                                                        filter,
+                                                        canResize,
+                                                        isGroupHeader
+                                                    } = column;
+                                                    if (
+                                                        checkdisplayOfGroupedColumns(
+                                                            column
+                                                        ) ||
+                                                        display === true
+                                                    ) {
+                                                        return (
+                                                            <div
+                                                                {...column.getHeaderProps()}
+                                                                className={`table-cell column-heading th ${
+                                                                    isGroupHeader ===
+                                                                    true
+                                                                        ? "group-column-heading"
+                                                                        : ""
+                                                                }`}
+                                                                data-testid={
+                                                                    isGroupHeader ===
+                                                                    true
+                                                                        ? "grid-group-header"
+                                                                        : "grid-header"
+                                                                }
+                                                            >
+                                                                <div
+                                                                    className="column-heading-title"
+                                                                    data-testid="column-header-sort"
+                                                                    {...column.getSortByToggleProps()}
+                                                                >
+                                                                    {column.render(
+                                                                        "Header"
+                                                                    )}
+                                                                    <span>
+                                                                        {isSorted ? (
+                                                                            <i>
+                                                                                <IconSort
+                                                                                    className={
+                                                                                        isSortedDesc
+                                                                                            ? "sort-asc"
+                                                                                            : "sort-desc"
+                                                                                    }
+                                                                                />
+                                                                            </i>
+                                                                        ) : (
+                                                                            ""
+                                                                        )}
+                                                                    </span>
+                                                                </div>
+                                                                <div
+                                                                    className={`txt-wrap column-filter ${
+                                                                        isFilterOpen
+                                                                            ? "open"
+                                                                            : ""
+                                                                    }`}
+                                                                >
+                                                                    {/* column.canFilter - should be used to identify if column is filterable */}
+                                                                    {/* But bug of react-table will set canFilter to true (even if it is false) after doing a global search */}
+                                                                    {/* Hence checking if filter logic is present as a function for a column */}
+                                                                    {typeof filter ===
+                                                                    "function"
+                                                                        ? column.render(
+                                                                              "Filter"
+                                                                          )
+                                                                        : null}
+                                                                </div>
+                                                                {canResize && (
+                                                                    <div
+                                                                        {...column.getResizerProps()}
+                                                                        className="resizer"
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    }
+                                                    return null;
+                                                }
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div {...getTableBodyProps()} className="tbody">
+                                    <InfiniteLoader
+                                        isItemLoaded={isItemLoaded}
+                                        itemCount={itemCount}
+                                        loadMoreItems={loadMoreItems}
+                                        className="tableContainer__InfiniteLoader"
+                                    >
+                                        {({ onItemsRendered, ref }) => (
+                                            <List
+                                                ref={(list) => {
+                                                    ref(list);
+                                                    listRef.current = list;
+                                                }}
+                                                style={{ overflowX: "hidden" }}
+                                                height={height - 60}
+                                                itemCount={rows.length}
+                                                itemSize={(index) => {
+                                                    return calculateRowHeight(
+                                                        rows[index],
+                                                        headerGroups &&
+                                                            headerGroups.length
+                                                            ? headerGroups[
+                                                                  headerGroups.length -
+                                                                      1
+                                                              ].headers
+                                                            : []
+                                                    );
+                                                }}
+                                                onItemsRendered={
+                                                    onItemsRendered
+                                                }
+                                                overscanCount={overScanCount}
+                                                className="tableContainer__List"
+                                            >
+                                                {RenderRow}
+                                            </List>
+                                        )}
+                                    </InfiniteLoader>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </AutoSizer>
+                        )}
+                    </AutoSizer>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return null;
 };
 
 Customgrid.propTypes = {
