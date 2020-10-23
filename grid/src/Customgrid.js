@@ -85,7 +85,7 @@ const Customgrid = (props) => {
     const overScanCount =
         rowsToOverscan && typeof rowsToOverscan === "number"
             ? rowsToOverscan
-            : 10;
+            : 5;
 
     // Local state to check if this is the first rendering of the Grid. Default value is true
     // This will be set as false in useEffect - [].
