@@ -28,6 +28,7 @@ const Grid = (props) => {
         onRowUpdate,
         onRowDelete,
         onRowSelect,
+        getRowInfo,
         calculateRowHeight,
         expandableColumn,
         CustomPanel,
@@ -307,6 +308,7 @@ const Grid = (props) => {
                 deleteRowFromGrid={deleteRowFromGrid}
                 searchColumn={searchColumn}
                 onRowSelect={onRowSelect}
+                getRowInfo={getRowInfo}
                 calculateRowHeight={
                     calculateRowHeight &&
                     typeof calculateRowHeight === "function"
@@ -359,6 +361,7 @@ Grid.propTypes = {
     onRowUpdate: PropTypes.func,
     onRowDelete: PropTypes.func,
     onRowSelect: PropTypes.func,
+    getRowInfo: PropTypes.func,
     calculateRowHeight: PropTypes.func,
     expandableColumn: PropTypes.bool,
     rowActions: PropTypes.arrayOf(PropTypes.object),

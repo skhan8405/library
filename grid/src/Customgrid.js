@@ -63,6 +63,7 @@ const Customgrid = (props) => {
         deleteRowFromGrid,
         searchColumn,
         onRowSelect,
+        getRowInfo,
         calculateRowHeight,
         expandableColumn,
         rowActions,
@@ -328,6 +329,14 @@ const Customgrid = (props) => {
                     maxWidth: 35,
                     Cell: ({ row }) => {
                         const { instance } = hook;
+                        // Check if expand icon is required for this row using the getRowInfo prop passed
+                        let isRowExpandable = true;
+                        if (getRowInfo && typeof getRowInfo === "function") {
+                            const rowInfo = getRowInfo(row.original);
+                            if (rowInfo) {
+                                isRowExpandable = rowInfo.isRowExpandable;
+                            }
+                        }
                         return (
                             <div className="action">
                                 <RowOptions
@@ -343,7 +352,8 @@ const Customgrid = (props) => {
                                     bindRowEditOverlay={bindRowEditOverlay}
                                     bindRowDeleteOverlay={bindRowDeleteOverlay}
                                 />
-                                {isRowExpandEnabled || expandableColumn ? (
+                                {(isRowExpandEnabled || expandableColumn) &&
+                                isRowExpandable ? (
                                     <span
                                         className="expander"
                                         data-testid="rowExpanderIcon"
@@ -505,8 +515,21 @@ const Customgrid = (props) => {
     // Create HTML structure of a single row that has to be bind to Grid
     const renderSingleRow = (row, style) => {
         prepareRow(row);
+
+        // Add classname passed by developer from getRowInfo prop to required rows
+        let rowClassName = "";
+        if (getRowInfo && typeof getRowInfo === "function") {
+            const rowInfo = getRowInfo(row.original);
+            if (rowInfo) {
+                rowClassName = rowInfo.className;
+            }
+        }
+
         const rowElement = (
-            <div {...row.getRowProps({ style })} className="table-row tr">
+            <div
+                {...row.getRowProps({ style })}
+                className={`table-row tr ${rowClassName}`}
+            >
                 <div className="table-row-wrap">
                     {row.cells.map((cell) => {
                         if (cell.column.display === true) {
@@ -880,6 +903,7 @@ Customgrid.propTypes = {
     deleteRowFromGrid: PropTypes.func,
     searchColumn: PropTypes.func,
     onRowSelect: PropTypes.func,
+    getRowInfo: PropTypes.func,
     calculateRowHeight: PropTypes.func,
     expandableColumn: PropTypes.bool,
     isExpandContentAvailable: PropTypes.bool,

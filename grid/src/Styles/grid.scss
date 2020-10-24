@@ -20,6 +20,13 @@
             display: flex;
             align-items: flex-start;
         }
+        .disabled {
+            background-color: var(--reserved);
+            pointer-events: none;
+            .form-check-input {
+                background-color: var(--reserved);
+            }
+        }
     }
     .table-row {
         border-bottom: 1px solid var(--border-grey);

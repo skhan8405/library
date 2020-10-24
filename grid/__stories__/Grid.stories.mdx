@@ -186,6 +186,17 @@ const GridComponent = () => {
         }
     };
 
+    const getRowInfo = (rowData) => {
+        // Grid calls this function for each row, to check:
+        // 1) If expand icon is required for that row.
+        // 2) If any className has to be given for that row data container div.
+        const { travelId } = rowData;
+        return {
+            isRowExpandable: travelId % 2 === 0, // Pass true/false based on which expand icon will be displayed.
+            className: travelId % 10 === 0 ? "disabled" : "" // Pass className to be added.
+        };
+    };
+
     const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
         // Create a component for the row edit overlay and bind required row data to the overlay.
         // Use DisplayTag if any of the column data or inner cell data has to be controlled by the column chooser functionality in Grid.
@@ -271,6 +282,7 @@ const GridComponent = () => {
             onRowUpdate={onRowUpdate}
             onRowDelete={onRowDelete}
             onRowSelect={onRowSelect}
+            getRowInfo={getRowInfo}
             onGridRefresh={onGridRefresh}
             CustomPanel={CustomPanel}
             rowsToDeselect={rowsToDeselect}
@@ -619,6 +631,25 @@ const loadMoreData = (updatedPageInfo) => {
 />
 ```
 
+#### With row specific expand icon and classNames
+
+<Story name="With row specific expand icon and classNames">
+    <GridComponent passGetRowInfo expandableColumn />;
+</Story>
+
+```jsx
+<Grid
+    gridData={gridData}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+    getRowInfo={getRowInfo}
+    expandableColumn
+/>
+```
+
 #### Hide globalSearch
 
 <Story name="Hide globalSearch">
@@ -723,6 +754,7 @@ const loadMoreData = (updatedPageInfo) => {
         expandableColumn
         passRowActions
         passRowActionCallback
+        passGetRowInfo
         passOnGridRefresh
         CustomPanel={CustomPanel}
         enableGroupHeaders
@@ -758,6 +790,7 @@ const loadMoreData = (updatedPageInfo) => {
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
+    getRowInfo={getRowInfo}
     onGridRefresh={onGridRefresh}
     CustomPanel={CustomPanel}
     rowsToDeselect={rowsToDeselect}

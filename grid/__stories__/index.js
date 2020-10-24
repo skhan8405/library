@@ -20,6 +20,7 @@ const GridComponent = (props) => {
         passColumnToExpand,
         passRowActions,
         passRowActionCallback,
+        passGetRowInfo,
         passOnGridRefresh,
         hasPagination,
         CustomPanel,
@@ -963,6 +964,14 @@ const GridComponent = (props) => {
     const gridPageInfo =
         paginationType === "index" ? indexPageInfo : cursorPageInfo;
 
+    const getRowInfo = (rowData) => {
+        const { travelId } = rowData;
+        return {
+            isRowExpandable: travelId % 2 === 0,
+            className: travelId % 10 === 0 ? "disabled" : ""
+        };
+    };
+
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
             <div>
@@ -1005,6 +1014,7 @@ const GridComponent = (props) => {
                     onRowUpdate={onRowUpdate}
                     onRowDelete={onRowDelete}
                     onRowSelect={onRowSelect}
+                    getRowInfo={passGetRowInfo ? getRowInfo : null}
                     onGridRefresh={passOnGridRefresh ? onGridRefresh : null}
                     CustomPanel={CustomPanel}
                     rowsToDeselect={rowsToDeselect}
