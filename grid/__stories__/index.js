@@ -25,6 +25,7 @@ const GridComponent = (props) => {
         hasPagination,
         CustomPanel,
         enableGroupHeaders,
+        rowSelector,
         globalSearch,
         columnFilter,
         groupSort,
@@ -1018,6 +1019,7 @@ const GridComponent = (props) => {
                     onGridRefresh={passOnGridRefresh ? onGridRefresh : null}
                     CustomPanel={CustomPanel}
                     rowsToDeselect={rowsToDeselect}
+                    rowSelector={rowSelector}
                     globalSearch={globalSearch}
                     columnFilter={columnFilter}
                     groupSort={groupSort}

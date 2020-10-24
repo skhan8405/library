@@ -32,6 +32,7 @@ const Grid = (props) => {
         calculateRowHeight,
         expandableColumn,
         CustomPanel,
+        rowSelector,
         globalSearch,
         columnFilter,
         groupSort,
@@ -323,6 +324,7 @@ const Grid = (props) => {
                 loadNextPage={loadNextPage}
                 getSortedData={getSortedData}
                 CustomPanel={CustomPanel}
+                rowSelector={rowSelector}
                 globalSearch={globalSearch}
                 columnFilter={columnFilter}
                 groupSort={groupSort}
@@ -367,6 +369,7 @@ Grid.propTypes = {
     rowActions: PropTypes.arrayOf(PropTypes.object),
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
+    rowSelector: PropTypes.bool,
     globalSearch: PropTypes.bool,
     columnFilter: PropTypes.bool,
     groupSort: PropTypes.bool,

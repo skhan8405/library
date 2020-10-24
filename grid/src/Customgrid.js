@@ -73,6 +73,7 @@ const Customgrid = (props) => {
         loadNextPage,
         getSortedData,
         CustomPanel,
+        rowSelector,
         globalSearch,
         columnFilter,
         groupSort,
@@ -287,34 +288,39 @@ const Customgrid = (props) => {
         useFlexLayout,
         useResizeColumns,
         (hooks) => {
-            // Add checkbox for all rows in grid, with different properties for header row and body rows
-            hooks.allColumns.push((hookColumns, hook) => [
-                {
-                    id: "selection",
-                    columnId: "column_custom_0",
-                    disableResizing: true,
-                    disableFilters: true,
-                    disableSortBy: true,
-                    display: true,
-                    isGroupHeader: false,
-                    minWidth: 35,
-                    width: 35,
-                    maxWidth: 35,
-                    Header: ({ getToggleAllRowsSelectedProps }) => {
-                        return (
+            // Add checkbox for all rows in grid, with different properties for header row and body rows, only if required
+            if (rowSelector !== false) {
+                hooks.allColumns.push((hookColumns) => [
+                    {
+                        id: "selection",
+                        columnId: "column_custom_0",
+                        disableResizing: true,
+                        disableFilters: true,
+                        disableSortBy: true,
+                        display: true,
+                        isGroupHeader: false,
+                        minWidth: 35,
+                        width: 35,
+                        maxWidth: 35,
+                        Header: ({ getToggleAllRowsSelectedProps }) => {
+                            return (
+                                <RowSelector
+                                    data-testid="rowSelector-allRows"
+                                    {...getToggleAllRowsSelectedProps()}
+                                />
+                            );
+                        },
+                        Cell: ({ row }) => (
                             <RowSelector
-                                data-testid="rowSelector-allRows"
-                                {...getToggleAllRowsSelectedProps()}
+                                data-testid="rowSelector-singleRow"
+                                {...row.getToggleRowSelectedProps()}
                             />
-                        );
+                        )
                     },
-                    Cell: ({ row }) => (
-                        <RowSelector
-                            data-testid="rowSelector-singleRow"
-                            {...row.getToggleRowSelectedProps()}
-                        />
-                    )
-                },
+                    ...hookColumns
+                ]);
+            }
+            hooks.allColumns.push((hookColumns, hook) => [
                 ...hookColumns,
                 {
                     id: "custom",
@@ -917,6 +923,7 @@ Customgrid.propTypes = {
     rowActions: PropTypes.arrayOf(PropTypes.object),
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
+    rowSelector: PropTypes.bool,
     globalSearch: PropTypes.bool,
     columnFilter: PropTypes.bool,
     groupSort: PropTypes.bool,
