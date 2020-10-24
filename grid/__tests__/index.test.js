@@ -332,6 +332,14 @@ describe("render Index file ", () => {
         { label: "Close Summary", value: "CloseSummary" }
     ];
 
+    const getRowInfo = (rowData) => {
+        const { travelId } = rowData;
+        return {
+            isRowExpandable: travelId % 2 === 0,
+            className: travelId % 10 === 0 ? "disabled" : ""
+        };
+    };
+
     const mockGridHeight = "80vh";
     const mockGridWidth = "100%";
     const mockTitle = "AWBs";
@@ -1037,5 +1045,50 @@ describe("render Index file ", () => {
             selectedRowCheckboxes[0].parentElement.parentElement.parentElement
                 .nextElementSibling;
         expect(idCellContainerElement.innerHTML).toBe("0");
+    });
+
+    it("test display of row specific expand icon and class names", () => {
+        mockOffsetSize(600, 600);
+        const { container, getAllByTestId } = render(
+            <Grid
+                gridData={data}
+                idAttribute="travelId"
+                paginationType="index"
+                pageInfo={pageInfo}
+                loadMoreData={mockLoadMoreData}
+                columns={gridColumns}
+                columnToExpand={mockAdditionalColumn}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
+                getRowInfo={getRowInfo}
+            />
+        );
+        const gridContainer = container;
+        expect(gridContainer).toBeInTheDocument();
+
+        // Check rows with class name "disabled"
+        const totalRowsCountInThisPage = document.getElementsByClassName(
+            "table-row tr"
+        ).length;
+        const totalDisabledRowsCountInThisPage = document.getElementsByClassName(
+            "table-row tr disabled"
+        ).length;
+        // Check if atleast 1 disabled row is present
+        expect(totalDisabledRowsCountInThisPage).toBeGreaterThan(0);
+        // Check if all rows are not disabled
+        expect(totalDisabledRowsCountInThisPage).toBeLessThan(
+            totalRowsCountInThisPage
+        );
+
+        // Check if expand icon is not present for all rows
+        const totalExpandIconsInThisPage = getAllByTestId("rowExpanderIcon")
+            .length;
+        // Check if atleast 1 expand icon is present
+        expect(totalExpandIconsInThisPage).toBeGreaterThan(0);
+        // Check if all rows are not having expand icons
+        expect(totalExpandIconsInThisPage).toBeLessThan(
+            totalRowsCountInThisPage
+        );
     });
 });
