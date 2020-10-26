@@ -756,11 +756,7 @@ const Customgrid = (props) => {
                         className="tableContainer__AutoSizer"
                     >
                         {({ height }) => (
-                            <div
-                                {...getTableProps()}
-                                className="table"
-                                style={{ width: "99.5%" }}
-                            >
+                            <div {...getTableProps()} className="table">
                                 <div className="thead table-row table-row--head">
                                     {headerGroups.map((headerGroup) => (
                                         <div
