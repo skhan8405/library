@@ -847,7 +847,6 @@ describe("render Index file ", () => {
                 onRowSelect={mockSelectBulkData}
                 onGridRefresh={mockGridRefresh}
                 CustomPanel={mockCustomPanel}
-                rowSelector={false}
                 globalSearch={false}
                 columnFilter={false}
                 groupSort={false}
@@ -869,12 +868,6 @@ describe("render Index file ", () => {
             "refresh-data"
         );
         expect(refreshElement.length).toBeGreaterThan(0);
-
-        // Check if row selector is hidden
-        const rowSelectors = gridContainer.getElementsByClassName(
-            "row-selector-cell-container"
-        );
-        expect(rowSelectors.length).toBe(0);
 
         // Global filter
         const globalFilter = gridContainer.querySelectorAll(
