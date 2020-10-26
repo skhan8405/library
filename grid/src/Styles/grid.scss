@@ -28,10 +28,10 @@
             align-items: flex-start;
         }
         .disabled {
-            background-color: var(--reserved);
+            background-color: var(--light-grey);
             pointer-events: none;
             .form-check-input {
-                background-color: var(--reserved);
+                background-color: var(--light-grey);
             }
         }
     }
