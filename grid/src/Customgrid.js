@@ -462,7 +462,6 @@ const Customgrid = (props) => {
                 if (rowToDeselect) {
                     const { id } = rowToDeselect;
                     toggleRowSelected(id, false);
-                    updateSelectedRows(preFilteredRows, selectedRowIds);
                 }
             });
         }
