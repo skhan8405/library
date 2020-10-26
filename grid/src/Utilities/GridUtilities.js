@@ -4,17 +4,17 @@ export const updatedActionsHeaderClass = () => {
     );
     if (tableContainerList && tableContainerList.length > 0) {
         const tableContainer = tableContainerList[0];
-        const columnHeadings = document.getElementsByClassName(
-            "column-heading"
+        const columnHeadingsForScroll = document.getElementsByClassName(
+            "column-heading-forScroll"
         );
-        if (columnHeadings && columnHeadings.length > 0) {
-            const lastColumnHeading = columnHeadings[columnHeadings.length - 1];
+        if (columnHeadingsForScroll && columnHeadingsForScroll.length > 0) {
+            const columnHeadingForScroll = columnHeadingsForScroll[0];
             if (tableContainer.offsetHeight < tableContainer.scrollHeight) {
-                if (!lastColumnHeading.classList.contains("withScroll")) {
-                    lastColumnHeading.classList.add("withScroll");
+                if (!columnHeadingForScroll.classList.contains("withScroll")) {
+                    columnHeadingForScroll.classList.add("withScroll");
                 }
             } else {
-                lastColumnHeading.classList.remove("withScroll");
+                columnHeadingForScroll.classList.remove("withScroll");
             }
         }
     }

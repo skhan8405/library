@@ -320,75 +320,84 @@ const Customgrid = (props) => {
                     ...hookColumns
                 ]);
             }
-            hooks.allColumns.push((hookColumns, hook) => [
-                ...hookColumns,
-                {
-                    id: "custom",
-                    columnId: "column_custom_1",
-                    disableResizing: true,
-                    disableFilters: true,
-                    disableSortBy: true,
-                    display: true,
-                    isGroupHeader: false,
-                    minWidth: 35,
-                    width: 35,
-                    maxWidth: 35,
-                    Cell: ({ row }) => {
-                        const { instance } = hook;
-                        // Check if expand icon is required for this row using the getRowInfo prop passed
-                        let isRowExpandable = true;
-                        if (getRowInfo && typeof getRowInfo === "function") {
-                            const rowInfo = getRowInfo(row.original);
-                            if (rowInfo) {
-                                isRowExpandable = rowInfo.isRowExpandable;
+            // Add last column only if required
+            const isRowActionsAvailable = rowActions && rowActions.length > 0; // If row actions are available
+            const isRowExpandAvailable = isRowExpandEnabled || expandableColumn; // If row expand option is available
+            if (isRowActionsAvailable || isRowExpandAvailable) {
+                hooks.allColumns.push((hookColumns, hook) => [
+                    ...hookColumns,
+                    {
+                        id: "custom",
+                        columnId: "column_custom_1",
+                        disableResizing: true,
+                        disableFilters: true,
+                        disableSortBy: true,
+                        display: true,
+                        isGroupHeader: false,
+                        minWidth: 35,
+                        width: 35,
+                        maxWidth: 35,
+                        Cell: ({ row }) => {
+                            const { instance } = hook;
+                            // Check if expand icon is required for this row using the getRowInfo prop passed
+                            let isRowExpandable = true;
+                            if (
+                                getRowInfo &&
+                                typeof getRowInfo === "function"
+                            ) {
+                                const rowInfo = getRowInfo(row.original);
+                                if (rowInfo) {
+                                    isRowExpandable = rowInfo.isRowExpandable;
+                                }
                             }
-                        }
-                        return (
-                            <div className="action">
-                                <RowOptions
-                                    row={row}
-                                    rowActions={
-                                        instance ? instance.rowActions : []
-                                    }
-                                    rowActionCallback={
-                                        instance
-                                            ? instance.rowActionCallback
-                                            : null
-                                    }
-                                    bindRowEditOverlay={bindRowEditOverlay}
-                                    bindRowDeleteOverlay={bindRowDeleteOverlay}
-                                />
-                                {(isRowExpandEnabled || expandableColumn) &&
-                                isRowExpandable ? (
-                                    <span
-                                        className="expander"
-                                        data-testid="rowExpanderIcon"
-                                        {...row.getToggleRowExpandedProps({
-                                            onClick: () => {
-                                                setExpandedRowDetails(
-                                                    row.id,
-                                                    row.isExpanded
-                                                );
-                                                row.toggleRowExpanded();
-                                            }
-                                        })}
-                                    >
-                                        <i>
-                                            <IconAngle
-                                                className={
-                                                    row.isExpanded
-                                                        ? "icon-arrow-up"
-                                                        : "icon-arrow-down"
+                            return (
+                                <div className="action">
+                                    <RowOptions
+                                        row={row}
+                                        rowActions={
+                                            instance ? instance.rowActions : []
+                                        }
+                                        rowActionCallback={
+                                            instance
+                                                ? instance.rowActionCallback
+                                                : null
+                                        }
+                                        bindRowEditOverlay={bindRowEditOverlay}
+                                        bindRowDeleteOverlay={
+                                            bindRowDeleteOverlay
+                                        }
+                                    />
+                                    {isRowExpandAvailable && isRowExpandable ? (
+                                        <span
+                                            className="expander"
+                                            data-testid="rowExpanderIcon"
+                                            {...row.getToggleRowExpandedProps({
+                                                onClick: () => {
+                                                    setExpandedRowDetails(
+                                                        row.id,
+                                                        row.isExpanded
+                                                    );
+                                                    row.toggleRowExpanded();
                                                 }
-                                            />
-                                        </i>
-                                    </span>
-                                ) : null}
-                            </div>
-                        );
+                                            })}
+                                        >
+                                            <i>
+                                                <IconAngle
+                                                    className={
+                                                        row.isExpanded
+                                                            ? "icon-arrow-up"
+                                                            : "icon-arrow-down"
+                                                    }
+                                                />
+                                            </i>
+                                        </span>
+                                    ) : null}
+                                </div>
+                            );
+                        }
                     }
-                }
-            ]);
+                ]);
+            }
         }
     );
 
@@ -843,6 +852,14 @@ const Customgrid = (props) => {
                                                     return null;
                                                 }
                                             )}
+                                            <div
+                                                role="columnheader"
+                                                className="column-heading-forScroll"
+                                            >
+                                                <div className="column-heading-title-forScroll">
+                                                    <span />
+                                                </div>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>

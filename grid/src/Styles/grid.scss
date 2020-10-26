@@ -12,6 +12,13 @@
         .table-cell {
             padding: 8px 4px;
         }
+        .column-heading-forScroll {
+            width: rem(16.8);
+            display: none;
+            &.withScroll {
+                display: inline-block;
+            }
+        }
     }
     .tbody {
         .row-selector-cell-container {
@@ -62,10 +69,6 @@
             &:hover {
                 border-left: 1px solid var(--border-grey);
                 border-right: 1px solid var(--border-grey);
-            }
-            &.withScroll:last-child {
-                padding: 0;
-                width: rem(53) !important;
             }
             .column-heading-title {
                 height: 100%;
