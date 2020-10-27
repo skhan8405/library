@@ -98,10 +98,10 @@ const Customgrid = (props) => {
     const [isFirstRendering, setIsFirstRendering] = useState(true);
 
     // Local state value for holding columns configuration
-    const [gridColumns, setGridColumns] = useState([...managableColumns]);
+    const [gridColumns, setGridColumns] = useState([]);
 
     // Local state value for holding the additional column configuration
-    const [additionalColumn, setAdditionalColumn] = useState(expandedRowData);
+    const [additionalColumn, setAdditionalColumn] = useState(null);
 
     // Variables used for handling infinite loading
     const itemCount = hasNextPage ? gridData.length + 1 : gridData.length;
@@ -639,7 +639,7 @@ const Customgrid = (props) => {
         [prepareRow, rows, isRowExpandEnabled, additionalColumn]
     );
 
-    if (!isFirstRendering) {
+    if (!isFirstRendering && gridColumns && gridColumns.length > 0) {
         // Render table and other components as required
         // Use properties and methods provided by react-table
         // Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
