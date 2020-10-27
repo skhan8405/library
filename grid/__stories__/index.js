@@ -732,13 +732,15 @@ const GridComponent = (props) => {
         }
     ];
 
-    const columns = originalColumns.map((column) => {
+    const mappedOriginalColumns = originalColumns.map((column) => {
         const updatedColumn = column;
         if (!enableGroupHeaders && column.groupHeader) {
             delete updatedColumn.groupHeader;
         }
         return updatedColumn;
     });
+
+    const [columns, setColumns] = useState(mappedOriginalColumns);
 
     const columnToExpand = {
         Header: "Remarks",
