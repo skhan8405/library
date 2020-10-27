@@ -110,28 +110,6 @@ describe("render Index file ", () => {
         }
     ];
 
-    const mockAdditionalColumn = {
-        Header: "Remarks",
-        innerCells: [
-            {
-                Header: "Remarks",
-                accessor: "remarks"
-            }
-        ],
-        displayCell: (rowData, DisplayTag) => {
-            const { remarks } = rowData;
-            return (
-                <div className="details-wrap">
-                    <DisplayTag columnKey="remarks" cellKey="remarks">
-                        <ul>
-                            <li>{remarks}</li>
-                        </ul>
-                    </DisplayTag>
-                </div>
-            );
-        }
-    };
-
     const data = [
         {
             travelId: 10,
@@ -192,13 +170,6 @@ describe("render Index file ", () => {
             remarks: "Enim aute magna."
         }
     ];
-
-    const pageInfo = {
-        pageNum: 1,
-        pageSize: 300,
-        total: 20000,
-        lastPage: true
-    };
     for (let i = 0; i < 50; i++) {
         data.push({
             travelId: i,
@@ -260,66 +231,9 @@ describe("render Index file ", () => {
         });
     }
 
-    const mockGetRowEditOverlay = jest.fn(
-        (rowData, DisplayTag, rowUpdateCallBack) => {
-            const { flight } = rowData;
-            const updateRowValue = () => {
-                flight.flightno = "007";
-                rowUpdateCallBack(rowData);
-            };
-            return (
-                <div className="row-edit">
-                    <div className="edit-flight">
-                        <DisplayTag columnKey="flight" cellKey="flightno">
-                            <div className="edit-flight-no">
-                                <input
-                                    type="text"
-                                    value={flight.flightno}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                        <DisplayTag columnKey="flight" cellKey="date">
-                            <div className="edit-flight-date">
-                                <input
-                                    type="date"
-                                    value={flight.date}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                    </div>
-                </div>
-            );
-        }
-    );
-
-    const mockRowActions = [
-        { label: "edit" },
-        { label: "delete" },
-        { label: "Send SCR", value: "SCR" },
-        { label: "Segment Summary", value: "SegmentSummary" },
-        { label: "Open Summary", value: "OpenSummary" },
-        { label: "Close Summary", value: "CloseSummary" }
-    ];
-
-    const getRowInfo = (rowData) => {
-        const { travelId } = rowData;
-        return {
-            isRowExpandable: travelId % 2 === 0,
-            className: travelId % 10 === 0 ? "disabled" : ""
-        };
-    };
-
-    const mockGridHeight = "80vh";
-    const mockGridWidth = "100%";
-    const mockTitle = "AWBs";
-
-    const mockRowActionCallback = jest.fn();
     const mockUpdateRowData = jest.fn();
     const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
-    const mockLoadMoreData = jest.fn();
 
     let mockContainer;
     beforeEach(() => {
