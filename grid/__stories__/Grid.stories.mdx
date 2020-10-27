@@ -621,7 +621,7 @@ const multiRowSelection = false;
 #### With rows to be selected
 
 <Story name="With rows to be selected">
-    <GridComponent passIdAttribute passRowsToSelect />;
+    <GridComponent passIdAttribute rowsForSelection={[1, 7, 17]} />;
 </Story>
 
 ```jsx
@@ -939,7 +939,7 @@ const exportData = false;
         passOnGridRefresh
         CustomPanel={CustomPanel}
         enableGroupHeaders
-        passRowsToSelect
+        rowsForSelection={[1, 7, 17]}
         passIdAttribute
         gridHeader
         rowSelector

@@ -32,7 +32,7 @@ const GridComponent = (props) => {
         groupSort,
         columnChooser,
         exportData,
-        passRowsToSelect,
+        rowsForSelection,
         passIdAttribute,
         expandableColumn,
         multiRowSelection
@@ -961,8 +961,8 @@ const GridComponent = (props) => {
                 });
             }
         });
-        if (passRowsToSelect) {
-            setRowsToSelect([1, 27, 117]);
+        if (rowsForSelection && rowsForSelection.length > 0) {
+            setRowsToSelect(rowsForSelection);
         }
     }, []);
 
