@@ -339,4 +339,28 @@ describe("render Index file ", () => {
         );
         expect(selectedCheckboxes.length).toBe(1);
     });
+
+    it("test rows to select", () => {
+        mockOffsetSize(600, 600);
+        const { container } = render(
+            <Grid
+                gridData={data}
+                idAttribute="travelId"
+                columns={gridColumns}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
+                rowsToSelect={[0, 1, 2]}
+            />
+        );
+        const gridContainer = container;
+        // Check if grid has been loaded
+        expect(gridContainer).toBeInTheDocument();
+
+        // Selected checkbox count should be 1
+        const selectedCheckboxes = document.querySelectorAll(
+            'input[type="checkbox"]:checked'
+        );
+        expect(selectedCheckboxes.length).toBe(3);
+    });
 });

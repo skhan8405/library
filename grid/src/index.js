@@ -41,6 +41,7 @@ const Grid = (props) => {
         columnChooser,
         exportData,
         onGridRefresh,
+        rowsToSelect,
         rowsToDeselect
     } = props;
 
@@ -335,6 +336,7 @@ const Grid = (props) => {
                 columnChooser={columnChooser}
                 exportData={exportData}
                 onGridRefresh={onGridRefresh}
+                rowsToSelect={rowsToSelect}
                 rowsToDeselect={rowsToDeselect}
             />
             {isNextPageLoading ? (
@@ -382,6 +384,7 @@ Grid.propTypes = {
     columnChooser: PropTypes.bool,
     exportData: PropTypes.bool,
     onGridRefresh: PropTypes.func,
+    rowsToSelect: PropTypes.array,
     rowsToDeselect: PropTypes.array
 };
 

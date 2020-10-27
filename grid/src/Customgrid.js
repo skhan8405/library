@@ -83,6 +83,7 @@ const Customgrid = (props) => {
         columnChooser,
         exportData,
         onGridRefresh,
+        rowsToSelect,
         rowsToDeselect
     } = props;
 
@@ -480,7 +481,24 @@ const Customgrid = (props) => {
     }, []);
 
     // Update the select state of row in Grid using the hook provided by useTable method
-    // Find the row Id using the key - value passed from props and use toggleRowSelected method
+    // Find the row Id using the key - value passed from props and use toggleRowSelected method to select the checkboxes
+    useEffect(() => {
+        if (rowsToSelect && rowsToSelect.length && idAttribute) {
+            rowsToSelect.forEach((rowId) => {
+                const rowToSelect = preFilteredRows.find((row) => {
+                    const { original } = row;
+                    return original[idAttribute] === rowId;
+                });
+                if (rowToSelect) {
+                    const { id } = rowToSelect;
+                    toggleRowSelected(id, true);
+                }
+            });
+        }
+    }, [rowsToSelect]);
+
+    // Update the select state of row in Grid using the hook provided by useTable method
+    // Find the row Id using the key - value passed from props and use toggleRowSelected method to deselect the checkboxes
     useEffect(() => {
         if (rowsToDeselect && rowsToDeselect.length && idAttribute) {
             rowsToDeselect.forEach((rowId) => {
@@ -1036,6 +1054,7 @@ Customgrid.propTypes = {
     columnChooser: PropTypes.bool,
     exportData: PropTypes.bool,
     onGridRefresh: PropTypes.func,
+    rowsToSelect: PropTypes.array,
     rowsToDeselect: PropTypes.array
 };
 

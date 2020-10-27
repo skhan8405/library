@@ -32,6 +32,7 @@ const GridComponent = (props) => {
         groupSort,
         columnChooser,
         exportData,
+        passRowsToSelect,
         passIdAttribute,
         expandableColumn,
         multiRowSelection
@@ -59,6 +60,8 @@ const GridComponent = (props) => {
     const [userSelectedRows, setUserSelectedRows] = useState([]);
     // State for holding rows to deselect
     const [rowsToDeselect, setRowsToDeselect] = useState([]);
+    // State for holding rows to select
+    const [rowsToSelect, setRowsToSelect] = useState([]);
 
     const airportCodeList = [
         "AAA",
@@ -958,6 +961,9 @@ const GridComponent = (props) => {
                 });
             }
         });
+        if (passRowsToSelect) {
+            setRowsToSelect([1, 27, 117]);
+        }
     }, []);
 
     const removeRowSelection = (event) => {
@@ -1021,6 +1027,7 @@ const GridComponent = (props) => {
                     getRowInfo={passGetRowInfo ? getRowInfo : null}
                     onGridRefresh={passOnGridRefresh ? onGridRefresh : null}
                     CustomPanel={CustomPanel}
+                    rowsToSelect={rowsToSelect}
                     rowsToDeselect={rowsToDeselect}
                     multiRowSelection={multiRowSelection}
                     gridHeader={gridHeader}

@@ -240,8 +240,11 @@ const GridComponent = () => {
         // An array of all selected row data will be passed in as parameter.
     };
 
-    // This should be an array of idAttribute values of rows that has to be delected from the Grid
+    // This should be an array of idAttribute values, of rows that has to be deselected from the Grid
     const rowsToDeselect = [];
+
+    // This should be an array of idAttribute values, of rows that has to be selected from the Grid
+    const rowsToSelect = [];
 
     const onGridRefresh = () => {
         // Grid will show a refresh icon in the Grid header region if this function is passed as prop to the Grid.
@@ -288,6 +291,7 @@ const GridComponent = () => {
             getRowInfo={getRowInfo}
             onGridRefresh={onGridRefresh}
             CustomPanel={CustomPanel}
+            rowsToSelect={rowsToSelect}
             rowsToDeselect={rowsToDeselect}
             multiRowSelection={multiRowSelection}
             gridHeader
@@ -540,8 +544,8 @@ const CustomPanel = <CustomPanel />
 </Story>
 
 ```jsx
-// This should be an array of idAttribute values of rows that has to be delected from the Grid
-const rowsToDeselect = [];
+// This should be a boolean value. Flase will disable multi selection and enable single selection and true will do vice-versa
+const multiRowSelection = false;
 
 <Grid
     gridData={gridData}
@@ -551,7 +555,29 @@ const rowsToDeselect = [];
     onRowUpdate={onRowUpdate}
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
-    multiRowSelection={false}
+    multiRowSelection={multiRowSelection}
+/>;
+```
+
+#### With rows to be selected
+
+<Story name="With rows to be selected">
+    <GridComponent passIdAttribute passRowsToSelect />;
+</Story>
+
+```jsx
+// This should be an array of idAttribute values of rows that has to be selected from the Grid
+const rowsToSelect = [1, 7, 17];
+
+<Grid
+    gridData={gridData}
+    idAttribute={idAttribute}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+    rowsToSelect={rowsToSelect}
 />;
 ```
 
@@ -562,7 +588,7 @@ const rowsToDeselect = [];
 </Story>
 
 ```jsx
-// This should be an array of idAttribute values of rows that has to be delected from the Grid
+// This should be an array of idAttribute values of rows that has to be deselected from the Grid
 const rowsToDeselect = [];
 
 <Grid
@@ -823,6 +849,7 @@ const loadMoreData = (updatedPageInfo) => {
         passOnGridRefresh
         CustomPanel={CustomPanel}
         enableGroupHeaders
+        passRowsToSelect
         passIdAttribute
         gridHeader
         rowSelector
@@ -860,6 +887,7 @@ const loadMoreData = (updatedPageInfo) => {
     getRowInfo={getRowInfo}
     onGridRefresh={onGridRefresh}
     CustomPanel={CustomPanel}
+    rowsToSelect={rowsToSelect}
     rowsToDeselect={rowsToDeselect}
     gridHeader
     rowSelector
