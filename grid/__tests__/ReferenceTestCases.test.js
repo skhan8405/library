@@ -525,7 +525,6 @@ describe("Reference test cases", () => {
         });
         // Check if row actions overlay has been opened
         rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
-        rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
         expect(rowActionsOverlay).toBeInTheDocument();
         // Find and click delete link
         const deleteActionLink = getByTestId("rowAction-deleteRow");
@@ -559,7 +558,6 @@ describe("Reference test cases", () => {
             );
         });
         // Check if row actions overlay has been opened
-        rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
         rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
         expect(rowActionsOverlay).toBeInTheDocument();
         // Find and click additional action item

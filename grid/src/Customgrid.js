@@ -479,7 +479,7 @@ const Customgrid = (props) => {
         setIsFirstRendering(false);
     }, []);
 
-    // Update the select state of row in Grid using thehook provided by useTable method
+    // Update the select state of row in Grid using the hook provided by useTable method
     // Find the row Id using the key - value passed from props and use toggleRowSelected method
     useEffect(() => {
         if (rowsToDeselect && rowsToDeselect.length && idAttribute) {
