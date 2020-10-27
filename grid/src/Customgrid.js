@@ -75,6 +75,7 @@ const Customgrid = (props) => {
         getSortedData,
         CustomPanel,
         multiRowSelection,
+        gridHeader,
         rowSelector,
         globalSearch,
         columnFilter,
@@ -267,7 +268,8 @@ const Customgrid = (props) => {
         preFilteredRows,
         state: { globalFilter, selectedRowIds, filters, sortBy },
         setGlobalFilter,
-        toggleRowSelected
+        toggleRowSelected,
+        toggleAllRowsSelected
     } = useTable(
         {
             columns,
@@ -405,6 +407,28 @@ const Customgrid = (props) => {
             }
         }
     );
+
+    // Make checkbox in header title selected if no: selected rows and total rows are same
+    const isAllRowsSelected = () => {
+        return (
+            rows &&
+            rows.length > 0 &&
+            userSelectedRowIdentifiers &&
+            userSelectedRowIdentifiers.length > 0 &&
+            rows.length === userSelectedRowIdentifiers.length
+        );
+    };
+
+    // Call method to select/de-select all rows based on the checkbox checked value
+    const toggleAllRowsSelection = (event) => {
+        if (event) {
+            const { currentTarget } = event;
+            if (currentTarget) {
+                const { checked } = currentTarget;
+                toggleAllRowsSelected(checked);
+            }
+        }
+    };
 
     // Recalculate row height from index 50 less than the last rendered item index in the list
     const reRenderListData = (index) => {
@@ -627,6 +651,19 @@ const Customgrid = (props) => {
                 style={{ width: gridWidth || "100%" }}
             >
                 <div className="neo-grid-header">
+                    {gridHeader === false && multiRowSelection !== false ? (
+                        <div className="neo-grid-header__rowSelector">
+                            <div className="form-check">
+                                <input
+                                    type="checkbox"
+                                    data-testid="rowSelector-allRows-fromHeaderTitle"
+                                    className="form-check-input custom-checkbox form-check-input"
+                                    checked={isAllRowsSelected()}
+                                    onChange={toggleAllRowsSelection}
+                                />
+                            </div>
+                        </div>
+                    ) : null}
                     <div className="neo-grid-header__results">
                         <strong>
                             {totalRecordsCount > 0 &&
@@ -791,133 +828,139 @@ const Customgrid = (props) => {
                     >
                         {({ height }) => (
                             <div {...getTableProps()} className="table">
-                                <div className="thead table-row table-row--head">
-                                    {headerGroups.map((headerGroup, index) => {
-                                        // If there are morthan 1 headers, we consider 1st one as group header row
-                                        const isGroupHeader =
-                                            headerGroup.headers &&
-                                            headerGroup.headers.length > 1
-                                                ? index === 0
-                                                : false;
-                                        return (
-                                            <div
-                                                {...headerGroup.getHeaderGroupProps()}
-                                                className="tr"
-                                            >
-                                                {headerGroup.headers.map(
-                                                    (column) => {
-                                                        const {
-                                                            display,
-                                                            isSorted,
-                                                            isSortedDesc,
-                                                            filter,
-                                                            canResize
-                                                        } = column;
-                                                        if (
-                                                            checkdisplayOfGroupedColumns(
-                                                                column
-                                                            ) ||
-                                                            display === true
-                                                        ) {
-                                                            // If header is group header only render header value and not sort/filter/resize
-                                                            return (
-                                                                <div
-                                                                    {...column.getHeaderProps()}
-                                                                    className={`table-cell column-heading th ${
-                                                                        isGroupHeader ===
+                                {gridHeader === false ? null : (
+                                    <div className="thead table-row table-row--head">
+                                        {headerGroups.map(
+                                            (headerGroup, index) => {
+                                                // If there are morthan 1 headers, we consider 1st one as group header row
+                                                const isGroupHeader =
+                                                    headerGroup.headers &&
+                                                    headerGroup.headers.length >
+                                                        1
+                                                        ? index === 0
+                                                        : false;
+                                                return (
+                                                    <div
+                                                        {...headerGroup.getHeaderGroupProps()}
+                                                        className="tr"
+                                                    >
+                                                        {headerGroup.headers.map(
+                                                            (column) => {
+                                                                const {
+                                                                    display,
+                                                                    isSorted,
+                                                                    isSortedDesc,
+                                                                    filter,
+                                                                    canResize
+                                                                } = column;
+                                                                if (
+                                                                    checkdisplayOfGroupedColumns(
+                                                                        column
+                                                                    ) ||
+                                                                    display ===
                                                                         true
-                                                                            ? "group-column-heading"
-                                                                            : ""
-                                                                    }`}
-                                                                    data-testid={
-                                                                        isGroupHeader ===
-                                                                        true
-                                                                            ? "grid-group-header"
-                                                                            : "grid-header"
-                                                                    }
-                                                                >
-                                                                    <div
-                                                                        className="column-heading-title"
-                                                                        data-testid="column-header-sort"
-                                                                        {...column.getSortByToggleProps()}
-                                                                    >
-                                                                        {column.render(
-                                                                            "Header"
-                                                                        )}
-                                                                        <span
-                                                                            className={`${
-                                                                                isGroupHeader ===
-                                                                                true
-                                                                                    ? "no-display"
-                                                                                    : ""
-                                                                            }`}
-                                                                        >
-                                                                            {isSorted ? (
-                                                                                <i>
-                                                                                    <IconSort
-                                                                                        className={
-                                                                                            isSortedDesc
-                                                                                                ? "sort-asc"
-                                                                                                : "sort-desc"
-                                                                                        }
-                                                                                    />
-                                                                                </i>
-                                                                            ) : (
-                                                                                ""
-                                                                            )}
-                                                                        </span>
-                                                                    </div>
-                                                                    <div
-                                                                        className={`txt-wrap column-filter ${
-                                                                            isFilterOpen
-                                                                                ? "open"
-                                                                                : ""
-                                                                        }${
-                                                                            isGroupHeader ===
-                                                                            true
-                                                                                ? "no-display"
-                                                                                : ""
-                                                                        }`}
-                                                                    >
-                                                                        {/* column.canFilter - should be used to identify if column is filterable */}
-                                                                        {/* But bug of react-table will set canFilter to true (even if it is false) after doing a global search */}
-                                                                        {/* Hence checking if filter logic is present as a function for a column */}
-                                                                        {typeof filter ===
-                                                                        "function"
-                                                                            ? column.render(
-                                                                                  "Filter"
-                                                                              )
-                                                                            : null}
-                                                                    </div>
-                                                                    {canResize && (
+                                                                ) {
+                                                                    // If header is group header only render header value and not sort/filter/resize
+                                                                    return (
                                                                         <div
-                                                                            {...column.getResizerProps()}
-                                                                            className={`resizer ${
+                                                                            {...column.getHeaderProps()}
+                                                                            className={`table-cell column-heading th ${
                                                                                 isGroupHeader ===
                                                                                 true
-                                                                                    ? "no-display"
+                                                                                    ? "group-column-heading"
                                                                                     : ""
                                                                             }`}
-                                                                        />
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    }
-                                                )}
-                                                <div
-                                                    role="columnheader"
-                                                    className="column-heading-forScroll"
-                                                >
-                                                    <div className="column-heading-title-forScroll">
-                                                        <span />
+                                                                            data-testid={
+                                                                                isGroupHeader ===
+                                                                                true
+                                                                                    ? "grid-group-header"
+                                                                                    : "grid-header"
+                                                                            }
+                                                                        >
+                                                                            <div
+                                                                                className="column-heading-title"
+                                                                                data-testid="column-header-sort"
+                                                                                {...column.getSortByToggleProps()}
+                                                                            >
+                                                                                {column.render(
+                                                                                    "Header"
+                                                                                )}
+                                                                                <span
+                                                                                    className={`${
+                                                                                        isGroupHeader ===
+                                                                                        true
+                                                                                            ? "no-display"
+                                                                                            : ""
+                                                                                    }`}
+                                                                                >
+                                                                                    {isSorted ? (
+                                                                                        <i>
+                                                                                            <IconSort
+                                                                                                className={
+                                                                                                    isSortedDesc
+                                                                                                        ? "sort-asc"
+                                                                                                        : "sort-desc"
+                                                                                                }
+                                                                                            />
+                                                                                        </i>
+                                                                                    ) : (
+                                                                                        ""
+                                                                                    )}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div
+                                                                                className={`txt-wrap column-filter ${
+                                                                                    isFilterOpen
+                                                                                        ? "open"
+                                                                                        : ""
+                                                                                }${
+                                                                                    isGroupHeader ===
+                                                                                    true
+                                                                                        ? "no-display"
+                                                                                        : ""
+                                                                                }`}
+                                                                            >
+                                                                                {/* column.canFilter - should be used to identify if column is filterable */}
+                                                                                {/* But bug of react-table will set canFilter to true (even if it is false) after doing a global search */}
+                                                                                {/* Hence checking if filter logic is present as a function for a column */}
+                                                                                {typeof filter ===
+                                                                                "function"
+                                                                                    ? column.render(
+                                                                                          "Filter"
+                                                                                      )
+                                                                                    : null}
+                                                                            </div>
+                                                                            {canResize && (
+                                                                                <div
+                                                                                    {...column.getResizerProps()}
+                                                                                    className={`resizer ${
+                                                                                        isGroupHeader ===
+                                                                                        true
+                                                                                            ? "no-display"
+                                                                                            : ""
+                                                                                    }`}
+                                                                                />
+                                                                            )}
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                                return null;
+                                                            }
+                                                        )}
+                                                        <div
+                                                            role="columnheader"
+                                                            className="column-heading-forScroll"
+                                                        >
+                                                            <div className="column-heading-title-forScroll">
+                                                                <span />
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                                );
+                                            }
+                                        )}
+                                    </div>
+                                )}
                                 <div {...getTableBodyProps()} className="tbody">
                                     <InfiniteLoader
                                         isItemLoaded={isItemLoaded}
@@ -996,6 +1039,7 @@ Customgrid.propTypes = {
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
     multiRowSelection: PropTypes.bool,
+    gridHeader: PropTypes.bool,
     rowSelector: PropTypes.bool,
     globalSearch: PropTypes.bool,
     columnFilter: PropTypes.bool,

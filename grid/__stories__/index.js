@@ -25,6 +25,7 @@ const GridComponent = (props) => {
         hasPagination,
         CustomPanel,
         enableGroupHeaders,
+        gridHeader,
         rowSelector,
         globalSearch,
         columnFilter,
@@ -1022,6 +1023,7 @@ const GridComponent = (props) => {
                     CustomPanel={CustomPanel}
                     rowsToDeselect={rowsToDeselect}
                     multiRowSelection={multiRowSelection}
+                    gridHeader={gridHeader}
                     rowSelector={rowSelector}
                     globalSearch={globalSearch}
                     columnFilter={columnFilter}

@@ -7,6 +7,10 @@
     display: flex;
     padding: rem(12);
     justify-content: space-between;
+    &__rowSelector {
+        display: flex;
+        align-items: center;
+    }
     &__results {
         display: flex;
         font-size: rem(14);

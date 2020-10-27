@@ -290,6 +290,7 @@ const GridComponent = () => {
             CustomPanel={CustomPanel}
             rowsToDeselect={rowsToDeselect}
             multiRowSelection={multiRowSelection}
+            gridHeader
             rowSelector
             globalSearch
             columnFilter
@@ -677,6 +678,25 @@ const loadMoreData = (updatedPageInfo) => {
 />
 ```
 
+#### Hide grid header
+
+<Story name="Hide grid header">
+    <GridComponent gridHeader={false} passIdAttribute />;
+</Story>
+
+```jsx
+<Grid
+    gridData={gridData}
+    idAttribute={idAttribute}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+    gridHeader={false}
+/>
+```
+
 #### Hide row selection
 
 <Story name="Hide row selection">
@@ -804,6 +824,7 @@ const loadMoreData = (updatedPageInfo) => {
         CustomPanel={CustomPanel}
         enableGroupHeaders
         passIdAttribute
+        gridHeader
         rowSelector
         globalSearch
         columnFilter
@@ -840,6 +861,7 @@ const loadMoreData = (updatedPageInfo) => {
     onGridRefresh={onGridRefresh}
     CustomPanel={CustomPanel}
     rowsToDeselect={rowsToDeselect}
+    gridHeader
     rowSelector
     globalSearch
     columnFilter

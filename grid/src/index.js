@@ -33,6 +33,7 @@ const Grid = (props) => {
         expandableColumn,
         CustomPanel,
         multiRowSelection,
+        gridHeader,
         rowSelector,
         globalSearch,
         columnFilter,
@@ -326,6 +327,7 @@ const Grid = (props) => {
                 getSortedData={getSortedData}
                 CustomPanel={CustomPanel}
                 multiRowSelection={multiRowSelection}
+                gridHeader={gridHeader}
                 rowSelector={rowSelector}
                 globalSearch={globalSearch}
                 columnFilter={columnFilter}
@@ -372,6 +374,7 @@ Grid.propTypes = {
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
     multiRowSelection: PropTypes.bool,
+    gridHeader: PropTypes.bool,
     rowSelector: PropTypes.bool,
     globalSearch: PropTypes.bool,
     columnFilter: PropTypes.bool,
