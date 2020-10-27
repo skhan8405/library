@@ -260,6 +260,9 @@ const GridComponent = () => {
     // This should be react component, which will be rendered into the Grid header.
     const CustomPanel = <CustomPanel />
 
+    // False if grid needs only single row selection
+    const multiRowSelection = false;
+
     return (
         <Grid
             className="icargoCustomClass"
@@ -286,6 +289,7 @@ const GridComponent = () => {
             onGridRefresh={onGridRefresh}
             CustomPanel={CustomPanel}
             rowsToDeselect={rowsToDeselect}
+            multiRowSelection={multiRowSelection}
             rowSelector
             globalSearch
             columnFilter
@@ -528,10 +532,32 @@ const CustomPanel = <CustomPanel />
 />
 ```
 
+#### With single row selection
+
+<Story name="With single row selection">
+    <GridComponent multiRowSelection={false} passIdAttribute />;
+</Story>
+
+```jsx
+// This should be an array of idAttribute values of rows that has to be delected from the Grid
+const rowsToDeselect = [];
+
+<Grid
+    gridData={gridData}
+    idAttribute={idAttribute}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+    multiRowSelection={false}
+/>;
+```
+
 #### With rows to be deselected
 
 <Story name="With rows to be deselected">
-    <GridComponent enableRowDeselection />;
+    <GridComponent passIdAttribute />;
 </Story>
 
 ```jsx
@@ -777,7 +803,7 @@ const loadMoreData = (updatedPageInfo) => {
         passOnGridRefresh
         CustomPanel={CustomPanel}
         enableGroupHeaders
-        enableRowDeselection
+        passIdAttribute
         rowSelector
         globalSearch
         columnFilter

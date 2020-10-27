@@ -40,6 +40,7 @@ import {
 import {
     findSelectedRows,
     findSelectedRowIdAttributes,
+    findSelectedRowIdFromIdAttribute,
     updatedActionsHeaderClass,
     convertToIndividualColumns,
     checkdisplayOfGroupedColumns
@@ -73,6 +74,7 @@ const Customgrid = (props) => {
         loadNextPage,
         getSortedData,
         CustomPanel,
+        multiRowSelection,
         rowSelector,
         globalSearch,
         columnFilter,
@@ -303,6 +305,9 @@ const Customgrid = (props) => {
                         width: 35,
                         maxWidth: 35,
                         Header: ({ getToggleAllRowsSelectedProps }) => {
+                            if (multiRowSelection === false) {
+                                return null;
+                            }
                             return (
                                 <RowSelector
                                     data-testid="rowSelector-allRows"
@@ -470,9 +475,39 @@ const Customgrid = (props) => {
     // Trigger call back when user makes a row selection using checkbox
     // And store the rows that are selected by user for making them selected when data changes after groupsort
     // Call back method will not be triggered if this is the first render of Grid
+    // If multiRowSelection is disabled in Grid, deselect the existing row selection
     useEffect(() => {
         if (!isFirstRendering) {
-            updateSelectedRows(preFilteredRows, selectedRowIds);
+            if (multiRowSelection === false) {
+                // If multiRowSelection is disabled in Grid, find row id of existing row selection
+                const rowIdToDeSelect = findSelectedRowIdFromIdAttribute(
+                    preFilteredRows,
+                    idAttribute,
+                    userSelectedRowIdentifiers
+                );
+                // If selectedRowIds length is 2, means user has selected a row when there is already a row selection made
+                const selectedRowKey = Object.keys(selectedRowIds);
+                if (
+                    rowIdToDeSelect &&
+                    selectedRowKey &&
+                    selectedRowKey.length > 1
+                ) {
+                    // Disable that existing row
+                    const currentSelection = selectedRowKey.find(
+                        (key) => key !== rowIdToDeSelect
+                    );
+                    if (rowIdToDeSelect && currentSelection) {
+                        toggleRowSelected(rowIdToDeSelect, false);
+                    }
+                } else {
+                    // This method will be called twice. 1 for deselection and other for user selection
+                    // So need to trigger the save changes only once
+                    updateSelectedRows(preFilteredRows, selectedRowIds);
+                }
+            } else {
+                // Trigger save changes if multiRowSelection is enabled
+                updateSelectedRows(preFilteredRows, selectedRowIds);
+            }
         }
     }, [selectedRowIds]);
 
@@ -960,6 +995,7 @@ Customgrid.propTypes = {
     rowActions: PropTypes.arrayOf(PropTypes.object),
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
+    multiRowSelection: PropTypes.bool,
     rowSelector: PropTypes.bool,
     globalSearch: PropTypes.bool,
     columnFilter: PropTypes.bool,

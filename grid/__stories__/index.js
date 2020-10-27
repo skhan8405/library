@@ -31,8 +31,9 @@ const GridComponent = (props) => {
         groupSort,
         columnChooser,
         exportData,
-        enableRowDeselection,
-        expandableColumn
+        passIdAttribute,
+        expandableColumn,
+        multiRowSelection
     } = props;
     const idAttribute = "travelId";
     const gridPageSize = 300;
@@ -894,7 +895,7 @@ const GridComponent = (props) => {
     const onRowSelect = (selectedRows) => {
         console.log("Rows selected: ");
         console.log(selectedRows);
-        if (enableRowDeselection) {
+        if (passIdAttribute) {
             setUserSelectedRows(selectedRows);
         }
     };
@@ -962,6 +963,7 @@ const GridComponent = (props) => {
         const rowId = event.currentTarget.dataset.id;
         setRowsToDeselect([Number(rowId)]);
     };
+
     const gridPageInfo =
         paginationType === "index" ? indexPageInfo : cursorPageInfo;
 
@@ -999,7 +1001,7 @@ const GridComponent = (props) => {
                     gridWidth={gridWidth}
                     gridData={gridData}
                     rowsToOverscan={rowsToOverscan}
-                    idAttribute={enableRowDeselection ? idAttribute : ""}
+                    idAttribute={passIdAttribute ? idAttribute : ""}
                     paginationType={hasPagination ? paginationType : null}
                     pageInfo={hasPagination ? gridPageInfo : null}
                     loadMoreData={loadMoreData}
@@ -1019,6 +1021,7 @@ const GridComponent = (props) => {
                     onGridRefresh={passOnGridRefresh ? onGridRefresh : null}
                     CustomPanel={CustomPanel}
                     rowsToDeselect={rowsToDeselect}
+                    multiRowSelection={multiRowSelection}
                     rowSelector={rowSelector}
                     globalSearch={globalSearch}
                     columnFilter={columnFilter}

@@ -54,6 +54,29 @@ export const findSelectedRowIdAttributes = (selectedRows, idAttribute) => {
     return rowIdentifiers;
 };
 
+export const findSelectedRowIdFromIdAttribute = (
+    selectedRows,
+    idAttribute,
+    userSelectedRowIdentifiers
+) => {
+    if (
+        selectedRows &&
+        selectedRows.length > 0 &&
+        userSelectedRowIdentifiers &&
+        userSelectedRowIdentifiers.length > 0 &&
+        idAttribute
+    ) {
+        const idAttributeValue = userSelectedRowIdentifiers[0];
+        const selectedRow = selectedRows.find((row) => {
+            return row.original[idAttribute] === idAttributeValue;
+        });
+        if (selectedRow) {
+            return selectedRow.id;
+        }
+    }
+    return null;
+};
+
 export const convertToIndividualColumns = (managableColumns) => {
     let modifiedColumns = [];
     managableColumns.forEach((item) => {
