@@ -37,21 +37,25 @@ describe("render Index file ", () => {
             Header: "Id",
             accessor: "travelId",
             width: 50,
+            isSortable: true,
             disableFilters: true
         },
         {
             Header: "Flight",
             accessor: "flight",
             width: 100,
+            isSortable: true,
             innerCells: [
                 {
                     Header: "Flight No",
                     accessor: "flightno",
+                    isSortable: true,
                     isSearchable: true
                 },
                 {
                     Header: "Date",
                     accessor: "date",
+                    isSortable: true,
                     isSearchable: true
                 }
             ],
@@ -63,21 +67,25 @@ describe("render Index file ", () => {
             Header: "SR",
             accessor: "sr",
             width: 90,
+            isSortable: true,
             isSearchable: true
         },
         {
             Header: "ULD Positions",
             accessor: "uldPositions",
             width: 120,
+            isSortable: true,
             innerCells: [
                 {
                     Header: "Position",
                     accessor: "position",
+                    isSortable: true,
                     isSearchable: true
                 },
                 {
                     Header: "Value",
                     accessor: "value",
+                    isSortable: true,
                     isSearchable: true
                 }
             ],

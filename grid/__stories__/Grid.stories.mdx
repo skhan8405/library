@@ -60,6 +60,7 @@ const GridComponent = () => {
             disableFilters: true,
             disableSortBy: true,
             disableResizing: true,
+            isSortable: true, // This column will appear in groupsort overlay only if 'isSortable' value is true.
             isSearchable: true,
             displayCell: (rowData, DisplayTag, isDesktop, isExpandableColumn) => {
                 // rowData -> Entire row data from gridData
@@ -79,10 +80,12 @@ const GridComponent = () => {
             Header: "Flight",
             accessor: "flight",
             width: 100,
+            isSortable: true, // This column will appear in groupsort overlay only if 'isSortable' value is true.
             innerCells: [
                 {
                     Header: "Flight No",
                     accessor: "flightno",
+                    isSortable: true,  // This inner cell will appear in groupsort overlay only if 'isSortable' value is true.
                     isSearchable: true
                 },
                 {
@@ -130,6 +133,7 @@ const GridComponent = () => {
             Header: "Segment",
             accessor: "segment",
             width: 100,
+            isSortable: true, // Column will not appear in groupsort overlay if atleast 1 inner cell have 'isSortable' value as true (Applicable only if column is having innerCells).
             innerCells: [
                 {
                     Header: "From",

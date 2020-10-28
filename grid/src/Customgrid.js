@@ -43,7 +43,8 @@ import {
     findSelectedRowIdFromIdAttribute,
     updatedActionsHeaderClass,
     convertToIndividualColumns,
-    checkdisplayOfGroupedColumns
+    checkdisplayOfGroupedColumns,
+    checkIfGroupsortIsApplicable
 } from "./Utilities/GridUtilities";
 
 const listRef = createRef(null);
@@ -658,6 +659,11 @@ const Customgrid = (props) => {
     );
 
     if (!isFirstRendering && gridColumns && gridColumns.length > 0) {
+        // Check if atleast 1 column has group sort option enabled, and display group sort icon only if there is atleast 1.
+        const isGroupSortNeeded = checkIfGroupsortIsApplicable(
+            managableColumns
+        );
+
         // Render table and other components as required
         // Use properties and methods provided by react-table
         // Autosizer used for calculating grid height (don't consider window width and column resizing value changes)
@@ -717,7 +723,7 @@ const Customgrid = (props) => {
                                 </div>
                             </div>
                         ) : null}
-                        {groupSort !== false ? (
+                        {isGroupSortNeeded !== false && groupSort !== false ? (
                             <div className="utilities-icon-container group-sort-container">
                                 <div
                                     className="utilities-icon group-sort"

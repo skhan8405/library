@@ -104,3 +104,14 @@ export const checkdisplayOfGroupedColumns = (groupedColumn) => {
     }
     return false;
 };
+
+export const checkIfGroupsortIsApplicable = (columns) => {
+    const individualColumns = convertToIndividualColumns(columns);
+    const sortableColumn = individualColumns.find(
+        (col) => col.isSortable === true
+    );
+    if (sortableColumn) {
+        return true;
+    }
+    return false;
+};

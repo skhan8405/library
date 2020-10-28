@@ -127,6 +127,7 @@ const GridComponent = (props) => {
             width: 50,
             disableFilters: true,
             isSearchable: true,
+            isSortable: true,
             displayCell: (
                 rowData,
                 DisplayTag,
@@ -146,10 +147,12 @@ const GridComponent = (props) => {
             Header: "Flight",
             accessor: "flight",
             width: 100,
+            isSortable: true,
             innerCells: [
                 {
                     Header: "Flight No",
                     accessor: "flightno",
+                    isSortable: true,
                     isSearchable: true
                 },
                 {
@@ -199,15 +202,18 @@ const GridComponent = (props) => {
             Header: "Segment",
             accessor: "segment",
             width: 100,
+            isSortable: true,
             innerCells: [
                 {
                     Header: "From",
                     accessor: "from",
+                    isSortable: true,
                     isSearchable: true
                 },
                 {
                     Header: "To",
                     accessor: "to",
+                    isSortable: true,
                     isSearchable: true
                 }
             ],
@@ -477,15 +483,18 @@ const GridComponent = (props) => {
             Header: "Weight",
             accessor: "weight",
             width: 130,
+            isSortable: true,
             innerCells: [
                 {
                     Header: "Percentage",
                     accessor: "percentage",
+                    isSortable: true,
                     isSearchable: true
                 },
                 {
                     Header: "Value",
                     accessor: "value",
+                    isSortable: true,
                     isSearchable: true
                 }
             ],
@@ -524,6 +533,7 @@ const GridComponent = (props) => {
             Header: "Volume",
             accessor: "volume",
             width: 100,
+            isSortable: true,
             innerCells: [
                 {
                     Header: "Percentage",
@@ -660,6 +670,7 @@ const GridComponent = (props) => {
             Header: "SR",
             accessor: "sr",
             width: 90,
+            isSortable: true,
             isSearchable: true,
             displayCell: (
                 rowData,
