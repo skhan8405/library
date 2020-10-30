@@ -961,14 +961,6 @@ const Customgrid = (props) => {
                                                                 return null;
                                                             }
                                                         )}
-                                                        <div
-                                                            role="columnheader"
-                                                            className="column-heading-forScroll"
-                                                        >
-                                                            <div className="column-heading-title-forScroll">
-                                                                <span />
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 );
                                             }

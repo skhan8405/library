@@ -32,11 +32,13 @@
         .table-cell {
             padding: 8px 4px;
         }
-        .column-heading-forScroll {
-            width: rem(16.8);
-            display: none;
-            &.withScroll {
-                display: inline-block;
+        &.withScroll {
+            .tr {
+                overflow-y: scroll;
+                overflow-x: hidden;
+                &::-webkit-scrollbar {
+                    visibility: hidden;
+                }
             }
         }
     }
@@ -134,6 +136,7 @@
     }
     .resizer {
         right: -5px;
+        left: -5px;
         width: 10px;
         height: 100%;
         position: absolute;
