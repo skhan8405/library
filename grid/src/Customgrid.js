@@ -51,6 +51,7 @@ const listRef = createRef(null);
 
 const Customgrid = (props) => {
     const {
+        theme,
         title,
         gridHeight,
         gridWidth,
@@ -991,15 +992,20 @@ const Customgrid = (props) => {
                                                 height={height - 60}
                                                 itemCount={rows.length}
                                                 itemSize={(index) => {
-                                                    return calculateRowHeight(
-                                                        rows[index],
-                                                        headerGroups &&
-                                                            headerGroups.length
-                                                            ? headerGroups[
-                                                                  headerGroups.length -
-                                                                      1
-                                                              ].headers
-                                                            : []
+                                                    return (
+                                                        calculateRowHeight(
+                                                            rows[index],
+                                                            headerGroups &&
+                                                                headerGroups.length
+                                                                ? headerGroups[
+                                                                      headerGroups.length -
+                                                                          1
+                                                                  ].headers
+                                                                : []
+                                                        ) +
+                                                        (theme === "portal"
+                                                            ? 10
+                                                            : 0)
                                                     );
                                                 }}
                                                 onItemsRendered={
@@ -1024,6 +1030,7 @@ const Customgrid = (props) => {
 };
 
 Customgrid.propTypes = {
+    theme: PropTypes.string,
     title: PropTypes.string,
     gridHeight: PropTypes.string,
     gridWidth: PropTypes.string,

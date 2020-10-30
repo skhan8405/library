@@ -516,11 +516,12 @@ describe("render Index file ", () => {
     });
     afterEach(cleanup);
 
-    it("test row expand, column filter and Ascending group sort without row height calculation", () => {
+    it("test custom className, theme, row expand, column filter and Ascending group sort without row height calculation", () => {
         mockOffsetSize(600, 600);
         const { container, getByTestId } = render(
             <Grid
                 className="icargoCustomClass"
+                theme="portal"
                 title={mockTitle}
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
@@ -550,6 +551,12 @@ describe("render Index file ", () => {
             "icargoCustomClass"
         );
         expect(customClassElement.length).toBeGreaterThan(0);
+
+        // Check if class name for portal theme is present or not
+        const portalThemeClassElement = gridContainer.getElementsByClassName(
+            "neo-grid-portal"
+        );
+        expect(portalThemeClassElement.length).toBeGreaterThan(0);
 
         const expander = gridContainer.getElementsByClassName("expander")[2];
         act(() => {
@@ -835,7 +842,6 @@ describe("render Index file ", () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
-                className="icargoCustomClass"
                 title={mockTitle}
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
@@ -908,7 +914,6 @@ describe("render Index file ", () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
-                className="icargoCustomClass"
                 title={mockTitle}
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
@@ -945,7 +950,6 @@ describe("render Index file ", () => {
         mockOffsetSize(600, 600);
         const { container } = render(
             <Grid
-                className="icargoCustomClass"
                 title={mockTitle}
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}
@@ -982,7 +986,6 @@ describe("render Index file ", () => {
         mockOffsetSize(600, 600);
         const { container, getByTestId } = render(
             <Grid
-                className="icargoCustomClass"
                 title={mockTitle}
                 gridHeight={mockGridHeight}
                 gridWidth={mockGridWidth}

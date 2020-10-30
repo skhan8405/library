@@ -314,9 +314,14 @@ const GridComponent = () => {
     // By default Grid considers exportData as true
     const exportData = true;
 
+    // If theme is portal Grid will assign different style for Grid header portion and Grid rows.
+    // All other themes will have default stylings.
+    const theme = "portal"
+
     return (
         <Grid
             className="icargoCustomClass"
+            theme={theme}
             title="AWBs"
             gridHeight="80vh"
             gridWidth="100%"
@@ -367,6 +372,26 @@ const GridComponent = () => {
 
 <Grid
     className="icargoCustomClass"
+    gridData={gridData}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+/>
+```
+
+#### With custom theme
+
+<Story name="With custom theme">
+    <GridComponent theme="portal" />;
+</Story>
+
+```jsx
+// Grid will be loaded with design matching 'portal' theme.
+
+<Grid
+    theme={theme}
     gridData={gridData}
     columns={columns}
     calculateRowHeight={calculateRowHeight}
@@ -930,6 +955,7 @@ const exportData = false;
 <Story name="With all props">
     <GridComponent
         className="icargoCustomClass"
+        theme="portal"
         title="AWBs"
         gridHeight="80vh"
         gridWidth="100%"
@@ -959,6 +985,7 @@ const exportData = false;
 ```jsx
 <Grid
     className={className}
+    theme={theme}
     title={title}
     gridHeight={gridHeight}
     gridWidth={gridWidth}

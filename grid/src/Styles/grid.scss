@@ -3,6 +3,26 @@
     @return #{$remSize}rem;
 }
 
+.neo-grid-portal {
+    .neo-grid-header {
+        background: transparent;
+    }
+    .neo-grid .table-row-wrap {
+        background: var(--white);
+        border-radius: 12px;
+    }
+    .neo-grid .table-row {
+        padding-bottom: 10px;
+        border: none;
+    }
+    .neo-grid .tbody {
+        margin-top: 10px;
+    }
+    .neo-grid .tbody .row-selector-cell-container {
+        justify-content: center;
+        align-items: center;
+    }
+}
 .neo-grid {
     .table {
         border-top: 1px solid var(--border-grey);
@@ -28,10 +48,12 @@
             align-items: flex-start;
         }
         .disabled {
-            background-color: var(--light-grey);
-            pointer-events: none;
-            .form-check-input {
+            .table-row-wrap {
                 background-color: var(--light-grey);
+                pointer-events: none;
+                .form-check-input {
+                    background-color: var(--light-grey);
+                }
             }
         }
     }

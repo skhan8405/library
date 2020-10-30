@@ -11,6 +11,7 @@ import "!style-loader!css-loader!sass-loader!./Styles/main.scss";
 const Grid = (props) => {
     const {
         className,
+        theme,
         title,
         gridHeight,
         gridWidth,
@@ -295,9 +296,12 @@ const Grid = (props) => {
     return (
         <div
             data-testid="gridComponent"
-            className={`grid-component-container ${className || ""}`}
+            className={`grid-component-container ${className || ""} ${
+                theme === "portal" ? "neo-grid-portal" : ""
+            }`}
         >
             <Customgrid
+                theme={theme}
                 title={title}
                 gridHeight={gridHeight}
                 gridWidth={gridWidth}
@@ -354,6 +358,7 @@ const Grid = (props) => {
 
 Grid.propTypes = {
     className: PropTypes.string,
+    theme: PropTypes.string,
     title: PropTypes.string,
     gridHeight: PropTypes.string,
     gridWidth: PropTypes.string,

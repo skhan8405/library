@@ -35,7 +35,8 @@ const GridComponent = (props) => {
         rowsForSelection,
         passIdAttribute,
         expandableColumn,
-        multiRowSelection
+        multiRowSelection,
+        theme
     } = props;
     const idAttribute = "travelId";
     const gridPageSize = 300;
@@ -997,7 +998,7 @@ const GridComponent = (props) => {
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
-            <div>
+            <div className={theme === "portal" ? "sample-bg" : ""}>
                 <div className="selectedRows">
                     {userSelectedRows.map((row) => {
                         return (
@@ -1016,6 +1017,7 @@ const GridComponent = (props) => {
                 </div>
                 <Grid
                     className={className}
+                    theme={theme}
                     title={title}
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
