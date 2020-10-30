@@ -402,7 +402,7 @@ describe("render Index file ", () => {
 
     it("test server side group sorting", () => {
         mockOffsetSize(600, 600);
-        const { container, getByTestId, getAllByTestId } = render(
+        const { container, getByTestId } = render(
             <Grid
                 gridData={data}
                 idAttribute="travelId"
