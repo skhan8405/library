@@ -5,12 +5,8 @@
 .neo-grid-header {
     background-color: var(--secondary);
     display: flex;
-    padding: rem(12);
+    padding: rem(12) rem(4);
     justify-content: space-between;
-    &__rowSelector {
-        display: flex;
-        align-items: center;
-    }
     &__results {
         display: flex;
         font-size: rem(14);

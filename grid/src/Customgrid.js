@@ -676,8 +676,8 @@ const Customgrid = (props) => {
                 style={{ width: gridWidth || "100%" }}
             >
                 <div className="neo-grid-header">
-                    {gridHeader === false && multiRowSelection !== false ? (
-                        <div className="neo-grid-header__rowSelector">
+                    <div className="neo-grid-header__results">
+                        {gridHeader === false && multiRowSelection !== false ? (
                             <div className="form-check">
                                 <input
                                     type="checkbox"
@@ -687,9 +687,7 @@ const Customgrid = (props) => {
                                     onChange={toggleAllRowsSelection}
                                 />
                             </div>
-                        </div>
-                    ) : null}
-                    <div className="neo-grid-header__results">
+                        ) : null}
                         <strong>
                             {totalRecordsCount > 0 &&
                             rows.length === gridData.length
