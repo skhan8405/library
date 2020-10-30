@@ -74,6 +74,7 @@ const Customgrid = (props) => {
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
+        serverSideSorting,
         getSortedData,
         CustomPanel,
         multiRowSelection,
@@ -161,6 +162,9 @@ const Customgrid = (props) => {
     // Call apply group sort function from parent
     const applyGroupSort = (sortOptions) => {
         setGroupSortOptions(sortOptions);
+        if (serverSideSorting && typeof serverSideSorting === "function") {
+            serverSideSorting(sortOptions);
+        }
     };
 
     // Local state value for hiding/unhiding column management overlay
@@ -259,7 +263,10 @@ const Customgrid = (props) => {
         typeof additionalColumn.Cell === "function";
 
     const columns = useMemo(() => gridColumns);
-    const data = useMemo(() => getSortedData([...gridData], groupSortOptions));
+    const data =
+        serverSideSorting && typeof serverSideSorting === "function"
+            ? useMemo(() => [...gridData])
+            : useMemo(() => getSortedData([...gridData], groupSortOptions));
 
     // Initialize react-table instance with the values received through properties
     const {
@@ -1041,6 +1048,7 @@ Customgrid.propTypes = {
     hasNextPage: PropTypes.bool,
     isNextPageLoading: PropTypes.bool,
     loadNextPage: PropTypes.func,
+    serverSideSorting: PropTypes.func,
     getSortedData: PropTypes.func,
     getToggleAllRowsSelectedProps: PropTypes.func,
     row: PropTypes.arrayOf(PropTypes.object),

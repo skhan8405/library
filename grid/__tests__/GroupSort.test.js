@@ -316,6 +316,7 @@ describe("render Index file ", () => {
         });
     }
 
+    const mockServerSideSorting = jest.fn();
     const mockUpdateRowData = jest.fn();
     const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
@@ -366,7 +367,7 @@ describe("render Index file ", () => {
         // Check if grid has been loaded
         expect(gridContainer).toBeInTheDocument();
 
-        // Group sort Icon
+        // Open Group sort Icon
         const groupSortIcon = getByTestId("toggleGroupSortOverLay");
         act(() => {
             groupSortIcon.dispatchEvent(
@@ -381,13 +382,6 @@ describe("render Index file ", () => {
                 new MouseEvent("click", { bubbles: true })
             );
         });
-
-        // const sortBySelect = getByTestId("groupSort-sortBy");
-        // fireEvent.change(sortBySelect, {
-        //     target: { value: "flight" }
-        // });
-        // const sortOnOptions = getAllByTestId("groupSort-sortOn-Option");
-        // expect(sortOnOptions.length).toBe(1);
 
         // Count sort by
         const sortByOptions = getAllByTestId("groupSort-sortBy-Option");
@@ -404,5 +398,48 @@ describe("render Index file ", () => {
         // Count sort on options
         sortOnOptions = getAllByTestId("groupSort-sortOn-Option");
         expect(sortOnOptions.length).toBe(2);
+    });
+
+    it("test server side group sorting", () => {
+        mockOffsetSize(600, 600);
+        const { container, getByTestId, getAllByTestId } = render(
+            <Grid
+                gridData={data}
+                idAttribute="travelId"
+                serverSideSorting={mockServerSideSorting}
+                columns={gridColumnsWithGroupSort}
+                onRowUpdate={mockUpdateRowData}
+                onRowDelete={mockDeleteRowData}
+                onRowSelect={mockSelectBulkData}
+            />
+        );
+        const gridContainer = container;
+        // Check if grid has been loaded
+        expect(gridContainer).toBeInTheDocument();
+
+        // Open Group sort Icon
+        const groupSortIcon = getByTestId("toggleGroupSortOverLay");
+        act(() => {
+            groupSortIcon.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        // Add sort link
+        const addSortLink = getByTestId("addSort");
+        act(() => {
+            addSortLink.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+
+        // Click OK button
+        const saveGroupSort = getByTestId("saveSort");
+        act(() => {
+            saveGroupSort.dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+        expect(mockServerSideSorting).toBeCalled();
     });
 });

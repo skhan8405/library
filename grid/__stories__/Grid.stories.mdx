@@ -318,6 +318,30 @@ const GridComponent = () => {
     // All other themes will have default stylings.
     const theme = "portal"
 
+    // Pass this function as a prop to Grid, then Grid will callback this function if user has selected group sorting
+    const serverSideSorting = (groupSortOptions) => {
+        // This function should re-render the Grid with sorted gridData prop.
+        // groupSortOptions is the Object representation of the sorting options that user has selected.
+        // Example:
+        // [
+        //     {
+        //         "sortBy": "segment", // This will be the accessor value of the column
+        //         "sortOn": "from", // This will be the accessor value of the innerCell, or just String "value" if no innerCells are present
+        //         "order": "Ascending" // Either "Ascending" or "Descending"
+        //     },
+        //     {
+        //         "sortBy": "flight",
+        //         "sortOn": "flightno",
+        //         "order": "Descending"
+        //     },
+        //     {
+        //         "sortBy": "travelId",
+        //         "sortOn": "value",
+        //         "order": "Ascending"
+        //     }
+        // ]
+    }
+
     return (
         <Grid
             className="icargoCustomClass"
@@ -331,6 +355,7 @@ const GridComponent = () => {
             paginationType={paginationType}
             pageInfo={pageInfo}
             loadMoreData={loadMoreData}
+            serverSideSorting={serverSideSorting}
             columns={columns} // *Required
             columnToExpand={columnToExpand}
             rowActions={rowActions}
@@ -736,6 +761,27 @@ const loadMoreData = (updatedPageInfo) => {
     onRowDelete={onRowDelete}
     onRowSelect={onRowSelect}
 />;
+```
+
+#### With server side sorting
+
+<Story name="With server side sorting">
+    <GridComponent enableServersideSorting />;
+</Story>
+
+```jsx
+// Pass 'serverSideSorting' function as a prop and Grid will call this function whenever user selects group sort option.
+// This function to re-render the Grid with sorted 'gridData'.
+
+<Grid
+    gridData={gridData}
+    serverSideSorting={serverSideSorting}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowDelete={onRowDelete}
+    onRowSelect={onRowSelect}
+/>
 ```
 
 #### With grouped headers

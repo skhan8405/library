@@ -21,6 +21,7 @@ const Grid = (props) => {
         paginationType,
         pageInfo,
         loadMoreData,
+        serverSideSorting,
         columns,
         columnToExpand,
         rowActions,
@@ -329,6 +330,7 @@ const Grid = (props) => {
                 hasNextPage={pageInfo ? !pageInfo.lastPage : false}
                 isNextPageLoading={isNextPageLoading}
                 loadNextPage={loadNextPage}
+                serverSideSorting={serverSideSorting}
                 getSortedData={getSortedData}
                 CustomPanel={CustomPanel}
                 multiRowSelection={multiRowSelection}
@@ -370,6 +372,7 @@ Grid.propTypes = {
     paginationType: PropTypes.string,
     pageInfo: PropTypes.object,
     loadMoreData: PropTypes.func,
+    serverSideSorting: PropTypes.func,
     getRowEditOverlay: PropTypes.func,
     onRowUpdate: PropTypes.func,
     onRowDelete: PropTypes.func,
