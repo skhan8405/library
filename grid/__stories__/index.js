@@ -8,7 +8,7 @@ import { getValueOfDate } from "./utils/DateUtility";
 import FlightEdit from "./cells/FlightEdit";
 import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
-import RowEdit from "./cells/RowEdit";
+import RowAction from "./cells/RowAction";
 
 const GridComponent = (props) => {
     const {
@@ -19,7 +19,6 @@ const GridComponent = (props) => {
         rowsToOverscan,
         passColumnToExpand,
         passRowActions,
-        passRowActionCallback,
         passGetRowInfo,
         passOnGridRefresh,
         hasPagination,
@@ -859,17 +858,6 @@ const GridComponent = (props) => {
         }
     };
 
-    const getRowEditOverlay = (rowData, DisplayTag, rowUpdateCallBack) => {
-        return (
-            <RowEdit
-                airportCodeList={airportCodeList}
-                DisplayTag={DisplayTag}
-                rowData={rowData}
-                rowUpdateCallBack={rowUpdateCallBack}
-            />
-        );
-    };
-
     const calculateRowHeight = (row, gridColumns) => {
         // Minimum height for each row
         let rowHeight = 50;
@@ -906,20 +894,6 @@ const GridComponent = (props) => {
             }
         }
         return rowHeight;
-    };
-
-    const rowActions = [
-        { label: "edit" },
-        { label: "delete" },
-        { label: "Send SCR", value: "SCR" },
-        { label: "Segment Summary", value: "SegmentSummary" },
-        { label: "Open Summary", value: "OpenSummary" },
-        { label: "Close Summary", value: "CloseSummary" }
-    ];
-
-    const rowActionCallback = (rowData, actionValue) => {
-        console.log(`Row action: ${actionValue}`);
-        console.log(rowData);
     };
 
     const onRowUpdate = (originalRow, updatedRow) => {
@@ -983,6 +957,10 @@ const GridComponent = (props) => {
 
     const onGridRefresh = () => {
         console.log("Grid Refrehsed ");
+    };
+
+    const rowActions = (rowData, closeOverlay) => {
+        return <RowAction rowData={rowData} closeOverlay={closeOverlay} />;
     };
 
     const loadMoreData = (updatedPageInfo) => {
@@ -1109,14 +1087,9 @@ const GridComponent = (props) => {
                     columns={columns}
                     columnToExpand={passColumnToExpand ? columnToExpand : null}
                     rowActions={passRowActions ? rowActions : null}
-                    rowActionCallback={
-                        passRowActionCallback ? rowActionCallback : null
-                    }
-                    getRowEditOverlay={getRowEditOverlay}
                     calculateRowHeight={calculateRowHeight}
                     expandableColumn={expandableColumn}
                     onRowUpdate={onRowUpdate}
-                    onRowDelete={onRowDelete}
                     onRowSelect={onRowSelect}
                     getRowInfo={passGetRowInfo ? getRowInfo : null}
                     onGridRefresh={passOnGridRefresh ? onGridRefresh : null}

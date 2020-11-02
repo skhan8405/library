@@ -23,8 +23,6 @@ import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import RowOptions from "./Functions/RowOptions";
-import RowEditOverlay from "./Functions/RowEditOverlay";
-import RowDeleteOverLay from "./Functions/RowDeleteOverLay";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
 import ExportData from "./Overlays/exportdata";
@@ -61,16 +59,12 @@ const Customgrid = (props) => {
         rowsToOverscan,
         idAttribute,
         totalRecordsCount,
-        getRowEditOverlay,
-        updateRowInGrid,
-        deleteRowFromGrid,
         searchColumn,
         onRowSelect,
         getRowInfo,
         calculateRowHeight,
         expandableColumn,
         rowActions,
-        rowActionCallback,
         hasNextPage,
         isNextPageLoading,
         loadNextPage,
@@ -119,36 +113,6 @@ const Customgrid = (props) => {
     // Toggle column filter state value based on UI clicks
     const toggleColumnFilter = () => {
         setFilterOpen(!isFilterOpen);
-    };
-
-    // Local state value for checking if row edit overlay is open/closed
-    const [isRowEditOverlyOpen, setIsRowEditOverlyOpen] = useState(false);
-    // Local state value to hold row data that is going to be edited
-    const [editedRowData, setEditedRowData] = useState(null);
-    // Bind the user defined row edit overlay into Grid
-    const bindRowEditOverlay = (rowValue) => {
-        setEditedRowData(rowValue);
-        setIsRowEditOverlyOpen(true);
-    };
-    // Close the row edit overlay
-    const closeRowEditOverlay = () => {
-        setEditedRowData(null);
-        setIsRowEditOverlyOpen(false);
-    };
-
-    // Local state value for checking if row delete overlay is open/closed
-    const [isRowDeleteOverlyOpen, setIsRowDeleteOverlyOpen] = useState(false);
-    // Local state value to hold row data that is going to be deleted
-    const [deletedRowData, setDeletedRowData] = useState(null);
-    // Bind the user defined row delete overlay into Grid
-    const bindRowDeleteOverlay = (rowValue) => {
-        setDeletedRowData(rowValue);
-        setIsRowDeleteOverlyOpen(true);
-    };
-    // Close the row edit overlay
-    const closeRowDeleteOverlay = () => {
-        setDeletedRowData(null);
-        setIsRowDeleteOverlyOpen(false);
     };
 
     // Local state value for checking if group Sort Overlay is open/closed.
@@ -285,8 +249,6 @@ const Customgrid = (props) => {
             columns,
             data,
             defaultColumn,
-            rowActions,
-            rowActionCallback,
             globalFilter: globalFilterLogic,
             autoResetFilters: false,
             autoResetGlobalFilter: false,
@@ -338,10 +300,11 @@ const Customgrid = (props) => {
                 ]);
             }
             // Add last column only if required
-            const isRowActionsAvailable = rowActions && rowActions.length > 0; // If row actions are available
+            const isRowActionsAvailable =
+                rowActions && typeof rowActions === "function"; // If row actions are available
             const isRowExpandAvailable = isRowExpandEnabled || expandableColumn; // If row expand option is available
             if (isRowActionsAvailable || isRowExpandAvailable) {
-                hooks.allColumns.push((hookColumns, hook) => [
+                hooks.allColumns.push((hookColumns) => [
                     ...hookColumns,
                     {
                         id: "custom",
@@ -355,7 +318,6 @@ const Customgrid = (props) => {
                         width: 35,
                         maxWidth: 35,
                         Cell: ({ row }) => {
-                            const { instance } = hook;
                             // Check if expand icon is required for this row using the getRowInfo prop passed
                             let isRowExpandable = true;
                             if (
@@ -369,21 +331,12 @@ const Customgrid = (props) => {
                             }
                             return (
                                 <div className="action">
-                                    <RowOptions
-                                        row={row}
-                                        rowActions={
-                                            instance ? instance.rowActions : []
-                                        }
-                                        rowActionCallback={
-                                            instance
-                                                ? instance.rowActionCallback
-                                                : null
-                                        }
-                                        bindRowEditOverlay={bindRowEditOverlay}
-                                        bindRowDeleteOverlay={
-                                            bindRowDeleteOverlay
-                                        }
-                                    />
+                                    {isRowActionsAvailable ? (
+                                        <RowOptions
+                                            row={row}
+                                            rowActions={rowActions}
+                                        />
+                                    ) : null}
                                     {isRowExpandAvailable && isRowExpandable ? (
                                         <span
                                             className="expander"
@@ -820,30 +773,6 @@ const Customgrid = (props) => {
                     </div>
                 </div>
 
-                <div className="table-popus">
-                    {isRowEditOverlyOpen ? (
-                        <div className="overlay">
-                            <RowEditOverlay
-                                row={editedRowData}
-                                columns={gridColumns}
-                                additionalColumn={additionalColumn}
-                                getRowEditOverlay={getRowEditOverlay}
-                                closeRowEditOverlay={closeRowEditOverlay}
-                                updateRowInGrid={updateRowInGrid}
-                            />
-                        </div>
-                    ) : null}
-                    {isRowDeleteOverlyOpen ? (
-                        <div className="overlay">
-                            <RowDeleteOverLay
-                                row={deletedRowData}
-                                closeRowDeleteOverlay={closeRowDeleteOverlay}
-                                deleteRowFromGrid={deleteRowFromGrid}
-                            />
-                        </div>
-                    ) : null}
-                </div>
-
                 <div
                     className="tableContainer table-outer neo-grid"
                     style={{
@@ -1036,9 +965,6 @@ Customgrid.propTypes = {
     rowsToOverscan: PropTypes.number,
     idAttribute: PropTypes.string,
     totalRecordsCount: PropTypes.number,
-    getRowEditOverlay: PropTypes.func,
-    updateRowInGrid: PropTypes.func,
-    deleteRowFromGrid: PropTypes.func,
     searchColumn: PropTypes.func,
     onRowSelect: PropTypes.func,
     getRowInfo: PropTypes.func,
@@ -1053,7 +979,7 @@ Customgrid.propTypes = {
     getToggleAllRowsSelectedProps: PropTypes.func,
     row: PropTypes.arrayOf(PropTypes.object),
     expandedRowData: PropTypes.object,
-    rowActions: PropTypes.arrayOf(PropTypes.object),
+    rowActions: PropTypes.func,
     rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
     multiRowSelection: PropTypes.bool,

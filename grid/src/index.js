@@ -25,10 +25,7 @@ const Grid = (props) => {
         columns,
         columnToExpand,
         rowActions,
-        rowActionCallback,
-        getRowEditOverlay,
         onRowUpdate,
-        onRowDelete,
         onRowSelect,
         getRowInfo,
         calculateRowHeight,
@@ -121,13 +118,6 @@ const Grid = (props) => {
     const updateRowInGrid = (original, updatedRow) => {
         if (onRowUpdate) {
             onRowUpdate(original, updatedRow);
-        }
-    };
-
-    // Gets triggered when one row item is deleted
-    const deleteRowFromGrid = (original) => {
-        if (onRowDelete) {
-            onRowDelete(original);
         }
     };
 
@@ -312,9 +302,7 @@ const Grid = (props) => {
                 rowsToOverscan={rowsToOverscan}
                 idAttribute={idAttribute}
                 totalRecordsCount={pageInfo ? pageInfo.total : 0}
-                getRowEditOverlay={getRowEditOverlay}
                 updateRowInGrid={updateRowInGrid}
-                deleteRowFromGrid={deleteRowFromGrid}
                 searchColumn={searchColumn}
                 onRowSelect={onRowSelect}
                 getRowInfo={getRowInfo}
@@ -326,7 +314,6 @@ const Grid = (props) => {
                 }
                 expandableColumn={expandableColumn}
                 rowActions={rowActions}
-                rowActionCallback={rowActionCallback}
                 hasNextPage={pageInfo ? !pageInfo.lastPage : false}
                 isNextPageLoading={isNextPageLoading}
                 loadNextPage={loadNextPage}
@@ -373,15 +360,12 @@ Grid.propTypes = {
     pageInfo: PropTypes.object,
     loadMoreData: PropTypes.func,
     serverSideSorting: PropTypes.func,
-    getRowEditOverlay: PropTypes.func,
     onRowUpdate: PropTypes.func,
-    onRowDelete: PropTypes.func,
     onRowSelect: PropTypes.func,
     getRowInfo: PropTypes.func,
     calculateRowHeight: PropTypes.func,
     expandableColumn: PropTypes.bool,
-    rowActions: PropTypes.arrayOf(PropTypes.object),
-    rowActionCallback: PropTypes.func,
+    rowActions: PropTypes.func,
     CustomPanel: PropTypes.any,
     multiRowSelection: PropTypes.bool,
     gridHeader: PropTypes.bool,
