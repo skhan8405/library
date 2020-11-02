@@ -10,6 +10,7 @@ import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 import RowAction from "./cells/RowAction";
 import RowEdit from "./cells/RowEdit";
+import RowDelete from "./cells/RowDelete";
 
 const GridComponent = (props) => {
     const {
@@ -71,6 +72,9 @@ const GridComponent = (props) => {
 
     const [isEditOverlayOpened, setIsEditOverlayOpened] = useState(false);
     const [rowDataToEdit, setRowDataToEdit] = useState(null);
+
+    const [isDeleteOverlayOpened, setIsDeleteOverlayOpened] = useState(false);
+    const [rowDataToDelete, setRowDataToDelete] = useState(null);
 
     // Loginc for sorting data
     const compareValues = (compareOrder, v1, v2) => {
@@ -967,9 +971,18 @@ const GridComponent = (props) => {
         setRowDataToEdit(rowData);
         setIsEditOverlayOpened(true);
     };
-    const unbindRowEditOverlay = (rowData) => {
+    const unbindRowEditOverlay = () => {
         setRowDataToEdit(null);
         setIsEditOverlayOpened(false);
+    };
+
+    const bindRowDeleteOverlay = (rowData) => {
+        setRowDataToDelete(rowData);
+        setIsDeleteOverlayOpened(true);
+    };
+    const unbindRowDeleteOverlay = () => {
+        setRowDataToDelete(null);
+        setIsDeleteOverlayOpened(false);
     };
 
     const rowActions = (rowData, closeOverlay) => {
@@ -978,6 +991,7 @@ const GridComponent = (props) => {
                 rowData={rowData}
                 closeOverlay={closeOverlay}
                 bindRowEditOverlay={bindRowEditOverlay}
+                bindRowDeleteOverlay={bindRowDeleteOverlay}
             />
         );
     };
@@ -1095,6 +1109,15 @@ const GridComponent = (props) => {
                             airportCodeList={airportCodeList}
                             onRowUpdate={onRowUpdate}
                             unbindRowEditOverlay={unbindRowEditOverlay}
+                        />
+                    </div>
+                ) : null}
+                {isDeleteOverlayOpened && rowDataToDelete !== null ? (
+                    <div className="overlay">
+                        <RowDelete
+                            rowData={rowDataToDelete}
+                            onRowDelete={onRowDelete}
+                            unbindRowDeleteOverlay={unbindRowDeleteOverlay}
                         />
                     </div>
                 ) : null}

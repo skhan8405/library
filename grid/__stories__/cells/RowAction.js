@@ -1,8 +1,17 @@
 import React from "react";
 
-const RowAction = ({ rowData, closeOverlay, bindRowEditOverlay }) => {
+const RowAction = ({
+    rowData,
+    closeOverlay,
+    bindRowEditOverlay,
+    bindRowDeleteOverlay
+}) => {
     const openEditOverlay = () => {
         bindRowEditOverlay(rowData);
+        closeOverlay();
+    };
+    const openDeleteOverlay = () => {
+        bindRowDeleteOverlay(rowData);
         closeOverlay();
     };
     return (
@@ -12,7 +21,7 @@ const RowAction = ({ rowData, closeOverlay, bindRowEditOverlay }) => {
                     <span>Edit</span>
                 </span>
             </li>
-            <li role="presentation" onClick={closeOverlay}>
+            <li role="presentation" onClick={openDeleteOverlay}>
                 <span>
                     <span>Delete</span>
                 </span>
