@@ -980,7 +980,6 @@ Customgrid.propTypes = {
     row: PropTypes.arrayOf(PropTypes.object),
     expandedRowData: PropTypes.object,
     rowActions: PropTypes.func,
-    rowActionCallback: PropTypes.func,
     CustomPanel: PropTypes.any,
     multiRowSelection: PropTypes.bool,
     gridHeader: PropTypes.bool,
