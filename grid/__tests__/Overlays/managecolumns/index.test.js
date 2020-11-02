@@ -1,11 +1,8 @@
 /* eslint-disable no-undef */
 import React from "react";
-import ReactDOM from "react-dom";
-import { render, cleanup, fireEvent, waitFor } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { act } from "react-dom/test-utils";
-/* eslint-disable no-unused-vars */
-import regeneratorRuntime from "regenerator-runtime";
 import ColumnReordering from "../../../src/Overlays/managecolumns/index";
 
 describe("ColumnReordering unit test", () => {
@@ -253,7 +250,7 @@ describe("ColumnReordering unit test", () => {
     });
 
     it("should render ColumnReordering component", () => {
-        const { component, getByTestId } = render(
+        const { getByTestId } = render(
             <ColumnReordering
                 isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
@@ -583,7 +580,7 @@ describe("ColumnReordering unit test", () => {
     });
 
     it("Error scenario for no Coloumns Selected", () => {
-        const { getAllByTestId, getByTestId } = render(
+        const { getByTestId } = render(
             <ColumnReordering
                 isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
@@ -617,7 +614,7 @@ describe("ColumnReordering unit test", () => {
     });
 
     it("Select InnerCell Of Remarks", () => {
-        const { container, getByTestId } = render(
+        const { container } = render(
             <ColumnReordering
                 isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
@@ -639,7 +636,7 @@ describe("ColumnReordering unit test", () => {
     });
 
     it("Trigger search of columns onChnage", () => {
-        const { container, getByTestId } = render(
+        render(
             <ColumnReordering
                 isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
@@ -663,13 +660,13 @@ describe("ColumnReordering unit test", () => {
         });
     });
 
-    it("should work drag and drop functionality", async () => {
+    it("should work drag and drop functionality", () => {
         const createBubbledEvent = (type, props = {}) => {
             const event = new Event(type, { bubbles: true });
             Object.assign(event, props);
             return event;
         };
-        const { getAllByTestId, getByTestId } = render(
+        const { getAllByTestId } = render(
             <ColumnReordering
                 isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
@@ -689,6 +686,6 @@ describe("ColumnReordering unit test", () => {
                 createBubbledEvent("drop", { clientX: 0, clientY: 1 })
             );
         });
-        await waitFor(() => expect(mockUpdateColumnStructure).toBeCalled());
+        expect(mockUpdateColumnStructure).toBeCalled();
     });
 });

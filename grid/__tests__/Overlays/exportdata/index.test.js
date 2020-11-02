@@ -2,8 +2,6 @@
 import React from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-/* eslint-disable no-unused-vars */
-import regeneratorRuntime from "regenerator-runtime";
 import ExportData from "../../../src/Overlays/exportdata/index";
 
 describe("Export Data unit test", () => {
