@@ -1,7 +1,8 @@
 import React from "react";
 
-const RowAction = ({ rowData, closeOverlay }) => {
+const RowAction = ({ rowData, closeOverlay, bindRowEditOverlay }) => {
     const openEditOverlay = () => {
+        bindRowEditOverlay(rowData);
         closeOverlay();
     };
     return (

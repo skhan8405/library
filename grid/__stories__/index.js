@@ -9,6 +9,7 @@ import FlightEdit from "./cells/FlightEdit";
 import SrEdit from "./cells/SrEdit";
 import SegmentEdit from "./cells/SegmentEdit";
 import RowAction from "./cells/RowAction";
+import RowEdit from "./cells/RowEdit";
 
 const GridComponent = (props) => {
     const {
@@ -67,6 +68,9 @@ const GridComponent = (props) => {
     const [rowsToDeselect, setRowsToDeselect] = useState([]);
     // State for holding rows to select
     const [rowsToSelect, setRowsToSelect] = useState([]);
+
+    const [isEditOverlayOpened, setIsEditOverlayOpened] = useState(false);
+    const [rowDataToEdit, setRowDataToEdit] = useState(null);
 
     // Loginc for sorting data
     const compareValues = (compareOrder, v1, v2) => {
@@ -959,8 +963,23 @@ const GridComponent = (props) => {
         console.log("Grid Refrehsed ");
     };
 
+    const bindRowEditOverlay = (rowData) => {
+        setRowDataToEdit(rowData);
+        setIsEditOverlayOpened(true);
+    };
+    const unbindRowEditOverlay = (rowData) => {
+        setRowDataToEdit(null);
+        setIsEditOverlayOpened(false);
+    };
+
     const rowActions = (rowData, closeOverlay) => {
-        return <RowAction rowData={rowData} closeOverlay={closeOverlay} />;
+        return (
+            <RowAction
+                rowData={rowData}
+                closeOverlay={closeOverlay}
+                bindRowEditOverlay={bindRowEditOverlay}
+            />
+        );
     };
 
     const loadMoreData = (updatedPageInfo) => {
@@ -1069,6 +1088,16 @@ const GridComponent = (props) => {
                         );
                     })}
                 </div>
+                {isEditOverlayOpened && rowDataToEdit !== null ? (
+                    <div className="overlay">
+                        <RowEdit
+                            rowData={rowDataToEdit}
+                            airportCodeList={airportCodeList}
+                            onRowUpdate={onRowUpdate}
+                            unbindRowEditOverlay={unbindRowEditOverlay}
+                        />
+                    </div>
+                ) : null}
                 <Grid
                     className={className}
                     theme={theme}

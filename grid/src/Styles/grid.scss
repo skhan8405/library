@@ -181,34 +181,6 @@
         margin-bottom: rem(40);
         z-index: 9;
         white-space: nowrap;
-        li {
-            margin-bottom: rem(13);
-            cursor: pointer;
-            &:last-child {
-                margin: 0;
-            }
-            i {
-                width: rem(14);
-                display: inline-block;
-                &.default {
-                    position: relative;
-                    &:before {
-                        background-color: var(--default);
-                        width: 6px;
-                        height: 6px;
-                        content: "";
-                        position: absolute;
-                        border-radius: 50%;
-                        top: -6px;
-                        left: 2px;
-                    }
-                }
-            }
-            span {
-                margin-left: 8px;
-                padding-right: 5px;
-            }
-        }
         .close {
             position: absolute;
             top: 5px;

@@ -587,7 +587,90 @@ li {
     font-size: 12px;
     margin-right: 5px;
 }
-
+/* Edit Overlay */
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+.overlay .row-option-action-overlay {
+    background-color: #fff;
+    width: 890px;
+    box-shadow: 0px 0px 7px -1px rgba(0, 0, 0, 0.3);
+    padding: 20px 20px 20px 20px;
+    z-index: 99;
+    position: absolute;
+}
+.overlay .row-option-action-overlay.delete {
+    width: auto;
+    height: auto;
+    padding: 50px;
+}
+.overlay .row-option-action-overlay label {
+    margin-bottom: 5px;
+    display: block;
+}
+.overlay .row-option-action-overlay input,
+.overlay .row-option-action-overlay select,
+.overlay .row-option-action-overlay textarea {
+    width: 100%;
+    border-radius: 2px;
+    border: #d3d3d3 solid 1px;
+    font-size: 12px;
+    padding: 5px;
+}
+.overlay .row-option-action-overlay select {
+    margin: 0 0 10px;
+}
+.overlay .row-option-action-overlay .btn-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px 0;
+}
+/* Row Options */
+.row-options-overlay li {
+    margin-bottom: 13px;
+    cursor: pointer;
+}
+.row-options-overlay li:last-child {
+    margin: 0;
+}
+.row-options-overlay li i {
+    width: 14px;
+    display: inline-block;
+}
+.row-options-overlay li i.default {
+    position: relative;
+}
+.row-options-overlay li i.default:before {
+    background-color: var(--default);
+    width: 6px;
+    height: 6px;
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    top: -6px;
+    left: 2px;
+}
+.row-options-overlay li span {
+    margin-left: 8px;
+    padding-right: 5px;
+}
+.row-options-overlay .close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 15px;
+    color: #ccc;
+    cursor: pointer;
+}
 /*  CustomPanel Styles
 *  ------------------------------------------------------ */
 .dropbtn {
