@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { getValueOfDate } from "../utils/DateUtility";
+import ClickAwayListener from "react-click-away-listener";
 
 const RowEdit = ({
     rowData,
@@ -105,7 +106,11 @@ const RowEdit = ({
     const { flight, segment, weight, sr, remarks } = updatedRowData;
 
     return (
-        <div className="row-option-action-overlay">
+        <ClickAwayListener
+            className="row-option-action-overlay"
+            data-testid="rowEditOverlay-container"
+            onClickAway={closeRowEditOverlay}
+        >
             <div className="row-edit">
                 <div className="edit-flight">
                     <div className="edit-flight-no">
@@ -200,7 +205,7 @@ const RowEdit = ({
                     Cancel
                 </button>
             </div>
-        </div>
+        </ClickAwayListener>
     );
 };
 

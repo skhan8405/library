@@ -1,4 +1,5 @@
 import React from "react";
+import ClickAwayListener from "react-click-away-listener";
 
 const RowDelete = ({ rowData, onRowDelete, unbindRowDeleteOverlay }) => {
     const deleteRow = () => {
@@ -9,7 +10,11 @@ const RowDelete = ({ rowData, onRowDelete, unbindRowDeleteOverlay }) => {
         unbindRowDeleteOverlay();
     };
     return (
-        <div className="row-option-action-overlay  delete">
+        <ClickAwayListener
+            className="row-option-action-overlay  delete"
+            data-testid="rowEditOverlay-container"
+            onClickAway={closeRowDeleteOverlay}
+        >
             <div className="btn-wrap">
                 <button
                     type="button"
@@ -28,7 +33,7 @@ const RowDelete = ({ rowData, onRowDelete, unbindRowDeleteOverlay }) => {
                     Cancel
                 </button>
             </div>
-        </div>
+        </ClickAwayListener>
     );
 };
 
