@@ -11,7 +11,7 @@ const RowDelete = ({ rowData, onRowDelete, unbindRowDeleteOverlay }) => {
     };
     return (
         <ClickAwayListener
-            className="row-option-action-overlay  delete"
+            className="row-option-action-overlay delete"
             data-testid="rowEditOverlay-container"
             onClickAway={closeRowDeleteOverlay}
         >
