@@ -318,7 +318,6 @@ describe("render Index file ", () => {
 
     const mockServerSideSorting = jest.fn();
     const mockUpdateRowData = jest.fn();
-    const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
 
     let mockContainer;
@@ -336,7 +335,6 @@ describe("render Index file ", () => {
                 idAttribute="travelId"
                 columns={gridColumnsWithoutGroupSort}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
             />
         );
@@ -359,7 +357,6 @@ describe("render Index file ", () => {
                 idAttribute="travelId"
                 columns={gridColumnsWithGroupSort}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
             />
         );
@@ -409,7 +406,6 @@ describe("render Index file ", () => {
                 serverSideSorting={mockServerSideSorting}
                 columns={gridColumnsWithGroupSort}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
             />
         );

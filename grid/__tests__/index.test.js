@@ -31,6 +31,37 @@ describe("render Index file ", () => {
             </div>
         );
     });
+    const editedRowValue = {
+        travelId: 0,
+        flight: {
+            flightno: "123",
+            date: "31-Aug-2016"
+        }
+    };
+    const mockUpdateDateValue = jest.fn();
+    const mockEditCell = jest.fn((rowData, DisplayTag, rowUpdateCallBack) => {
+        const { flightno, date } = rowData.flight;
+        return (
+            <div>
+                <DisplayTag columnKey="flight" cellKey="flightno">
+                    <input
+                        data-testid="flightnoinput"
+                        className="flight-no-input"
+                        type="text"
+                        value={flightno}
+                        onChange={() => rowUpdateCallBack("nothing")}
+                    />
+                </DisplayTag>
+                <DisplayTag columnKey="flight" cellKey="date">
+                    <input
+                        type="date"
+                        value={date}
+                        onChange={mockUpdateDateValue}
+                    />
+                </DisplayTag>
+            </div>
+        );
+    });
 
     const gridColumns = [
         {
@@ -61,7 +92,8 @@ describe("render Index file ", () => {
             ],
             isSearchable: true,
             sortValue: "flightno",
-            Cell: mockDisplayCell
+            displayCell: mockDisplayCell,
+            editCell: mockEditCell
         },
         {
             Header: "SR",
@@ -117,7 +149,6 @@ describe("render Index file ", () => {
                     </div>
                 );
             },
-            columnId: "column_3",
             isSearchable: true
         }
     ];
@@ -297,49 +328,6 @@ describe("render Index file ", () => {
         });
     }
 
-    const mockGetRowEditOverlay = jest.fn(
-        (rowData, DisplayTag, rowUpdateCallBack) => {
-            const { flight } = rowData;
-            const updateRowValue = () => {
-                flight.flightno = "007";
-                rowUpdateCallBack(rowData);
-            };
-            return (
-                <div className="row-edit">
-                    <div className="edit-flight">
-                        <DisplayTag columnKey="flight" cellKey="flightno">
-                            <div className="edit-flight-no">
-                                <input
-                                    type="text"
-                                    value={flight.flightno}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                        <DisplayTag columnKey="flight" cellKey="date">
-                            <div className="edit-flight-date">
-                                <input
-                                    type="date"
-                                    value={flight.date}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                    </div>
-                </div>
-            );
-        }
-    );
-
-    const mockRowActions = [
-        { label: "edit" },
-        { label: "delete" },
-        { label: "Send SCR", value: "SCR" },
-        { label: "Segment Summary", value: "SegmentSummary" },
-        { label: "Open Summary", value: "OpenSummary" },
-        { label: "Close Summary", value: "CloseSummary" }
-    ];
-
     const getRowInfo = (rowData) => {
         const { travelId } = rowData;
         return {
@@ -354,7 +342,6 @@ describe("render Index file ", () => {
 
     const mockRowsToDeselect = [1, 2];
 
-    const mockRowActionCallback = jest.fn();
     const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {
         // Minimum height for each row
         let rowHeight = 50;
@@ -392,8 +379,8 @@ describe("render Index file ", () => {
         }
         return rowHeight;
     });
+    const mockRowActions = jest.fn();
     const mockUpdateRowData = jest.fn();
-    const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
     const mockGridRefresh = jest.fn();
     const mockLoadMoreData = jest.fn();
@@ -516,9 +503,9 @@ describe("render Index file ", () => {
     });
     afterEach(cleanup);
 
-    it("test custom className, theme, row expand, column filter and Ascending group sort without row height calculation", () => {
+    it("test custom className, theme, row expand, column filter, Ascending group sort and Cell edit without row height calculation", () => {
         mockOffsetSize(600, 600);
-        const { container, getByTestId } = render(
+        const { container, getByTestId, getAllByTestId } = render(
             <Grid
                 className="icargoCustomClass"
                 theme="portal"
@@ -533,17 +520,14 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 rowsToDeselect={mockRowsToDeselect}
             />
         );
         const gridContainer = container;
 
-        // Row expansion
+        // Check if Grid id rendered.
         expect(gridContainer).toBeInTheDocument();
 
         // Check if custom class name is present or not
@@ -623,6 +607,22 @@ describe("render Index file ", () => {
             "[class='neo-grid-popover__sort']"
         );
         expect(sortOverlay).toBeNull();
+
+        // Cell edit
+        const editButton = getAllByTestId("cell-edit-icon");
+        act(() => {
+            editButton[0].dispatchEvent(
+                new MouseEvent("click", { bubbles: true })
+            );
+        });
+        const flightNoInput = getByTestId("flightnoinput");
+        expect(flightNoInput.value).toBe("XX6983");
+        fireEvent.change(flightNoInput, { target: { value: "123" } });
+
+        const setState = jest.fn(() => editedRowValue);
+        const useStateSpy = jest.spyOn(React, "useState");
+        useStateSpy.mockImplementation(() => [editedRowValue, setState]);
+        fireEvent.click(getByTestId("cell-edit-save"));
     });
 
     it("test Descending group sort with row height calculation", () => {
@@ -640,11 +640,8 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 calculateRowHeight={mockCalculateRowHeight}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
             />
         );
@@ -691,7 +688,7 @@ describe("render Index file ", () => {
 
     it("test row options functionalities and column sort with row height calculation, custom panel and refresh button not passed", () => {
         mockOffsetSize(600, 600);
-        const { getByText, container, getByTestId } = render(
+        const { getAllByTestId, container, getByTestId } = render(
             <Grid
                 title={mockTitle}
                 gridHeight={mockGridHeight}
@@ -704,11 +701,8 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 calculateRowHeight={mockCalculateRowHeight}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
             />
         );
@@ -727,74 +721,28 @@ describe("render Index file ", () => {
         );
         expect(refreshElement.length).toBe(0);
 
-        // Row Options
-        let rowOptionsIcon = gridContainer.querySelector(
-            "[class=icon-row-options]"
-        ).firstChild;
-        let rowOptionsOverlay = null;
-        let rowOptionActionOverlay = null;
-        // Do row edit
+        // Open actions overlay
+        const rowActionOpenLinks = getAllByTestId("rowActions-open-link");
         act(() => {
-            rowOptionsIcon.dispatchEvent(
+            rowActionOpenLinks[0].dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionsOverlay = gridContainer
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(rowOptionsOverlay).toBeInTheDocument();
-        const EditLink = getByText("Edit");
+        // Check if row actions overlay has been opened
+        const rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        expect(rowActionsOverlay).toBeInTheDocument();
+        // Click close button
+        const closeButton = getByTestId("close-rowActions-kebab-overlay");
         act(() => {
-            EditLink.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        });
-        rowOptionActionOverlay = gridContainer
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeInTheDocument();
-        const flightnoInput = rowOptionActionOverlay
-            .getElementsByClassName("edit-flight-no")[0]
-            .getElementsByTagName("input")[0];
-        fireEvent.change(flightnoInput, { target: { value: "dfg" } });
-        const rowEditSave = getByTestId("rowEditOverlay-save");
-        act(() => {
-            rowEditSave.dispatchEvent(
+            closeButton.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionActionOverlay = gridContainer
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeNull();
-        // Do row delete
-        rowOptionsIcon = gridContainer.querySelector("[class=icon-row-options]")
-            .lastChild;
-        act(() => {
-            rowOptionsIcon.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        rowOptionsOverlay = gridContainer
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(rowOptionsOverlay).toBeInTheDocument();
-        const DeleteLink = getByText("Delete");
-        act(() => {
-            DeleteLink.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        rowOptionActionOverlay = gridContainer
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeInTheDocument();
-        const rowDelete = getByTestId("rowDeleteOverlay-Delete");
-        act(() => {
-            rowDelete.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        });
-        rowOptionActionOverlay = gridContainer
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeNull();
+        // Check if overlay has been closed
+        const overlayContainer = container.getElementsByClassName(
+            "row-options-overlay"
+        );
+        expect(overlayContainer.length).toBe(0);
 
         // Column Sort
         const flightSort = gridContainer.getElementsByClassName(
@@ -827,10 +775,7 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
             />
         );
@@ -854,10 +799,7 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumnWithoutInnerCells}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 onGridRefresh={mockGridRefresh}
                 CustomPanel={mockCustomPanel}
@@ -924,10 +866,7 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 onGridRefresh={mockGridRefresh}
                 CustomPanel={mockCustomPanel}
@@ -960,10 +899,7 @@ describe("render Index file ", () => {
                 loadMoreData={mockLoadMoreData}
                 columnToExpand={mockAdditionalColumn}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 onGridRefresh={mockGridRefresh}
                 CustomPanel={mockCustomPanel}
@@ -997,10 +933,7 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 onGridRefresh={mockGridRefresh}
                 CustomPanel={mockCustomPanel}
@@ -1070,7 +1003,6 @@ describe("render Index file ", () => {
                 columns={gridColumns}
                 columnToExpand={mockAdditionalColumn}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 getRowInfo={getRowInfo}
             />

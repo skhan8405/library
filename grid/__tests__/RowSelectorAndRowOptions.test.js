@@ -231,7 +231,6 @@ describe("render Index file ", () => {
     }
 
     const mockUpdateRowData = jest.fn();
-    const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
 
     let mockContainer;
@@ -248,7 +247,6 @@ describe("render Index file ", () => {
                 gridData={data}
                 columns={gridColumns}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 expandableColumn
             />
@@ -273,7 +271,6 @@ describe("render Index file ", () => {
                 gridData={data}
                 columns={gridColumns}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
             />
         );
@@ -305,7 +302,6 @@ describe("render Index file ", () => {
                 gridData={data}
                 columns={gridColumns}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 expandableColumn
                 rowSelector={false}

@@ -70,6 +70,7 @@ const CellDisplayAndEdit = ({
                     {cellEditContent ? (
                         <div
                             className="cell-edit"
+                            data-testid="cell-edit-icon"
                             role="presentation"
                             onClick={openEdit}
                         >

@@ -43,6 +43,7 @@ const RowOptions = ({ row, rowActions }) => {
                     <span
                         role="presentation"
                         className="close"
+                        data-testid="close-rowActions-kebab-overlay"
                         onClick={closeRowOptionsOverlay}
                     >
                         <i>

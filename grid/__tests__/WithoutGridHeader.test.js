@@ -232,7 +232,6 @@ describe("render Index file ", () => {
     }
 
     const mockUpdateRowData = jest.fn();
-    const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
 
     let mockContainer;
@@ -250,7 +249,6 @@ describe("render Index file ", () => {
                 idAttribute="travelId"
                 columns={gridColumns}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 gridHeader={false}
             />

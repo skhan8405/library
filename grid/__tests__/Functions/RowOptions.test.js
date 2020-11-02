@@ -68,111 +68,37 @@ describe("render row options", () => {
         }
     };
 
-    const rowActions = [
-        { label: "edit" },
-        { label: "delete" },
-        { label: "Send SCR", value: "SCR" },
-        { label: "Segment Summary", value: "SegmentSummary" },
-        { label: "Open Summary", value: "OpenSummary" },
-        { label: "Close Summary", value: "CloseSummary" }
-    ];
-
-    const rowActionCallback = jest.fn();
+    const mockRowActions = jest.fn(() => {
+        return <span>Row Action</span>;
+    });
 
     afterEach(cleanup);
-    const bindRowEditOverlayMock = jest.fn();
-    const bindRowDeleteOverlayMock = jest.fn();
 
     it("Should render component, open the overlay and then close it", () => {
-        const { getByText, container } = render(
-            <RowOptions
-                row={rowdata}
-                rowActions={rowActions}
-                rowActionCallback={rowActionCallback}
-                bindRowEditOverlay={bindRowEditOverlayMock}
-                bindRowDeleteOverlay={bindRowDeleteOverlayMock}
-            />
+        const { getByTestId, getAllByTestId, container } = render(
+            <RowOptions row={rowdata} rowActions={mockRowActions} />
         );
-        const editButton = document.querySelector("[class=icon-row-options]")
-            .firstChild;
+        // Open actions overlay
+        const rowActionOpenLinks = getAllByTestId("rowActions-open-link");
         act(() => {
-            editButton.dispatchEvent(
+            rowActionOpenLinks[0].dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        expect(getByText("Send SCR")).toBeInTheDocument();
-        const closeButton = document.querySelector("[class=close]").firstChild;
+        // Check if row actions overlay has been opened
+        const rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        expect(rowActionsOverlay).toBeInTheDocument();
+        // Click close button
+        const closeButton = getByTestId("close-rowActions-kebab-overlay");
         act(() => {
             closeButton.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        const overlayContainer = container
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(overlayContainer).toBe(null);
-    });
-
-    it("Open Edit, Delete and Custom option link", () => {
-        const { getByText, container } = render(
-            <RowOptions
-                row={rowdata}
-                rowActions={rowActions}
-                rowActionCallback={rowActionCallback}
-                bindRowEditOverlay={bindRowEditOverlayMock}
-                bindRowDeleteOverlay={bindRowDeleteOverlayMock}
-            />
+        // Check if overlay has been closed
+        const overlayContainer = container.getElementsByClassName(
+            "row-options-overlay"
         );
-        const editButton = document.querySelector("[class=icon-row-options]")
-            .firstChild;
-        // Edit row link
-        act(() => {
-            editButton.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        expect(getByText("Send SCR")).toBeInTheDocument();
-        const EditLink = getByText("Edit");
-        act(() => {
-            EditLink.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        });
-        let overlayContainer = container
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(overlayContainer).toBe(null);
-        // Delete row link
-        act(() => {
-            editButton.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        expect(getByText("Send SCR")).toBeInTheDocument();
-        const DeleteLink = getByText("Delete");
-        act(() => {
-            DeleteLink.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        overlayContainer = container
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(overlayContainer).toBe(null);
-        // Custom row option link
-        act(() => {
-            editButton.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        expect(getByText("Send SCR")).toBeInTheDocument();
-        const CustomLink = getByText("Send SCR");
-        act(() => {
-            CustomLink.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        overlayContainer = container
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(overlayContainer).toBe(null);
+        expect(overlayContainer.length).toBe(0);
     });
 });

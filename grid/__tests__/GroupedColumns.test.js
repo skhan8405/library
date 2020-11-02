@@ -310,56 +310,12 @@ describe("render Index file ", () => {
         });
     }
 
-    const mockGetRowEditOverlay = jest.fn(
-        (rowData, DisplayTag, rowUpdateCallBack) => {
-            const { flight } = rowData;
-            const updateRowValue = () => {
-                flight.flightno = "007";
-                rowUpdateCallBack(rowData);
-            };
-            return (
-                <div className="row-edit">
-                    <div className="edit-flight">
-                        <DisplayTag columnKey="flight" cellKey="flightno">
-                            <div className="edit-flight-no">
-                                <input
-                                    type="text"
-                                    value={flight.flightno}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                        <DisplayTag columnKey="flight" cellKey="date">
-                            <div className="edit-flight-date">
-                                <input
-                                    type="date"
-                                    value={flight.date}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                    </div>
-                </div>
-            );
-        }
-    );
-
-    const mockRowActions = [
-        { label: "edit" },
-        { label: "delete" },
-        { label: "Send SCR", value: "SCR" },
-        { label: "Segment Summary", value: "SegmentSummary" },
-        { label: "Open Summary", value: "OpenSummary" },
-        { label: "Close Summary", value: "CloseSummary" }
-    ];
-
     const mockGridHeight = "80vh";
     const mockGridWidth = "100%";
     const mockTitle = "AWBs";
 
     const mockRowsToDeselect = [1, 2];
 
-    const mockRowActionCallback = jest.fn();
     const mockCalculateRowHeight = jest.fn((row, columnsInGrid) => {
         // Minimum height for each row
         let rowHeight = 50;
@@ -397,8 +353,8 @@ describe("render Index file ", () => {
         }
         return rowHeight;
     });
+    const mockRowActions = jest.fn();
     const mockUpdateRowData = jest.fn();
-    const mockDeleteRowData = jest.fn();
     const mockSelectBulkData = jest.fn();
     const mockLoadMoreData = jest.fn();
     let mockContainer;
@@ -423,10 +379,7 @@ describe("render Index file ", () => {
                 columnToExpand={mockAdditionalColumn}
                 calculateRowHeight={mockCalculateRowHeight}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 rowsToDeselect={mockRowsToDeselect}
             />
@@ -544,10 +497,7 @@ describe("render Index file ", () => {
                 columnToExpand={mockAdditionalColumn}
                 calculateRowHeight={mockCalculateRowHeight}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
-                getRowEditOverlay={mockGetRowEditOverlay}
                 onRowUpdate={mockUpdateRowData}
-                onRowDelete={mockDeleteRowData}
                 onRowSelect={mockSelectBulkData}
                 rowsToDeselect={mockRowsToDeselect}
             />

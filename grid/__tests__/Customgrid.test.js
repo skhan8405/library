@@ -291,53 +291,10 @@ describe("render Customgrid", () => {
         });
     }
 
-    const mockRowActions = [
-        { label: "edit" },
-        { label: "delete" },
-        { label: "Send SCR", value: "SCR" },
-        { label: "Segment Summary", value: "SegmentSummary" },
-        { label: "Open Summary", value: "OpenSummary" },
-        { label: "Close Summary", value: "CloseSummary" }
-    ];
-    const mockRowActionCallback = jest.fn();
-
-    const mockGetRowEditOverlay = jest.fn(
-        (rowData, DisplayTag, rowUpdateCallBack) => {
-            const { flight } = rowData;
-            const updateRowValue = () => {
-                flight.flightno = "007";
-                rowUpdateCallBack(rowData);
-            };
-            return (
-                <div className="row-edit">
-                    <div className="edit-flight">
-                        <DisplayTag columnKey="flight" cellKey="flightno">
-                            <div className="edit-flight-no">
-                                <input
-                                    type="text"
-                                    value={flight.flightno}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                        <DisplayTag columnKey="flight" cellKey="date">
-                            <div className="edit-flight-date">
-                                <input
-                                    type="date"
-                                    value={flight.date}
-                                    onChange={updateRowValue}
-                                />
-                            </div>
-                        </DisplayTag>
-                    </div>
-                </div>
-            );
-        }
-    );
-
     const mockGridHeight = "80vh";
     const mockGridWidth = "100%";
     const mockTitle = "AWBs";
+    const mockRowActions = jest.fn();
     const mockUpdateRowInGrid = jest.fn();
     const mockDeleteRowFromGrid = jest.fn();
     const mocksearchColumn = jest.fn((column, original, searchText) => {
@@ -450,7 +407,7 @@ describe("render Customgrid", () => {
 
     it("should render Customgrid", () => {
         mockOffsetSize(600, 600);
-        const { getByText, container, getByTestId, getAllByTestId } = render(
+        const { getAllByTestId, container, getByTestId } = render(
             <Customgrid
                 title={mockTitle}
                 gridHeight={mockGridHeight}
@@ -459,7 +416,6 @@ describe("render Customgrid", () => {
                 expandedRowData={mockAdditionalColumn}
                 gridData={gridData}
                 idAttribute="travelId"
-                getRowEditOverlay={mockGetRowEditOverlay}
                 updateRowInGrid={mockUpdateRowInGrid}
                 deleteRowFromGrid={mockDeleteRowFromGrid}
                 searchColumn={mocksearchColumn}
@@ -468,7 +424,6 @@ describe("render Customgrid", () => {
                 isExpandContentAvailable={mockIsExpandContentAvailable}
                 displayExpandedContent={mockDisplayExpandedContent}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
                 hasNextPage={mockHasNextPage}
                 isNextPageLoading={mockIsNextPageLoading}
                 loadNextPage={mockLoadNextPage}
@@ -562,69 +517,28 @@ describe("render Customgrid", () => {
         expect(exportOverlay).toBeNull();
 
         // Row Options
-        const rowOptionsIcon = container.querySelector(
-            "[class=icon-row-options]"
-        ).firstChild;
-        let rowOptionsOverlay = null;
-        let rowOptionActionOverlay = null;
-        // Open row options and then open - close Row Edit Overlay
+        // Open actions overlay
+        const rowActionOpenLinks = getAllByTestId("rowActions-open-link");
         act(() => {
-            rowOptionsIcon.dispatchEvent(
+            rowActionOpenLinks[0].dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionsOverlay = container
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(rowOptionsOverlay).toBeInTheDocument();
-        const EditLink = getByText("Edit");
+        // Check if row actions overlay has been opened
+        const rowActionsOverlay = getByTestId("rowActions-kebab-overlay");
+        expect(rowActionsOverlay).toBeInTheDocument();
+        // Click close button
+        const closeButton = getByTestId("close-rowActions-kebab-overlay");
         act(() => {
-            EditLink.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-        });
-        rowOptionActionOverlay = container
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeInTheDocument();
-        const rowEditCancel = getByTestId("rowEditOverlay-cancel");
-        act(() => {
-            rowEditCancel.dispatchEvent(
+            closeButton.dispatchEvent(
                 new MouseEvent("click", { bubbles: true })
             );
         });
-        rowOptionActionOverlay = container
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeNull();
-        // Open row options and then open - close Row Delete Overlay
-        act(() => {
-            rowOptionsIcon.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        rowOptionsOverlay = container
-            .getElementsByClassName("row-options-overlay")
-            .item(0);
-        expect(rowOptionsOverlay).toBeInTheDocument();
-        const DeleteLink = getByText("Delete");
-        act(() => {
-            DeleteLink.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        rowOptionActionOverlay = container
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeInTheDocument();
-        const rowDeleteCancel = getByTestId("rowDeleteOverlay-cancel");
-        act(() => {
-            rowDeleteCancel.dispatchEvent(
-                new MouseEvent("click", { bubbles: true })
-            );
-        });
-        rowOptionActionOverlay = container
-            .getElementsByClassName("row-option-action-overlay")
-            .item(0);
-        expect(rowOptionActionOverlay).toBeNull();
+        // Check if overlay has been closed
+        const overlayContainer = container.getElementsByClassName(
+            "row-options-overlay"
+        );
+        expect(overlayContainer.length).toBe(0);
     });
 
     it("test global search for grid", async () => {
@@ -638,7 +552,6 @@ describe("render Customgrid", () => {
                 expandedRowData={mockAdditionalColumn}
                 gridData={gridData}
                 idAttribute="travelId"
-                getRowEditOverlay={mockGetRowEditOverlay}
                 updateRowInGrid={mockUpdateRowInGrid}
                 deleteRowFromGrid={mockDeleteRowFromGrid}
                 searchColumn={mocksearchColumn}
@@ -647,7 +560,6 @@ describe("render Customgrid", () => {
                 isExpandContentAvailable={mockIsExpandContentAvailable}
                 displayExpandedContent={mockDisplayExpandedContent}
                 rowActions={mockRowActions}
-                rowActionCallback={mockRowActionCallback}
                 hasNextPage={mockHasNextPage}
                 isNextPageLoading={mockIsNextPageLoading}
                 loadNextPage={mockLoadNextPage}
