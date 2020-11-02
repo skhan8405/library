@@ -16,6 +16,7 @@ const RowAction = ({
         bindRowDeleteOverlay(rowData);
         closeOverlay();
     };
+    const { travelId } = rowData;
     return (
         <ul>
             <li role="presentation" onClick={openEditOverlay}>
@@ -26,14 +27,16 @@ const RowAction = ({
                     <span>Edit</span>
                 </span>
             </li>
-            <li role="presentation" onClick={openDeleteOverlay}>
-                <span>
-                    <i>
-                        <img src={DeleteIcon} alt="delete-row" />
-                    </i>
-                    <span>Delete</span>
-                </span>
-            </li>
+            {travelId % 2 === 0 ? (
+                <li role="presentation" onClick={openDeleteOverlay}>
+                    <span>
+                        <i>
+                            <img src={DeleteIcon} alt="delete-row" />
+                        </i>
+                        <span>Delete</span>
+                    </span>
+                </li>
+            ) : null}
         </ul>
     );
 };
