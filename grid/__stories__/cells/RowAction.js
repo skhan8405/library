@@ -37,6 +37,50 @@ const RowAction = ({
                     </span>
                 </li>
             ) : null}
+            <li
+                role="presentation"
+                onClick={() => {
+                    alert("SCR");
+                }}
+            >
+                <span>
+                    <i />
+                    <span>Send SCR</span>
+                </span>
+            </li>
+            <li
+                role="presentation"
+                onClick={() => {
+                    alert("SegmentSummary");
+                }}
+            >
+                <span>
+                    <i />
+                    <span>Segment Summary</span>
+                </span>
+            </li>
+            <li
+                role="presentation"
+                onClick={() => {
+                    alert("OpenSummary");
+                }}
+            >
+                <span>
+                    <i />
+                    <span>Open Summary</span>
+                </span>
+            </li>
+            <li
+                role="presentation"
+                onClick={() => {
+                    alert("CloseSummary");
+                }}
+            >
+                <span>
+                    <i />
+                    <span>Close Summary</span>
+                </span>
+            </li>
         </ul>
     );
 };
