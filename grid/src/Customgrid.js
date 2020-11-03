@@ -674,7 +674,7 @@ const Customgrid = (props) => {
                                 setGlobalFilter={setGlobalFilter}
                             />
                         ) : null}
-                        {columnFilter !== false ? (
+                        {gridHeader !== false && columnFilter !== false ? (
                             <div className="utilities-icon-container keyword-search-container">
                                 <div
                                     className="utilities-icon keyword-search"
