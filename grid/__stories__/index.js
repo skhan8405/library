@@ -37,7 +37,7 @@ const GridComponent = (props) => {
         passIdAttribute,
         expandableColumn,
         multiRowSelection,
-        theme,
+        passTheme,
         enableServersideSorting
     } = props;
     const idAttribute = "travelId";
@@ -1072,6 +1072,8 @@ const GridComponent = (props) => {
         setRowsToDeselect([Number(rowId)]);
     };
 
+    const theme = "portal";
+
     const gridPageInfo =
         paginationType === "index" ? indexPageInfo : cursorPageInfo;
 
@@ -1085,7 +1087,7 @@ const GridComponent = (props) => {
 
     if (gridData && gridData.length > 0 && columns && columns.length > 0) {
         return (
-            <div className={theme === "portal" ? "sample-bg" : ""}>
+            <div className={passTheme ? "sample-bg" : ""}>
                 <div className="selectedRows">
                     {userSelectedRows.map((row) => {
                         return (
@@ -1123,7 +1125,7 @@ const GridComponent = (props) => {
                 ) : null}
                 <Grid
                     className={className}
-                    theme={theme}
+                    theme={passTheme ? theme : null}
                     title={title}
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
