@@ -198,10 +198,12 @@ const GridComponent = () => {
     const getRowInfo = (rowData) => {
         // Grid calls this function for each row, to check:
         // 1) If expand icon is required for that row.
-        // 2) If any className has to be given for that row data container div.
+        // 2) If row selector checkbox is required for that row.
+        // 3) If any className has to be given for that row data container div.
         const { travelId } = rowData;
         return {
             isRowExpandable: travelId % 2 === 0, // Pass true/false based on which expand icon will be displayed.
+            isRowSelectable: travelId % 5 !== 0, // Pass true/false based on which row selector checkbox will be displayed.
             className: travelId % 10 === 0 ? "disabled" : "" // Pass className to be added.
         };
     };
@@ -767,6 +769,7 @@ const loadMoreData = (updatedPageInfo) => {
 ```jsx
 // getRowInfo function will be called against each row, which should return an object.
 // isRowExpandable value in the returned object will decide whether that row should display expand icon.
+// isRowSelectable value in the returned object will decide whether that row should display row selector checkbox.
 // className value in the returned object will be used as the class name of the outer div of that row.
 
 <Grid

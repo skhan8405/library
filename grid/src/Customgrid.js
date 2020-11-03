@@ -289,12 +289,31 @@ const Customgrid = (props) => {
                                 />
                             );
                         },
-                        Cell: ({ row }) => (
-                            <RowSelector
-                                data-testid="rowSelector-singleRow"
-                                {...row.getToggleRowSelectedProps()}
-                            />
-                        )
+                        Cell: ({ row }) => {
+                            // Check if row selector is required for this row using the getRowInfo prop passed
+                            let isRowSelectable = true;
+                            if (
+                                getRowInfo &&
+                                typeof getRowInfo === "function"
+                            ) {
+                                const rowInfo = getRowInfo(row.original);
+                                if (
+                                    rowInfo &&
+                                    rowInfo.isRowSelectable === false
+                                ) {
+                                    isRowSelectable = false;
+                                }
+                            }
+                            if (isRowSelectable) {
+                                return (
+                                    <RowSelector
+                                        data-testid="rowSelector-singleRow"
+                                        {...row.getToggleRowSelectedProps()}
+                                    />
+                                );
+                            }
+                            return null;
+                        }
                     },
                     ...hookColumns
                 ]);
@@ -325,8 +344,11 @@ const Customgrid = (props) => {
                                 typeof getRowInfo === "function"
                             ) {
                                 const rowInfo = getRowInfo(row.original);
-                                if (rowInfo) {
-                                    isRowExpandable = rowInfo.isRowExpandable;
+                                if (
+                                    rowInfo &&
+                                    rowInfo.isRowExpandable === false
+                                ) {
+                                    isRowExpandable = false;
                                 }
                             }
                             return (
@@ -573,7 +595,7 @@ const Customgrid = (props) => {
         let rowClassName = "";
         if (getRowInfo && typeof getRowInfo === "function") {
             const rowInfo = getRowInfo(row.original);
-            if (rowInfo) {
+            if (rowInfo && rowInfo.className) {
                 rowClassName = rowInfo.className;
             }
         }
