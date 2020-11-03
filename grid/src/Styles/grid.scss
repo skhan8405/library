@@ -10,6 +10,13 @@
     .neo-grid .table-row-wrap {
         background: var(--white);
         border-radius: 12px;
+        &.table-row-wrap-expand {
+            border-radius: 12px 12px 0 0;
+        }
+    }
+    .neo-grid .expand {
+        background: var(--white);
+        border-radius: 0 0 12px 12px;
     }
     .neo-grid .table-row {
         padding-bottom: 10px;
@@ -51,11 +58,10 @@
         }
         .disabled {
             .table-row-wrap {
-                background-color: var(--light-grey);
+                background-color: var(--box-shadow);
                 pointer-events: none;
-                opacity: 0.4;
                 .form-check-input {
-                    background-color: var(--light-grey);
+                    background-color: var(--box-shadow);
                 }
             }
         }

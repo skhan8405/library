@@ -583,7 +583,13 @@ const Customgrid = (props) => {
                 {...row.getRowProps({ style })}
                 className={`table-row tr ${rowClassName}`}
             >
-                <div className="table-row-wrap">
+                <div
+                    className={`table-row-wrap ${
+                        isRowExpandEnabled && row.isExpanded
+                            ? "table-row-wrap-expand"
+                            : ""
+                    }`}
+                >
                     {row.cells.map((cell) => {
                         if (cell.column.display === true) {
                             return (
