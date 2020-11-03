@@ -700,16 +700,16 @@ const Customgrid = (props) => {
                                         <IconGroupSort />
                                     </i>
                                 </div>
-                                <GroupSort
-                                    isGroupSortOverLayOpen={
-                                        isGroupSortOverLayOpen
-                                    }
-                                    toggleGroupSortOverLay={
-                                        toggleGroupSortOverLay
-                                    }
-                                    gridColumns={managableColumns}
-                                    applyGroupSort={applyGroupSort}
-                                />
+                                {isGroupSortOverLayOpen ? (
+                                    <GroupSort
+                                        toggleGroupSortOverLay={
+                                            toggleGroupSortOverLay
+                                        }
+                                        groupSortOptions={groupSortOptions}
+                                        gridColumns={managableColumns}
+                                        applyGroupSort={applyGroupSort}
+                                    />
+                                ) : null}
                             </div>
                         ) : null}
                         {columnChooser !== false ? (
