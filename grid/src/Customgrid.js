@@ -119,8 +119,14 @@ const Customgrid = (props) => {
     const [isGroupSortOverLayOpen, setGroupSortOverLay] = useState(false);
     // Local state for group sort options
     const [groupSortOptions, setGroupSortOptions] = useState([]);
+    // Local state value for hiding/unhiding column management overlay
+    const [isManageColumnOverlayOpen, setManageColumnOpen] = useState(false);
+
     // Toggle group Sort state value based on UI clicks
     const toggleGroupSortOverLay = () => {
+        // Make sure manage column overlay is closed whenever user opens/hides group sort overlay.
+        // This is to avoid conflicts of 2 components being rendered that uses DnD library.
+        setManageColumnOpen(false);
         setGroupSortOverLay(!isGroupSortOverLayOpen);
     };
     // Call apply group sort function from parent
@@ -131,10 +137,11 @@ const Customgrid = (props) => {
         }
     };
 
-    // Local state value for hiding/unhiding column management overlay
-    const [isManageColumnOverlayOpen, setManageColumnOpen] = useState(false);
     // Toggle column manage overlay show/hide state value based on UI clicks
     const toggleManageColumnsOverlay = () => {
+        // Make sure group sort overlay is closed whenever user opens/hides manage column overlay.
+        // This is to avoid conflicts of 2 components being rendered that uses DnD library.
+        setGroupSortOverLay(false);
         setManageColumnOpen(!isManageColumnOverlayOpen);
     };
     // Callback method from column manage overlay to update the column structure of the grid
