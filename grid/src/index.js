@@ -50,6 +50,9 @@ const Grid = (props) => {
     // Set state value for variable to check if the loading process is going on
     const [isNextPageLoading, setIsNextPageLoading] = useState(false);
 
+    // To check if useEffect Call is completed or not
+    const [isLoaded, setIsLoaded] = useState(false);
+
     // Logic for searching in each column
     const searchColumn = (column, original, searchText) => {
         // Return value
@@ -259,90 +262,98 @@ const Grid = (props) => {
         );
     }, [columnToExpand]);
 
-    if (!(gridData && gridData.length > 0)) {
-        return (
-            <div
-                data-testid="gridComponent"
-                className={`grid-component-container ${className || ""}`}
-            >
-                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    <span className="error">Invalid Data</span>
-                </h2>
-            </div>
-        );
-    }
-    if (!(gridColumns && gridColumns.length > 0)) {
-        return (
-            <div
-                data-testid="gridComponent"
-                className={`grid-component-container ${className || ""}`}
-            >
-                <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                    <span className="error">Invalid Column Configuration</span>
-                </h2>
-            </div>
-        );
-    }
+    useEffect(() => {
+        setIsLoaded(true);
+    }, []);
 
-    return (
-        <div
-            data-testid="gridComponent"
-            className={`grid-component-container ${className || ""} ${
-                theme === "portal" ? "neo-grid-portal" : ""
-            }`}
-        >
-            <Customgrid
-                theme={theme}
-                title={title}
-                gridHeight={gridHeight}
-                gridWidth={gridWidth}
-                managableColumns={gridColumns}
-                expandedRowData={additionalColumn}
-                gridData={gridData}
-                rowsToOverscan={rowsToOverscan}
-                idAttribute={idAttribute}
-                totalRecordsCount={pageInfo ? pageInfo.total : 0}
-                updateRowInGrid={updateRowInGrid}
-                searchColumn={searchColumn}
-                onRowSelect={onRowSelect}
-                getRowInfo={getRowInfo}
-                calculateRowHeight={
-                    calculateRowHeight &&
-                    typeof calculateRowHeight === "function"
-                        ? calculateRowHeight
-                        : calculateDefaultRowHeight
-                }
-                expandableColumn={expandableColumn}
-                rowActions={rowActions}
-                hasNextPage={pageInfo ? !pageInfo.lastPage : false}
-                isNextPageLoading={isNextPageLoading}
-                loadNextPage={loadNextPage}
-                serverSideSorting={serverSideSorting}
-                getSortedData={getSortedData}
-                CustomPanel={CustomPanel}
-                multiRowSelection={multiRowSelection}
-                gridHeader={gridHeader}
-                rowSelector={rowSelector}
-                globalSearch={globalSearch}
-                columnFilter={columnFilter}
-                groupSort={groupSort}
-                columnChooser={columnChooser}
-                exportData={exportData}
-                onGridRefresh={onGridRefresh}
-                rowsToSelect={rowsToSelect}
-                rowsToDeselect={rowsToDeselect}
-            />
-            {isNextPageLoading ? (
-                <div id="loader" className="background">
-                    <div className="dots container">
-                        <span />
-                        <span />
-                        <span />
-                    </div>
+    if (isLoaded) {
+        if (!(gridData && gridData.length > 0)) {
+            return (
+                <div
+                    data-testid="gridComponent"
+                    className={`grid-component-container ${className || ""}`}
+                >
+                    <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                        <span className="error">Invalid Data</span>
+                    </h2>
                 </div>
-            ) : null}
-        </div>
-    );
+            );
+        }
+        if (!(gridColumns && gridColumns.length > 0)) {
+            return (
+                <div
+                    data-testid="gridComponent"
+                    className={`grid-component-container ${className || ""}`}
+                >
+                    <h2 style={{ textAlign: "center", marginTop: "70px" }}>
+                        <span className="error">
+                            Invalid Column Configuration
+                        </span>
+                    </h2>
+                </div>
+            );
+        }
+        return (
+            <div
+                data-testid="gridComponent"
+                className={`grid-component-container ${className || ""} ${
+                    theme === "portal" ? "neo-grid-portal" : ""
+                }`}
+            >
+                <Customgrid
+                    theme={theme}
+                    title={title}
+                    gridHeight={gridHeight}
+                    gridWidth={gridWidth}
+                    managableColumns={gridColumns}
+                    expandedRowData={additionalColumn}
+                    gridData={gridData}
+                    rowsToOverscan={rowsToOverscan}
+                    idAttribute={idAttribute}
+                    totalRecordsCount={pageInfo ? pageInfo.total : 0}
+                    updateRowInGrid={updateRowInGrid}
+                    searchColumn={searchColumn}
+                    onRowSelect={onRowSelect}
+                    getRowInfo={getRowInfo}
+                    calculateRowHeight={
+                        calculateRowHeight &&
+                        typeof calculateRowHeight === "function"
+                            ? calculateRowHeight
+                            : calculateDefaultRowHeight
+                    }
+                    expandableColumn={expandableColumn}
+                    rowActions={rowActions}
+                    hasNextPage={pageInfo ? !pageInfo.lastPage : false}
+                    isNextPageLoading={isNextPageLoading}
+                    loadNextPage={loadNextPage}
+                    serverSideSorting={serverSideSorting}
+                    getSortedData={getSortedData}
+                    CustomPanel={CustomPanel}
+                    multiRowSelection={multiRowSelection}
+                    gridHeader={gridHeader}
+                    rowSelector={rowSelector}
+                    globalSearch={globalSearch}
+                    columnFilter={columnFilter}
+                    groupSort={groupSort}
+                    columnChooser={columnChooser}
+                    exportData={exportData}
+                    onGridRefresh={onGridRefresh}
+                    rowsToSelect={rowsToSelect}
+                    rowsToDeselect={rowsToDeselect}
+                />
+                {isNextPageLoading ? (
+                    <div id="loader" className="background">
+                        <div className="dots container">
+                            <span />
+                            <span />
+                            <span />
+                        </div>
+                    </div>
+                ) : null}
+            </div>
+        );
+    }
+    return null;
 };
 
 Grid.propTypes = {
