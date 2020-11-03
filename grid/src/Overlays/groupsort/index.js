@@ -132,9 +132,6 @@ const GroupSort = (props) => {
 
         useEffect(() => {
             setSortOptions([...groupSortOptions]);
-        }, [groupSortOptions]);
-
-        useEffect(() => {
             setIsLoaded(true);
         }, []);
 

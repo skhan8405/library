@@ -49,7 +49,6 @@ const ColumnReordering = (props) => {
         null
     );
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
-    const [isLoaded, setIsLoaded] = useState(false);
 
     // Update display value of column based on columnId
     const updatedDisplayOfColumn = (column, columnid, flag) => {
@@ -313,19 +312,12 @@ const ColumnReordering = (props) => {
 
     useEffect(() => {
         setManagedColumns([...columns]);
-    }, [columns]);
-
-    useEffect(() => {
         setManagedAdditionalColumn(
             isAdditionalColumnPresent ? { ...additionalColumn } : null
         );
-    }, [additionalColumn]);
-
-    useEffect(() => {
-        setIsLoaded(true);
     }, []);
 
-    if (isLoaded && managedColumns && managedColumns.length > 0) {
+    if (managedColumns && managedColumns.length > 0) {
         const isAdditionalColumnSelected =
             managedAdditionalColumn !== null &&
             managedAdditionalColumn.innerCells &&
