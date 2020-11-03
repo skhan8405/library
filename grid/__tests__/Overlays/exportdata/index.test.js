@@ -251,10 +251,24 @@ describe("Export Data unit test", () => {
         document.body.appendChild(container);
     });
 
+    it("should not render exportdata component without columns", () => {
+        render(
+            <ExportData
+                toggleExportDataOverlay={mocktoggleExportDataOverlay}
+                rows={mockRows}
+                columns={[]}
+                additionalColumn={mockAdditionalColumn}
+            />,
+            container
+        );
+        const exportOverlayContainer = document.getElementsByClassName(
+            "neo-grid-popover"
+        );
+        expect(exportOverlayContainer.length).toBe(0);
+    });
     it("should render exportdata component", () => {
         const { getByText } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -264,23 +278,9 @@ describe("Export Data unit test", () => {
         );
         expect(getByText("Export As")).toBeInTheDocument();
     });
-    it("should render empty div with exportOverlay false", () => {
-        const component = render(
-            <ExportData
-                isExportOverlayOpen={false}
-                toggleExportDataOverlay={mocktoggleExportDataOverlay}
-                rows={mockRows}
-                columns={mockColumns}
-                additionalColumn={mockAdditionalColumn}
-            />,
-            container
-        );
-        expect(component).toBeDefined();
-    });
     it("should check columns", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -307,7 +307,6 @@ describe("Export Data unit test", () => {
     it("should check all file types and export data", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -331,7 +330,6 @@ describe("Export Data unit test", () => {
     it("should close exportdata overlay by clicking on close", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -344,7 +342,6 @@ describe("Export Data unit test", () => {
     it("should provide warnings if no colmns and file types selected", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -365,7 +362,6 @@ describe("Export Data unit test", () => {
     it("should provide warnings if no colmns is selected", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -384,7 +380,6 @@ describe("Export Data unit test", () => {
     it("should provide warnings if no file type is selected", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -401,7 +396,6 @@ describe("Export Data unit test", () => {
     it("should search columns in list", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}
@@ -419,7 +413,6 @@ describe("Export Data unit test", () => {
     it("should select single column", () => {
         const { getByTestId } = render(
             <ExportData
-                isExportOverlayOpen
                 toggleExportDataOverlay={mocktoggleExportDataOverlay}
                 rows={mockRows}
                 columns={mockColumns}

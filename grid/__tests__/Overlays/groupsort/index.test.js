@@ -79,13 +79,14 @@ describe("Group Sort-index test Cases", () => {
 
     const mockTableGroupSortOverLay = jest.fn();
     const mockApplyGroupSortOverlay = jest.fn();
+    const mockGroupSortOptions = [];
 
     it("renders Component", () => {
         // LOGIC-->> render the div
         // expect sorts--grid to be defined
         render(
             <GroupSort
-                isGroupSortOverLayOpen={isGroupSortLayOverOpen}
+                groupSortOptions={mockGroupSortOptions}
                 toggleGroupSortOverLay={mockTableGroupSortOverLay}
                 gridColumns={columns}
                 applyGroupSort={mockApplyGroupSortOverlay}
@@ -101,7 +102,7 @@ describe("Group Sort-index test Cases", () => {
         act(() => {
             ReactDOM.render(
                 <GroupSort
-                    isGroupSortOverLayOpen={isGroupSortLayOverOpen}
+                    groupSortOptions={mockGroupSortOptions}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
                     gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
@@ -129,7 +130,7 @@ describe("Group Sort-index test Cases", () => {
         act(() => {
             ReactDOM.render(
                 <GroupSort
-                    isGroupSortOverLayOpen={isGroupSortLayOverOpen}
+                    groupSortOptions={mockGroupSortOptions}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
                     gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
@@ -157,7 +158,7 @@ describe("Group Sort-index test Cases", () => {
         act(() => {
             ReactDOM.render(
                 <GroupSort
-                    isGroupSortOverLayOpen={isGroupSortLayOverOpen}
+                    groupSortOptions={mockGroupSortOptions}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
                     gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
@@ -193,7 +194,7 @@ describe("Group Sort-index test Cases", () => {
         act(() => {
             ReactDOM.render(
                 <GroupSort
-                    isGroupSortOverLayOpen={isGroupSortLayOverOpen}
+                    groupSortOptions={mockGroupSortOptions}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
                     gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
@@ -240,7 +241,7 @@ describe("Group Sort-index test Cases", () => {
         act(() => {
             ReactDOM.render(
                 <GroupSort
-                    isGroupSortOverLayOpen={isGroupSortLayOverOpen}
+                    groupSortOptions={mockGroupSortOptions}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
                     gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
@@ -286,7 +287,7 @@ describe("Group Sort-index test Cases", () => {
         act(() => {
             ReactDOM.render(
                 <GroupSort
-                    isGroupSortOverLayOpen={isGroupSortLayOverOpen}
+                    groupSortOptions={mockGroupSortOptions}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
                     gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}
@@ -319,7 +320,7 @@ describe("Group Sort-index test Cases", () => {
         act(() => {
             ReactDOM.render(
                 <GroupSort
-                    isGroupSortOverLayOpen={false}
+                    groupSortOptions={mockGroupSortOptions}
                     toggleGroupSortOverLay={mockTableGroupSortOverLay}
                     gridColumns={columns}
                     applyGroupSort={mockApplyGroupSortOverlay}

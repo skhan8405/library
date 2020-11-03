@@ -235,7 +235,6 @@ describe("ColumnReordering unit test", () => {
     it("should not render ColumnReordering component", () => {
         render(
             <ColumnReordering
-                isManageColumnOverlayOpen={false}
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -252,7 +251,6 @@ describe("ColumnReordering unit test", () => {
     it("should render ColumnReordering component", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -273,7 +271,6 @@ describe("ColumnReordering unit test", () => {
     it("should render ColumnReordering search component", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -302,7 +299,6 @@ describe("ColumnReordering unit test", () => {
     it("Click on Save button For Default Select", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -325,7 +321,6 @@ describe("ColumnReordering unit test", () => {
         // expect the coloumn body (on showing all chosen coloumns) to be empty
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -359,7 +354,6 @@ describe("ColumnReordering unit test", () => {
     it("UnSelect The Segment Coloumn From Column Chooser", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -399,7 +393,6 @@ describe("ColumnReordering unit test", () => {
     it("UnSelect and Select Segment Column ", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -451,7 +444,6 @@ describe("ColumnReordering unit test", () => {
     it("UnSelect and Select Remarks Column ", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -503,7 +495,6 @@ describe("ColumnReordering unit test", () => {
     it("Unselect and Select Flight no Inner Cell", () => {
         const { container, getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -538,7 +529,6 @@ describe("ColumnReordering unit test", () => {
     it("UnSelect All and Click Reset Button without columns to expand", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -582,7 +572,6 @@ describe("ColumnReordering unit test", () => {
     it("Error scenario for no Coloumns Selected", () => {
         const { getByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -616,7 +605,6 @@ describe("ColumnReordering unit test", () => {
     it("Select InnerCell Of Remarks", () => {
         const { container } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -638,7 +626,6 @@ describe("ColumnReordering unit test", () => {
     it("Trigger search of columns onChnage", () => {
         render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
@@ -668,7 +655,6 @@ describe("ColumnReordering unit test", () => {
         };
         const { getAllByTestId } = render(
             <ColumnReordering
-                isManageColumnOverlayOpen
                 toggleManageColumnsOverlay={toggleManageColumnsOverlay}
                 columns={mockOriginalColumns}
                 additionalColumn={mockAdditionalColumn}
