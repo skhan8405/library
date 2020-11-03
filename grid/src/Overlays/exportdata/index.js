@@ -15,13 +15,7 @@ import {
 import { convertToIndividualColumns } from "../../Utilities/GridUtilities";
 
 const ExportData = (props) => {
-    const {
-        isExportOverlayOpen,
-        toggleExportDataOverlay,
-        rows,
-        columns,
-        additionalColumn
-    } = props;
+    const { toggleExportDataOverlay, rows, columns, additionalColumn } = props;
 
     // Check if additional Column is present or not
     const isAdditionalColumnPresent =
@@ -35,11 +29,9 @@ const ExportData = (props) => {
     // managedAdditionalColumn - additional column displayed in colum setting region
     // downloadTypes - types of downloads user has selected
     // warning - error message to be displayed
-    const [managedColumns, setManagedColumns] = useState(
-        JSON.parse(JSON.stringify(columns))
-    );
+    const [managedColumns, setManagedColumns] = useState([]);
     const [managedAdditionalColumn, setManagedAdditionalColumn] = useState(
-        JSON.parse(JSON.stringify(additionalColumn))
+        null
     );
     const [downloadTypes, setDownloadTypes] = useState([]);
     const [warning, setWarning] = useState("");
@@ -324,16 +316,11 @@ const ExportData = (props) => {
     };
 
     useEffect(() => {
-        setManagedColumns(JSON.parse(JSON.stringify(columns)));
-    }, [columns]);
+        setManagedColumns([...columns]);
+        setManagedAdditionalColumn({ ...additionalColumn });
+    }, []);
 
-    useEffect(() => {
-        setManagedAdditionalColumn(
-            JSON.parse(JSON.stringify(additionalColumn))
-        );
-    }, [additionalColumn]);
-
-    if (isExportOverlayOpen) {
+    if (columns && columns.length > 0) {
         return (
             <ClickAwayListener
                 onClickAway={toggleExportDataOverlay}
@@ -460,7 +447,6 @@ const ExportData = (props) => {
 };
 
 ExportData.propTypes = {
-    isExportOverlayOpen: PropTypes.bool,
     toggleExportDataOverlay: PropTypes.func,
     rows: PropTypes.arrayOf(PropTypes.object),
     columns: PropTypes.arrayOf(PropTypes.object),

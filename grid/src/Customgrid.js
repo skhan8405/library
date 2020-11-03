@@ -750,15 +750,16 @@ const Customgrid = (props) => {
                                         <IconShare />
                                     </i>
                                 </div>
-                                <ExportData
-                                    isExportOverlayOpen={isExportOverlayOpen}
-                                    toggleExportDataOverlay={
-                                        toggleExportDataOverlay
-                                    }
-                                    rows={rows}
-                                    columns={gridColumns}
-                                    additionalColumn={additionalColumn}
-                                />
+                                {isExportOverlayOpen ? (
+                                    <ExportData
+                                        toggleExportDataOverlay={
+                                            toggleExportDataOverlay
+                                        }
+                                        rows={rows}
+                                        columns={gridColumns}
+                                        additionalColumn={additionalColumn}
+                                    />
+                                ) : null}
                             </div>
                         ) : null}
                         {typeof onGridRefresh === "function" ? (
