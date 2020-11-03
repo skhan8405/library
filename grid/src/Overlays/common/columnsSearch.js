@@ -29,9 +29,7 @@ const ColumnSearch = ({
         return allCoulmns;
     };
 
-    const [searchableColumns, setSearchableColumns] = useState(
-        getAllColumns(gridColumns, additionalColumn)
-    );
+    const [searchableColumns, setSearchableColumns] = useState([]);
 
     // Update searched columns state based on the searched value
     const onColumnSearch = (event) => {
@@ -85,71 +83,78 @@ const ColumnSearch = ({
                 $set: getAllColumns(gridColumns, additionalColumn)
             })
         );
-    }, [columns, additionalColumn]);
+    }, []);
 
-    return (
-        <div className="columnSearch column__body">
-            <input
-                type="text"
-                placeholder="Search column"
-                className="custom__ctrl"
-                data-testid="filterColumnsList"
-                onChange={onColumnSearch}
-            />
-            <div className="column__selectAll">
-                <div className="column__checkbox">
-                    <div className="form-check">
-                        <input
-                            type="checkbox"
-                            id="chk_selectAllSearchableColumns"
-                            className="form-check-input custom-checkbox form-check-input"
-                            data-testid="selectAllSearchableColumns"
-                            data-columnid="all"
-                            checked={isSearchableColumnSelected("all")}
-                            onChange={onSearchableColumnChange}
-                        />
-                        <label
-                            htmlFor="chk_selectAllSearchableColumns"
-                            className="form-check-label column__selectTxt"
-                        >
-                            Select All
-                        </label>
-                    </div>
-                </div>
-            </div>
-            {searchableColumns.map((column) => {
-                const { columnId, Header, isDisplayInExpandedRegion } = column;
-                return (
-                    <div className="column__wrap" key={columnId}>
-                        <div className="column__checkbox">
-                            <div className="form-check">
-                                <input
-                                    type="checkbox"
-                                    id={`chk_selectSearchableColumn_${columnId}`}
-                                    className="form-check-input custom-checkbox form-check-input"
-                                    data-testid={`selectSingleSearchableColumn_${columnId}`}
-                                    data-columnid={columnId}
-                                    data-isadditionalcolumn={
-                                        isDisplayInExpandedRegion
-                                    }
-                                    checked={isSearchableColumnSelected(
-                                        columnId
-                                    )}
-                                    onChange={onSearchableColumnChange}
-                                />
-                                <label
-                                    htmlFor={`chk_selectSearchableColumn_${columnId}`}
-                                    className="form-check-label column__txt"
-                                >
-                                    {Header}
-                                </label>
-                            </div>
+    if (searchableColumns && searchableColumns.length > 0) {
+        return (
+            <div className="columnSearch column__body">
+                <input
+                    type="text"
+                    placeholder="Search column"
+                    className="custom__ctrl"
+                    data-testid="filterColumnsList"
+                    onChange={onColumnSearch}
+                />
+                <div className="column__selectAll">
+                    <div className="column__checkbox">
+                        <div className="form-check">
+                            <input
+                                type="checkbox"
+                                id="chk_selectAllSearchableColumns"
+                                className="form-check-input custom-checkbox form-check-input"
+                                data-testid="selectAllSearchableColumns"
+                                data-columnid="all"
+                                checked={isSearchableColumnSelected("all")}
+                                onChange={onSearchableColumnChange}
+                            />
+                            <label
+                                htmlFor="chk_selectAllSearchableColumns"
+                                className="form-check-label column__selectTxt"
+                            >
+                                Select All
+                            </label>
                         </div>
                     </div>
-                );
-            })}
-        </div>
-    );
+                </div>
+                {searchableColumns.map((column) => {
+                    const {
+                        columnId,
+                        Header,
+                        isDisplayInExpandedRegion
+                    } = column;
+                    return (
+                        <div className="column__wrap" key={columnId}>
+                            <div className="column__checkbox">
+                                <div className="form-check">
+                                    <input
+                                        type="checkbox"
+                                        id={`chk_selectSearchableColumn_${columnId}`}
+                                        className="form-check-input custom-checkbox form-check-input"
+                                        data-testid={`selectSingleSearchableColumn_${columnId}`}
+                                        data-columnid={columnId}
+                                        data-isadditionalcolumn={
+                                            isDisplayInExpandedRegion
+                                        }
+                                        checked={isSearchableColumnSelected(
+                                            columnId
+                                        )}
+                                        onChange={onSearchableColumnChange}
+                                    />
+                                    <label
+                                        htmlFor={`chk_selectSearchableColumn_${columnId}`}
+                                        className="form-check-label column__txt"
+                                    >
+                                        {Header}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+    return null;
 };
 
 ColumnSearch.propTypes = {
