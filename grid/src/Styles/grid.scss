@@ -59,10 +59,20 @@
         .disabled {
             .table-row-wrap {
                 background-color: var(--box-shadow);
-                pointer-events: none;
+                .table-cell {
+                    &:hover {
+                        .cell-edit {
+                            display: none;
+                        }
+                    }
+                }
                 .form-check-input {
+                    pointer-events: none;
                     background-color: var(--box-shadow);
                 }
+            }
+            .expand {
+                background-color: var(--box-shadow);
             }
         }
     }
