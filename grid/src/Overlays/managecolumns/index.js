@@ -12,7 +12,6 @@ import { IconClose } from "../../Utilities/SvgUtilities";
 
 const ColumnReordering = (props) => {
     const {
-        isManageColumnOverlayOpen,
         toggleManageColumnsOverlay,
         columns,
         additionalColumn,
@@ -45,11 +44,12 @@ const ColumnReordering = (props) => {
     // managedColumns - main columns displayed in colum setting region
     // managedAdditionalColumn - additional column displayed in colum setting region
     // isErrorDisplayed - to see if error message has to be displayed or not
-    const [managedColumns, setManagedColumns] = useState([...columns]);
+    const [managedColumns, setManagedColumns] = useState([]);
     const [managedAdditionalColumn, setManagedAdditionalColumn] = useState(
-        isAdditionalColumnPresent ? { ...additionalColumn } : null
+        null
     );
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // Update display value of column based on columnId
     const updatedDisplayOfColumn = (column, columnid, flag) => {
@@ -321,7 +321,11 @@ const ColumnReordering = (props) => {
         );
     }, [additionalColumn]);
 
-    if (isManageColumnOverlayOpen) {
+    useEffect(() => {
+        setIsLoaded(true);
+    }, []);
+
+    if (isLoaded && managedColumns && managedColumns.length > 0) {
         const isAdditionalColumnSelected =
             managedAdditionalColumn !== null &&
             managedAdditionalColumn.innerCells &&
@@ -492,7 +496,6 @@ const ColumnReordering = (props) => {
 };
 
 ColumnReordering.propTypes = {
-    isManageColumnOverlayOpen: PropTypes.bool,
     toggleManageColumnsOverlay: PropTypes.func,
     columns: PropTypes.arrayOf(PropTypes.object),
     additionalColumn: PropTypes.object,

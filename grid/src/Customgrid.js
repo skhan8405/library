@@ -724,19 +724,18 @@ const Customgrid = (props) => {
                                         <IconColumns />
                                     </i>
                                 </div>
-                                <ColumnReordering
-                                    isManageColumnOverlayOpen={
-                                        isManageColumnOverlayOpen
-                                    }
-                                    toggleManageColumnsOverlay={
-                                        toggleManageColumnsOverlay
-                                    }
-                                    columns={managableColumns}
-                                    additionalColumn={expandedRowData}
-                                    updateColumnStructure={
-                                        updateColumnStructure
-                                    }
-                                />
+                                {isManageColumnOverlayOpen ? (
+                                    <ColumnReordering
+                                        toggleManageColumnsOverlay={
+                                            toggleManageColumnsOverlay
+                                        }
+                                        columns={gridColumns}
+                                        additionalColumn={additionalColumn}
+                                        updateColumnStructure={
+                                            updateColumnStructure
+                                        }
+                                    />
+                                ) : null}
                             </div>
                         ) : null}
                         {exportData !== false ? (
