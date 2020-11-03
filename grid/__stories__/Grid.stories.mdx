@@ -203,7 +203,7 @@ const GridComponent = () => {
         const { travelId } = rowData;
         return {
             isRowExpandable: travelId % 2 === 0, // Pass true/false based on which expand icon will be displayed.
-            isRowSelectable: travelId % 5 !== 0, // Pass true/false based on which row selector checkbox will be displayed.
+            isRowSelectable: travelId % 3 !== 0, // Pass true/false based on which row selector checkbox will be displayed.
             className: travelId % 10 === 0 ? "disabled" : "" // Pass className to be added.
         };
     };

@@ -330,7 +330,7 @@ describe("render Index file ", () => {
         const { travelId } = rowData;
         return {
             isRowExpandable: travelId % 2 === 0,
-            isRowSelectable: travelId % 5 !== 0,
+            isRowSelectable: travelId % 3 !== 0,
             className: travelId % 10 === 0 ? "disabled" : ""
         };
     };
