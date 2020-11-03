@@ -60,10 +60,8 @@
             .table-row-wrap {
                 background-color: var(--box-shadow);
                 .table-cell {
-                    &:hover {
-                        .cell-edit {
-                            display: none;
-                        }
+                    .cell-edit {
+                        display: none;
                     }
                 }
                 .form-check-input {
