@@ -54,7 +54,7 @@ const groupedColumnItem = ({
 
 groupedColumnItem.propTypes = {
     id: PropTypes.string,
-    Header: PropTypes.string,
+    Header: PropTypes.any,
     title: PropTypes.string,
     display: PropTypes.bool,
     isadditionalcolumn: PropTypes.bool,

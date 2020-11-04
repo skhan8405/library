@@ -134,7 +134,7 @@ const ColumnItem = ({
 
 ColumnItem.propTypes = {
     id: PropTypes.string,
-    columnHeader: PropTypes.string,
+    columnHeader: PropTypes.any,
     columnTitle: PropTypes.string,
     moveColumn: PropTypes.func,
     findColumn: PropTypes.func,
