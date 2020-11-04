@@ -294,6 +294,9 @@ const Grid = (props) => {
                     gridData={gridData}
                     rowsToOverscan={rowsToOverscan}
                     idAttribute={idAttribute}
+                    isPaginationNeeded={
+                        pageInfo !== undefined && pageInfo !== null
+                    }
                     totalRecordsCount={pageInfo ? pageInfo.total : 0}
                     updateRowInGrid={updateRowInGrid}
                     searchColumn={searchColumn}

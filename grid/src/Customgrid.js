@@ -15,7 +15,6 @@ import {
     useGlobalFilter,
     useExpanded
 } from "react-table";
-import { VariableSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import InfiniteLoader from "react-window-infinite-loader";
 import PropTypes from "prop-types";
@@ -23,6 +22,7 @@ import RowSelector from "./Functions/RowSelector";
 import DefaultColumnFilter from "./Functions/DefaultColumnFilter";
 import GlobalFilter from "./Functions/GlobalFilter";
 import RowOptions from "./Functions/RowOptions";
+import RowsList from "./Functions/RowsList";
 import ColumnReordering from "./Overlays/managecolumns";
 import GroupSort from "./Overlays/groupsort";
 import ExportData from "./Overlays/exportdata";
@@ -58,6 +58,7 @@ const Customgrid = (props) => {
         gridData,
         rowsToOverscan,
         idAttribute,
+        isPaginationNeeded,
         totalRecordsCount,
         searchColumn,
         onRowSelect,
@@ -936,52 +937,50 @@ const Customgrid = (props) => {
                                         {...getTableBodyProps()}
                                         className="tbody"
                                     >
-                                        <InfiniteLoader
-                                            isItemLoaded={isItemLoaded}
-                                            itemCount={itemCount}
-                                            loadMoreItems={loadMoreItems}
-                                            className="tableContainer__InfiniteLoader"
-                                        >
-                                            {({ onItemsRendered, ref }) => (
-                                                <List
-                                                    ref={(list) => {
-                                                        ref(list);
-                                                        listRef.current = list;
-                                                    }}
-                                                    style={{
-                                                        overflowX: "hidden"
-                                                    }}
-                                                    height={height - 60}
-                                                    itemCount={rows.length}
-                                                    itemSize={(index) => {
-                                                        return (
-                                                            calculateRowHeight(
-                                                                rows[index],
-                                                                headerGroups &&
-                                                                    headerGroups.length
-                                                                    ? headerGroups[
-                                                                          headerGroups.length -
-                                                                              1
-                                                                      ].headers
-                                                                    : []
-                                                            ) +
-                                                            (theme === "portal"
-                                                                ? 10
-                                                                : 0)
-                                                        );
-                                                    }}
-                                                    onItemsRendered={
-                                                        onItemsRendered
-                                                    }
-                                                    overscanCount={
-                                                        overScanCount
-                                                    }
-                                                    className="tableContainer__List"
-                                                >
-                                                    {RenderRow}
-                                                </List>
-                                            )}
-                                        </InfiniteLoader>
+                                        {isPaginationNeeded ? (
+                                            <InfiniteLoader
+                                                isItemLoaded={isItemLoaded}
+                                                itemCount={itemCount}
+                                                loadMoreItems={loadMoreItems}
+                                                className="tableContainer__InfiniteLoader"
+                                            >
+                                                {({ onItemsRendered, ref }) => (
+                                                    <RowsList
+                                                        onItemsRendered={
+                                                            onItemsRendered
+                                                        }
+                                                        infiniteLoaderRef={ref}
+                                                        listRef={listRef}
+                                                        height={height}
+                                                        calculateRowHeight={
+                                                            calculateRowHeight
+                                                        }
+                                                        rows={rows}
+                                                        headerGroups={
+                                                            headerGroups
+                                                        }
+                                                        theme={theme}
+                                                        overScanCount={
+                                                            overScanCount
+                                                        }
+                                                        RenderRow={RenderRow}
+                                                    />
+                                                )}
+                                            </InfiniteLoader>
+                                        ) : (
+                                            <RowsList
+                                                listRef={listRef}
+                                                height={height}
+                                                calculateRowHeight={
+                                                    calculateRowHeight
+                                                }
+                                                rows={rows}
+                                                headerGroups={headerGroups}
+                                                theme={theme}
+                                                overScanCount={overScanCount}
+                                                RenderRow={RenderRow}
+                                            />
+                                        )}
                                     </div>
                                 ) : (
                                     <h2 className="error">No Records Found</h2>
@@ -1005,6 +1004,7 @@ Customgrid.propTypes = {
     gridData: PropTypes.arrayOf(PropTypes.object),
     rowsToOverscan: PropTypes.number,
     idAttribute: PropTypes.string,
+    isPaginationNeeded: PropTypes.bool,
     totalRecordsCount: PropTypes.number,
     searchColumn: PropTypes.func,
     onRowSelect: PropTypes.func,
