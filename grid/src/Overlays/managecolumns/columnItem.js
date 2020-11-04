@@ -8,6 +8,7 @@ import GroupedColumnItem from "./groupedColumnItem";
 const ColumnItem = ({
     id,
     columnHeader,
+    columnTitle,
     moveColumn,
     findColumn,
     isadditionalcolumn,
@@ -60,12 +61,15 @@ const ColumnItem = ({
                         <IconJustify />
                     </i>
                 </div>
-                <div className="columnItem__Header">{columnHeader}</div>
+                <div className="columnItem__Header">
+                    {columnTitle || columnHeader}
+                </div>
                 {isGroupHeader === true && columns && columns.length > 0 ? (
                     columns.map((col) => {
                         const {
                             columnId,
                             Header,
+                            title,
                             display,
                             isDisplayInExpandedRegion
                         } = col;
@@ -74,6 +78,7 @@ const ColumnItem = ({
                                 key={columnId}
                                 id={columnId}
                                 Header={Header}
+                                title={title}
                                 display={display}
                                 isadditionalcolumn={isDisplayInExpandedRegion}
                                 innerCells={col.innerCells}
@@ -130,6 +135,7 @@ const ColumnItem = ({
 ColumnItem.propTypes = {
     id: PropTypes.string,
     columnHeader: PropTypes.string,
+    columnTitle: PropTypes.string,
     moveColumn: PropTypes.func,
     findColumn: PropTypes.func,
     isadditionalcolumn: PropTypes.bool,

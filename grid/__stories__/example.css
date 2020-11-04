@@ -456,6 +456,9 @@ li {
 
 /*  Application Styles
 *  ------------------------------------------------------ */
+.flightHeader {
+    color: var(--focus);
+}
 .travelId-details,
 .flight-details,
 .segment-details,

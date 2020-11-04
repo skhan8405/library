@@ -44,7 +44,10 @@ describe("render Customgrid", () => {
             isGroupHeader: false
         },
         {
-            Header: "Flight",
+            Header: () => {
+                return <span className="flightHeader">Flight</span>;
+            },
+            title: "Flight",
             accessor: "flight",
             width: 100,
             columnId: "column_1",

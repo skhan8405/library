@@ -184,7 +184,7 @@ const ExportData = (props) => {
                 const rowFilteredValues = [];
                 const rowFilteredHeader = [];
                 filteredManagedColumns.forEach((columnName) => {
-                    const { Header, accessor, innerCells } = columnName;
+                    const { Header, title, accessor, innerCells } = columnName;
                     const isInnerCellsPresent =
                         innerCells && innerCells.length > 0;
                     const accessorRowValue = row[accessor];
@@ -208,7 +208,9 @@ const ExportData = (props) => {
                                                 columnValue = item[
                                                     innerCellAccessor
                                                 ].toString();
-                                                columnHeader = `${Header} - ${innerCellHeader}_${itemIndex}`;
+                                                columnHeader = `${
+                                                    title || Header
+                                                } - ${innerCellHeader}_${itemIndex}`;
                                                 filteredColumnVal[
                                                     columnHeader
                                                 ] = columnValue;
@@ -222,7 +224,9 @@ const ExportData = (props) => {
                                         );
                                     } else if (innerCellAccessorValue) {
                                         columnValue = innerCellAccessorValue;
-                                        columnHeader = `${Header} - ${innerCellHeader}`;
+                                        columnHeader = `${
+                                            title || Header
+                                        } - ${innerCellHeader}`;
                                         filteredColumnVal[
                                             columnHeader
                                         ] = columnValue;
@@ -233,7 +237,7 @@ const ExportData = (props) => {
                             });
                         } else {
                             columnValue = accessorRowValue;
-                            columnHeader = Header;
+                            columnHeader = title || Header;
                             filteredColumnVal[columnHeader] = columnValue;
                             rowFilteredValues.push(columnValue);
                             rowFilteredHeader.push(columnHeader);

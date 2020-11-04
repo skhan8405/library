@@ -128,7 +128,7 @@ const SortItem = ({
                                         key={orgItem.columnId}
                                         value={orgItem.accessor}
                                     >
-                                        {orgItem.Header}
+                                        {orgItem.title || orgItem.Header}
                                     </option>
                                 );
                             }
@@ -151,7 +151,7 @@ const SortItem = ({
                                 (innerCellItem) => (
                                     <option
                                         data-testid="groupSort-sortOn-Option"
-                                        key={`${innerCellItem.Header}_${innerCellItem.accessor}`}
+                                        key={innerCellItem.cellId}
                                         value={innerCellItem.accessor}
                                     >
                                         {innerCellItem.Header}

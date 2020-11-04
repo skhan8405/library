@@ -39,6 +39,9 @@ const ColumnSearch = ({
         if (value !== "") {
             setSearchableColumns(
                 allColumns.filter((column) => {
+                    if (column.title) {
+                        return column.title.toLowerCase().includes(value);
+                    }
                     return column.Header.toLowerCase().includes(value);
                 })
             );
@@ -120,6 +123,7 @@ const ColumnSearch = ({
                     const {
                         columnId,
                         Header,
+                        title,
                         isDisplayInExpandedRegion
                     } = column;
                     return (
@@ -144,7 +148,7 @@ const ColumnSearch = ({
                                         htmlFor={`chk_selectSearchableColumn_${columnId}`}
                                         className="form-check-label column__txt"
                                     >
-                                        {Header}
+                                        {title || Header}
                                     </label>
                                 </div>
                             </div>

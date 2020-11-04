@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 const groupedColumnItem = ({
     id,
     Header,
+    title,
     display,
     isadditionalcolumn,
     innerCells,
@@ -14,7 +15,7 @@ const groupedColumnItem = ({
 
     return (
         <div className="column__innerCells__wrap grouped__columns__wrap">
-            {isItemToBeDisplayed ? <strong>{Header}</strong> : null}
+            {isItemToBeDisplayed ? <strong>{title || Header}</strong> : null}
             {isItemToBeDisplayed
                 ? innerCells.map((cell) => {
                       const { cellId } = cell;
@@ -54,6 +55,7 @@ const groupedColumnItem = ({
 groupedColumnItem.propTypes = {
     id: PropTypes.string,
     Header: PropTypes.string,
+    title: PropTypes.string,
     display: PropTypes.bool,
     isadditionalcolumn: PropTypes.bool,
     innerCells: PropTypes.arrayOf(PropTypes.object),

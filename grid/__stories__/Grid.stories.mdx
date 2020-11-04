@@ -77,7 +77,10 @@ const GridComponent = () => {
         },
         {
             groupHeader: "Flight & Segment", // Required only if a group header has to be displayed for columns. Columns with same groupHeader property value will be grouped under one column
-            Header: "Flight",
+            Header: () => { // If a jsx element is passed as Header, use below prop 'title' which should be string value that can be used in group sort, manage columns and export overlays.
+                return <span className="flightHeader">Flight</span>;
+            },
+            title: "Flight", // Use this if Header is a jsx element.
             accessor: "flight",
             width: 100,
             isSortable: true, // This column will appear in groupsort overlay only if 'isSortable' value is true.

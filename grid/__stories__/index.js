@@ -198,7 +198,10 @@ const GridComponent = (props) => {
         },
         {
             groupHeader: "Flight & Segment",
-            Header: "Flight",
+            Header: () => {
+                return <span className="flightHeader">Flight</span>;
+            },
+            title: "Flight",
             accessor: "flight",
             width: 100,
             isSortable: true,

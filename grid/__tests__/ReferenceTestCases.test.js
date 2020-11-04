@@ -29,7 +29,10 @@ describe("Reference test cases", () => {
             disableFilters: true
         },
         {
-            Header: "Flight",
+            Header: () => {
+                return <span className="flightHeader">Flight</span>;
+            },
+            title: "Flight",
             accessor: "flight",
             width: 100,
             innerCells: [
