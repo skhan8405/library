@@ -376,7 +376,7 @@ Grid.propTypes = {
     getRowInfo: PropTypes.func,
     calculateRowHeight: PropTypes.func,
     expandableColumn: PropTypes.bool,
-    rowActions: PropTypes.func,
+    rowActions: PropTypes.any,
     CustomPanel: PropTypes.any,
     multiRowSelection: PropTypes.bool,
     gridHeader: PropTypes.bool,

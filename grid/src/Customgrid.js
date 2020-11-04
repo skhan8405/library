@@ -1014,7 +1014,7 @@ Customgrid.propTypes = {
     getToggleAllRowsSelectedProps: PropTypes.func,
     row: PropTypes.arrayOf(PropTypes.object),
     expandedRowData: PropTypes.object,
-    rowActions: PropTypes.func,
+    rowActions: PropTypes.any,
     CustomPanel: PropTypes.any,
     multiRowSelection: PropTypes.bool,
     gridHeader: PropTypes.bool,

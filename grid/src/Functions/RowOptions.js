@@ -57,7 +57,7 @@ const RowOptions = ({ row, rowActions }) => {
 };
 RowOptions.propTypes = {
     row: PropTypes.object,
-    rowActions: PropTypes.func
+    rowActions: PropTypes.any
 };
 
 export default RowOptions;
