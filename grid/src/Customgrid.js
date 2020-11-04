@@ -372,6 +372,7 @@ const Customgrid = (props) => {
                                             data-testid="rowExpanderIcon"
                                             {...row.getToggleRowExpandedProps({
                                                 onClick: () => {
+                                                    // Update local state value to identify row expand and rerender the row
                                                     setExpandedRowDetails(
                                                         row.id,
                                                         row.isExpanded
