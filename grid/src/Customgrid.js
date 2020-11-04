@@ -942,7 +942,6 @@ const Customgrid = (props) => {
                                                 isItemLoaded={isItemLoaded}
                                                 itemCount={itemCount}
                                                 loadMoreItems={loadMoreItems}
-                                                className="tableContainer__InfiniteLoader"
                                             >
                                                 {({ onItemsRendered, ref }) => (
                                                     <RowsList
