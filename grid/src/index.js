@@ -291,7 +291,7 @@ const Grid = (props) => {
                     gridWidth={gridWidth}
                     managableColumns={gridColumns}
                     expandedRowData={additionalColumn}
-                    gridData={gridData}
+                    gridData={gridData && gridData.length > 0 ? gridData : []}
                     rowsToOverscan={rowsToOverscan}
                     idAttribute={idAttribute}
                     isPaginationNeeded={
