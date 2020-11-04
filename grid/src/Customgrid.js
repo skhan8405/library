@@ -207,7 +207,7 @@ const Customgrid = (props) => {
                 return returnValue;
             });
         },
-        [managableColumns, searchColumn]
+        [managableColumns]
     );
 
     // Finds the rows selected by users from selectedRowIds and updates the state value and triggers the callback function.
@@ -594,64 +594,58 @@ const Customgrid = (props) => {
         reRenderListData();
     }, [gridData, groupSortOptions]);
 
-    // Create HTML structure of a single row that has to be bind to Grid
-    const renderSingleRow = (row, style) => {
-        prepareRow(row);
-
-        // Add classname passed by developer from getRowInfo prop to required rows
-        let rowClassName = "";
-        if (getRowInfo && typeof getRowInfo === "function") {
-            const rowInfo = getRowInfo(row.original);
-            if (rowInfo && rowInfo.className) {
-                rowClassName = rowInfo.className;
-            }
-        }
-
-        const rowElement = (
-            <div
-                {...row.getRowProps({ style })}
-                className={`table-row tr ${rowClassName}`}
-            >
-                <div
-                    className={`table-row-wrap ${
-                        isRowExpandEnabled && row.isExpanded
-                            ? "table-row-wrap-expand"
-                            : ""
-                    }`}
-                >
-                    {row.cells.map((cell) => {
-                        if (cell.column.display === true) {
-                            return (
-                                <div
-                                    {...cell.getCellProps()}
-                                    className="table-cell td"
-                                >
-                                    {cell.render("Cell")}
-                                </div>
-                            );
-                        }
-                        return null;
-                    })}
-                </div>
-                {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
-                {isRowExpandEnabled && row.isExpanded ? (
-                    <div className="expand" data-testid="rowExpandedRegion">
-                        {additionalColumn.Cell(row, additionalColumn)}
-                    </div>
-                ) : null}
-            </div>
-        );
-        return rowElement;
-    };
-
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
             // if (isItemLoaded(index)) - This check never became false during testing. Hence avoiding it to reach 100% code coverage in JEST test.
             const row = rows[index];
-            return renderSingleRow(row, style);
+            prepareRow(row);
+
+            // Add classname passed by developer from getRowInfo prop to required rows
+            let rowClassName = "";
+            if (getRowInfo && typeof getRowInfo === "function") {
+                const rowInfo = getRowInfo(row.original);
+                if (rowInfo && rowInfo.className) {
+                    rowClassName = rowInfo.className;
+                }
+            }
+
+            return (
+                <div
+                    {...row.getRowProps({ style })}
+                    className={`table-row tr ${rowClassName}`}
+                >
+                    <div
+                        className={`table-row-wrap ${
+                            isRowExpandEnabled && row.isExpanded
+                                ? "table-row-wrap-expand"
+                                : ""
+                        }`}
+                    >
+                        {row.cells.map((cell) => {
+                            if (cell.column.display === true) {
+                                return (
+                                    <div
+                                        {...cell.getCellProps()}
+                                        className="table-cell td"
+                                    >
+                                        {cell.render("Cell")}
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })}
+                    </div>
+                    {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
+                    {isRowExpandEnabled && row.isExpanded ? (
+                        <div className="expand" data-testid="rowExpandedRegion">
+                            {additionalColumn.Cell(row, additionalColumn)}
+                        </div>
+                    ) : null}
+                </div>
+            );
         },
-        [prepareRow, rows, isRowExpandEnabled, additionalColumn]
+        [rows, additionalColumn]
     );
 
     if (!isFirstRendering && gridColumns && gridColumns.length > 0) {
