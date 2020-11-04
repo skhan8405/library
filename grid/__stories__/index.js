@@ -202,9 +202,9 @@ const GridComponent = (props) => {
                 return (
                     <div className="flightHeader">
                         <i className="flightIcon">
-                            <img src={FlightIcon} alt="segment" />
+                            <img src={FlightIcon} alt="Flight Info" />
                         </i>
-                        <span className="flightText">Flight</span>
+                        <span className="flightText">Info</span>
                     </div>
                 );
             },
