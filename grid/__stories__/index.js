@@ -199,7 +199,14 @@ const GridComponent = (props) => {
         {
             groupHeader: "Flight & Segment",
             Header: () => {
-                return <span className="flightHeader">Flight</span>;
+                return (
+                    <div className="flightHeader">
+                        <i className="flightIcon">
+                            <img src={FlightIcon} alt="segment" />
+                        </i>
+                        <span className="flightText">Flight</span>
+                    </div>
+                );
             },
             title: "Flight",
             accessor: "flight",

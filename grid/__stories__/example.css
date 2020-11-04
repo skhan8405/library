@@ -459,6 +459,9 @@ li {
 .flightHeader {
     color: var(--focus);
 }
+.flightIcon {
+    margin: 0 5px;
+}
 .travelId-details,
 .flight-details,
 .segment-details,
