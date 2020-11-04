@@ -267,29 +267,13 @@ const Grid = (props) => {
     }, []);
 
     if (isLoaded) {
-        if (!(gridData && gridData.length > 0)) {
-            return (
-                <div
-                    data-testid="gridComponent"
-                    className={`grid-component-container ${className || ""}`}
-                >
-                    <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                        <span className="error">Invalid Data</span>
-                    </h2>
-                </div>
-            );
-        }
         if (!(gridColumns && gridColumns.length > 0)) {
             return (
                 <div
                     data-testid="gridComponent"
                     className={`grid-component-container ${className || ""}`}
                 >
-                    <h2 style={{ textAlign: "center", marginTop: "70px" }}>
-                        <span className="error">
-                            Invalid Column Configuration
-                        </span>
-                    </h2>
+                    <h2 className="error">Invalid Column Configuration</h2>
                 </div>
             );
         }

@@ -931,50 +931,61 @@ const Customgrid = (props) => {
                                         )}
                                     </div>
                                 )}
-                                <div {...getTableBodyProps()} className="tbody">
-                                    <InfiniteLoader
-                                        isItemLoaded={isItemLoaded}
-                                        itemCount={itemCount}
-                                        loadMoreItems={loadMoreItems}
-                                        className="tableContainer__InfiniteLoader"
+                                {rows && rows.length > 0 ? (
+                                    <div
+                                        {...getTableBodyProps()}
+                                        className="tbody"
                                     >
-                                        {({ onItemsRendered, ref }) => (
-                                            <List
-                                                ref={(list) => {
-                                                    ref(list);
-                                                    listRef.current = list;
-                                                }}
-                                                style={{ overflowX: "hidden" }}
-                                                height={height - 60}
-                                                itemCount={rows.length}
-                                                itemSize={(index) => {
-                                                    return (
-                                                        calculateRowHeight(
-                                                            rows[index],
-                                                            headerGroups &&
-                                                                headerGroups.length
-                                                                ? headerGroups[
-                                                                      headerGroups.length -
-                                                                          1
-                                                                  ].headers
-                                                                : []
-                                                        ) +
-                                                        (theme === "portal"
-                                                            ? 10
-                                                            : 0)
-                                                    );
-                                                }}
-                                                onItemsRendered={
-                                                    onItemsRendered
-                                                }
-                                                overscanCount={overScanCount}
-                                                className="tableContainer__List"
-                                            >
-                                                {RenderRow}
-                                            </List>
-                                        )}
-                                    </InfiniteLoader>
-                                </div>
+                                        <InfiniteLoader
+                                            isItemLoaded={isItemLoaded}
+                                            itemCount={itemCount}
+                                            loadMoreItems={loadMoreItems}
+                                            className="tableContainer__InfiniteLoader"
+                                        >
+                                            {({ onItemsRendered, ref }) => (
+                                                <List
+                                                    ref={(list) => {
+                                                        ref(list);
+                                                        listRef.current = list;
+                                                    }}
+                                                    style={{
+                                                        overflowX: "hidden"
+                                                    }}
+                                                    height={height - 60}
+                                                    itemCount={rows.length}
+                                                    itemSize={(index) => {
+                                                        return (
+                                                            calculateRowHeight(
+                                                                rows[index],
+                                                                headerGroups &&
+                                                                    headerGroups.length
+                                                                    ? headerGroups[
+                                                                          headerGroups.length -
+                                                                              1
+                                                                      ].headers
+                                                                    : []
+                                                            ) +
+                                                            (theme === "portal"
+                                                                ? 10
+                                                                : 0)
+                                                        );
+                                                    }}
+                                                    onItemsRendered={
+                                                        onItemsRendered
+                                                    }
+                                                    overscanCount={
+                                                        overScanCount
+                                                    }
+                                                    className="tableContainer__List"
+                                                >
+                                                    {RenderRow}
+                                                </List>
+                                            )}
+                                        </InfiniteLoader>
+                                    </div>
+                                ) : (
+                                    <h2 className="error">No Records Found</h2>
+                                )}
                             </div>
                         )}
                     </AutoSizer>
