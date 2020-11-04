@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React from "react";
 import { VariableSizeList as List } from "react-window";
 import PropTypes from "prop-types";
