@@ -808,21 +808,7 @@ const GridComponent = (props) => {
         }
     ];
 
-    const mappedOriginalColumns = originalColumns.map((column) => {
-        const updatedColumn = column;
-        if (!enableGroupHeaders && column.groupHeader) {
-            delete updatedColumn.groupHeader;
-        }
-        if (!enableJsxHeaders && column.title) {
-            // We know that jsx Header is been provided only for Flight column
-            // Hence update the Header value to string "Flight" and delete title
-            updatedColumn.Header = "Flight";
-            delete updatedColumn.title;
-        }
-        return updatedColumn;
-    });
-
-    const [columns, setColumns] = useState(mappedOriginalColumns);
+    const [columns, setColumns] = useState([]);
 
     const columnToExpand = {
         Header: "Remarks",
@@ -1079,6 +1065,20 @@ const GridComponent = (props) => {
                 });
             }
         });
+        const mappedOriginalColumns = originalColumns.map((column) => {
+            const updatedColumn = column;
+            if (!enableGroupHeaders && column.groupHeader) {
+                delete updatedColumn.groupHeader;
+            }
+            if (!enableJsxHeaders && column.title) {
+                // We know that jsx Header is been provided only for Flight column
+                // Hence update the Header value to string "Flight" and delete title
+                updatedColumn.Header = "Flight";
+                delete updatedColumn.title;
+            }
+            return updatedColumn;
+        });
+        setColumns(mappedOriginalColumns);
         if (rowsForSelection && rowsForSelection.length > 0) {
             setRowsToSelect(rowsForSelection);
         }
