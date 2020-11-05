@@ -26,6 +26,7 @@ const GridComponent = (props) => {
         hasPagination,
         CustomPanel,
         enableGroupHeaders,
+        enableJsxHeaders,
         gridHeader,
         rowSelector,
         globalSearch,
@@ -811,6 +812,12 @@ const GridComponent = (props) => {
         const updatedColumn = column;
         if (!enableGroupHeaders && column.groupHeader) {
             delete updatedColumn.groupHeader;
+        }
+        if (!enableJsxHeaders && column.title) {
+            // We know that jsx Header is been provided only for Flight column
+            // Hence update the Header value to string "Flight" and delete title
+            updatedColumn.Header = "Flight";
+            delete updatedColumn.title;
         }
         return updatedColumn;
     });

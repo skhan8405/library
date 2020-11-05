@@ -731,6 +731,25 @@ const loadMoreData = (updatedPageInfo) => {
 />
 ```
 
+#### With react component as Grid Headers
+
+<Story name="With react component as Grid Headers">
+    <GridComponent enableJsxHeaders />;
+</Story>
+
+```jsx
+// If required pass jsx element as Header of a column.
+// But in that case, also make sure to pass a string value to another property 'title', which can be used for representing column in group sort, manage columns and export overlays.
+
+<Grid
+    gridData={gridData}
+    columns={columns}
+    calculateRowHeight={calculateRowHeight}
+    onRowUpdate={onRowUpdate}
+    onRowSelect={onRowSelect}
+/>
+```
+
 #### With grouped headers
 
 <Story name="With grouped headers">
@@ -946,6 +965,7 @@ const exportData = false;
         hasPagination
         passColumnToExpand
         expandableColumn
+        enableJsxHeaders
         passRowActions
         passGetRowInfo
         passOnGridRefresh
