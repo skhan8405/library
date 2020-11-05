@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./example.css";
 import Grid from "../src/index";
 import FlightIcon from "./images/FlightIcon.png";
@@ -11,6 +11,7 @@ import SegmentEdit from "./cells/SegmentEdit";
 import RowAction from "./cells/RowAction";
 import RowEdit from "./cells/RowEdit";
 import RowDelete from "./cells/RowDelete";
+import miniGridList from "./miniGrid.json";
 
 const GridComponent = (props) => {
     const {
@@ -59,7 +60,7 @@ const GridComponent = (props) => {
         lastPage: false
     });
     // State for holding grid data
-    const [gridData, setGridData] = useState([]);
+    const [gridData, setGridData] = useState(miniGridList.miniRowsList);
     // State for holding Original grid data, to be used while clearing group sort
     const [originalGridData, setOriginalGridData] = useState([]);
     // State for holding group sort options
@@ -174,6 +175,10 @@ const GridComponent = (props) => {
         "ZZY",
         "ZZZ"
     ];
+
+
+    //childTableData	
+    const [childTableData, setChildTableData] = useState([]);
 
     const originalColumns = [
         {
@@ -869,6 +874,64 @@ const GridComponent = (props) => {
         }
     };
 
+
+	/*Changes BEGING here*/	
+    const [minifiedTreeData, setMinifiedTreeData] = useState([]);	
+    //loading 20 records	
+    const loadMoreRecords = (miniGridIndex) => {	
+	                console.log("loadMoreRecords ");	
+        const getDataFromAPI = fetchData(	
+            miniGridIndex + 1,	
+            minifiedTreeData.length + 20 + 5 * miniGridIndex	
+        );	
+        getDataFromAPI.then((res) => {	
+            const newRows = res.slice(	
+                minifiedTreeData.length + 5 * miniGridIndex	
+                //  Math.max(100 + 5 * miniGridIndex - 20, 0)	
+            );	
+            const addedMinifiedTreeData = minifiedTreeData.concat(newRows);	
+            setMinifiedTreeData(addedMinifiedTreeData);	
+        });	
+    };	
+    const onClickDivMainTree = useCallback(	
+        (miniGridIndex) => {	
+	                console.log("onClickDivMainTree ");	
+            // setMinifiedTreeData([]);	
+            const getDataFromAPI = fetchData({	
+                pageNum: miniGridIndex + 1,	
+                pageSize: 300,	
+                total: 20000,	
+                lastPage: false	
+            });	
+            getDataFromAPI.then((res) => {	
+                console.log("RESSSS ", res);	
+                if (JSON.stringify(res) !== JSON.stringify(minifiedTreeData))	
+                    setChildTableData(res);	
+            });	
+        },	
+        [childTableData]	
+    );	
+    const sortDataMethod = (groupSortOptions, originalData) => {	
+        let sortedData = originalData.sort((x, y) => {	
+            let compareResult = 0;	
+            groupSortOptions.forEach((option) => {	
+                const { sortBy, sortOn, order } = option;	
+                const newResult =	
+                    sortOn === "value"	
+                        ? compareValues(order, x[sortBy], y[sortBy])	
+                        : compareValues(	
+                              order,	
+                              x[sortBy][sortOn],	
+                              y[sortBy][sortOn]	
+                          );	
+                compareResult = compareResult || newResult;	
+            });	
+            return compareResult;	
+        });	
+        setMinifiedTreeData(sortedData);	
+    };	
+    /* Changes END here */
+
     const calculateRowHeight = (row, gridColumns) => {
         // Minimum height for each row
         let rowHeight = 50;
@@ -908,7 +971,7 @@ const GridComponent = (props) => {
     };
 
     const onRowUpdate = (originalRow, updatedRow) => {
-        setGridData((old) =>
+        setChildTableData((old) =>
             old.map((row) => {
                 let newRow = row;
                 if (
@@ -935,7 +998,7 @@ const GridComponent = (props) => {
     };
 
     const onRowDelete = (originalRow) => {
-        setGridData((old) =>
+        setChildTableData((old) =>
             old.filter((row) => {
                 return row !== originalRow;
             })
@@ -1095,11 +1158,10 @@ const GridComponent = (props) => {
         paginationType === "index" ? indexPageInfo : cursorPageInfo;
 
     const getRowInfo = (rowData) => {
-        const { travelId } = rowData;
+         // const { travelId } = rowData;
         return {
-            isRowExpandable: travelId % 2 === 0,
-            isRowSelectable: travelId % 3 !== 0,
-            className: travelId % 10 === 0 ? "disabled" : ""
+            isRowExpandable: true,
+            className: ""
         };
     };
 
@@ -1147,12 +1209,16 @@ const GridComponent = (props) => {
                     title={title}
                     gridHeight={gridHeight}
                     gridWidth={gridWidth}
-                    gridData={gridData}
+ 		    gridData={	
+                        miniGridList === undefined	
+                            ? []	
+                            : miniGridList.miniRowsList	
+                    }	
                     rowsToOverscan={rowsToOverscan}
                     idAttribute={passIdAttribute ? idAttribute : ""}
                     paginationType={hasPagination ? paginationType : null}
                     pageInfo={hasPagination ? gridPageInfo : null}
-                    loadMoreData={loadMoreData}
+		    loadMoreData={()=>loadMoreData}
                     serverSideSorting={
                         enableServersideSorting ? serverSideSorting : null
                     }
@@ -1176,6 +1242,12 @@ const GridComponent = (props) => {
                     groupSort={groupSort}
                     columnChooser={columnChooser}
                     exportData={exportData}
+ 		    onClickDivMainTree={onClickDivMainTree}
+                    minifiedTreeData={minifiedTreeData}	
+                    loadMoreRecords={loadMoreRecords}	
+                    sortDataMethod={sortDataMethod}	
+		    childTableData={childTableData}	
+                    //  miniGridList={miniGridList}
                 />
             </div>
         );

@@ -3,7 +3,8 @@ import React, {
     useState,
     useEffect,
     createRef,
-    useMemo
+    useMemo,
+    useRef
 } from "react";
 import {
     useTable,
@@ -44,6 +45,7 @@ import {
     checkdisplayOfGroupedColumns,
     checkIfGroupsortIsApplicable
 } from "./Utilities/GridUtilities";
+import MiniCustomgrid from "./MiniCustomGrid.js";
 
 const listRef = createRef(null);
 
@@ -82,8 +84,22 @@ const Customgrid = (props) => {
         exportData,
         onGridRefresh,
         rowsToSelect,
-        rowsToDeselect
+        rowsToDeselect,
+        // groupSortOptions,
+        // miniGridList,
+        onClickDivMainTree,
+        minifiedTreeData,
+        // gridColumns,
+        loadTwentyMoreRecords,
+        setMiniTreeColumnFunc,
+        miniTreeColumn,
+        displayExpandedContent,
+        childTableData // conatins inner table data
     } = props;
+
+    const childRef = useRef();
+    // state variable for inner table
+    const [innerTableData, setInnerTableData] = useState([]);
 
     // Over scan count for react-window list
     const overScanCount =
@@ -149,6 +165,7 @@ const Customgrid = (props) => {
     const updateColumnStructure = (updatedColumns, updatedAdditionalColumn) => {
         setGridColumns([...updatedColumns]);
         setAdditionalColumn(updatedAdditionalColumn);
+        setMiniTreeColumnFunc(updatedColumns);
     };
 
     // Local state value for hiding/unhiding export data overlay
@@ -235,11 +252,45 @@ const Customgrid = (props) => {
         typeof additionalColumn.Cell === "function";
 
     const columns = useMemo(() => gridColumns);
-    const data =
-        serverSideSorting && typeof serverSideSorting === "function"
-            ? useMemo(() => [...gridData])
-            : useMemo(() => getSortedData([...gridData], groupSortOptions));
 
+    // const data =
+    //     serverSideSorting && typeof serverSideSorting === "function"
+    //         ? useMemo(() => [...gridData])
+    //         : useMemo(() => getSortedData([...gridData], groupSortOptions));
+
+    const data = useMemo(() => [...gridData]);
+
+    const sortedChildTableData = useMemo(() =>
+        getSortedData([...innerTableData], groupSortOptions)
+    );
+
+    /*
+    Method To Consider Tree Struucture Global Search */
+    const setGlobalFilter = (searchText) => {
+        console.log("searchText ", searchText);
+        if (searchText !== undefined && searchText !== "") {
+            const filteredRows = sortedChildTableData.filter((dataItem) => {
+                // Find original data value of each row
+                // Return value of the filter method
+                let returnValue = false;
+                // Loop through all column values for each row
+                convertToIndividualColumns([...managableColumns]).forEach(
+                    (column) => {
+                        // Do search for each column
+                        returnValue =
+                            returnValue ||
+                            searchColumn(column, dataItem, searchText);
+                    }
+                );
+                return returnValue;
+            });
+            console.log("filteredRows ", filteredRows);
+            // innerTableData = filteredRows;
+            setInnerTableData([...filteredRows]);
+        } else {
+            setInnerTableData([...childTableData]);
+        }
+    };
     // Initialize react-table instance with the values received through properties
     const {
         getTableProps,
@@ -249,7 +300,7 @@ const Customgrid = (props) => {
         prepareRow,
         preFilteredRows,
         state: { globalFilter, selectedRowIds, filters, sortBy },
-        setGlobalFilter,
+        // setGlobalFilter,
         toggleRowSelected,
         toggleAllRowsSelected
     } = useTable(
@@ -257,7 +308,7 @@ const Customgrid = (props) => {
             columns,
             data,
             defaultColumn,
-            globalFilter: globalFilterLogic,
+            // globalFilter: globalFilterLogic,
             autoResetFilters: false,
             autoResetGlobalFilter: false,
             autoResetSortBy: false,
@@ -512,6 +563,7 @@ const Customgrid = (props) => {
     // Call back method will not be triggered if this is the first render of Grid
     // If multiRowSelection is disabled in Grid, deselect the existing row selection
     useEffect(() => {
+        setInnerTableData([...childTableData]); // to load the inner table on page load
         if (!isFirstRendering) {
             if (multiRowSelection === false) {
                 // If multiRowSelection is disabled in Grid, find row id of existing row selection
@@ -544,7 +596,204 @@ const Customgrid = (props) => {
                 updateSelectedRows(preFilteredRows, selectedRowIds);
             }
         }
-    }, [selectedRowIds]);
+    }, [selectedRowIds, childTableData]);
+
+    /* Changes BEGIN here */
+    const selectUnSelectInTree = (event) => {
+        console.log("event.target.checked ", event.target.checked);
+        childRef.current.selectUnselectAllInMiniTable(!isAllInnerRowsSelected);
+        //     toggleAllRowsSelected(!isAllInnerRowsSelected);
+        //  setIsAllInnerRowsSelected(!isAllInnerRowsSelected);
+    };
+    const renderMiniGridInExpansion = (miniGridIndex) => {
+        return (
+            <MiniCustomgrid
+                title={title}
+                gridHeight={gridHeight}
+                gridWidth={gridWidth}
+                // miniGridList={miniGridList}
+                managableColumns={useMemo(
+                    () =>
+                        /* managableColumns */ columns /* miniTreeColumn ===		
+                undefined		
+                    ? []		
+                    : miniTreeColumn */
+                )} // React table wants all parameters passed into useTable function to be memoized
+                // originalColumns={originalColumns}
+                additionalColumn={additionalColumn}
+                miniGridIndex={miniGridIndex}
+                data={useMemo(() => sortedChildTableData)} // React table wants all parameters passed into useTable function to be memoized
+                // getRowEditOverlay={getRowEditOverlay}
+                // minifiedTreeData={minifiedTreeData}
+                // updateRowInGrid={updateRowInGrid}
+                // deleteRowFromGrid={deleteRowFromGrid}
+                searchColumn={searchColumn}
+                onRowSelect={onRowSelect}
+                // loadMoreRecords={loadMoreRecords}
+                calculateRowHeight={
+                    calculateRowHeight &&
+                    typeof calculateRowHeight === "function"
+                        ? calculateRowHeight
+                        : calculateRowHeight
+                }
+                isExpandContentAvailable={
+                    typeof renderExpandedContent === "function"
+                }
+                displayExpandedContent={displayExpandedContent}
+                rowActions={rowActions}
+                // rowActionCallback={rowActionCallback}
+                hasNextPage={hasNextPage}
+                isNextPageLoading={isNextPageLoading}
+                loadNextPage={loadNextPage}
+                // doGroupSort={doGroupSort}
+                CustomPanel={CustomPanel}
+                globalSearch={globalSearch}
+                columnFilter={columnFilter}
+                groupSort={groupSort}
+                columnChooser={columnChooser}
+                exportData={exportData}
+                onGridRefresh={onGridRefresh}
+                rowsToDeselect={rowsToDeselect}
+                ref={childRef}
+                groupSortOptions={groupSortOptions}
+            />
+        );
+    };
+    // const renderSingleRow = (row, style, isCollapsible) =>
+    //     isCollapsible ? (
+    //         <div /* {...row.getRowProps({ style })} */ className="table-row tr">
+    //             <div className="table-row-wrap">
+    //                 {row.cells.map((cell) => {
+    //                     // return cell.column.columnId !== "column_custom_1" ?
+    //                     return (
+    //                         <div
+    //                             {...cell.getCellProps()}
+    //                             className="table-cell td"
+    //                         >
+    //                             {cell.render("Cell")}
+    //                         </div>
+    //                     );
+    //                     // : null
+    //                 })}
+    //             </div>
+    //             {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
+    //             {/* {isCollapsible && isRowExpandEnabled && row.isExpanded ? (
+    //             <div className="expand">
+    //                 {displayExpandedContent
+    //                     ? displayExpandedContent(row)
+    //                     : null}
+    //             </div>
+    //         ) : null} */}
+    //         </div>
+    //     ) : (
+    //         <div {...row.getRowProps({ style })} className="table-row tr">
+    //             <div className="table-row-wrap">
+    //                 {row.cells.map((cell) => {
+    //                     return (
+    //                         <div
+    //                             {...cell.getCellProps()}
+    //                             className="table-cell td"
+    //                         >
+    //                             {cell.render("Cell")}
+    //                         </div>
+    //                     );
+    //                 })}
+    //             </div>
+    //             {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
+    //             {
+    //                 /* isCollapsible && */ isRowExpandEnabled &&
+    //                 row.isExpanded ? (
+    //                     <div className="expand">
+    //                         {displayExpandedContent
+    //                             ? displayExpandedContent(row)
+    //                             : null}
+    //                     </div>
+    //                 ) : null
+    //             }
+    //         </div>
+    //         );
+    const renderCollapsibleRow = (
+        rowList,
+        style,
+        row,
+        miniGridTitle,
+        miniGridIndex
+    ) => {
+        //debugger;
+        prepareRow(rowList[miniGridIndex]);
+        return (
+            <div
+                className="main-div-tree"
+                // {...row.getRowProps({ style })}
+                // className="table-row tr"
+            >
+                {/* <div className="table-row-wrap-heading">{"EXECTW(2)"}</div> */}
+                <div className="tree-title">
+                    <input
+                        type="checkbox"
+                        onChange={(event) =>
+                            selectUnSelectInTree(event, rowList)
+                        }
+                        name="selectAllTree"
+                    />
+                    {miniGridTitle}
+                </div>
+                <div
+                    className="expandable-icon"
+                    onClick={() => onClickDivMainTree(miniGridIndex)}
+                    style={{
+                        // border: "2px solid red",
+                        width: "50px",
+                        zIndex: -9999
+                    }}
+                >
+                    {rowList[miniGridIndex].cells.map((cell) => {
+                        return cell.column.columnId === "column_custom_1" ? (
+                            <div
+                                // {...cell.getCellProps()}
+                                className="expandable-cell"
+                            >
+                                {cell.render("Cell")}
+                            </div>
+                        ) : null;
+                    })}
+                </div>
+                {
+                    // rowList.map((rowItem) =>
+                    isRowExpandEnabled && rowList[miniGridIndex].isExpanded
+                        ? renderMiniGridInExpansion(miniGridIndex, rowList)
+                        : // <div className="expand">
+                          //     {displayExpandedContent
+                          //         ? renderSingleRow(row, style)
+                          //         : null}
+                          // </div>
+                          null
+                    // )
+                }
+            </div>
+        );
+    };
+    const getTableRowsList = () => {
+        // debugger;
+        const lengthOfList = data.length;
+        const returnList = [];
+        for (let index = 0; index < lengthOfList; index++) {
+            returnList.push(rows[index]);
+        }
+        return returnList;
+    };
+    const renderRowTreeView = (rowList, style, row) => {
+        return data.map((miniGridTitle, miniGridIndex) => {
+            return renderCollapsibleRow(
+                rowList,
+                style,
+                row,
+                miniGridTitle.title,
+                miniGridIndex
+            );
+        });
+    };
+    /* Chnages END here */
 
     // Recalculate the row height from expanded/collapsed row index
     useEffect(() => {
@@ -594,60 +843,20 @@ const Customgrid = (props) => {
             }
         }
         reRenderListData();
-    }, [gridData, groupSortOptions]);
+    }, [gridData, groupSortOptions, childTableData]);
 
     // Render each row and cells in each row, using attributes from react window list.
     const RenderRow = useCallback(
         ({ index, style }) => {
             // if (isItemLoaded(index)) - This check never became false during testing. Hence avoiding it to reach 100% code coverage in JEST test.
             const row = rows[index];
-            prepareRow(row);
-
-            // Add classname passed by developer from getRowInfo prop to required rows
-            let rowClassName = "";
-            if (getRowInfo && typeof getRowInfo === "function") {
-                const rowInfo = getRowInfo(row.original);
-                if (rowInfo && rowInfo.className) {
-                    rowClassName = rowInfo.className;
-                }
-            }
-
-            return (
-                <div
-                    {...row.getRowProps({ style })}
-                    className={`table-row tr ${rowClassName}`}
-                >
-                    <div
-                        className={`table-row-wrap ${
-                            isRowExpandEnabled && row.isExpanded
-                                ? "table-row-wrap-expand"
-                                : ""
-                        }`}
-                    >
-                        {row.cells.map((cell) => {
-                            if (cell.column.display === true) {
-                                return (
-                                    <div
-                                        {...cell.getCellProps()}
-                                        className="table-cell td"
-                                    >
-                                        {cell.render("Cell")}
-                                    </div>
-                                );
-                            }
-                            return null;
-                        })}
-                    </div>
-                    {/* Check if row eapand icon is clicked, and if yes, call function to bind content to the expanded region */}
-                    {isRowExpandEnabled && row.isExpanded ? (
-                        <div className="expand" data-testid="rowExpandedRegion">
-                            {additionalColumn.Cell(row, additionalColumn)}
-                        </div>
-                    ) : null}
-                </div>
-            );
+            // return renderSingleRow(row, style);
+            // debugger;
+            return index !== 0
+                ? null
+                : renderRowTreeView(getTableRowsList(), style, row);
         },
-        [rows, additionalColumn]
+        [prepareRow, rows, isRowExpandEnabled, additionalColumn]
     );
 
     if (!isFirstRendering && gridColumns && gridColumns.length > 0) {

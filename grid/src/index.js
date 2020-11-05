@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
     extractColumns,
@@ -41,7 +41,13 @@ const Grid = (props) => {
         exportData,
         onGridRefresh,
         rowsToSelect,
-        rowsToDeselect
+        rowsToDeselect,
+        // miniGridList,
+        onClickDivMainTree,
+        minifiedTreeData,
+        loadMoreRecords,
+        // sortDataMethod,
+        childTableData
     } = props;
 
     // Check if device is desktop
@@ -240,6 +246,14 @@ const Grid = (props) => {
         }
     };
 
+    /* Changes BEGIN here */
+    const [miniTreeColumn, setMiniTreeColumn] = useState(gridColumns);
+    const setMiniTreeColumnFunc = (newColumnStructure) => {
+        setMiniTreeColumn([...newColumnStructure]);
+    };
+    // console.log("miniGridList SHAHRUKH ", miniGridList);
+    /* Changes End here */
+
     useEffect(() => {
         setIsNextPageLoading(false);
     }, [gridData, pageInfo]);
@@ -327,6 +341,9 @@ const Grid = (props) => {
                     onGridRefresh={onGridRefresh}
                     rowsToSelect={rowsToSelect}
                     rowsToDeselect={rowsToDeselect}
+                    childTableData={childTableData}
+                    onClickDivMainTree={onClickDivMainTree}
+                    setMiniTreeColumnFunc={setMiniTreeColumnFunc}
                 />
                 {isNextPageLoading ? (
                     <div id="loader" className="background">
@@ -375,7 +392,12 @@ Grid.propTypes = {
     exportData: PropTypes.bool,
     onGridRefresh: PropTypes.func,
     rowsToSelect: PropTypes.array,
-    rowsToDeselect: PropTypes.array
+    rowsToDeselect: PropTypes.array,
+    // miniGridList: PropTypes.any,
+    onClickDivMainTree: PropTypes.any,
+    minifiedTreeData: PropTypes.any,
+    loadMoreRecords: PropTypes.any,
+    childTableData: PropTypes.any
 };
 
 export default Grid;
